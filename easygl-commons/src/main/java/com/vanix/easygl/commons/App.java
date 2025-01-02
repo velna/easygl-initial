@@ -7,7 +7,7 @@ public class App {
 
     protected static final ThreadLocal<App> CONTEXT = new ThreadLocal<>();
 
-    private final Ticket ticket;
+    protected final Ticket ticket;
 
     public App(String id) {
         ticket = new Ticket(id);

@@ -8,8 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.function.Consumer;
-import java.util.function.ToIntFunction;
 
 @Slf4j
 public class Ticket implements Identified<String> {
@@ -20,9 +18,10 @@ public class Ticket implements Identified<String> {
     private static boolean shutdown;
 
     private final String id;
+    private final List<Long> tickBuf;
     private final BlockingQueue<Long> tickets = new LinkedBlockingQueue<>();
     private final Map<Long, LinkedList<Task>> tasks = new HashMap<>();
-    private final LinkedList<Task> addtionTasks = new LinkedList<>();
+    private final LinkedList<Task> additionalTasks = new LinkedList<>();
     private long ticket = 0;
     private final ThreadLocal<ListIterator<Task>> gameIter = new ThreadLocal<>();
 
@@ -55,23 +54,29 @@ public class Ticket implements Identified<String> {
     }
 
     public Ticket(String id) {
-        this(id, runnable -> new Thread(() -> {
+        this(id, 0);
+    }
+
+    public Ticket(String id, int tickBufSize) {
+        this.id = id;
+        TS.add(this);
+        this.tickBuf = new ArrayList<>(tickBufSize);
+    }
+
+    public static Thread run(Ticket ticket) {
+        Thread thread = new Thread(() -> {
             while (true) {
                 try {
-                    if (runnable.applyAsInt(null) < 0) {
+                    if (ticket.tick() < 0) {
                         break;
                     }
                 } catch (Exception e) {
                     log.error("", e);
                 }
             }
-        }, id + "-game").start());
-    }
-
-    public Ticket(String id, Consumer<ToIntFunction<List<Long>>> consumer) {
-        this.id = id;
-        TS.add(this);
-        consumer.accept(this::doTieckt);
+        }, ticket.id() + "-game");
+        thread.start();
+        return thread;
     }
 
     private void runTicket(long tk) {
@@ -82,19 +87,20 @@ public class Ticket implements Identified<String> {
         }
     }
 
-    private int doTieckt(List<Long> buf) {
+    public int tick() {
         try {
             runTicket(tickets.take());
-            if (buf != null && !tickets.isEmpty()) {
-                tickets.drainTo(buf);
-                for (Long tk : buf) {
+            if (tickBuf != null && !tickets.isEmpty()) {
+                tickets.drainTo(tickBuf);
+                for (Long tk : tickBuf) {
                     runTicket(tk);
                 }
-                buf.clear();
+                tickBuf.clear();
             }
-            runTasks(addtionTasks);
+            runTasks(additionalTasks);
             return tasks.size();
         } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
             return -1;
         }
     }
@@ -127,7 +133,7 @@ public class Ticket implements Identified<String> {
         if (next == 0) {
             ListIterator<Task> iter = gameIter.get();
             if (null == iter) {
-                addtionTasks.add(task);
+                additionalTasks.add(task);
             } else {
                 iter.add(task);
             }

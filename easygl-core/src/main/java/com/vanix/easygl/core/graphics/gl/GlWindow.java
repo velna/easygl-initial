@@ -1,27 +1,28 @@
 package com.vanix.easygl.core.graphics.gl;
 
-import com.vanix.easygl.core.graphics.event.WindowRefreshListener;
-import com.vanix.easygl.core.graphics.event.WindowResizeListener;
-import com.vanix.easygl.core.graphics.InputController;
-import com.vanix.easygl.core.graphics.Window;
 import com.vanix.easygl.commons.event.ListenerKey;
 import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.commons.event.ListenerSupport;
+import com.vanix.easygl.core.graphics.InputController;
+import com.vanix.easygl.core.graphics.Window;
+import com.vanix.easygl.core.graphics.event.WindowRefreshListener;
+import com.vanix.easygl.core.graphics.event.WindowResizeListener;
 import lombok.extern.slf4j.Slf4j;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.IntBuffer;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 @Slf4j
 public class GlWindow implements Window {
-
-    private final static ListenerKey<WindowResizeListener> WindowResizeKey = ListenerKey.of(0);
-    private final static ListenerKey<WindowRefreshListener> WindowRefreshKey = ListenerKey.of(1);
+    private static final AtomicBoolean INIT = new AtomicBoolean();
+    private static final ListenerKey<WindowResizeListener> WindowResizeKey = ListenerKey.of(0);
+    private static final ListenerKey<WindowRefreshListener> WindowRefreshKey = ListenerKey.of(1);
     private final long handle;
     private final ListenerSupport listenerSupport = new ListenerSupport();
     private final InputController inputCtlr;
@@ -34,6 +35,7 @@ public class GlWindow implements Window {
     private String title;
 
     public GlWindow(int width, int height, String title) {
+        systemInit();
         this.width = width;
         this.height = height;
         this.title = title;
@@ -41,7 +43,10 @@ public class GlWindow implements Window {
         this.handle = glfwCreateWindow(width, height, title, NULL, NULL);
         bind();
         GL.createCapabilities();
-        glfwSetFramebufferSizeCallback(handle, this::onWindowResized);
+        var prevCallback = glfwSetFramebufferSizeCallback(handle, this::onWindowResized);
+        if (prevCallback != null) {
+            prevCallback.close();
+        }
         onWindowResized(handle, width, height);
         inputCtlr = new GlInputController(this);
     }
@@ -148,5 +153,17 @@ public class GlWindow implements Window {
     @Override
     public int frameBufferHeight() {
         return frameBufferHeight;
+    }
+
+    public static void systemInit() {
+        if (INIT.compareAndSet(false, true)) {
+            glfwInit();
+        }
+    }
+
+    public static void systemTerminate() {
+        if (INIT.compareAndSet(true, false)) {
+            glfwTerminate();
+        }
     }
 }

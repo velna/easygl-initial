@@ -1,18 +1,15 @@
 package com.vanix.easygl.core;
 
-import com.vanix.easygl.commons.util.Counters;
-import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.commons.Ticket;
+import com.vanix.easygl.commons.util.Counters;
 import com.vanix.easygl.commons.value.DoubleValue;
 import com.vanix.easygl.commons.value.Value;
+import com.vanix.easygl.core.graphics.*;
 import org.apache.commons.collections4.map.ListOrderedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.function.ToIntFunction;
 
 public class DefaultClientApp implements ClientApp {
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -23,12 +20,11 @@ public class DefaultClientApp implements ClientApp {
     private final Map<String, Renderer<DefaultClientApp, RenderContext>> renderers = new ListOrderedMap<>();
     protected final Ticket ticket;
 
-    private ToIntFunction<List<Long>> ticketRunner;
     private boolean shutdown;
 
     public DefaultClientApp(String id, ClientFactory clientFactory) {
         this.clientFactory = ClientFactory.Instance = clientFactory;
-        ticket = new Ticket(id, r -> ticketRunner = r);
+        ticket = new Ticket(id, 100);
         new Thread(this::mainLoop, "Loop").start();
         Thread counterThread = new Thread(this::counterLoop, "Counters");
         counterThread.setDaemon(true);
@@ -46,7 +42,7 @@ public class DefaultClientApp implements ClientApp {
         Ticket.shutdown();
     }
 
-    private void counterLoop(){
+    private void counterLoop() {
         while (true) {
             counters.snapshot();
             counters.print(System.out);
@@ -70,7 +66,6 @@ public class DefaultClientApp implements ClientApp {
     public void run() throws GraphicsException {
         initGraphics();
         initRenderers();
-        List<Long> ticketBuf = new ArrayList<>(100);
         DoubleValue tickDelta = Value.of(0.0);
         RenderContext context = clientFactory.createRenderContext(this, window, graphics, tickDelta);
         Counters.Counter fps = counters.create("client.core", "fps", 0);
@@ -80,7 +75,7 @@ public class DefaultClientApp implements ClientApp {
             long frameStart = System.currentTimeMillis();
             updateAndRender(context);
             fps.incr();
-            if (ticketRunner.applyAsInt(ticketBuf) < 0) {
+            if (ticket.tick() < 0) {
                 log.info("ticket shutdown");
                 break;
             }
