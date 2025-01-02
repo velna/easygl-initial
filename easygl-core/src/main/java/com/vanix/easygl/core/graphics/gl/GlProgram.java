@@ -1,19 +1,16 @@
 package com.vanix.easygl.core.graphics.gl;
 
-import static org.lwjgl.opengl.GL20.GL_LINK_STATUS;
-import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
-import static org.lwjgl.opengl.GL20.glGetProgramiv;
-
-import java.nio.IntBuffer;
-
-import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
-import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
-import org.lwjgl.system.MemoryStack;
-
 import com.vanix.easygl.core.graphics.AbstractBindableHandle;
 import com.vanix.easygl.core.graphics.GraphicsException;
 import com.vanix.easygl.core.graphics.Program;
 import com.vanix.easygl.core.graphics.Shader;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.lwjgl.system.MemoryStack;
+
+import java.nio.IntBuffer;
+
+import static org.lwjgl.opengl.GL20.*;
 
 public class GlProgram extends AbstractBindableHandle<Program> implements Program {
 
@@ -42,12 +39,10 @@ public class GlProgram extends AbstractBindableHandle<Program> implements Progra
 
     @Override
     public Program attach(Shader shader) {
-        shaders.updateValue(shader.handle(), () -> {
+        shaders.getIfAbsentPut(shader.handle(), () -> {
             GLC.glAttachShader(handle(), shader.handle());
             GLC.checkError();
             return shader;
-        }, value -> {
-            throw new IllegalStateException("Shader already attached.");
         });
         return this;
     }
