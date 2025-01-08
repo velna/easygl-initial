@@ -38,17 +38,17 @@ public class GlVertexArray extends AbstractBindableHandle<VertexArray> implement
     }
 
     @Override
-    public void draw(DrawMode mode, Buffer vbo) {
+    public void drawArray(DrawMode mode, Buffer vbo, int first) {
         bind();
         vbo.bind();
-        GLC.glDrawArrays(mode.value(), 0, vbo.count());
+        GLC.glDrawArrays(mode.value(), first, vbo.count());
         GLC.checkError();
     }
 
     @Override
-    public void draw(DrawMode mode, Buffer vbo, Buffer ebo) {
+    public void drawElements(DrawMode mode, Buffer vbo, Buffer ebo, int indices) {
         bind();
-        GLC.glDrawElements(mode.value(), ebo.count(), ebo.dataType().value(), 0);
+        GLC.glDrawElements(mode.value(), ebo.count(), ebo.dataType().value(), indices);
         GLC.checkError();
     }
 }

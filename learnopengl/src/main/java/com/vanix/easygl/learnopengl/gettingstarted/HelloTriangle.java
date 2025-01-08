@@ -39,42 +39,44 @@ public class HelloTriangle {
                 .link();
         vertex.close();
         fragment.close();
-        float[] vertices = {
-                0.5f, 0.5f, 0.0f,  // top right
-                0.5f, -0.5f, 0.0f,  // bottom right
-                -0.5f, -0.5f, 0.0f,  // bottom left
-                -0.5f, 0.5f, 0.0f   // top left
-        };
-        int[] indices = {  // note that we start from 0!
-                0, 1, 3,  // first Triangle
-                1, 2, 3   // second Triangle
-        };
-        var vao = VertexArray.of().bind();
-        var vbo = Buffer.of(Buffer.Type.Array, DataType.Float)
+
+        var vao = VertexArray.of();
+        var vbo = Buffer.ofArray(vao, DataType.Float)
                 .bind()
-                .realloc(Buffer.DataUsage.STATIC_DRAW, vertices);
-        var ebo = Buffer.of(Buffer.Type.ElementArray, DataType.UnsignedInt)
+                .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+                        0.5f, 0.5f, 0.0f,  // top right
+                        0.5f, -0.5f, 0.0f,  // bottom right
+                        -0.5f, -0.5f, 0.0f,  // bottom left
+                        -0.5f, 0.5f, 0.0f   // top left
+                });
+        var ebo = Buffer.ofElementArray(vao, DataType.UnsignedInt)
                 .bind()
-                .realloc(Buffer.DataUsage.STATIC_DRAW, indices);
-        vao.attributes(vbo, 3);
+                .realloc(Buffer.DataUsage.STATIC_DRAW, new int[]{
+                        // note that we start from 0!
+                        0, 1, 3,  // first Triangle
+                        1, 2, 3   // second Triangle
+                });
+
+        vao.bind().attributes(vbo, 3);
 
         while (!window.shouldClose()) {
-            graphics.clearColor(0.2f, 0.3f, 0.3f, 1.0f);
-            graphics.clear(Graphics.BufferMask.Color);
+            graphics.clearColor(0.2f, 0.3f, 0.3f, 1.0f)
+                    .clear(Graphics.BufferMask.Color);
 
             program.bind();
-            vao.bind();
-            graphics.drawTrianglesElements(6, 0);
+            vao.drawElements(DrawMode.Triangles, vbo, ebo);
 
-            window.swapBuffers();
-            window.pollEvents();
+            window.swapBuffers()
+                    .pollEvents();
         }
-        vao.close();
-        vbo.close();
         ebo.close();
+        vbo.close();
+        vao.close();
         program.close();
+
         window.dispose();
         GlWindow.systemTerminate();
+
     }
 
     private static void processInput(Keyboard keyboard, int key, int scancode, int action, int modifiers) {

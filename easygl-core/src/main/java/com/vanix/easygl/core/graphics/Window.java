@@ -25,9 +25,9 @@ public interface Window extends Bindable<Window> {
 
     ListenerOperation<WindowRefreshListener> onRefresh();
 
-    void swapBuffers();
+    Window swapBuffers();
 
-    void pollEvents();
+    Window pollEvents();
 
     void dispose();
 

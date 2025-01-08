@@ -157,4 +157,13 @@ public interface Buffer extends Handle, Bindable<Buffer> {
         return new GlBuffer(type, dataType);
     }
 
+    static Buffer ofArray(VertexArray vao, DataType dataType) {
+        vao.bind();
+        return of(Type.Array, dataType);
+    }
+
+    static Buffer ofElementArray(VertexArray vao, DataType dataType) {
+        vao.bind();
+        return of(Type.ElementArray, dataType);
+    }
 }

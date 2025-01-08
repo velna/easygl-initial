@@ -66,13 +66,15 @@ public class GlWindow implements Window {
     }
 
     @Override
-    public void swapBuffers() {
+    public Window swapBuffers() {
         glfwSwapBuffers(handle);
+        return this;
     }
 
     @Override
-    public void pollEvents() {
+    public Window pollEvents() {
         glfwPollEvents();
+        return this;
     }
 
     @Override

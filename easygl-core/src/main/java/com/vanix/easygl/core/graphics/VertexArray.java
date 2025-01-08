@@ -8,9 +8,17 @@ public interface VertexArray extends Bindable<VertexArray>, Handle {
 
     VertexArray attributes(Buffer buffer, int... layouts);
 
-    void draw(DrawMode mode, Buffer vbo);
+    default void drawArray(DrawMode mode, Buffer vbo) {
+        drawArray(mode, vbo, 0);
+    }
 
-    void draw(DrawMode mode, Buffer vbo, Buffer ebo);
+    void drawArray(DrawMode mode, Buffer vbo, int first);
+
+    default void drawElements(DrawMode mode, Buffer vbo, Buffer ebo) {
+        drawElements(mode, vbo, ebo, 0);
+    }
+
+    void drawElements(DrawMode mode, Buffer vbo, Buffer ebo, int indices);
 
     static VertexArray of() {
         return new GlVertexArray();
