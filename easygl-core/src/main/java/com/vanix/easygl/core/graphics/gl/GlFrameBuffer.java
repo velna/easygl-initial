@@ -4,21 +4,15 @@ import com.vanix.easygl.core.graphics.*;
 import org.joml.Vector4f;
 import org.joml.Vector4i;
 
-public class GlFrameBuffer extends AbstractBindableHandle<FrameBuffer> implements FrameBuffer {
-    public static final FrameBuffer DefaultFrameBuffer = new GlFrameBuffer(0);
-    private int target = GLC.GL_FRAMEBUFFER;
+public class GlFrameBuffer extends AbstractBindable<FrameBuffer.Type, FrameBuffer> implements FrameBuffer {
+    public static final FrameBuffer DefaultFrameBuffer = new GlFrameBuffer(Type.FrameBuffer, 0);
 
-    public GlFrameBuffer(int handle) {
-        super(handle, State);
+    public GlFrameBuffer(Type type, int handle) {
+        super(handle, type);
     }
 
     public GlFrameBuffer() {
-        super(GLC.glGenFramebuffers(), State);
-    }
-
-    @Override
-    protected void bind(int handle) {
-        GLC.glBindFramebuffer(target, handle);
+        super(GLC.glGenFramebuffers(), Type.FrameBuffer);
     }
 
     @Override
@@ -27,27 +21,9 @@ public class GlFrameBuffer extends AbstractBindableHandle<FrameBuffer> implement
     }
 
     @Override
-    public FrameBuffer readOnly() {
-        target = GLC.GL_READ_FRAMEBUFFER;
-        return this;
-    }
-
-    @Override
-    public FrameBuffer writeOnly() {
-        target = GLC.GL_DRAW_FRAMEBUFFER;
-        return this;
-    }
-
-    @Override
-    public FrameBuffer readWrite() {
-        target = GLC.GL_FRAMEBUFFER;
-        return this;
-    }
-
-    @Override
     public FrameBuffer attach(Attachment attachment, Texture2D texture, int level) {
         assertBinding();
-        GLC.glFramebufferTexture2D(target, attachment.value(), texture.type().value(), texture.handle(), level);
+        GLC.glFramebufferTexture2D(targetValue(), attachment.value(), texture.target().value(), texture.handle(), level);
         GLC.checkError();
         return this;
     }
@@ -55,7 +31,7 @@ public class GlFrameBuffer extends AbstractBindableHandle<FrameBuffer> implement
     @Override
     public FrameBuffer attach(Attachment attachment, RenderBuffer renderBuffer) {
         assertBinding();
-        GLC.glFramebufferRenderbuffer(target, attachment.value(), GLC.GL_RENDERBUFFER, renderBuffer.handle());
+        GLC.glFramebufferRenderbuffer(targetValue(), attachment.value(), GLC.GL_RENDERBUFFER, renderBuffer.handle());
         GLC.checkError();
         return this;
     }

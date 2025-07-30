@@ -106,7 +106,7 @@ public class DefaultClientApp implements ClientApp {
         log.info("window close");
         shutdown = true;
         if (window != null) {
-            window.dispose();
+            window.close();
         }
         clientFactory.terminateWindowSystem();
         log.info("Client application shutdown.");

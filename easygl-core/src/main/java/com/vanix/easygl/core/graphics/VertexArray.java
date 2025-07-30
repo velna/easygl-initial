@@ -1,10 +1,12 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.core.graphics.gl.GLC;
 import com.vanix.easygl.core.graphics.gl.GlVertexArray;
 
-public interface VertexArray extends Bindable<VertexArray>, Handle {
+public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, VertexArray>, Handle {
 
-    BindingState State = new BindingState("VertexArray");
+    BindTarget.Default<VertexArray> Target = new BindTarget.Default<>(
+            BindingState.<BindTarget.Default<VertexArray>, VertexArray>ofInt("VertexArray", GLC::glBindVertexArray));
 
     VertexArray attributes(Buffer buffer, int... layouts);
 

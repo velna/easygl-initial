@@ -1,12 +1,12 @@
 package com.vanix.easygl.core.graphics.gl;
 
-import com.vanix.easygl.core.graphics.AbstractBindableHandle;
+import com.vanix.easygl.core.graphics.AbstractBindable;
 import com.vanix.easygl.core.graphics.Buffer;
 import com.vanix.easygl.core.graphics.DataType;
 
 import java.nio.*;
 
-public class GlBuffer extends AbstractBindableHandle<Buffer> implements Buffer {
+public class GlBuffer extends AbstractBindable<Buffer.Type, Buffer> implements Buffer {
 
     private final Type type;
 
@@ -14,24 +14,14 @@ public class GlBuffer extends AbstractBindableHandle<Buffer> implements Buffer {
     private int bytes;
 
     public GlBuffer(Type type, DataType dataType) {
-        super(GLC.glGenBuffers(), type.state());
+        super(GLC.glGenBuffers(), type);
         this.type = type;
         this.dataType = dataType;
     }
 
     @Override
-    protected void bind(int handle) {
-        GLC.glBindBuffer(type.value(), handle);
-    }
-
-    @Override
     protected void close(int handle) {
         GLC.glDeleteBuffers(handle);
-    }
-
-    @Override
-    public Type type() {
-        return type;
     }
 
     @Override
@@ -45,7 +35,7 @@ public class GlBuffer extends AbstractBindableHandle<Buffer> implements Buffer {
 
     private <T> Buffer realloc(ReallocFunction<T> reallocFn, DataUsage usage, T data, int dataBytes) {
         assertBinding();
-        reallocFn.accept(type().value(), data, usage.value());
+        reallocFn.accept(target().value(), data, usage.value());
         GLC.checkError();
         this.bytes = dataBytes;
         return this;
@@ -102,7 +92,7 @@ public class GlBuffer extends AbstractBindableHandle<Buffer> implements Buffer {
 
     private <T> Buffer set(SubDataFunction<T> subDataFunction, int offset, T data, int dataBytes) {
         assertBinding();
-        subDataFunction.accept(type().value(), offset, data);
+        subDataFunction.accept(target().value(), offset, data);
         GLC.checkError();
         this.bytes = offset + dataBytes;
         return this;

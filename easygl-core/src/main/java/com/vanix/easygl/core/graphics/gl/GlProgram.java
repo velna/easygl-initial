@@ -1,9 +1,6 @@
 package com.vanix.easygl.core.graphics.gl;
 
-import com.vanix.easygl.core.graphics.AbstractBindableHandle;
-import com.vanix.easygl.core.graphics.GraphicsException;
-import com.vanix.easygl.core.graphics.Program;
-import com.vanix.easygl.core.graphics.Shader;
+import com.vanix.easygl.core.graphics.*;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.lwjgl.system.MemoryStack;
@@ -12,19 +9,14 @@ import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL20.*;
 
-public class GlProgram extends AbstractBindableHandle<Program> implements Program {
+public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Program> implements Program {
 
     private final String id;
     private final MutableIntObjectMap<Shader> shaders = new IntObjectHashMap<>();
 
     public GlProgram(String id) {
-        super(GLC.glCreateProgram(), State);
+        super(GLC.glCreateProgram(), Target);
         this.id = id;
-    }
-
-    @Override
-    protected void bind(int handle) {
-        GLC.glUseProgram(handle);
     }
 
     @Override

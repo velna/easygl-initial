@@ -3,7 +3,11 @@ package com.vanix.easygl.core.graphics;
 import com.vanix.easygl.core.graphics.gl.GLC;
 import com.vanix.easygl.core.graphics.gl.GlRenderBuffer;
 
-public interface RenderBuffer extends Bindable<RenderBuffer>, Handle {
+public interface RenderBuffer extends Bindable<BindTarget.Default<RenderBuffer>, RenderBuffer>, Handle {
+
+    BindTarget.Default<RenderBuffer> Target = new BindTarget.Default<>(
+            BindingState.<BindTarget.Default<RenderBuffer>, RenderBuffer>ofInt("RenderBuffer",
+                    h -> GLC.glBindRenderbuffer(GLC.GL_RENDERBUFFER, h)));
 
     enum Format {
         Color(GLC.GL_COLOR_RENDERABLE),
@@ -18,9 +22,8 @@ public interface RenderBuffer extends Bindable<RenderBuffer>, Handle {
         public int value() {
             return value;
         }
-    }
 
-    BindingState State = new BindingState("RenderBuffer");
+    }
 
     RenderBuffer storage(Format internalFormat, int width, int height);
 

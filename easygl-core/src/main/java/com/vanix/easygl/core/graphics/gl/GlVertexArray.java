@@ -4,15 +4,10 @@ import com.vanix.easygl.core.graphics.*;
 
 import java.util.stream.IntStream;
 
-public class GlVertexArray extends AbstractBindableHandle<VertexArray> implements VertexArray {
+public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArray>, VertexArray> implements VertexArray {
 
     public GlVertexArray() {
-        super(GLC.glGenVertexArrays(), State);
-    }
-
-    @Override
-    protected void bind(int handle) {
-        GLC.glBindVertexArray(handle);
+        super(GLC.glGenVertexArrays(), Target);
     }
 
     @Override

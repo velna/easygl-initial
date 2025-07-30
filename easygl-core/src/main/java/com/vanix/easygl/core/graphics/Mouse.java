@@ -26,7 +26,7 @@ public interface Mouse extends Position {
 			return value;
 		}
 
-		public static CursorMode valueof(int v) {
+		public static CursorMode valueOf(int v) {
 			for (CursorMode mode : CursorMode.values()) {
 				if (mode.value == v) {
 					return mode;

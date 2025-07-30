@@ -1,23 +1,26 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.commons.Identified;
+import com.vanix.easygl.core.graphics.gl.GLC;
 import com.vanix.easygl.core.graphics.gl.GlProgram;
 import com.vanix.easygl.core.graphics.gl.GlUniformProgram;
-import com.vanix.easygl.commons.Identified;
 
-public interface Program extends Bindable<Program>, Handle, Identified<String> {
-	BindingState State = new BindingState("Program");
+public interface Program extends Bindable<BindTarget.Default<Program>, Program>, Handle, Identified<String> {
 
-	Program attach(Shader shader);
+    BindTarget.Default<Program> Target = new BindTarget.Default<>(
+            BindingState.<BindTarget.Default<Program>, Program>ofInt("Program", GLC::glUseProgram));
 
-	Program detach(Shader shader);
+    Program attach(Shader shader);
 
-	Program link() throws GraphicsException;
+    Program detach(Shader shader);
 
-	static Program of(String id) {
-		return new GlProgram(id);
-	}
+    Program link() throws GraphicsException;
 
-	static <E extends Enum<E>> UniformProgram<E> uniform(String id, Class<E> enumClass) {
-		return new GlUniformProgram<>(id, enumClass);
-	}
+    static Program of(String id) {
+        return new GlProgram(id);
+    }
+
+    static <E extends Enum<E>> UniformProgram<E> uniform(String id, Class<E> enumClass) {
+        return new GlUniformProgram<>(id, enumClass);
+    }
 }

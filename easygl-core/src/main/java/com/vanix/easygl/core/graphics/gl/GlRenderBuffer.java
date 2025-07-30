@@ -1,16 +1,12 @@
 package com.vanix.easygl.core.graphics.gl;
 
-import com.vanix.easygl.core.graphics.AbstractBindableHandle;
+import com.vanix.easygl.core.graphics.AbstractBindable;
+import com.vanix.easygl.core.graphics.BindTarget;
 import com.vanix.easygl.core.graphics.RenderBuffer;
 
-public class GlRenderBuffer extends AbstractBindableHandle<RenderBuffer> implements RenderBuffer {
+public class GlRenderBuffer extends AbstractBindable<BindTarget.Default<RenderBuffer>, RenderBuffer> implements RenderBuffer {
     public GlRenderBuffer() {
-        super(GLC.glGenRenderbuffers(), State);
-    }
-
-    @Override
-    protected void bind(int handle) {
-        GLC.glBindRenderbuffer(GLC.GL_RENDERBUFFER, handle);
+        super(GLC.glGenRenderbuffers(), Target);
     }
 
     @Override

@@ -14,7 +14,7 @@ public class GlTexture2D extends AbstractTexture<Texture2D> implements Texture2D
     @Override
     public Texture2D load(Image image, int level) throws GraphicsException {
         assertBinding();
-        GLC.glTexImage2D(type().value(),
+        GLC.glTexImage2D(target().value(),
                 level,
                 image.format().value(),
                 image.width(),

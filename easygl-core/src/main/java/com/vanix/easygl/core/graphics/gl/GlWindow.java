@@ -3,6 +3,8 @@ package com.vanix.easygl.core.graphics.gl;
 import com.vanix.easygl.commons.event.ListenerKey;
 import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.commons.event.ListenerSupport;
+import com.vanix.easygl.core.graphics.AbstractBindable;
+import com.vanix.easygl.core.graphics.BindTarget;
 import com.vanix.easygl.core.graphics.InputController;
 import com.vanix.easygl.core.graphics.Window;
 import com.vanix.easygl.core.graphics.event.WindowRefreshListener;
@@ -19,11 +21,14 @@ import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 @Slf4j
-public class GlWindow implements Window {
+public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Window> implements Window {
+    static {
+        glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.out));
+    }
+
     private static final AtomicBoolean INIT = new AtomicBoolean();
     private static final ListenerKey<WindowResizeListener> WindowResizeKey = ListenerKey.of(0);
     private static final ListenerKey<WindowRefreshListener> WindowRefreshKey = ListenerKey.of(1);
-    private final long handle;
     private final ListenerSupport listenerSupport = new ListenerSupport();
     private final InputController inputCtlr;
 
@@ -32,22 +37,21 @@ public class GlWindow implements Window {
 
     private int frameBufferWidth;
     private int frameBufferHeight;
-    private String title;
+    private final String title;
 
     public GlWindow(int width, int height, String title) {
+        super(glfwCreateWindow(width, height, title, NULL, NULL), Target);
         systemInit();
         this.width = width;
         this.height = height;
         this.title = title;
-        glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.out));
-        this.handle = glfwCreateWindow(width, height, title, NULL, NULL);
         bind();
         GL.createCapabilities();
-        var prevCallback = glfwSetFramebufferSizeCallback(handle, this::onWindowResized);
+        var prevCallback = glfwSetFramebufferSizeCallback(longHandle, this::onWindowResized);
         if (prevCallback != null) {
             prevCallback.close();
         }
-        onWindowResized(handle, width, height);
+        onWindowResized(longHandle, width, height);
         inputCtlr = new GlInputController(this);
     }
 
@@ -67,7 +71,7 @@ public class GlWindow implements Window {
 
     @Override
     public Window swapBuffers() {
-        glfwSwapBuffers(handle);
+        glfwSwapBuffers(longHandle);
         return this;
     }
 
@@ -83,43 +87,23 @@ public class GlWindow implements Window {
     }
 
     @Override
-    public long nativeHandle() {
-        return handle;
-    }
-
-    @Override
     public boolean shouldClose() {
-        return glfwWindowShouldClose(handle);
+        return glfwWindowShouldClose(longHandle);
     }
 
     @Override
     public void shouldClose(boolean close) {
-        glfwSetWindowShouldClose(handle, close);
+        glfwSetWindowShouldClose(longHandle, close);
     }
 
     @Override
-    public Window bind() {
-        glfwMakeContextCurrent(handle);
-        return this;
-    }
-
-    @Override
-    public Window unbind() {
-        glfwMakeContextCurrent(NULL);
-        return this;
-    }
-
-    @Override
-    public Window assertBinding() throws IllegalStateException {
-        if (glfwGetCurrentContext() != handle) {
-            throw new IllegalStateException("Window not bind.");
-        }
-        return this;
-    }
-
-    @Override
-    public void dispose() {
+    protected void close(long handle) {
         glfwDestroyWindow(handle);
+    }
+
+    @Override
+    protected void close(int handle) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

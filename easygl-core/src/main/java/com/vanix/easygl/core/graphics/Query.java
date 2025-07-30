@@ -2,8 +2,8 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.graphics.gl.GLC;
 
-public interface Query extends Handle, Bindable<Query> {
-    enum Type {
+public interface Query extends Handle, Bindable<Query.Type, Query> {
+    enum Type implements BindTarget<Type, Query> {
         SamplesPassed(GLC.GL_SAMPLES_PASSED),
         AnySamplesPassed(GLC.GL_ANY_SAMPLES_PASSED),
         AnySamplesPassedConservative(GLC.GL_ANY_SAMPLES_PASSED_CONSERVATIVE),
@@ -16,8 +16,15 @@ public interface Query extends Handle, Bindable<Query> {
             this.value = value;
         }
 
+        @Override
         public int value() {
             return value;
+        }
+
+        @Override
+        public BindingState<Type, Query> state() {
+            // TODO:
+            return null;
         }
     }
 

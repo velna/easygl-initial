@@ -6,9 +6,9 @@ import com.vanix.easygl.core.graphics.gl.GlBuffer;
 import java.nio.*;
 import java.util.function.Consumer;
 
-public interface Buffer extends Handle, Bindable<Buffer> {
+public interface Buffer extends Handle, Bindable<Buffer.Type, Buffer> {
 
-    enum Type {
+    enum Type implements BindTarget<Buffer.Type, Buffer> {
         Array(GLC.GL_ARRAY_BUFFER),
         CopyRead(GLC.GL_COPY_READ_BUFFER),
         CopyWrite(GLC.GL_COPY_WRITE_BUFFER),
@@ -21,17 +21,20 @@ public interface Buffer extends Handle, Bindable<Buffer> {
 
         final int value;
 
-        private final BindingState state = new BindingState(name());
+        private final BindingState<Buffer.Type, Buffer> state;
 
-        private Type(int value) {
+        Type(int value) {
             this.value = value;
+            state = BindingState.ofInt(name(), h -> GLC.glBindBuffer(value, h));
         }
 
+        @Override
         public int value() {
             return value;
         }
 
-        public BindingState state() {
+        @Override
+        public BindingState<Buffer.Type, Buffer> state() {
             return state;
         }
 
@@ -83,8 +86,6 @@ public interface Buffer extends Handle, Bindable<Buffer> {
             return ret;
         }
     }
-
-    Type type();
 
     DataType dataType();
 

@@ -1,13 +1,20 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.core.graphics.event.WindowRefreshListener;
 import com.vanix.easygl.core.graphics.event.WindowResizeListener;
 import com.vanix.easygl.core.graphics.gl.GlWindow;
-import com.vanix.easygl.commons.event.ListenerOperation;
+import org.lwjgl.glfw.GLFW;
 
-public interface Window extends Bindable<Window> {
+public interface Window extends Bindable<BindTarget.Default<Window>, Window> {
+    BindTarget.Default<Window> Target = new BindTarget.Default<>(
+            BindingState.<BindTarget.Default<Window>, Window>ofLong("Window", GLFW::glfwMakeContextCurrent)
+    );
 
-    long nativeHandle();
+    @Override
+    default int handle() {
+        throw new UnsupportedOperationException();
+    }
 
     int width();
 
@@ -28,8 +35,6 @@ public interface Window extends Bindable<Window> {
     Window swapBuffers();
 
     Window pollEvents();
-
-    void dispose();
 
     static Window of(int width, int height, String title) {
         return new GlWindow(width, height, title);

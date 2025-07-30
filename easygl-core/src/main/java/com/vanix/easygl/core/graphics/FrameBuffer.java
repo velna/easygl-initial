@@ -5,21 +5,29 @@ import com.vanix.easygl.core.graphics.gl.GlFrameBuffer;
 import org.joml.Vector4f;
 import org.joml.Vector4i;
 
-public interface FrameBuffer extends Bindable<FrameBuffer>, Handle {
+public interface FrameBuffer extends Bindable<FrameBuffer.Type, FrameBuffer>, Handle {
 
-    BindingState State = new BindingState("FrameBuffer");
+    enum Type implements BindTarget<FrameBuffer.Type, FrameBuffer> {
+        FrameBuffer(GLC.GL_FRAMEBUFFER),
+        ReadFrameBuffer(GLC.GL_READ_FRAMEBUFFER),
+        DrawFrameBuffer(GLC.GL_DRAW_FRAMEBUFFER);
 
-    enum Type {
-        FrameBuffer(GLC.GL_FRAMEBUFFER);
+        private final int target;
+        private final BindingState<FrameBuffer.Type, FrameBuffer> state;
 
-        private final int value;
-
-        private Type(int value) {
-            this.value = value;
+        Type(int target) {
+            this.target = target;
+            state = BindingState.ofInt("FrameBuffer", h -> GLC.glBindFramebuffer(target, h));
         }
 
+        @Override
         public int value() {
-            return value;
+            return target;
+        }
+
+        @Override
+        public BindingState<FrameBuffer.Type, FrameBuffer> state() {
+            return state;
         }
     }
 
@@ -70,12 +78,6 @@ public interface FrameBuffer extends Bindable<FrameBuffer>, Handle {
             return value;
         }
     }
-
-    FrameBuffer readOnly();
-
-    FrameBuffer writeOnly();
-
-    FrameBuffer readWrite();
 
     default FrameBuffer attach(Attachment attachment, Texture2D texture2D) {
         return attach(attachment, texture2D, 0);

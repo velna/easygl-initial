@@ -16,7 +16,7 @@ public class GlKeyboard implements Keyboard {
 
 	public GlKeyboard(Window window) {
 		this.window = window;
-		GLFW.glfwSetKeyCallback(window.nativeHandle(), this::onKey);
+		GLFW.glfwSetKeyCallback(window.longHandle(), this::onKey);
 	}
 
 	private void onKey(long window, int key, int scancode, int action, int mods) {
@@ -29,7 +29,7 @@ public class GlKeyboard implements Keyboard {
 
 	@Override
 	public boolean isKeyPressed(int key) {
-		return GLFW.glfwGetKey(window.nativeHandle(), key) == Keyboard.KEY_ACT_PRESS;
+		return GLFW.glfwGetKey(window.longHandle(), key) == Keyboard.KEY_ACT_PRESS;
 	}
 
 	@Override

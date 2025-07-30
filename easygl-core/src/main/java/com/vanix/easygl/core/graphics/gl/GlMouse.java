@@ -32,8 +32,8 @@ public class GlMouse implements Mouse {
 
 	public GlMouse(Window window) {
 		this.window = window;
-		glfwSetCursorPosCallback(window.nativeHandle(), this::moveCallback);
-		glfwSetScrollCallback(window.nativeHandle(), this::scollCallback);
+		glfwSetCursorPosCallback(window.longHandle(), this::moveCallback);
+		glfwSetScrollCallback(window.longHandle(), this::scollCallback);
 		yaw.addInterceptor((oldV, newV) -> newV % 360.0f);
 	}
 
@@ -60,13 +60,13 @@ public class GlMouse implements Mouse {
 
 	@Override
 	public CursorMode getCursorMode() {
-		int mode = glfwGetInputMode(window.nativeHandle(), GLFW_CURSOR);
-		return CursorMode.valueof(mode);
+		int mode = glfwGetInputMode(window.longHandle(), GLFW_CURSOR);
+		return CursorMode.valueOf(mode);
 	}
 
 	@Override
 	public void setCursorMode(CursorMode mode) {
-		glfwSetInputMode(window.nativeHandle(), GLFW_CURSOR, mode.getValue());
+		glfwSetInputMode(window.longHandle(), GLFW_CURSOR, mode.getValue());
 	}
 
 	@Override

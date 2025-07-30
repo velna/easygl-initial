@@ -1,17 +1,17 @@
-package com.vanix.easygl.learnopengl.gettingstarted;
+package com.vanix.easygl.learnopengl.c1_gettingstarted;
 
 import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.graphics.gl.GlGraphics;
 import com.vanix.easygl.core.graphics.gl.GlWindow;
 
-public class HelloTriangle {
+public class C21HelloTriangle {
     public static void main(String[] args) {
         WindowHints.ContextVersionMajor.set(3);
         WindowHints.ContextVersionMinor.set(3);
         WindowHints.OpenGlProfile.Core.set();
 
         var window = Window.of(800, 600, "LearnOpenGL").bind();
-        window.inputCtlr().keyboard().onKey(Keyboard.KEY_ESCAPE).subscribe(HelloTriangle::processInput);
+        window.inputCtlr().keyboard().onKey(Keyboard.KEY_ESCAPE).subscribe(C21HelloTriangle::processInput);
         var graphics = new GlGraphics();
         graphics.viewPort(0, 0, window.frameBufferWidth(), window.frameBufferHeight());
 
@@ -74,7 +74,7 @@ public class HelloTriangle {
         vao.close();
         program.close();
 
-        window.dispose();
+        window.close();
         GlWindow.systemTerminate();
 
     }

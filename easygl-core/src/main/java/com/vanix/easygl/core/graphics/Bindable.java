@@ -1,36 +1,38 @@
 package com.vanix.easygl.core.graphics;
 
-import java.util.function.Consumer;
-
 import com.vanix.easygl.commons.ThrowableConsumer;
 
-public interface Bindable<T extends Bindable<T>> {
-	T bind();
+import java.util.function.Consumer;
 
-	T unbind();
+public interface Bindable<E extends BindTarget<E, T>, T extends Bindable<E, T>> extends Handle {
+    E target();
 
-	T assertBinding() throws IllegalStateException;
+    T bind();
 
-	@SuppressWarnings("unchecked")
-	default T use(Consumer<T> callback) {
-		bind();
-		try {
-			callback.accept((T) this);
-		} finally {
-			unbind();
-		}
-		return (T) this;
-	}
+    T unbind();
 
-	@SuppressWarnings("unchecked")
-	default <E extends Throwable> T useOrThrow(ThrowableConsumer<T, E> callback) throws E {
-		bind();
-		try {
-			callback.accept((T) this);
-		} finally {
-			unbind();
-		}
-		return (T) this;
-	}
+    T assertBinding() throws IllegalStateException;
+
+    @SuppressWarnings("unchecked")
+    default T use(Consumer<T> callback) {
+        bind();
+        try {
+            callback.accept((T) this);
+        } finally {
+            unbind();
+        }
+        return (T) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    default <R extends Throwable> T useOrThrow(ThrowableConsumer<T, R> callback) throws R {
+        bind();
+        try {
+            callback.accept((T) this);
+        } finally {
+            unbind();
+        }
+        return (T) this;
+    }
 
 }
