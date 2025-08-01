@@ -1,26 +1,22 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.commons.Identified;
-import com.vanix.easygl.core.graphics.gl.GLC;
-import com.vanix.easygl.core.graphics.gl.GlProgram;
-import com.vanix.easygl.core.graphics.gl.GlUniformProgram;
+import com.vanix.easygl.core.BindTarget;
+import com.vanix.easygl.core.meta.BindableMeta;
+import com.vanix.easygl.core.meta.MetaSystem;
+import com.vanix.easygl.core.util.TypeReference;
 
-public interface Program extends Bindable<BindTarget.Default<Program>, Program>, Handle, Identified<String> {
-
-    BindTarget.Default<Program> Target = new BindTarget.Default<>(
-            BindingState.<BindTarget.Default<Program>, Program>ofInt("Program", GLC::glUseProgram));
-
-    Program attach(Shader shader);
-
-    Program detach(Shader shader);
-
-    Program link() throws GraphicsException;
+public interface Program extends IProgram<Program> {
+    BindableMeta<BindTarget.Default<Program>, Program> Meta = MetaSystem.Graphics.of(Program.class, new TypeReference<>() {
+    });
 
     static Program of(String id) {
-        return new GlProgram(id);
+        return Meta.create(id);
     }
 
     static <E extends Enum<E>> UniformProgram<E> uniform(String id, Class<E> enumClass) {
-        return new GlUniformProgram<>(id, enumClass);
+        return MetaSystem.Graphics.of(UniformProgram.class,
+                        new TypeReference<BindableMeta<BindTarget.Default<UniformProgram<E>>, UniformProgram<E>>>() {
+                        })
+                .create(id, enumClass);
     }
 }

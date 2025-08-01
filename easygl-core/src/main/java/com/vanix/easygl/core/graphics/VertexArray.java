@@ -1,12 +1,16 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.core.graphics.gl.GLC;
-import com.vanix.easygl.core.graphics.gl.GlVertexArray;
+import com.vanix.easygl.core.BindTarget;
+import com.vanix.easygl.core.Bindable;
+import com.vanix.easygl.core.CloseableArray;
+import com.vanix.easygl.core.Handle;
+import com.vanix.easygl.core.meta.BindableMeta;
+import com.vanix.easygl.core.meta.MetaSystem;
+import com.vanix.easygl.core.util.TypeReference;
 
 public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, VertexArray>, Handle {
-
-    BindTarget.Default<VertexArray> Target = new BindTarget.Default<>(
-            BindingState.<BindTarget.Default<VertexArray>, VertexArray>ofInt("VertexArray", GLC::glBindVertexArray));
+    BindableMeta<BindTarget.Default<VertexArray>, VertexArray> Meta = MetaSystem.Graphics.of(VertexArray.class, new TypeReference<>() {
+    });
 
     VertexArray attributes(Buffer buffer, int... layouts);
 
@@ -23,7 +27,10 @@ public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, V
     void drawElements(DrawMode mode, Buffer vbo, Buffer ebo, int indices);
 
     static VertexArray of() {
-        return new GlVertexArray();
+        return Meta.create();
     }
 
+    static CloseableArray<VertexArray> of(int n) {
+        return Meta.createArray(n);
+    }
 }

@@ -1,20 +1,20 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.core.graphics.gl.GLC;
+import com.vanix.easygl.core.meta.MetaSystem;
 
 public enum DrawMode {
-    Points(GLC.GL_POINTS),
-    LineStrip(GLC.GL_LINE_STRIP),
-    LineLoop(GLC.GL_LINE_LOOP),
-    Lines(GLC.GL_LINES),
-    LineStripAdjacency(GLC.GL_LINE_STRIP_ADJACENCY),
-    LinesAdjacency(GLC.GL_LINES_ADJACENCY),
-    TriangleStrip(GLC.GL_TRIANGLE_STRIP),
-    TriangleFan(GLC.GL_TRIANGLE_FAN),
-    Triangles(GLC.GL_TRIANGLES),
-    TriangleStripAdjacency(GLC.GL_TRIANGLE_STRIP_ADJACENCY),
-    TrianglesAdjacency(GLC.GL_TRIANGLES_ADJACENCY),
-    Patches(GLC.GL_PATCHES);
+    Points(MetaSystem.Graphics.queryInt("POINTS")),
+    LineStrip(MetaSystem.Graphics.queryInt("LINE_STRIP")),
+    LineLoop(MetaSystem.Graphics.queryInt("LINE_LOOP")),
+    Lines(MetaSystem.Graphics.queryInt("LINES")),
+    LineStripAdjacency(MetaSystem.Graphics.queryInt("LINE_STRIP_ADJACENCY")),
+    LinesAdjacency(MetaSystem.Graphics.queryInt("LINES_ADJACENCY")),
+    TriangleStrip(MetaSystem.Graphics.queryInt("TRIANGLE_STRIP")),
+    TriangleFan(MetaSystem.Graphics.queryInt("TRIANGLE_FAN")),
+    Triangles(MetaSystem.Graphics.queryInt("TRIANGLES")),
+    TriangleStripAdjacency(MetaSystem.Graphics.queryInt("TRIANGLE_STRIP_ADJACENCY")),
+    TrianglesAdjacency(MetaSystem.Graphics.queryInt("TRIANGLES_ADJACENCY")),
+    Patches(MetaSystem.Graphics.queryInt("PATCHES"));
     private final int value;
 
     DrawMode(int value) {

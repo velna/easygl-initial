@@ -1,30 +1,27 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.core.graphics.gl.GLC;
-import com.vanix.easygl.core.graphics.feature.Blend;
-import com.vanix.easygl.core.graphics.feature.CullFace;
-import com.vanix.easygl.core.graphics.feature.Depth;
+import com.vanix.easygl.core.meta.MetaSystem;
 import org.joml.Vector4f;
 
 public interface Graphics {
 
     enum ErrorCode {
         Unknown(-1),
-        None(GLC.GL_NO_ERROR),
-        InvalidEnum(GLC.GL_INVALID_ENUM),
-        InvalidValue(GLC.GL_INVALID_VALUE),
-        InvalidOperation(GLC.GL_INVALID_OPERATION),
-        StackOverflow(GLC.GL_STACK_OVERFLOW),
-        StackUnderflow(GLC.GL_STACK_UNDERFLOW),
-        InvalidFramebufferOperation(GLC.GL_INVALID_FRAMEBUFFER_OPERATION),
-        OutOfMemory(GLC.GL_OUT_OF_MEMORY);
+        None(MetaSystem.Graphics.queryInt("NO_ERROR")),
+        InvalidEnum(MetaSystem.Graphics.queryInt("INVALID_ENUM")),
+        InvalidValue(MetaSystem.Graphics.queryInt("INVALID_VALUE")),
+        InvalidOperation(MetaSystem.Graphics.queryInt("INVALID_OPERATION")),
+        StackOverflow(MetaSystem.Graphics.queryInt("STACK_OVERFLOW")),
+        StackUnderflow(MetaSystem.Graphics.queryInt("STACK_UNDERFLOW")),
+        InvalidFramebufferOperation(MetaSystem.Graphics.queryInt("INVALID_FRAMEBUFFER_OPERATION")),
+        OutOfMemory(MetaSystem.Graphics.queryInt("OUT_OF_MEMORY"));
 
         private static final ErrorCode[] Errors = new ErrorCode[ErrorCode.values().length - 2];
 
         static {
             for (ErrorCode e : ErrorCode.values()) {
                 if (e != Unknown && e != None) {
-                    Errors[e.value - GLC.GL_INVALID_ENUM] = e;
+                    Errors[e.value - InvalidEnum.value] = e;
                 }
             }
         }
@@ -36,10 +33,10 @@ public interface Graphics {
         }
 
         public static ErrorCode of(int error) {
-            if (error == GLC.GL_NO_ERROR) {
+            if (error == None.value) {
                 return None;
             }
-            int i = error - GLC.GL_INVALID_ENUM;
+            int i = error - InvalidEnum.value;
             return i >= Errors.length || i < 0 ? Unknown : Errors[i];
         }
 
@@ -53,9 +50,9 @@ public interface Graphics {
     }
 
     enum BufferMask {
-        Color(GLC.GL_COLOR_BUFFER_BIT), //
-        Depth(GLC.GL_DEPTH_BUFFER_BIT), //
-        Stencil(GLC.GL_STENCIL_BUFFER_BIT);
+        Color(MetaSystem.Graphics.queryInt("COLOR_BUFFER_BIT")), //
+        Depth(MetaSystem.Graphics.queryInt("DEPTH_BUFFER_BIT")), //
+        Stencil(MetaSystem.Graphics.queryInt("STENCIL_BUFFER_BIT"));
 
         private final int value;
 
@@ -69,18 +66,10 @@ public interface Graphics {
     }
 
     default ErrorCode getError() {
-        return ErrorCode.of(GLC.glGetError());
+        return ErrorCode.of(MetaSystem.Graphics.getError());
     }
 
     Graphics viewPort(int x, int y, int width, int height);
-
-    default void drawTrianglesElements(int count, int offset) {
-        GLC.glDrawElements(GLC.GL_TRIANGLES, count, GLC.GL_UNSIGNED_INT, offset);
-    }
-
-    default void drawTrianglesArray(int first, int count) {
-        GLC.glDrawArrays(GLC.GL_TRIANGLES, first, count);
-    }
 
     Depth depth();
 
@@ -101,4 +90,6 @@ public interface Graphics {
     }
 
     Graphics polygonMode(PolygonFace face, PolygonMode mode);
+
+    FrameBuffer defaultFrameBuffer();
 }

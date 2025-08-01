@@ -1,11 +1,11 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.core.graphics.gl.GLC;
+import com.vanix.easygl.core.meta.MetaSystem;
 
 public enum PolygonFace {
-    Front(GLC.GL_FRONT),
-    Back(GLC.GL_BACK),
-    FrontAndBack(GLC.GL_FRONT_AND_BACK);
+    Front(MetaSystem.Graphics.queryInt("FRONT")),
+    Back(MetaSystem.Graphics.queryInt("BACK")),
+    FrontAndBack(MetaSystem.Graphics.queryInt("FRONT_AND_BACK"));
     private final int value;
 
     PolygonFace(int value) {

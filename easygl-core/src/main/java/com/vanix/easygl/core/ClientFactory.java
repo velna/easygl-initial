@@ -1,8 +1,10 @@
 package com.vanix.easygl.core;
 
-import com.vanix.easygl.core.graphics.*;
-import com.vanix.easygl.core.graphics.gl.GlGraphics;
 import com.vanix.easygl.commons.value.DoubleValue;
+import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.window.Window;
+
+import java.util.ServiceLoader;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -11,7 +13,7 @@ public class ClientFactory {
     static ClientFactory Instance = new ClientFactory();
 
     public Graphics createGraphics() {
-        return new GlGraphics();
+        return ServiceLoader.load(Graphics.class).findFirst().orElseThrow();
     }
 
     public Window createMainWindow() {

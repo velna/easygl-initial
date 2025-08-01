@@ -1,11 +1,11 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.core.graphics.gl.GLC;
+import com.vanix.easygl.core.meta.MetaSystem;
 
 public enum PolygonMode {
-    Point(GLC.GL_POINT),
-    Line(GLC.GL_LINE),
-    Fill(GLC.GL_FILL);
+    Point(MetaSystem.Graphics.queryInt("POINT")),
+    Line(MetaSystem.Graphics.queryInt("LINE")),
+    Fill(MetaSystem.Graphics.queryInt("FILL"));
     private final int value;
 
     PolygonMode(int value) {

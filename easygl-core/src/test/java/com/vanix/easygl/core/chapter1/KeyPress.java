@@ -1,8 +1,11 @@
 package com.vanix.easygl.core.chapter1;
 
 import com.vanix.easygl.core.ClientApp;
+import com.vanix.easygl.core.RenderContext;
+import com.vanix.easygl.core.Renderer;
 import com.vanix.easygl.core.graphics.*;
-import com.vanix.easygl.core.graphics.event.KeyboardListener;
+import com.vanix.easygl.core.window.event.KeyboardListener;
+import com.vanix.easygl.core.window.Keyboard;
 import org.joml.Vector4f;
 
 public class KeyPress implements Renderer<ClientApp, RenderContext>, KeyboardListener {
@@ -51,7 +54,7 @@ public class KeyPress implements Renderer<ClientApp, RenderContext>, KeyboardLis
 
     @Override
     public void render(RenderContext context) throws GraphicsException {
-        FrameBuffer.defaultBuffer().clearColor(DrawBufferIndex.Index0, new Vector4f(0.0f));
+        context.graphics().defaultFrameBuffer().clearColor(DrawBufferIndex.Index0, new Vector4f(0.0f));
         program.bind();
         vao.bind().drawArray(DrawMode.Triangles, vbo);
     }

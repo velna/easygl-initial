@@ -3,7 +3,7 @@ package com.vanix.easygl.core.graphics;
 
 import java.nio.FloatBuffer;
 
-public interface UniformProgram<E extends Enum<E>> extends Program {
+public interface UniformProgram<E extends Enum<E>> extends IProgram<UniformProgram<E>> {
 
     @Override
     UniformProgram<E> bind();

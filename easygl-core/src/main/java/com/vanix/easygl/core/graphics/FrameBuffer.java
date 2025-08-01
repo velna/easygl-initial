@@ -1,23 +1,27 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.core.graphics.gl.GLC;
-import com.vanix.easygl.core.graphics.gl.GlFrameBuffer;
+import com.vanix.easygl.core.*;
+import com.vanix.easygl.core.meta.BindableMeta;
+import com.vanix.easygl.core.meta.MetaSystem;
+import com.vanix.easygl.core.util.TypeReference;
 import org.joml.Vector4f;
 import org.joml.Vector4i;
 
 public interface FrameBuffer extends Bindable<FrameBuffer.Type, FrameBuffer>, Handle {
+    BindableMeta<Type, FrameBuffer> Meta = MetaSystem.Graphics.of(FrameBuffer.class, new TypeReference<>() {
+    });
 
-    enum Type implements BindTarget<FrameBuffer.Type, FrameBuffer> {
-        FrameBuffer(GLC.GL_FRAMEBUFFER),
-        ReadFrameBuffer(GLC.GL_READ_FRAMEBUFFER),
-        DrawFrameBuffer(GLC.GL_DRAW_FRAMEBUFFER);
+    enum Type implements BindTarget<Type, FrameBuffer> {
+        FrameBuffer(MetaSystem.Graphics.queryInt("FRAMEBUFFER")),
+        ReadFrameBuffer(MetaSystem.Graphics.queryInt("READ_FRAMEBUFFER")),
+        DrawFrameBuffer(MetaSystem.Graphics.queryInt("DRAW_FRAMEBUFFER"));
 
         private final int target;
-        private final BindingState<FrameBuffer.Type, FrameBuffer> state;
+        private final BindingState<Type, FrameBuffer> state;
 
         Type(int target) {
             this.target = target;
-            state = BindingState.ofInt("FrameBuffer", h -> GLC.glBindFramebuffer(target, h));
+            state = Meta.newBindingState(name(), this);
         }
 
         @Override
@@ -32,41 +36,41 @@ public interface FrameBuffer extends Bindable<FrameBuffer.Type, FrameBuffer>, Ha
     }
 
     enum Attachment {
-        Color0(GLC.GL_COLOR_ATTACHMENT0),
-        Color1(GLC.GL_COLOR_ATTACHMENT1),
-        Color2(GLC.GL_COLOR_ATTACHMENT2),
-        Color3(GLC.GL_COLOR_ATTACHMENT3),
-        Color4(GLC.GL_COLOR_ATTACHMENT4),
-        Color5(GLC.GL_COLOR_ATTACHMENT5),
-        Color6(GLC.GL_COLOR_ATTACHMENT6),
-        Color7(GLC.GL_COLOR_ATTACHMENT7),
-        Color8(GLC.GL_COLOR_ATTACHMENT8),
-        Color9(GLC.GL_COLOR_ATTACHMENT9),
-        Color10(GLC.GL_COLOR_ATTACHMENT10),
-        Color11(GLC.GL_COLOR_ATTACHMENT11),
-        Color12(GLC.GL_COLOR_ATTACHMENT12),
-        Color13(GLC.GL_COLOR_ATTACHMENT13),
-        Color14(GLC.GL_COLOR_ATTACHMENT14),
-        Color15(GLC.GL_COLOR_ATTACHMENT15),
-        Color16(GLC.GL_COLOR_ATTACHMENT16),
-        Color17(GLC.GL_COLOR_ATTACHMENT17),
-        Color18(GLC.GL_COLOR_ATTACHMENT18),
-        Color19(GLC.GL_COLOR_ATTACHMENT19),
-        Color20(GLC.GL_COLOR_ATTACHMENT20),
-        Color21(GLC.GL_COLOR_ATTACHMENT21),
-        Color22(GLC.GL_COLOR_ATTACHMENT22),
-        Color23(GLC.GL_COLOR_ATTACHMENT23),
-        Color24(GLC.GL_COLOR_ATTACHMENT24),
-        Color25(GLC.GL_COLOR_ATTACHMENT25),
-        Color26(GLC.GL_COLOR_ATTACHMENT26),
-        Color27(GLC.GL_COLOR_ATTACHMENT27),
-        Color28(GLC.GL_COLOR_ATTACHMENT28),
-        Color29(GLC.GL_COLOR_ATTACHMENT29),
-        Color30(GLC.GL_COLOR_ATTACHMENT30),
-        Color31(GLC.GL_COLOR_ATTACHMENT31),
-        Depth(GLC.GL_DEPTH_ATTACHMENT),
-        Stencil(GLC.GL_STENCIL_ATTACHMENT),
-        DepthStencil(GLC.GL_DEPTH_STENCIL_ATTACHMENT);
+        Color0(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT0")),
+        Color1(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT1")),
+        Color2(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT2")),
+        Color3(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT3")),
+        Color4(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT4")),
+        Color5(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT5")),
+        Color6(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT6")),
+        Color7(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT7")),
+        Color8(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT8")),
+        Color9(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT9")),
+        Color10(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT10")),
+        Color11(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT11")),
+        Color12(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT12")),
+        Color13(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT13")),
+        Color14(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT14")),
+        Color15(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT15")),
+        Color16(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT16")),
+        Color17(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT17")),
+        Color18(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT18")),
+        Color19(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT19")),
+        Color20(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT20")),
+        Color21(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT21")),
+        Color22(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT22")),
+        Color23(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT23")),
+        Color24(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT24")),
+        Color25(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT25")),
+        Color26(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT26")),
+        Color27(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT27")),
+        Color28(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT28")),
+        Color29(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT29")),
+        Color30(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT30")),
+        Color31(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT31")),
+        Depth(MetaSystem.Graphics.queryInt("DEPTH_ATTACHMENT")),
+        Stencil(MetaSystem.Graphics.queryInt("STENCIL_ATTACHMENT")),
+        DepthStencil(MetaSystem.Graphics.queryInt("DEPTH_STENCIL_ATTACHMENT"));
 
         private final int value;
 
@@ -102,10 +106,11 @@ public interface FrameBuffer extends Bindable<FrameBuffer.Type, FrameBuffer>, Ha
     FrameBuffer clearStencil(int value);
 
     static FrameBuffer of() {
-        return new GlFrameBuffer();
+        return Meta.create(Type.FrameBuffer);
     }
 
-    static FrameBuffer defaultBuffer() {
-        return GlFrameBuffer.DefaultFrameBuffer;
+    static CloseableArray<FrameBuffer> of(int n) {
+        return Meta.createArray(n, Type.FrameBuffer);
     }
+
 }

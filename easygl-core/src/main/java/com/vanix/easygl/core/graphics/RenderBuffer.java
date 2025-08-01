@@ -1,18 +1,20 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.core.graphics.gl.GLC;
-import com.vanix.easygl.core.graphics.gl.GlRenderBuffer;
+import com.vanix.easygl.core.BindTarget;
+import com.vanix.easygl.core.Bindable;
+import com.vanix.easygl.core.Handle;
+import com.vanix.easygl.core.meta.BindableMeta;
+import com.vanix.easygl.core.meta.MetaSystem;
+import com.vanix.easygl.core.util.TypeReference;
 
 public interface RenderBuffer extends Bindable<BindTarget.Default<RenderBuffer>, RenderBuffer>, Handle {
-
-    BindTarget.Default<RenderBuffer> Target = new BindTarget.Default<>(
-            BindingState.<BindTarget.Default<RenderBuffer>, RenderBuffer>ofInt("RenderBuffer",
-                    h -> GLC.glBindRenderbuffer(GLC.GL_RENDERBUFFER, h)));
+    BindableMeta<BindTarget.Default<RenderBuffer>, RenderBuffer> Meta = MetaSystem.Graphics.of(RenderBuffer.class, new TypeReference<>() {
+    });
 
     enum Format {
-        Color(GLC.GL_COLOR_RENDERABLE),
-        Depth(GLC.GL_DEPTH_RENDERABLE),
-        Stencil(GLC.GL_STENCIL_RENDERABLE);
+        Color(MetaSystem.Graphics.queryInt("COLOR_RENDERABLE")),
+        Depth(MetaSystem.Graphics.queryInt("DEPTH_RENDERABLE")),
+        Stencil(MetaSystem.Graphics.queryInt("STENCIL_RENDERABLE"));
         private final int value;
 
         Format(int value) {
@@ -22,7 +24,6 @@ public interface RenderBuffer extends Bindable<BindTarget.Default<RenderBuffer>,
         public int value() {
             return value;
         }
-
     }
 
     RenderBuffer storage(Format internalFormat, int width, int height);
@@ -30,6 +31,6 @@ public interface RenderBuffer extends Bindable<BindTarget.Default<RenderBuffer>,
     RenderBuffer storageMultiSample(int samples, Format internalFormat, int width, int height);
 
     static RenderBuffer of() {
-        return new GlRenderBuffer();
+        return Meta.create();
     }
 }

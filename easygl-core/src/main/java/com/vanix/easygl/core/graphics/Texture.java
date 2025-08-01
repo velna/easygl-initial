@@ -1,14 +1,17 @@
 package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.Identified;
-import com.vanix.easygl.core.graphics.gl.GLC;
-import com.vanix.easygl.core.graphics.gl.GlCompareFunc;
-import com.vanix.easygl.core.graphics.gl.GlTexture2D;
-import com.vanix.easygl.core.graphics.gl.GlTextureCube;
-import org.lwjgl.system.MemoryUtil;
+import com.vanix.easygl.core.BindTarget;
+import com.vanix.easygl.core.Bindable;
+import com.vanix.easygl.core.BindingState;
+import com.vanix.easygl.core.Handle;
+import com.vanix.easygl.core.meta.BindableMeta;
+import com.vanix.easygl.core.meta.MetaSystem;
+import com.vanix.easygl.core.util.TypeReference;
 
-@SuppressWarnings("unchecked")
 public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>, T>, Handle, Identified<String> {
+    BindableMeta<Texture.Unit, Texture.Unit> UnitMeta = MetaSystem.Graphics.of(Texture.Unit.class, new TypeReference<>() {
+    });
 
     enum Unit implements Bindable<Unit, Unit>, BindTarget<Unit, Unit> {
         // @formatter:off
@@ -17,17 +20,18 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
 		U16, U17, U18, U19, U20, U21, U22, U23,
 		U24, U25, U26, U27, U28, U29, U30, U31;
 	    // @formatter:on
+        private final BindingState<Unit, Unit> state = UnitMeta.newBindingState("TextureUnit", this);
 
-        private static final BindingState<Unit, Unit> state = BindingState.ofInt("TextureUnit", GLC::glActiveTexture, GLC.GL_TEXTURE0);
+        private final int value = (int) state.unbindValue() + ordinal();
 
         @Override
-        public int handle() {
-            return this.ordinal() + GLC.GL_TEXTURE0;
+        public long handle() {
+            return value;
         }
 
         @Override
         public int value() {
-            return handle();
+            return value;
         }
 
         @Override
@@ -52,9 +56,8 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
         }
 
         @Override
-        public Unit assertBinding() throws IllegalStateException {
+        public void assertBinding() throws IllegalStateException {
             state.assertBinding(this.ordinal());
-            return this;
         }
 
         @Override
@@ -63,23 +66,30 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
         }
     }
 
-    class Type<T extends Texture<T>> implements BindTarget<Type<T>, T> {
-        public static final Type<?> T1D = new Type<>("TEXTURE_1D", GLC.GL_TEXTURE_1D);
-        public static final Type<Texture2D> T2D = new Type<>("TEXTURE_2D", GLC.GL_TEXTURE_2D);
-        public static final Type<?> T3D = new Type<>("TEXTURE_3D", GLC.GL_TEXTURE_3D);
-        public static final Type<?> T1DArray = new Type<>("TEXTURE_1D_ARRAY", GLC.GL_TEXTURE_1D_ARRAY);
-        public static final Type<?> T2DArray = new Type<>("TEXTURE_2D_ARRAY", GLC.GL_TEXTURE_2D_ARRAY);
-        public static final Type<?> Rectangle = new Type<>("TEXTURE_RECTANGLE", GLC.GL_TEXTURE_RECTANGLE);
-        public static final Type<TextureCube> CubeMap = new Type<>("TEXTURE_CUBE_MAP", GLC.GL_TEXTURE_CUBE_MAP);
-        public static final Type<?> T2DMultisample = new Type<>("TEXTURE_2D_MULTISAMPLE", GLC.GL_TEXTURE_2D_MULTISAMPLE);
-        public static final Type<?> T2DMultisampleArray = new Type<>("TEXTURE_2D_MULTISAMPLE_ARRAY", GLC.GL_TEXTURE_2D_MULTISAMPLE_ARRAY);
+    class Type<T extends Texture<T>> implements BindTarget<Type<T>, T>, Identified<String> {
+        //        public static final Type<?> T1D = new Type<>("TEXTURE_1D", GLC.GL_TEXTURE_1D);
+        public static final Type<Texture2D> T2D = new Type<>("TEXTURE_2D", MetaSystem.Graphics.queryInt("TEXTURE_2D"), Texture2D.Meta);
+        //        public static final Type<?> T3D = new Type<>("TEXTURE_3D", GLC.GL_TEXTURE_3D);
+//        public static final Type<?> T1DArray = new Type<>("TEXTURE_1D_ARRAY", GLC.GL_TEXTURE_1D_ARRAY);
+//        public static final Type<?> T2DArray = new Type<>("TEXTURE_2D_ARRAY", GLC.GL_TEXTURE_2D_ARRAY);
+//        public static final Type<?> Rectangle = new Type<>("TEXTURE_RECTANGLE", GLC.GL_TEXTURE_RECTANGLE);
+        public static final Type<TextureCube> CubeMap = new Type<>("TEXTURE_CUBE_MAP", MetaSystem.Graphics.queryInt("TEXTURE_CUBE_MAP"), TextureCube.Meta);
+//        public static final Type<?> T2DMultisample = new Type<>("TEXTURE_2D_MULTISAMPLE", GLC.GL_TEXTURE_2D_MULTISAMPLE);
+//        public static final Type<?> T2DMultisampleArray = new Type<>("TEXTURE_2D_MULTISAMPLE_ARRAY", GLC.GL_TEXTURE_2D_MULTISAMPLE_ARRAY);
 
         private final int value;
+        private final String id;
         private final BindingState<Type<T>, T> state;
 
-        private Type(String id, int value) {
+        private Type(String id, int value, BindableMeta<Type<T>, T> meta) {
+            this.id = id;
             this.value = value;
-            state = BindingState.ofInt(id, h -> GLC.glBindTexture(value, h));
+            this.state = meta.newBindingState(id, this);
+        }
+
+        @Override
+        public String id() {
+            return id;
         }
 
         @Override
@@ -94,12 +104,11 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
     }
 
     enum MagFilter {
-        Nearest(GLC.GL_NEAREST),
-        Linear(GLC.GL_LINEAR);
+        Nearest(MetaSystem.Graphics.queryInt("NEAREST")), Linear(MetaSystem.Graphics.queryInt("LINEAR"));
 
         private final int value;
 
-        private MagFilter(int value) {
+        MagFilter(int value) {
             this.value = value;
         }
 
@@ -109,12 +118,12 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
     }
 
     enum Swizzle {
-        Red(GLC.GL_RED),
-        Green(GLC.GL_GREEN),
-        Blue(GLC.GL_BLUE),
-        Alpha(GLC.GL_ALPHA),
-        Zero(GLC.GL_ZERO),
-        One(GLC.GL_ONE);
+        Red(MetaSystem.Graphics.queryInt("RED")),
+        Green(MetaSystem.Graphics.queryInt("GREEN")),
+        Blue(MetaSystem.Graphics.queryInt("BLUE")),
+        Alpha(MetaSystem.Graphics.queryInt("ALPHA")),
+        Zero(MetaSystem.Graphics.queryInt("ZERO")),
+        One(MetaSystem.Graphics.queryInt("ONE"));
 
         private final int value;
 
@@ -128,10 +137,10 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
     }
 
     enum Wrap {
-        ClampToEdge(GLC.GL_CLAMP_TO_EDGE),
-        ClampToBorder(GLC.GL_CLAMP_TO_BORDER),
-        MirroredRepeat(GLC.GL_MIRRORED_REPEAT),
-        Repeat(GLC.GL_REPEAT);
+        ClampToEdge(MetaSystem.Graphics.queryInt("CLAMP_TO_EDGE")),
+        ClampToBorder(MetaSystem.Graphics.queryInt("CLAMP_TO_BORDER")),
+        MirroredRepeat(MetaSystem.Graphics.queryInt("MIRRORED_REPEAT")),
+        Repeat(MetaSystem.Graphics.queryInt("REPEAT"));
 
         private final int value;
 
@@ -145,12 +154,12 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
     }
 
     enum MinFilter {
-        Nearest(GLC.GL_NEAREST),
-        Linear(GLC.GL_LINEAR),
-        NearestMipmapNearest(GLC.GL_NEAREST_MIPMAP_NEAREST),
-        LinearMipmapNearest(GLC.GL_LINEAR_MIPMAP_NEAREST),
-        NearestMipmapLinear(GLC.GL_NEAREST_MIPMAP_LINEAR),
-        LinearMipmapLinear(GLC.GL_LINEAR_MIPMAP_LINEAR);
+        Nearest(MetaSystem.Graphics.queryInt("NEAREST")),
+        Linear(MetaSystem.Graphics.queryInt("LINEAR")),
+        NearestMipmapNearest(MetaSystem.Graphics.queryInt("NEAREST_MIPMAP_NEAREST")),
+        LinearMipmapNearest(MetaSystem.Graphics.queryInt("LINEAR_MIPMAP_NEAREST")),
+        NearestMipmapLinear(MetaSystem.Graphics.queryInt("NEAREST_MIPMAP_LINEAR")),
+        LinearMipmapLinear(MetaSystem.Graphics.queryInt("LINEAR_MIPMAP_LINEAR"));
 
         private final int value;
 
@@ -163,153 +172,53 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
         }
     }
 
-    default T allocate(int width, int height, PixelFormat format) {
-        assertBinding();
-        GLC.glTexImage2D(target().value(), 0, format.value(), width, height, 0, format.value(), GLC.GL_UNSIGNED_BYTE,
-                MemoryUtil.NULL);
-        GLC.checkError();
-        return (T) this;
-    }
+    T allocate(int width, int height, PixelFormat format);
 
-    default T baseLevel(int value) {
-        assertBinding();
-        GLC.glTexParameteri(target().value(), GLC.GL_TEXTURE_BASE_LEVEL, value);
-        GLC.checkError();
-        return (T) this;
-    }
+    T baseLevel(int value);
 
-    default T maxLevel(int value) {
-        assertBinding();
-        GLC.glTexParameteri(target().value(), GLC.GL_TEXTURE_MAX_LEVEL, value);
-        GLC.checkError();
-        return (T) this;
-    }
+    T maxLevel(int value);
 
-    default T compareFunc(GlCompareFunc func) {
-        assertBinding();
-        GLC.glTexParameteri(target().value(), GLC.GL_TEXTURE_COMPARE_FUNC, func.value());
-        GLC.checkError();
-        return (T) this;
-    }
+    T compareFunc(CompareFunc func);
 
-    default T compareModeRefToTexture() {
-        assertBinding();
-        GLC.glTexParameteri(target().value(), GLC.GL_TEXTURE_COMPARE_MODE, GLC.GL_COMPARE_REF_TO_TEXTURE);
-        GLC.checkError();
-        return (T) this;
-    }
+    T compareModeRefToTexture();
 
-    default T compareModeNone() {
-        assertBinding();
-        GLC.glTexParameteri(target().value(), GLC.GL_TEXTURE_COMPARE_MODE, GLC.GL_NONE);
-        GLC.checkError();
-        return (T) this;
-    }
+    T compareModeNone();
 
-    default T loadBias(float value) {
-        assertBinding();
-        GLC.glTexParameterf(target().value(), GLC.GL_TEXTURE_LOD_BIAS, value);
-        GLC.checkError();
-        return (T) this;
-    }
+    T loadBias(float value);
 
-    default T minFilter(MinFilter mf) {
-        assertBinding();
-        GLC.glTexParameteri(target().value(), GLC.GL_TEXTURE_MIN_FILTER, mf.value());
-        GLC.checkError();
-        return (T) this;
-    }
+    T minFilter(MinFilter mf);
 
-    default T magFilter(MagFilter mf) {
-        assertBinding();
-        GLC.glTexParameteri(target().value(), GLC.GL_TEXTURE_MAG_FILTER, mf.value());
-        GLC.checkError();
-        return (T) this;
-    }
+    T magFilter(MagFilter mf);
 
-    default T minLoad(float value) {
-        assertBinding();
-        GLC.glTexParameterf(target().value(), GLC.GL_TEXTURE_MIN_LOD, value);
-        GLC.checkError();
-        return (T) this;
-    }
+    T minLoad(float value);
 
-    default T maxLoad(float value) {
-        assertBinding();
-        GLC.glTexParameterf(target().value(), GLC.GL_TEXTURE_MAX_LOD, value);
-        GLC.checkError();
-        return (T) this;
-    }
+    T maxLoad(float value);
 
-    default T swizzleR(Swizzle swizzle) {
-        assertBinding();
-        GLC.glTexParameteri(target().value(), GLC.GL_TEXTURE_SWIZZLE_R, swizzle.value());
-        GLC.checkError();
-        return (T) this;
-    }
+    T swizzleR(Swizzle swizzle);
 
-    default T swizzleG(Swizzle swizzle) {
-        assertBinding();
-        GLC.glTexParameteri(target().value(), GLC.GL_TEXTURE_SWIZZLE_G, swizzle.value());
-        GLC.checkError();
-        return (T) this;
-    }
+    T swizzleG(Swizzle swizzle);
 
-    default T swizzleB(Swizzle swizzle) {
-        assertBinding();
-        GLC.glTexParameteri(target().value(), GLC.GL_TEXTURE_SWIZZLE_B, swizzle.value());
-        GLC.checkError();
-        return (T) this;
-    }
+    T swizzleB(Swizzle swizzle);
 
-    default T swizzleA(Swizzle swizzle) {
-        assertBinding();
-        GLC.glTexParameteri(target().value(), GLC.GL_TEXTURE_SWIZZLE_A, swizzle.value());
-        GLC.checkError();
-        return (T) this;
-    }
+    T swizzleA(Swizzle swizzle);
 
     default T swizzle(Swizzle r, Swizzle g, Swizzle b, Swizzle a) {
-        swizzleR(r);
-        swizzleG(g);
-        swizzleB(b);
-        swizzleA(a);
-        return (T) this;
+        return swizzleR(r).swizzleG(g).swizzleB(b).swizzleA(a);
     }
 
-    default T wrapS(Wrap wrap) {
-        assertBinding();
-        GLC.glTexParameteri(target().value(), GLC.GL_TEXTURE_WRAP_S, wrap.value());
-        GLC.checkError();
-        return (T) this;
-    }
+    T wrapS(Wrap wrap);
 
-    default T wrapT(Wrap wrap) {
-        assertBinding();
-        GLC.glTexParameteri(target().value(), GLC.GL_TEXTURE_WRAP_T, wrap.value());
-        GLC.checkError();
-        return (T) this;
-    }
+    T wrapT(Wrap wrap);
 
-    default T wrapR(Wrap wrap) {
-        assertBinding();
-        GLC.glTexParameteri(target().value(), GLC.GL_TEXTURE_WRAP_R, wrap.value());
-        GLC.checkError();
-        return (T) this;
-    }
+    T wrapR(Wrap wrap);
 
-    default T generateMipmap() {
-        assertBinding();
-        GLC.glGenerateMipmap(target().value());
-        GLC.checkError();
-        return (T) this;
-    }
+    T generateMipmap();
 
     static Texture2D of2D(String id) {
-        return new GlTexture2D(id);
+        return Texture2D.Meta.create(id);
     }
 
     static TextureCube ofCube(String id) {
-        return new GlTextureCube(id);
+        return TextureCube.Meta.create(id);
     }
 }

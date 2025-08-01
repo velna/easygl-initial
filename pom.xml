@@ -9,7 +9,9 @@
 		<module>easygl-commons</module>
 		<module>easygl-core</module>
 		<module>learnopengl</module>
-	</modules>
+        <module>easygl-opengl</module>
+        <module>easygl-glfw</module>
+    </modules>
 	<properties>
 		<project.encoding>UTF-8</project.encoding>
 		<project.java.version>21</project.java.version>
@@ -91,6 +93,16 @@
 			<dependency>
 				<groupId>com.vanix.easygl</groupId>
 				<artifactId>easygl-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.vanix.easygl</groupId>
+				<artifactId>easygl-opengl</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.vanix.easygl</groupId>
+				<artifactId>easygl-glfw</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>

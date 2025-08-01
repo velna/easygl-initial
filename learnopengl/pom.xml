@@ -13,7 +13,11 @@
     <dependencies>
         <dependency>
             <groupId>com.vanix.easygl</groupId>
-            <artifactId>easygl-core</artifactId>
+            <artifactId>easygl-opengl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.vanix.easygl</groupId>
+            <artifactId>easygl-glfw</artifactId>
         </dependency>
     </dependencies>
 </project>

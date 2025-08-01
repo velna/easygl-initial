@@ -1,15 +1,19 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.core.graphics.gl.GLC;
+import com.vanix.easygl.core.BindTarget;
+import com.vanix.easygl.core.Bindable;
+import com.vanix.easygl.core.BindingState;
+import com.vanix.easygl.core.Handle;
+import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface Query extends Handle, Bindable<Query.Type, Query> {
     enum Type implements BindTarget<Type, Query> {
-        SamplesPassed(GLC.GL_SAMPLES_PASSED),
-        AnySamplesPassed(GLC.GL_ANY_SAMPLES_PASSED),
-        AnySamplesPassedConservative(GLC.GL_ANY_SAMPLES_PASSED_CONSERVATIVE),
-        PrimitivesGenerated(GLC.GL_PRIMITIVES_GENERATED),
-        TransformFeedbackPrimitivesWritten(GLC.GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN),
-        TimeElapsed(GLC.GL_TIME_ELAPSED);
+        SamplesPassed(MetaSystem.Graphics.queryInt("SAMPLES_PASSED")),
+        AnySamplesPassed(MetaSystem.Graphics.queryInt("ANY_SAMPLES_PASSED")),
+        AnySamplesPassedConservative(MetaSystem.Graphics.queryInt("ANY_SAMPLES_PASSED_CONSERVATIVE")),
+        PrimitivesGenerated(MetaSystem.Graphics.queryInt("PRIMITIVES_GENERATED")),
+        TransformFeedbackPrimitivesWritten(MetaSystem.Graphics.queryInt("TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN")),
+        TimeElapsed(MetaSystem.Graphics.queryInt("TIME_ELAPSED"));
         private final int value;
 
         Type(int value) {
