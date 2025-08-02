@@ -59,7 +59,6 @@ public class DefaultClientApp implements ClientApp {
 
     protected void initGraphics() throws GraphicsException {
         log.info("Client application startup.");
-        clientFactory.initWindowSystem();
         graphics = clientFactory.createGraphics();
         window = clientFactory.createMainWindow().bind();
         graphics.viewPort(0, 0, window.frameBufferWidth(), window.frameBufferHeight());
@@ -110,7 +109,6 @@ public class DefaultClientApp implements ClientApp {
         if (window != null) {
             window.close();
         }
-        clientFactory.terminateWindowSystem();
         log.info("Client application shutdown.");
     }
 

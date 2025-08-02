@@ -6,14 +6,13 @@ import com.vanix.easygl.commons.event.ListenerSupport;
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.BindingState;
-import com.vanix.easygl.core.window.event.WindowRefreshListener;
-import com.vanix.easygl.core.window.event.WindowResizeListener;
 import com.vanix.easygl.core.window.InputController;
 import com.vanix.easygl.core.window.Window;
+import com.vanix.easygl.core.window.event.WindowRefreshListener;
+import com.vanix.easygl.core.window.event.WindowResizeListener;
 import lombok.extern.slf4j.Slf4j;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
@@ -51,8 +50,6 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
         this.height = (Integer) args[1];
         this.title = (String) args[2];
         bind();
-        //FIXME:
-        GL.createCapabilities();
         var prevCallback = GLFW.glfwSetFramebufferSizeCallback(handle(), this::onWindowResized);
         if (prevCallback != null) {
             prevCallback.close();

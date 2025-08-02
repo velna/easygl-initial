@@ -4,6 +4,7 @@ import com.vanix.easygl.core.util.TypeReference;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 public abstract class AbstractMetaService implements MetaService {
@@ -23,5 +24,13 @@ public abstract class AbstractMetaService implements MetaService {
             case Object obj -> (T) obj;
             case null -> throw new IllegalArgumentException("Unknown type: " + key.getName());
         };
+    }
+
+    protected Optional<Integer> queryStaticIntField(Class<?> type, String fieldPrefix, String id) {
+        try {
+            return Optional.of(type.getField(fieldPrefix + id).getInt(null));
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            return Optional.empty();
+        }
     }
 }

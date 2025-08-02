@@ -9,7 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>easygl-glfw</artifactId>
+    <artifactId>easygl-stb</artifactId>
 
     <dependencies>
         <dependency>
@@ -36,11 +36,11 @@
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-glfw</artifactId>
+            <artifactId>lwjgl-stb</artifactId>
         </dependency>
         <dependency>
             <groupId>org.lwjgl</groupId>
-            <artifactId>lwjgl-glfw</artifactId>
+            <artifactId>lwjgl-stb</artifactId>
             <classifier>${lwjgl.natives}</classifier>
         </dependency>
     </dependencies>

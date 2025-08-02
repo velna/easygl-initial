@@ -8,7 +8,7 @@ import com.vanix.easygl.core.util.LongBiConsumer;
 import java.util.Objects;
 import java.util.function.Function;
 
-public class LongBindableMeta<E extends BindTarget<E, T>, T extends Bindable<E, T>> extends AbstractHandleMeta<T> implements BindableMeta<E, T> {
+public class LongBindableMeta<E extends BindTarget<E, T>, T extends Bindable<E, T>> extends DefaultMeta<T> implements BindableMeta<E, T> {
     private final LongBiConsumer bind;
     private final LongBiConsumer unbind;
     private final long unbindValue;

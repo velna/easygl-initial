@@ -1,13 +1,14 @@
 package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.core.BindTarget;
-import com.vanix.easygl.core.meta.*;
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.meta.*;
 
 import java.lang.annotation.ElementType;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+@SystemName("Graphics")
 public class GlMetaService extends AbstractMetaService {
 
     static final BindableMeta<Buffer.Type, Buffer> BufferMeta = new IntBindableMeta<>(
@@ -96,17 +97,8 @@ public class GlMetaService extends AbstractMetaService {
     }
 
     @Override
-    public String system() {
-        return "Graphics";
-    }
-
-    @Override
     public int queryInt(String id) {
-        try {
-            return GLX.class.getField("GL_" + id).getInt(null);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new IllegalArgumentException("No constance of id: " + id);
-        }
+        return queryStaticIntField(GLX.class, "GL_", id).orElseThrow();
     }
 
     @Override

@@ -1,25 +1,40 @@
 package com.vanix.easygl.glfw;
 
+import com.vanix.easygl.core.BindTarget;
+import com.vanix.easygl.core.graphics.GraphicsException;
 import com.vanix.easygl.core.meta.AbstractMetaService;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.LongBindableMeta;
-import com.vanix.easygl.core.BindTarget;
+import com.vanix.easygl.core.meta.SystemName;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHint;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.function.Function;
 
+import static org.lwjgl.glfw.GLFW.*;
+
+@SystemName("Window")
 public class GlfwMetaService extends AbstractMetaService {
     static final BindableMeta<BindTarget.Default<Window>, Window> WindowMeta = new LongBindableMeta<>(
             GlWindow::new,
-            (target, h) -> GLFW.glfwMakeContextCurrent(h),
-            (target, h) -> GLFW.glfwMakeContextCurrent(h),
+            (target, h) -> glfwMakeContextCurrent(h),
+            (target, h) -> glfwMakeContextCurrent(h),
             0L
     );
 
     public GlfwMetaService() {
-        GLFW.glfwInit();
+        if (!glfwInit()) {
+            throw new GraphicsException("glfwInit error.");
+        }
+        glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
+        glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+
         register(Window.class, WindowMeta);
         register(WindowHint.IntHint.class,
                 (Function<Object[], ?>) args -> new GlWindowHint.GlIntHint((Integer) args[0]));
@@ -30,17 +45,8 @@ public class GlfwMetaService extends AbstractMetaService {
     }
 
     @Override
-    public String system() {
-        return "Window";
-    }
-
-    @Override
     public int queryInt(String id) {
-        try {
-            return GLFW.class.getField("GLFW_" + id).getInt(null);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new IllegalArgumentException("No constance of id: " + id);
-        }
+        return queryStaticIntField(GLFW.class, "GLFW_", id).orElseThrow();
     }
 
     @Override

@@ -19,5 +19,9 @@
             <groupId>com.vanix.easygl</groupId>
             <artifactId>easygl-glfw</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.vanix.easygl</groupId>
+            <artifactId>easygl-stb</artifactId>
+        </dependency>
     </dependencies>
 </project>

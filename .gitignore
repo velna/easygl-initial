@@ -27,3 +27,4 @@ replay_pid*
 /easygl-core/target/
 /easygl-opengl/target/
 /easygl-glfw/target/
+/easygl-stb/target/

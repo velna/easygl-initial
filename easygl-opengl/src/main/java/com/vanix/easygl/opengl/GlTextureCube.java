@@ -1,8 +1,8 @@
 package com.vanix.easygl.opengl;
 
-import com.vanix.easygl.core.graphics.Image;
 import com.vanix.easygl.core.graphics.Texture;
 import com.vanix.easygl.core.graphics.TextureCube;
+import com.vanix.easygl.core.media.Image;
 
 public class GlTextureCube extends AbstractTexture<TextureCube> implements TextureCube {
 

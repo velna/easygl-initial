@@ -5,22 +5,18 @@ import com.vanix.easygl.core.util.TypeReference;
 import java.util.ServiceLoader;
 
 public enum MetaSystem implements MetaService {
+    Window,
     Graphics,
-    Window;
+    Media;
     private final MetaService metaService;
 
     MetaSystem() {
         metaService = ServiceLoader.load(MetaService.class)
                 .stream()
-                .map(ServiceLoader.Provider::get)
-                .filter(ms -> name().equals(ms.system()))
+                .filter(provider -> provider.type().getAnnotation(SystemName.class).value().equals(name()))
                 .findFirst()
+                .map(ServiceLoader.Provider::get)
                 .orElseThrow();
-    }
-
-    @Override
-    public String system() {
-        return name();
     }
 
     @Override

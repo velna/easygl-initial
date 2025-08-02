@@ -1,9 +1,10 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.core.Closeable;
 import com.vanix.easygl.core.meta.MetaSystem;
 import org.joml.Vector4f;
 
-public interface Graphics {
+public interface Graphics extends Closeable {
 
     enum ErrorCode {
         Unknown(-1),

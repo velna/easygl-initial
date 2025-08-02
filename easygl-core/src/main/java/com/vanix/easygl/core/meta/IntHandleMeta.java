@@ -9,7 +9,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntConsumer;
 
-public class IntHandleMeta<T extends Handle> extends AbstractHandleMeta<T> {
+public class IntHandleMeta<T extends Handle> extends DefaultMeta<T> implements HandleMeta<T>{
 
     private final IntConsumer close;
     private final BiFunction<Integer, Object[], T> init;

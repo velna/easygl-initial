@@ -11,6 +11,7 @@
 		<module>learnopengl</module>
         <module>easygl-opengl</module>
         <module>easygl-glfw</module>
+        <module>easygl-stb</module>
     </modules>
 	<properties>
 		<project.encoding>UTF-8</project.encoding>
@@ -20,7 +21,7 @@
 		<maven.compiler.compilerVersion>${project.java.version}</maven.compiler.compilerVersion>
 		<maven.compiler.source>${project.java.version}</maven.compiler.source>
 		<maven.compiler.target>${project.java.version}</maven.compiler.target>
-		<commons.lang3.version>3.12.0</commons.lang3.version>
+		<commons.lang3.version>3.18.0</commons.lang3.version>
 		<commons.collections.version>4.3</commons.collections.version>
 		<logback.version>1.5.13</logback.version>
 		<log4j.version>2.17.2</log4j.version>
@@ -103,6 +104,11 @@
 			<dependency>
 				<groupId>com.vanix.easygl</groupId>
 				<artifactId>easygl-glfw</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.vanix.easygl</groupId>
+				<artifactId>easygl-stb</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>

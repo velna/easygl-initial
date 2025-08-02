@@ -1,7 +1,7 @@
 package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.core.graphics.GraphicsException;
-import com.vanix.easygl.core.graphics.Image;
+import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.graphics.Texture;
 import com.vanix.easygl.core.graphics.Texture2D;
 

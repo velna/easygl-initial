@@ -14,14 +14,14 @@ public class C23HelloTriangleExercises1 {
         WindowHints.OpenGlProfile.Core.set();
 
         try (var window = Window.of(800, 600, "LearnOpenGL");
+             var graphics = new GlGraphics();
              var vertex = Shader.vertex("v1");
              var fragment = Shader.fragment("f1");
              var program = Program.of("p1");
              var vao = VertexArray.of();
              var vbo = Buffer.ofArray(vao, DataType.Float)) {
             window.bind().inputCtlr().keyboard().onKey(Keyboard.KEY_ESCAPE).subscribe(C23HelloTriangleExercises1::processInput);
-            var graphics = new GlGraphics()
-                    .viewPort(0, 0, window.frameBufferWidth(), window.frameBufferHeight());
+            graphics.viewPort(0, 0, window.frameBufferWidth(), window.frameBufferHeight());
 
             program.attach(vertex.source("""
                                     #version 330 core

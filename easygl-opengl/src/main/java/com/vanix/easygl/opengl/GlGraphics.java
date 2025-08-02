@@ -1,6 +1,7 @@
 package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.core.graphics.*;
+import org.lwjgl.opengl.GL;
 
 public class GlGraphics implements Graphics {
 
@@ -10,6 +11,7 @@ public class GlGraphics implements Graphics {
     private final Blend blend = new GlBlend();
 
     public GlGraphics() {
+        GL.createCapabilities();
     }
 
     @Override
@@ -66,5 +68,10 @@ public class GlGraphics implements Graphics {
     @Override
     public FrameBuffer defaultFrameBuffer() {
         return GlFrameBuffer.DefaultFrameBuffer;
+    }
+
+    @Override
+    public void close() {
+
     }
 }
