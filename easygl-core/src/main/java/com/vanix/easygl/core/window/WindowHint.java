@@ -2,7 +2,7 @@ package com.vanix.easygl.core.window;
 
 
 import com.vanix.easygl.core.meta.MetaSystem;
-import com.vanix.easygl.core.util.TypeReference;
+import com.vanix.easygl.commons.util.TypeReference;
 
 import java.nio.ByteBuffer;
 

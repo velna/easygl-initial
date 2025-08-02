@@ -1,6 +1,6 @@
 package com.vanix.easygl.core;
 
-import com.vanix.easygl.core.util.ExtendedIterable;
+import com.vanix.easygl.commons.util.ExtendedIterable;
 import org.apache.commons.collections4.iterators.UnmodifiableIterator;
 import org.jetbrains.annotations.NotNull;
 

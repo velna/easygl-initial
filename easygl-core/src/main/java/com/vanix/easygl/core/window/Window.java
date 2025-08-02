@@ -7,7 +7,7 @@ import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
 import com.vanix.easygl.core.window.event.WindowRefreshListener;
 import com.vanix.easygl.core.window.event.WindowResizeListener;
-import com.vanix.easygl.core.util.TypeReference;
+import com.vanix.easygl.commons.util.TypeReference;
 
 public interface Window extends Bindable<BindTarget.Default<Window>, Window> {
     BindableMeta<BindTarget.Default<Window>, Window> Meta = MetaSystem.Window.of(Window.class, new TypeReference<>() {

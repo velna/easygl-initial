@@ -4,7 +4,7 @@ import com.vanix.easygl.commons.Identified;
 import com.vanix.easygl.core.Handle;
 import com.vanix.easygl.core.meta.HandleMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
-import com.vanix.easygl.core.util.TypeReference;
+import com.vanix.easygl.commons.util.TypeReference;
 
 import java.io.IOException;
 import java.io.InputStream;

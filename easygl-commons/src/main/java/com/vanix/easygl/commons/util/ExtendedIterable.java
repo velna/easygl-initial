@@ -1,4 +1,4 @@
-package com.vanix.easygl.core.util;
+package com.vanix.easygl.commons.util;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
