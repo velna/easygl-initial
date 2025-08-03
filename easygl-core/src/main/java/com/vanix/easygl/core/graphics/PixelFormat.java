@@ -6,20 +6,26 @@ public enum PixelFormat {
 
     COLOR_INDEX(MetaSystem.Graphics.queryInt("COLOR_INDEX")),
     STENCIL_INDEX(MetaSystem.Graphics.queryInt("STENCIL_INDEX")),
-    DEPTH_COMPONENT(MetaSystem.Graphics.queryInt("DEPTH_COMPONENT")),
-    RED(MetaSystem.Graphics.queryInt("RED")),
+    DEPTH_COMPONENT(MetaSystem.Graphics.queryInt("DEPTH_COMPONENT"), InternalPixelFormat.BaseFormat.DEPTH_COMPONENT),
+    RED(MetaSystem.Graphics.queryInt("RED"), InternalPixelFormat.BaseFormat.RED),
     GREEN(MetaSystem.Graphics.queryInt("GREEN")),
     BLUE(MetaSystem.Graphics.queryInt("BLUE")),
     ALPHA(MetaSystem.Graphics.queryInt("ALPHA")),
-    RGB(MetaSystem.Graphics.queryInt("RGB")),
-    RGBA(MetaSystem.Graphics.queryInt("RGBA")),
+    RGB(MetaSystem.Graphics.queryInt("RGB"), InternalPixelFormat.BaseFormat.RGB),
+    RGBA(MetaSystem.Graphics.queryInt("RGBA"), InternalPixelFormat.BaseFormat.RGBA),
     LUMINANCE(MetaSystem.Graphics.queryInt("LUMINANCE")),
     LUMINANCE_ALPHA(MetaSystem.Graphics.queryInt("LUMINANCE_ALPHA"));
 
     private final int value;
+    private final InternalPixelFormat internalPixelFormat;
 
     private PixelFormat(int value) {
+        this(value, null);
+    }
+
+    private PixelFormat(int value, InternalPixelFormat internalPixelFormat) {
         this.value = value;
+        this.internalPixelFormat = internalPixelFormat;
     }
 
     public int value() {
@@ -34,5 +40,9 @@ public enum PixelFormat {
             case 4 -> RGBA;
             default -> throw new IllegalArgumentException("Invalid channel number: " + n);
         };
+    }
+
+    public InternalPixelFormat internalPixelFormat() {
+        return internalPixelFormat;
     }
 }
