@@ -4,7 +4,6 @@ import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.meta.*;
 
-import java.lang.annotation.ElementType;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -52,7 +51,7 @@ public class GlMetaService extends AbstractMetaService {
             GlProgram::new,
             GlProgram::new);
 
-    static final BindableMeta<BindTarget.Default<UniformProgram<ElementType>>, UniformProgram<ElementType>> UniformProgramMeta = createProgramMeta(
+    static final BindableMeta<BindTarget.Default<UniformProgram>, UniformProgram> UniformProgramMeta = createProgramMeta(
             GlUniformProgram::new,
             GlUniformProgram::new);
 

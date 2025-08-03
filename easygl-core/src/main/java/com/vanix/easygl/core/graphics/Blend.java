@@ -30,5 +30,22 @@ public abstract class Blend implements Feature<Blend> {
         }
     }
 
+    public enum Equation {
+        FuncAdd(MetaSystem.Graphics.queryInt("FUNC_ADD")),
+        FuncSubtract(MetaSystem.Graphics.queryInt("FUNC_SUBTRACT")),
+        FuncReverseSubtract(MetaSystem.Graphics.queryInt("FUNC_REVERSE_SUBTRACT")),
+        Min(MetaSystem.Graphics.queryInt("MIN")),
+        Max(MetaSystem.Graphics.queryInt("MAX"));
+        private final int value;
+
+        Equation(int value) {
+            this.value = value;
+        }
+
+        public int value() {
+            return value;
+        }
+    }
+
     public abstract Blend func(Factor src, Factor dst);
 }
