@@ -47,13 +47,13 @@ public class GlMetaService extends AbstractMetaService {
             null,
             null);
 
-    static final BindableMeta<BindTarget.Default<Program>, Program> ProgramMeta = createProgramMeta(
+    static final BindableMeta<BindTarget.Default<Program>, Program> ProgramMeta = new IntBindableMeta<>(
             GlProgram::new,
+            (target, handle) -> GLX.glUseProgram(handle),
+            (target, handle) -> GLX.glUseProgram(handle),
+            0,
+            GLX::glDeleteProgram,
             GlProgram::new);
-
-    static final BindableMeta<BindTarget.Default<UniformProgram>, UniformProgram> UniformProgramMeta = createProgramMeta(
-            GlUniformProgram::new,
-            GlUniformProgram::new);
 
     static final BindableMeta<BindTarget.Default<RenderBuffer>, RenderBuffer> RenderBufferMeta = new IntBindableMeta<>(
             GlRenderBuffer::new,
@@ -92,7 +92,6 @@ public class GlMetaService extends AbstractMetaService {
         register(Texture2D.class, Texture2DMeta);
         register(TextureCube.class, TextureCubeMeta);
         register(Shader.class, ShaderMeta);
-        register(UniformProgram.class, UniformProgramMeta);
     }
 
     @Override
@@ -123,18 +122,6 @@ public class GlMetaService extends AbstractMetaService {
                 GLX::glGenTextures,
                 GLX::glDeleteTextures
         );
-    }
-
-    private static <T extends IProgram<T>>
-    BindableMeta<BindTarget.Default<T>, T> createProgramMeta(Function<Object[], T> factory,
-                                                             BiFunction<Integer, Object[], T> init) {
-        return new IntBindableMeta<>(
-                factory,
-                (target, handle) -> GLX.glUseProgram(handle),
-                (target, handle) -> GLX.glUseProgram(handle),
-                0,
-                GLX::glDeleteProgram,
-                init);
     }
 
 }
