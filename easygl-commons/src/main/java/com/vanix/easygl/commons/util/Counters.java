@@ -17,7 +17,7 @@ public class Counters implements Iterable<Counter> {
 	public static final int OPT_NO_PRINT = 0x02;
 	public static final int OPT_NO_RESET = 0x04;
 
-	private Map<String, Counter> counterMap = new LinkedHashMap<>();
+	private final Map<String, Counter> counterMap = new LinkedHashMap<>();
 
 	private static String fullName(String group, String name) {
 		String nm;

@@ -134,15 +134,4 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
         return frameBufferHeight;
     }
 
-    public static void systemInit() {
-        if (INIT.compareAndSet(false, true)) {
-            GLFW.glfwInit();
-        }
-    }
-
-    public static void systemTerminate() {
-        if (INIT.compareAndSet(true, false)) {
-            GLFW.glfwTerminate();
-        }
-    }
 }

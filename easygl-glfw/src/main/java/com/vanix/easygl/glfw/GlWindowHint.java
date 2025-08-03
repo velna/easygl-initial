@@ -6,9 +6,6 @@ import org.lwjgl.glfw.GLFW;
 import java.nio.ByteBuffer;
 
 public class GlWindowHint implements WindowHint {
-    static {
-        GlWindow.systemInit();
-    }
 
     protected final int key;
 

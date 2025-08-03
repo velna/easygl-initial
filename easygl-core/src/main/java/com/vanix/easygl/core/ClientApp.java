@@ -1,17 +1,21 @@
 package com.vanix.easygl.core;
 
+import com.vanix.easygl.commons.Ticket;
 import com.vanix.easygl.commons.util.Counters;
 import com.vanix.easygl.core.graphics.Graphics;
 import com.vanix.easygl.core.window.Window;
-import com.vanix.easygl.commons.Ticket;
 
 public interface ClientApp {
 
-	Graphics graphics();
+    Graphics graphics();
 
-	Window window();
+    Window window();
 
-	Ticket ticket();
+    Ticket ticket();
 
-	Counters counters();
+    Counters counters();
+
+    static ClientApp of(String id, Window window) {
+        return new DefaultClientApp(id, window);
+    }
 }

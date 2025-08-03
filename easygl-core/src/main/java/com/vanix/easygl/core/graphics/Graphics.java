@@ -2,7 +2,10 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.Closeable;
 import com.vanix.easygl.core.meta.MetaSystem;
+import com.vanix.easygl.core.window.Window;
 import org.joml.Vector4f;
+
+import java.util.ServiceLoader;
 
 public interface Graphics extends Closeable {
 
@@ -93,4 +96,13 @@ public interface Graphics extends Closeable {
     Graphics polygonMode(PolygonFace face, PolygonMode mode);
 
     FrameBuffer defaultFrameBuffer();
+
+    static Graphics of() {
+        return ServiceLoader.load(Graphics.class).findFirst().orElseThrow();
+    }
+
+    static Graphics of(Window window) {
+        window.bind();
+        return of().viewPort(0, 0, window.frameBufferWidth(), window.frameBufferHeight());
+    }
 }

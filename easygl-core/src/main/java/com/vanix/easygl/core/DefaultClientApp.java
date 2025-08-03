@@ -15,7 +15,6 @@ import java.util.Map;
 
 public class DefaultClientApp implements ClientApp {
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
-    protected final ClientFactory clientFactory;
     protected final Counters counters = new Counters();
     protected Graphics graphics;
     protected Window window;
@@ -24,8 +23,8 @@ public class DefaultClientApp implements ClientApp {
 
     private boolean shutdown;
 
-    public DefaultClientApp(String id, ClientFactory clientFactory) {
-        this.clientFactory = ClientFactory.Instance = clientFactory;
+    public DefaultClientApp(String id, Window window) {
+        this.window = window;
         ticket = new Ticket(id, 100);
         new Thread(this::mainLoop, "Loop").start();
         Thread counterThread = new Thread(this::counterLoop, "Counters");
@@ -59,8 +58,7 @@ public class DefaultClientApp implements ClientApp {
 
     protected void initGraphics() throws GraphicsException {
         log.info("Client application startup.");
-        graphics = clientFactory.createGraphics();
-        window = clientFactory.createMainWindow().bind();
+        graphics = Graphics.of(window);
         graphics.viewPort(0, 0, window.frameBufferWidth(), window.frameBufferHeight());
     }
 
@@ -68,7 +66,7 @@ public class DefaultClientApp implements ClientApp {
         initGraphics();
         initRenderers();
         DoubleValue tickDelta = Value.of(0.0);
-        RenderContext context = clientFactory.createRenderContext(this, window, graphics, tickDelta);
+        RenderContext context = new DefaultRenderContext(window, graphics, tickDelta);
         Counters.Counter fps = counters.create("client.core", "fps", 0);
         long lastFrame = System.currentTimeMillis();
         while (!window.shouldClose()) {

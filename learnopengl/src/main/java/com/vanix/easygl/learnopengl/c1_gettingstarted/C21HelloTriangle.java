@@ -1,11 +1,9 @@
 package com.vanix.easygl.learnopengl.c1_gettingstarted;
 
+import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.window.Keyboard;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
-import com.vanix.easygl.core.graphics.*;
-import com.vanix.easygl.opengl.GlGraphics;
-import com.vanix.easygl.glfw.GlWindow;
 
 public class C21HelloTriangle {
     public static void main(String[] args) {
@@ -14,14 +12,14 @@ public class C21HelloTriangle {
         WindowHints.OpenGlProfile.Core.set();
 
         try (var window = Window.of(800, 600, "LearnOpenGL");
-             var graphics = new GlGraphics();
+             var graphics = Graphics.of(window);
              var vertex = Shader.vertex("v1");
              var fragment = Shader.fragment("f1");
              var program = Program.of("p1");
              var vao = VertexArray.of();
              var vbo = Buffer.ofArray(vao, DataType.Float)) {
-            window.bind().inputCtlr().keyboard().onKey(Keyboard.KEY_ESCAPE).subscribe(C21HelloTriangle::processInput);
-            graphics.viewPort(0, 0, window.frameBufferWidth(), window.frameBufferHeight());
+            window.bind().inputCtlr().keyboard().onKey(Keyboard.KEY_ESCAPE)
+                    .subscribe((keyboard, key, scancode, action, modifiers) -> keyboard.window().shouldClose(true));
 
             program.attach(vertex.source("""
                                     #version 330 core
@@ -57,12 +55,7 @@ public class C21HelloTriangle {
 
                 window.swapBuffers().pollEvents();
             }
-        } finally {
-            GlWindow.systemTerminate();
         }
     }
 
-    private static void processInput(Keyboard keyboard, int key, int scancode, int action, int modifiers) {
-        keyboard.getWindow().shouldClose(true);
-    }
 }

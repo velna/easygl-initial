@@ -148,5 +148,5 @@ public interface Keyboard {
 
     ListenerOperation<KeyboardListener> onKey(int... keys);
 
-    Window getWindow();
+    Window window();
 }

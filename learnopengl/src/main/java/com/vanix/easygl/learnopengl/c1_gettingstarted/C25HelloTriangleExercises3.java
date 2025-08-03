@@ -4,8 +4,6 @@ import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.window.Keyboard;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
-import com.vanix.easygl.glfw.GlWindow;
-import com.vanix.easygl.opengl.GlGraphics;
 
 public class C25HelloTriangleExercises3 {
     public static void main(String[] args) {
@@ -13,7 +11,7 @@ public class C25HelloTriangleExercises3 {
         WindowHints.ContextVersionMinor.set(3);
         WindowHints.OpenGlProfile.Core.set();
         try (var window = Window.of(800, 600, "LearnOpenGL");
-             var graphics = new GlGraphics();
+             var graphics = Graphics.of(window);
              var vertex = Shader.vertex("v1");
              var fragmentOrange = Shader.fragment("f-orange");
              var fragmentYellow = Shader.fragment("f-yellow");
@@ -21,8 +19,8 @@ public class C25HelloTriangleExercises3 {
              var programYellow = Program.of("p-yellow");
              var vaos = VertexArray.of(2);
              var vbos = Buffer.of(2, Buffer.Type.Array, DataType.Float)) {
-            window.bind().inputCtlr().keyboard().onKey(Keyboard.KEY_ESCAPE).subscribe(C25HelloTriangleExercises3::processInput);
-            graphics.viewPort(0, 0, window.frameBufferWidth(), window.frameBufferHeight());
+            window.bind().inputCtlr().keyboard().onKey(Keyboard.KEY_ESCAPE)
+                    .subscribe((keyboard, key, scancode, action, modifiers) -> keyboard.window().shouldClose(true));
 
             vertex.source("""
                             #version 330 core
@@ -81,12 +79,7 @@ public class C25HelloTriangleExercises3 {
 
                 window.swapBuffers().pollEvents();
             }
-        } finally {
-            GlWindow.systemTerminate();
         }
     }
 
-    private static void processInput(Keyboard keyboard, int key, int scancode, int action, int modifiers) {
-        keyboard.getWindow().shouldClose(true);
-    }
 }

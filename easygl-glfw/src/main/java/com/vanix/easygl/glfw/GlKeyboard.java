@@ -62,7 +62,7 @@ public class GlKeyboard implements Keyboard {
 	}
 
 	@Override
-	public Window getWindow() {
+	public Window window() {
 		return window;
 	}
 

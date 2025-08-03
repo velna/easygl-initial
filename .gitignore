@@ -28,3 +28,4 @@ replay_pid*
 /easygl-opengl/target/
 /easygl-glfw/target/
 /easygl-stb/target/
+/learnopengl/target/
