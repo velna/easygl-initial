@@ -1,10 +1,10 @@
 package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.Identified;
+import com.vanix.easygl.commons.util.TypeReference;
 import com.vanix.easygl.core.Handle;
 import com.vanix.easygl.core.meta.HandleMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
-import com.vanix.easygl.commons.util.TypeReference;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,20 +39,24 @@ public interface Shader extends Handle, Identified<String> {
 
     Shader compile() throws GraphicsException;
 
+    static Shader of(String id, Type type) {
+        return Meta.create(id, type);
+    }
+
     static Shader vertex(String id) {
-        return Meta.create(id, Type.Vertex);
+        return of(id, Type.Vertex);
     }
 
     static Shader geometry(String id) {
-        return Meta.create(id, Type.Geometry);
+        return of(id, Type.Geometry);
     }
 
     static Shader fragment(String id) {
-        return Meta.create(id, Type.Fragment);
+        return of(id, Type.Fragment);
     }
 
     private static Shader of(String id, Type type, String resourceFile) {
-        Shader shader = Meta.create(id, type);
+        Shader shader = of(id, type);
         try {
             shader.source(Shader.class.getClassLoader().getResourceAsStream(resourceFile));
         } catch (IOException e) {
