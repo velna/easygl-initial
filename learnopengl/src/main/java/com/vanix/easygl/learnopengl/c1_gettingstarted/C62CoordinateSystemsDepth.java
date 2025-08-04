@@ -12,7 +12,7 @@ import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
 
-public class C61CoordinateSystems {
+public class C62CoordinateSystemsDepth {
     public static void main(String[] args) {
         WindowHints.ContextVersionMajor.set(3);
         WindowHints.ContextVersionMinor.set(3);
@@ -23,11 +23,12 @@ public class C61CoordinateSystems {
              var program = Program.of("p1");
              var vao = VertexArray.of();
              var vbo = Buffer.ofArray(vao, DataType.Float);
-             var ebo = Buffer.ofElementArray(vao, DataType.UnsignedInt);
              var texture1 = Texture.of2D("t1");
              var texture2 = Texture.of2D("t2")) {
             window.bind().inputCtlr().keyboard().onKey(Keyboard.KEY_ESCAPE)
                     .subscribe((keyboard, key, scancode, action, modifiers) -> keyboard.window().shouldClose(true));
+
+            graphics.depth().enable();
 
             program.attach(Shader.Type.Vertex, """
                             #version 330 core
@@ -42,7 +43,7 @@ public class C61CoordinateSystems {
                                                         
                             void main()
                             {
-                            	gl_Position = projection * view * model * vec4(aPos, 1.0);
+                            	gl_Position = projection * view * model * vec4(aPos, 1.0f);
                             	TexCoord = vec2(aTexCoord.x, aTexCoord.y);
                             }
                             """)
@@ -66,16 +67,48 @@ public class C61CoordinateSystems {
 
             vao.bind().attributes(vbo.bind()
                     .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
-                            // positions          // texture coords
-                            0.5f, 0.5f, 0.0f, 1.0f, 1.0f, // top right
-                            0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
-                            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
-                            -0.5f, 0.5f, 0.0f, 0.0f, 1.0f  // top left
+                            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+                            0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+                            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+                            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+                            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+                            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+
+                            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+                            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+                            0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+                            0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+                            -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+                            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+
+                            -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+                            -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+                            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+                            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+                            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+                            -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+
+                            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+                            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+                            0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+                            0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+                            0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+                            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+
+                            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+                            0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
+                            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+                            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+                            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+                            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+
+                            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+                            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+                            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+                            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+                            -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
+                            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
                     }), 3, 2);
-            ebo.bind().realloc(Buffer.DataUsage.STATIC_DRAW, new int[]{
-                    0, 1, 3, // first triangle
-                    1, 2, 3  // second triangle
-            });
 
             texture1.bind()
                     .wrapS(Texture.Wrap.Repeat)
@@ -103,16 +136,18 @@ public class C61CoordinateSystems {
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
             while (!window.shouldClose()) {
                 graphics.clearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(Graphics.BufferMask.Color);
+                        .clear(Graphics.BufferMask.Color, Graphics.BufferMask.Depth);
 
                 Texture.Unit.U0.bind();
                 texture1.bind();
                 Texture.Unit.U1.bind();
                 texture2.bind();
 
+                float time = (System.currentTimeMillis() - start) / 1000.0f;
+
                 program.bind()
                         .setMatrix4("model", new Matrix4f()
-                                .rotate(Math.toRadians(-55.0f), new Vector3f(1.0f, 0.0f, 0.0f))
+                                .rotate(time, new Vector3f(0.5f, 1.0f, 0.0f))
                                 .get(mat4f))
                         .setMatrix4("view", new Matrix4f()
                                 .translate(new Vector3f(0.0f, 0.0f, -3.0f))
@@ -120,7 +155,7 @@ public class C61CoordinateSystems {
                         .setMatrix4("projection", new Matrix4f()
                                 .perspective(Math.toRadians(45.0f), window.width() * 1.0f / window.height(), 0.1f, 100.0f)
                                 .get(mat4f));
-                vao.drawElements(DrawMode.Triangles, vbo, ebo, 0);
+                vao.drawArray(DrawMode.Triangles, vbo);
 
                 window.swapBuffers().pollEvents();
             }
