@@ -7,6 +7,9 @@ import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+import org.lwjgl.BufferUtils;
+
+import java.nio.FloatBuffer;
 
 public class C53TransformationsExercise2 {
     public static void main(String[] args) {
@@ -94,6 +97,7 @@ public class C53TransformationsExercise2 {
                     .set("texture2", 1);
 
             long start = System.currentTimeMillis();
+            FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
             while (!window.shouldClose()) {
                 graphics.clearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(Graphics.BufferMask.Color);
@@ -105,14 +109,14 @@ public class C53TransformationsExercise2 {
 
                 float time = (System.currentTimeMillis() - start) / 1000.0f;
 
-                program.bind().set("transform", new Matrix4f()
+                program.bind().setMatrix4("transform", new Matrix4f()
                         .translate(new Vector3f(0.5f, -0.5f, 0.0f))
-                        .rotate(time, new Vector3f(0.0f, 0.0f, 1.0f)));
+                        .rotate(time, new Vector3f(0.0f, 0.0f, 1.0f)).get(mat4f));
                 vao.drawElements(DrawMode.Triangles, vbo, ebo, 0);
 
-                program.bind().set("transform", new Matrix4f()
+                program.bind().setMatrix4("transform", new Matrix4f()
                         .translate(new Vector3f(-0.5f, 0.5f, 0.0f))
-                        .scale((float) Math.sin(time)));
+                        .scale((float) Math.sin(time)).get(mat4f));
                 vao.drawElements(DrawMode.Triangles, vbo, ebo, 0);
 
                 window.swapBuffers().pollEvents();

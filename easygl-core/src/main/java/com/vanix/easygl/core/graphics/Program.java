@@ -6,11 +6,12 @@ import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
-import org.joml.Matrix4f;
+import org.joml.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 public interface Program extends Bindable<BindTarget.Default<Program>, Program>, Identified<String> {
 
@@ -38,19 +39,145 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program>,
     @Override
     Program bind();
 
-    Program set(String key, boolean value);
-
     Program set(String key, int value);
+
+    Program set(String key, int v1, int v2);
+
+    Program set(String key, int v1, int v2, int v3);
+
+    Program set(String key, int v1, int v2, int v3, int v4);
+
+    Program setVec1(String key, int[] value);
+
+    Program setVec1(String key, IntBuffer buffer);
+
+    Program setVec2(String key, int[] value);
+
+    Program setVec2(String key, IntBuffer buffer);
+
+    Program setVec3(String key, int[] value);
+
+    Program setVec3(String key, IntBuffer buffer);
+
+    Program setVec4(String key, int[] value);
+
+    Program setVec4(String key, IntBuffer buffer);
+
+    Program setUnsigned(String key, int value);
+
+    Program setUnsigned(String key, int v1, int v2);
+
+    Program setUnsigned(String key, int v1, int v2, int v3);
+
+    Program setUnsigned(String key, int v1, int v2, int v3, int v4);
+
+    Program setUnsignedVec1(String key, int[] value);
+
+    Program setUnsignedVec1(String key, IntBuffer buffer);
+
+    Program setUnsignedVec2(String key, int[] value);
+
+    Program setUnsignedVec2(String key, IntBuffer buffer);
+
+    Program setUnsignedVec3(String key, int[] value);
+
+    Program setUnsignedVec3(String key, IntBuffer buffer);
+
+    Program setUnsignedVec4(String key, int[] value);
+
+    Program setUnsignedVec4(String key, IntBuffer buffer);
 
     Program set(String key, float value);
 
+    Program set(String key, float v1, float v2);
+
+    Program set(String key, float v1, float v2, float v3);
+
     Program set(String key, float v1, float v2, float v3, float v4);
 
-    Program set(String key, float[] value);
+    Program setVec1(String key, float[] value);
 
-    Program set(String key, Matrix4f value);
+    Program setVec1(String key, FloatBuffer buffer);
 
-    Program set(String key, FloatBuffer buffer);
+    Program setVec2(String key, float[] value);
+
+    Program setVec2(String key, FloatBuffer buffer);
+
+    Program setVec3(String key, float[] value);
+
+    Program setVec3(String key, FloatBuffer buffer);
+
+    Program setVec4(String key, float[] value);
+
+    Program setVec4(String key, FloatBuffer buffer);
+
+    Program setMatrix2(String key, float[] value);
+
+    Program setMatrix2(String key, FloatBuffer buffer);
+
+    Program setMatrix3(String key, float[] value);
+
+    Program setMatrix3(String key, FloatBuffer buffer);
+
+    Program setMatrix4(String key, float[] value);
+
+    Program setMatrix4(String key, FloatBuffer buffer);
+
+    Program setMatrix2x3(String key, float[] value);
+
+    Program setMatrix2x3(String key, FloatBuffer buffer);
+
+    Program setMatrix3x2(String key, float[] value);
+
+    Program setMatrix3x2(String key, FloatBuffer buffer);
+
+    Program setMatrix2x4(String key, float[] value);
+
+    Program setMatrix2x4(String key, FloatBuffer buffer);
+
+    Program setMatrix4x2(String key, float[] value);
+
+    Program setMatrix4x2(String key, FloatBuffer buffer);
+
+    Program setMatrix3x4(String key, float[] value);
+
+    Program setMatrix3x4(String key, FloatBuffer buffer);
+
+    Program setMatrix4x3(String key, float[] value);
+
+    Program setMatrix4x3(String key, FloatBuffer buffer);
+
+    default Program set(String key, Vector2f value) {
+        return set(key, value.x, value.y);
+    }
+
+    default Program set(String key, Vector3f value) {
+        return set(key, value.x, value.y, value.z);
+    }
+
+    default Program set(String key, Vector4f value) {
+        return set(key, value.x, value.y, value.z, value.w);
+    }
+
+    default Program set(String key, Matrix2f value) {
+        return setMatrix2(key, value.get(new float[4]));
+    }
+
+    default Program set(String key, Matrix3f value) {
+        return setMatrix3(key, value.get(new float[9]));
+    }
+
+    default Program set(String key, Matrix4f value) {
+        return setMatrix4(key, value.get(new float[16]));
+    }
+
+    default Program set(String key, Matrix3x2f value) {
+        return setMatrix3x2(key, value.get(new float[6]));
+    }
+
+    default Program set(String key, Matrix4x3f value) {
+        return setMatrix4x3(key, value.get(new float[12]));
+    }
 
     Program set(String key, Texture.Unit unit, Texture<?> texture);
 

@@ -10,7 +10,6 @@ import org.eclipse.collections.api.factory.primitive.ObjectIntMaps;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
-import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
@@ -60,7 +59,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program link()  {
+    public Program link() {
         int program = intHandle();
         GLX.glLinkProgram(program);
         IntBuffer success = MemoryStack.stackMallocInt(1);
@@ -79,7 +78,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
         shaders.clear();
     }
 
-    private int uniform(String key)  {
+    private int uniform(String key) {
         int ret = uniforms.getIfAbsentPutWithKey(key, k -> GLX.glGetUniformLocation(intHandle(), k));
         if (ret < 0) {
             throw new GraphicsException("Can not find uniform for name " + key);
@@ -88,15 +87,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, boolean value)  {
-        assertBinding();
-        GLX.glUniform1i(uniform(key), value ? GLX.GL_TRUE : GLX.GL_FALSE);
-        GLX.checkError();
-        return this;
-    }
-
-    @Override
-    public Program set(String key, int value)  {
+    public Program set(String key, int value) {
         assertBinding();
         GLX.glUniform1i(uniform(key), value);
         GLX.checkError();
@@ -104,7 +95,191 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, float value)  {
+    public Program set(String key, int v1, int v2) {
+        assertBinding();
+        GLX.glUniform2i(uniform(key), v1, v2);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program set(String key, int v1, int v2, int v3) {
+        assertBinding();
+        GLX.glUniform3i(uniform(key), v1, v2, v3);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program set(String key, int v1, int v2, int v3, int v4) {
+        assertBinding();
+        GLX.glUniform4i(uniform(key), v1, v2, v3, v4);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setVec1(String key, int[] value) {
+        assertBinding();
+        GLX.glUniform1iv(uniform(key), value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setVec1(String key, IntBuffer buffer) {
+        assertBinding();
+        GLX.glUniform1iv(uniform(key), buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setVec2(String key, int[] value) {
+        assertBinding();
+        GLX.glUniform2iv(uniform(key), value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setVec2(String key, IntBuffer buffer) {
+        assertBinding();
+        GLX.glUniform2iv(uniform(key), buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setVec3(String key, int[] value) {
+        assertBinding();
+        GLX.glUniform3iv(uniform(key), value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setVec3(String key, IntBuffer buffer) {
+        assertBinding();
+        GLX.glUniform3iv(uniform(key), buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setVec4(String key, int[] value) {
+        assertBinding();
+        GLX.glUniform4iv(uniform(key), value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setVec4(String key, IntBuffer buffer) {
+        assertBinding();
+        GLX.glUniform4iv(uniform(key), buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setUnsigned(String key, int value) {
+        assertBinding();
+        GLX.glUniform1ui(uniform(key), value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setUnsigned(String key, int v1, int v2) {
+        assertBinding();
+        GLX.glUniform2ui(uniform(key), v1, v2);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setUnsigned(String key, int v1, int v2, int v3) {
+        assertBinding();
+        GLX.glUniform3ui(uniform(key), v1, v2, v3);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setUnsigned(String key, int v1, int v2, int v3, int v4) {
+        assertBinding();
+        GLX.glUniform4ui(uniform(key), v1, v2, v3, v4);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setUnsignedVec1(String key, int[] value) {
+        assertBinding();
+        GLX.glUniform1uiv(uniform(key), value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setUnsignedVec1(String key, IntBuffer buffer) {
+        assertBinding();
+        GLX.glUniform1uiv(uniform(key), buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setUnsignedVec2(String key, int[] value) {
+        assertBinding();
+        GLX.glUniform2uiv(uniform(key), value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setUnsignedVec2(String key, IntBuffer buffer) {
+        assertBinding();
+        GLX.glUniform2uiv(uniform(key), buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setUnsignedVec3(String key, int[] value) {
+        assertBinding();
+        GLX.glUniform3uiv(uniform(key), value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setUnsignedVec3(String key, IntBuffer buffer) {
+        assertBinding();
+        GLX.glUniform3uiv(uniform(key), buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setUnsignedVec4(String key, int[] value) {
+        assertBinding();
+        GLX.glUniform4uiv(uniform(key), value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setUnsignedVec4(String key, IntBuffer buffer) {
+        assertBinding();
+        GLX.glUniform4uiv(uniform(key), buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program set(String key, float value) {
         assertBinding();
         GLX.glUniform1f(uniform(key), value);
         GLX.checkError();
@@ -112,7 +287,23 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, float v1, float v2, float v3, float v4)  {
+    public Program set(String key, float v1, float v2) {
+        assertBinding();
+        GLX.glUniform2f(uniform(key), v1, v2);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program set(String key, float v1, float v2, float v3) {
+        assertBinding();
+        GLX.glUniform3f(uniform(key), v1, v2, v3);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program set(String key, float v1, float v2, float v3, float v4) {
         assertBinding();
         GLX.glUniform4f(uniform(key), v1, v2, v3, v4);
         GLX.checkError();
@@ -120,7 +311,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, float[] value)  {
+    public Program setVec1(String key, float[] value) {
         assertBinding();
         GLX.glUniform1fv(uniform(key), value);
         GLX.checkError();
@@ -128,7 +319,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, FloatBuffer buffer)  {
+    public Program setVec1(String key, FloatBuffer buffer) {
         assertBinding();
         GLX.glUniform1fv(uniform(key), buffer);
         GLX.checkError();
@@ -136,15 +327,199 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, Matrix4f value) {
+    public Program setVec2(String key, float[] value) {
         assertBinding();
-        GLX.glUniformMatrix4fv(uniform(key), false, value.get(new float[16]));
+        GLX.glUniform2fv(uniform(key), value);
         GLX.checkError();
         return this;
     }
 
     @Override
-    public Program set(String key, Texture.Unit unit, Texture<?> texture)  {
+    public Program setVec2(String key, FloatBuffer buffer) {
+        assertBinding();
+        GLX.glUniform2fv(uniform(key), buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setVec3(String key, float[] value) {
+        assertBinding();
+        GLX.glUniform3fv(uniform(key), value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setVec3(String key, FloatBuffer buffer) {
+        assertBinding();
+        GLX.glUniform3fv(uniform(key), buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setVec4(String key, float[] value) {
+        assertBinding();
+        GLX.glUniform4fv(uniform(key), value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setVec4(String key, FloatBuffer buffer) {
+        assertBinding();
+        GLX.glUniform4fv(uniform(key), buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix2(String key, float[] value) {
+        assertBinding();
+        GLX.glUniformMatrix2fv(uniform(key), false, value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix2(String key, FloatBuffer buffer) {
+        assertBinding();
+        GLX.glUniformMatrix2fv(uniform(key), false, buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix3(String key, float[] value) {
+        assertBinding();
+        GLX.glUniformMatrix3fv(uniform(key), false, value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix3(String key, FloatBuffer buffer) {
+        assertBinding();
+        GLX.glUniformMatrix3fv(uniform(key), false, buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix4(String key, float[] value) {
+        assertBinding();
+        GLX.glUniformMatrix4fv(uniform(key), false, value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix4(String key, FloatBuffer buffer) {
+        assertBinding();
+        GLX.glUniformMatrix4fv(uniform(key), false, buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix2x3(String key, float[] value) {
+        assertBinding();
+        GLX.glUniformMatrix2x3fv(uniform(key), false, value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix2x3(String key, FloatBuffer buffer) {
+        assertBinding();
+        GLX.glUniformMatrix2x3fv(uniform(key), false, buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix3x2(String key, float[] value) {
+        assertBinding();
+        GLX.glUniformMatrix3x2fv(uniform(key), false, value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix3x2(String key, FloatBuffer buffer) {
+        assertBinding();
+        GLX.glUniformMatrix3x2fv(uniform(key), false, buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix2x4(String key, float[] value) {
+        assertBinding();
+        GLX.glUniformMatrix2x4fv(uniform(key), false, value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix2x4(String key, FloatBuffer buffer) {
+        assertBinding();
+        GLX.glUniformMatrix2x4fv(uniform(key), false, buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix4x2(String key, float[] value) {
+        assertBinding();
+        GLX.glUniformMatrix4x2fv(uniform(key), false, value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix4x2(String key, FloatBuffer buffer) {
+        assertBinding();
+        GLX.glUniformMatrix4x2fv(uniform(key), false, buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix3x4(String key, float[] value) {
+        assertBinding();
+        GLX.glUniformMatrix3x4fv(uniform(key), false, value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix3x4(String key, FloatBuffer buffer) {
+        assertBinding();
+        GLX.glUniformMatrix3x4fv(uniform(key), false, buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix4x3(String key, float[] value) {
+        assertBinding();
+        GLX.glUniformMatrix4x3fv(uniform(key), false, value);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setMatrix4x3(String key, FloatBuffer buffer) {
+        assertBinding();
+        GLX.glUniformMatrix4x3fv(uniform(key), false, buffer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program set(String key, Texture.Unit unit, Texture<?> texture) {
         unit.assertBinding();
         texture.assertBinding();
         return set(key, unit.ordinal());
