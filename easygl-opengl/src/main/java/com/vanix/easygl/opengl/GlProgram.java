@@ -10,6 +10,7 @@ import org.eclipse.collections.api.factory.primitive.ObjectIntMaps;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
@@ -59,7 +60,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program link() throws GraphicsException {
+    public Program link()  {
         int program = intHandle();
         GLX.glLinkProgram(program);
         IntBuffer success = MemoryStack.stackMallocInt(1);
@@ -78,7 +79,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
         shaders.clear();
     }
 
-    private int uniform(String key) throws GraphicsException {
+    private int uniform(String key)  {
         int ret = uniforms.getIfAbsentPutWithKey(key, k -> GLX.glGetUniformLocation(intHandle(), k));
         if (ret < 0) {
             throw new GraphicsException("Can not find uniform for name " + key);
@@ -87,7 +88,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, boolean value) throws GraphicsException {
+    public Program set(String key, boolean value)  {
         assertBinding();
         GLX.glUniform1i(uniform(key), value ? GLX.GL_TRUE : GLX.GL_FALSE);
         GLX.checkError();
@@ -95,7 +96,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, int value) throws GraphicsException {
+    public Program set(String key, int value)  {
         assertBinding();
         GLX.glUniform1i(uniform(key), value);
         GLX.checkError();
@@ -103,7 +104,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, float value) throws GraphicsException {
+    public Program set(String key, float value)  {
         assertBinding();
         GLX.glUniform1f(uniform(key), value);
         GLX.checkError();
@@ -111,7 +112,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, float v1, float v2, float v3, float v4) throws GraphicsException {
+    public Program set(String key, float v1, float v2, float v3, float v4)  {
         assertBinding();
         GLX.glUniform4f(uniform(key), v1, v2, v3, v4);
         GLX.checkError();
@@ -119,7 +120,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, float[] value) throws GraphicsException {
+    public Program set(String key, float[] value)  {
         assertBinding();
         GLX.glUniform1fv(uniform(key), value);
         GLX.checkError();
@@ -127,15 +128,23 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, FloatBuffer buffer) throws GraphicsException {
+    public Program set(String key, FloatBuffer buffer)  {
         assertBinding();
-        GLX.glUniformMatrix4fv(uniform(key), true, buffer);
+        GLX.glUniform1fv(uniform(key), buffer);
         GLX.checkError();
         return this;
     }
 
     @Override
-    public Program set(String key, Texture.Unit unit, Texture<?> texture) throws GraphicsException {
+    public Program set(String key, Matrix4f value) {
+        assertBinding();
+        GLX.glUniformMatrix4fv(uniform(key), false, value.get(new float[16]));
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program set(String key, Texture.Unit unit, Texture<?> texture)  {
         unit.assertBinding();
         texture.assertBinding();
         return set(key, unit.ordinal());

@@ -6,6 +6,7 @@ import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
+import org.joml.Matrix4f;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,24 +33,26 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program>,
 
     Program detach(Shader shader);
 
-    Program link() throws GraphicsException;
+    Program link();
 
     @Override
     Program bind();
 
-    Program set(String key, boolean value) throws GraphicsException;
+    Program set(String key, boolean value);
 
-    Program set(String key, int value) throws GraphicsException;
+    Program set(String key, int value);
 
-    Program set(String key, float value) throws GraphicsException;
+    Program set(String key, float value);
 
-    Program set(String key, float v1, float v2, float v3, float v4) throws GraphicsException;
+    Program set(String key, float v1, float v2, float v3, float v4);
 
-    Program set(String key, float[] value) throws GraphicsException;
+    Program set(String key, float[] value);
 
-    Program set(String key, FloatBuffer buffer) throws GraphicsException;
+    Program set(String key, Matrix4f value);
 
-    Program set(String key, Texture.Unit unit, Texture<?> texture) throws GraphicsException;
+    Program set(String key, FloatBuffer buffer);
+
+    Program set(String key, Texture.Unit unit, Texture<?> texture);
 
     static Program of(String id) {
         return Meta.create(id);
