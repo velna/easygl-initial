@@ -190,21 +190,21 @@ public class C72CameraKeyboardDt {
     }
 
     static void processInput(Keyboard keyboard) {
-        if (keyboard.isKeyPressed(Keyboard.FunctionKey.ESCAPE)) {
+        if (keyboard.isPressed(Keyboard.FunctionKey.ESCAPE)) {
             keyboard.window().shouldClose(true);
         }
 
         float cameraSpeed = 2.5f * deltaTime;
-        if (keyboard.isKeyPressed(Keyboard.PrintableKey.W)) {
+        if (keyboard.isPressed(Keyboard.PrintableKey.W)) {
             cameraPos.add(cameraFront.mul(cameraSpeed, new Vector3f()));
         }
-        if (keyboard.isKeyPressed(Keyboard.PrintableKey.S)) {
+        if (keyboard.isPressed(Keyboard.PrintableKey.S)) {
             cameraPos.sub(cameraFront.mul(cameraSpeed, new Vector3f()));
         }
-        if (keyboard.isKeyPressed(Keyboard.PrintableKey.A)) {
+        if (keyboard.isPressed(Keyboard.PrintableKey.A)) {
             cameraPos.sub(cameraFront.cross(cameraUp, new Vector3f()).normalize().mul(cameraSpeed));
         }
-        if (keyboard.isKeyPressed(Keyboard.PrintableKey.D)) {
+        if (keyboard.isPressed(Keyboard.PrintableKey.D)) {
             cameraPos.add(cameraFront.cross(cameraUp, new Vector3f()).normalize().mul(cameraSpeed));
         }
     }

@@ -6,6 +6,8 @@ import com.vanix.easygl.core.window.Keyboard;
 import com.vanix.easygl.core.window.Mouse;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.core.window.event.MouseMoveEvent;
+import com.vanix.easygl.core.window.event.MouseScrollEvent;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -201,28 +203,28 @@ public class C73CameraMouseZoom {
     }
 
     static void processInput(Keyboard keyboard) {
-        if (keyboard.isKeyPressed(Keyboard.FunctionKey.ESCAPE)) {
+        if (keyboard.isPressed(Keyboard.FunctionKey.ESCAPE)) {
             keyboard.window().shouldClose(true);
         }
 
         float cameraSpeed = 2.5f * deltaTime;
-        if (keyboard.isKeyPressed(Keyboard.PrintableKey.W)) {
+        if (keyboard.isPressed(Keyboard.PrintableKey.W)) {
             cameraPos.add(cameraFront.mul(cameraSpeed, new Vector3f()));
         }
-        if (keyboard.isKeyPressed(Keyboard.PrintableKey.S)) {
+        if (keyboard.isPressed(Keyboard.PrintableKey.S)) {
             cameraPos.sub(cameraFront.mul(cameraSpeed, new Vector3f()));
         }
-        if (keyboard.isKeyPressed(Keyboard.PrintableKey.A)) {
+        if (keyboard.isPressed(Keyboard.PrintableKey.A)) {
             cameraPos.sub(cameraFront.cross(cameraUp, new Vector3f()).normalize().mul(cameraSpeed));
         }
-        if (keyboard.isKeyPressed(Keyboard.PrintableKey.D)) {
+        if (keyboard.isPressed(Keyboard.PrintableKey.D)) {
             cameraPos.add(cameraFront.cross(cameraUp, new Vector3f()).normalize().mul(cameraSpeed));
         }
     }
 
-    static void onMouseMove(Mouse mouse) {
-        float xpos = (float) mouse.getX();
-        float ypos = (float) mouse.getY();
+    static void onMouseMove(MouseMoveEvent event) {
+        float xpos = (float) event.x();
+        float ypos = (float) event.y();
 
         if (firstMouse) {
             lastX = xpos;
@@ -257,8 +259,8 @@ public class C73CameraMouseZoom {
                 .normalize();
     }
 
-    static void onMouseScroll(Mouse mouse, double xoffset, double yoffset) {
-        fov -= (float) yoffset;
+    static void onMouseScroll(MouseScrollEvent event) {
+        fov -= (float) event.yOffset();
         if (fov < 1.0f) {
             fov = 1.0f;
         }

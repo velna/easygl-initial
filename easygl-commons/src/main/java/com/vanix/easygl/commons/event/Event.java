@@ -1,4 +1,4 @@
-package com.vanix.easygl.core.window.event;
+package com.vanix.easygl.commons.event;
 
 public class Event<T> {
     private final T source;

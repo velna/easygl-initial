@@ -4,28 +4,9 @@ import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.core.meta.MetaSystem;
 import com.vanix.easygl.core.window.event.KeyboardListener;
 
-public interface Keyboard {
+public interface Keyboard extends InputDevice<Keyboard.Key> {
 
-    boolean isKeyPressed(Keyboard.Key key);
-
-    ListenerOperation<KeyboardListener> onKey(Keyboard.Key... keys);
-
-    Window window();
-
-    enum Action {
-        Release(MetaSystem.Window.queryInt("RELEASE")),
-        Press(MetaSystem.Window.queryInt("PRESS")),
-        Repeat(MetaSystem.Window.queryInt("REPEAT"));
-        private final int value;
-
-        Action(int value) {
-            this.value = value;
-        }
-
-        public int value() {
-            return value;
-        }
-    }
+    ListenerOperation<KeyboardListener> onKey(Key... keys);
 
     enum Modifier {
         Shift(MetaSystem.Window.queryInt("MOD_SHIFT")),
@@ -45,13 +26,10 @@ public interface Keyboard {
         }
     }
 
-
-    sealed interface Key permits PrintableKey, FunctionKey {
-        int code();
+    sealed interface Key extends Input permits PrintableKey, FunctionKey {
+        boolean isPrintableKey();
 
         boolean isFunctionKey();
-
-        boolean isPrintableKey();
     }
 
     enum PrintableKey implements Key {
@@ -118,13 +96,13 @@ public interface Keyboard {
         }
 
         @Override
-        public boolean isFunctionKey() {
-            return false;
+        public boolean isPrintableKey() {
+            return true;
         }
 
         @Override
-        public boolean isPrintableKey() {
-            return true;
+        public boolean isFunctionKey() {
+            return false;
         }
     }
 
@@ -212,13 +190,13 @@ public interface Keyboard {
         }
 
         @Override
-        public boolean isFunctionKey() {
-            return true;
+        public boolean isPrintableKey() {
+            return false;
         }
 
         @Override
-        public boolean isPrintableKey() {
-            return false;
+        public boolean isFunctionKey() {
+            return true;
         }
     }
 

@@ -4,6 +4,6 @@ import com.vanix.easygl.core.window.Mouse;
 import com.vanix.easygl.commons.event.EventListener;
 
 public interface MouseMoveListener extends EventListener {
-	void mouseOnMove(Mouse mouse);
+	void mouseOnMove(MouseMoveEvent event);
 
 }

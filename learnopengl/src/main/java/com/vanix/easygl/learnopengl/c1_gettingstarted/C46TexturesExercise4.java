@@ -117,13 +117,13 @@ public class C46TexturesExercise4 {
     }
 
     static void processInput(KeyboardEvent event) {
-        if (event.key()== Keyboard.FunctionKey.ESCAPE) {
+        if (event.key() == Keyboard.FunctionKey.ESCAPE) {
             event.source().window().shouldClose(true);
         }
-        if (event.source().isKeyPressed(Keyboard.FunctionKey.UP)) {
+        if (event.source().isPressed(Keyboard.FunctionKey.UP)) {
             mixValue = Math.min(mixValue + 0.001f, 1.0f);
         }
-        if (event.source().isKeyPressed(Keyboard.FunctionKey.DOWN)) {
+        if (event.source().isPressed(Keyboard.FunctionKey.DOWN)) {
             mixValue = Math.max(mixValue - 0.001f, 0.0f);
         }
     }

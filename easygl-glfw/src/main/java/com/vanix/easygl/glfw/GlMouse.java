@@ -7,14 +7,14 @@ import com.vanix.easygl.commons.value.FloatValue;
 import com.vanix.easygl.commons.value.Value;
 import com.vanix.easygl.core.window.Mouse;
 import com.vanix.easygl.core.window.Window;
-import com.vanix.easygl.core.window.event.MouseMoveListener;
-import com.vanix.easygl.core.window.event.MouseScrollListener;
+import com.vanix.easygl.core.window.event.*;
 import org.lwjgl.glfw.GLFW;
 
 
 public class GlMouse implements Mouse {
     private final static ListenerKey<MouseScrollListener> MouseScrollKey = ListenerKey.of(0);
     private final static ListenerKey<MouseMoveListener> MouseMoveKey = ListenerKey.of(1);
+    private final static ListenerKey<MouseButtonListener> MouseButtonKey = ListenerKey.of(2);
 
     private final Window window;
     private final ListenerSupport listenerSupport = new ListenerSupport();
@@ -46,11 +46,18 @@ public class GlMouse implements Mouse {
         yaw.incr((float) xoffset);
         pitch.incr(-(float) yoffset);
 
-        listenerSupport.forEach(MouseMoveKey, l -> l.mouseOnMove(this));
+        MouseMoveEvent event = new MouseMoveEvent(this, xpos, ypos);
+        listenerSupport.forEach(MouseMoveKey, l -> l.mouseOnMove(event));
     }
 
     private void scrollCallback(long window, double xOffset, double yOffset) {
-        listenerSupport.forEach(MouseScrollKey, l -> l.mouseOnScroll(this, xOffset, yOffset));
+        MouseScrollEvent event = new MouseScrollEvent(this, xOffset, yOffset);
+        listenerSupport.forEach(MouseScrollKey, l -> l.mouseOnScroll(event));
+    }
+
+    @Override
+    public Action actionOf(Button input) {
+        return Cache.actionOfValue(GLFW.glfwGetMouseButton(window.handle(), input.code()));
     }
 
     @Override
@@ -61,7 +68,12 @@ public class GlMouse implements Mouse {
 
     @Override
     public void cursorMode(CursorMode mode) {
-        GLFW.glfwSetInputMode(window.handle(), GLFW.GLFW_CURSOR, mode.getValue());
+        GLFW.glfwSetInputMode(window.handle(), GLFW.GLFW_CURSOR, mode.value());
+    }
+
+    @Override
+    public ListenerOperation<MouseButtonListener> onButton(Button... buttons) {
+        return listenerSupport.of(MouseButtonKey);
     }
 
     @Override
