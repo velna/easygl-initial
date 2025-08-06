@@ -12,8 +12,15 @@ public interface InputDevice<I extends InputDevice.Input> {
 
     Window window();
 
+    Type type();
+
     interface Input {
         int code();
+    }
+
+    enum Type {
+        Mouse,
+        Keyboard
     }
 
     enum Action {

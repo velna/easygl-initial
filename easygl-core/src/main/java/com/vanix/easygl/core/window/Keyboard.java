@@ -8,6 +8,11 @@ public interface Keyboard extends InputDevice<Keyboard.Key> {
 
     ListenerOperation<KeyboardListener> onKey(Key... keys);
 
+    @Override
+    default Type type() {
+        return Type.Keyboard;
+    }
+
     enum Modifier {
         Shift(MetaSystem.Window.queryInt("MOD_SHIFT")),
         Control(MetaSystem.Window.queryInt("MOD_CONTROL")),

@@ -1,28 +1,36 @@
 package com.vanix.easygl.glfw;
 
-import com.vanix.easygl.core.window.InputController;
-import com.vanix.easygl.core.window.Keyboard;
-import com.vanix.easygl.core.window.Mouse;
-import com.vanix.easygl.core.window.Window;
+import com.vanix.easygl.core.window.*;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class GlInputController implements InputController {
+    private final Mouse mouse;
+    private final Keyboard keyboard;
+    private final List<InputDevice<?>> devices;
 
-	private final Mouse mouse;
-	private final Keyboard keyboard;
+    public GlInputController(Window window) {
+        mouse = new GlMouse(window);
+        keyboard = new GlKeyboard(window);
+        devices = List.of(mouse, keyboard);
+    }
 
-	public GlInputController(Window window) {
-		mouse = new GlMouse(window);
-		keyboard = new GlKeyboard(window);
-	}
+    @NotNull
+    @Override
+    public Iterator<InputDevice<?>> iterator() {
+        return devices.iterator();
+    }
 
-	@Override
-	public Mouse mouse() {
-		return mouse;
-	}
+    @Override
+    public Mouse mouse() {
+        return mouse;
+    }
 
-	@Override
-	public Keyboard keyboard() {
-		return keyboard;
-	}
+    @Override
+    public Keyboard keyboard() {
+        return keyboard;
+    }
 
 }

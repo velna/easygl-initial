@@ -1,7 +1,7 @@
 package com.vanix.easygl.core.window;
 
-public interface InputController {
-	Mouse mouse();
+public interface InputController extends Iterable<InputDevice<?>> {
+    Mouse mouse();
 
-	Keyboard keyboard();
+    Keyboard keyboard();
 }

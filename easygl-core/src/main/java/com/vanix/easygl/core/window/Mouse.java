@@ -4,7 +4,6 @@ import com.vanix.easygl.commons.Position;
 import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.commons.value.FloatValue;
 import com.vanix.easygl.core.meta.MetaSystem;
-import com.vanix.easygl.core.window.event.KeyboardListener;
 import com.vanix.easygl.core.window.event.MouseButtonListener;
 import com.vanix.easygl.core.window.event.MouseMoveListener;
 import com.vanix.easygl.core.window.event.MouseScrollListener;
@@ -26,6 +25,11 @@ public interface Mouse extends Position, InputDevice<Mouse.Button> {
     float pitch();
 
     FloatValue sensitivity();
+
+    @Override
+    default Type type() {
+        return Type.Mouse;
+    }
 
     enum Button implements Input {
         BTN1(MetaSystem.Window.queryInt("MOUSE_BUTTON_1")),
