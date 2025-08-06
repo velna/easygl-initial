@@ -1,7 +1,7 @@
 package com.vanix.easygl.glfw;
 
-import com.vanix.easygl.core.window.InputDevice;
-import com.vanix.easygl.core.window.Keyboard;
+import com.vanix.easygl.core.input.InputDevice;
+import com.vanix.easygl.core.input.Keyboard;
 import org.eclipse.collections.api.factory.primitive.IntObjectMaps;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 

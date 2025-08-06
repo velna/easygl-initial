@@ -1,7 +1,7 @@
-package com.vanix.easygl.core.window.event;
+package com.vanix.easygl.core.input.event;
 
-import com.vanix.easygl.core.window.InputDevice;
-import com.vanix.easygl.core.window.Keyboard;
+import com.vanix.easygl.core.input.InputDevice;
+import com.vanix.easygl.core.input.Keyboard;
 
 public class KeyboardEvent extends InputEvent<Keyboard, Keyboard.Key> {
     private final int scancode;

@@ -6,7 +6,7 @@ import com.vanix.easygl.commons.event.ListenerSupport;
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.BindingState;
-import com.vanix.easygl.core.window.InputController;
+import com.vanix.easygl.core.input.InputController;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.event.WindowRefreshListener;
 import com.vanix.easygl.core.window.event.WindowResizeListener;

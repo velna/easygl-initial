@@ -1,6 +1,7 @@
 package com.vanix.easygl.core.window;
 
 import com.vanix.easygl.commons.event.ListenerOperation;
+import com.vanix.easygl.core.input.InputController;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
 import com.vanix.easygl.core.BindTarget;

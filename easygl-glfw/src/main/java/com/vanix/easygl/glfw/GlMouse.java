@@ -5,9 +5,9 @@ import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.commons.event.ListenerSupport;
 import com.vanix.easygl.commons.value.FloatValue;
 import com.vanix.easygl.commons.value.Value;
-import com.vanix.easygl.core.window.Mouse;
+import com.vanix.easygl.core.input.Mouse;
+import com.vanix.easygl.core.input.event.*;
 import com.vanix.easygl.core.window.Window;
-import com.vanix.easygl.core.window.event.*;
 import org.lwjgl.glfw.GLFW;
 
 

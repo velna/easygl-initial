@@ -1,7 +1,7 @@
-package com.vanix.easygl.core.window.event;
+package com.vanix.easygl.core.input.event;
 
 import com.vanix.easygl.commons.event.Event;
-import com.vanix.easygl.core.window.InputDevice;
+import com.vanix.easygl.core.input.InputDevice;
 
 public class InputEvent<T extends InputDevice<I>, I extends InputDevice.Input> extends Event<T> {
     protected final I input;

@@ -1,6 +1,7 @@
-package com.vanix.easygl.core.window;
+package com.vanix.easygl.core.input;
 
 import com.vanix.easygl.core.meta.MetaSystem;
+import com.vanix.easygl.core.window.Window;
 
 public interface InputDevice<I extends InputDevice.Input> {
 

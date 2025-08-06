@@ -1,7 +1,6 @@
-package com.vanix.easygl.core.window.event;
+package com.vanix.easygl.core.input.event;
 
-import com.vanix.easygl.core.window.InputDevice;
-import com.vanix.easygl.core.window.Mouse;
+import com.vanix.easygl.core.input.Mouse;
 
 public class MouseMoveEvent extends MouseEvent {
     private final double x;

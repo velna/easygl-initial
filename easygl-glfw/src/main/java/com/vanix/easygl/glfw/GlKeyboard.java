@@ -3,10 +3,10 @@ package com.vanix.easygl.glfw;
 import com.vanix.easygl.commons.event.ListenerKey;
 import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.commons.event.ListenerSupport;
-import com.vanix.easygl.core.window.Keyboard;
+import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.window.Window;
-import com.vanix.easygl.core.window.event.KeyboardEvent;
-import com.vanix.easygl.core.window.event.KeyboardListener;
+import com.vanix.easygl.core.input.event.KeyboardEvent;
+import com.vanix.easygl.core.input.event.KeyboardListener;
 import org.lwjgl.glfw.GLFW;
 
 public class GlKeyboard implements Keyboard {

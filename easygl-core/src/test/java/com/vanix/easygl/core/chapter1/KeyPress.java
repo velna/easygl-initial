@@ -4,9 +4,9 @@ import com.vanix.easygl.core.ClientApp;
 import com.vanix.easygl.core.RenderContext;
 import com.vanix.easygl.core.Renderer;
 import com.vanix.easygl.core.graphics.*;
-import com.vanix.easygl.core.window.Keyboard;
-import com.vanix.easygl.core.window.event.KeyboardEvent;
-import com.vanix.easygl.core.window.event.KeyboardListener;
+import com.vanix.easygl.core.input.Keyboard;
+import com.vanix.easygl.core.input.event.KeyboardEvent;
+import com.vanix.easygl.core.input.event.KeyboardListener;
 import org.joml.Vector4f;
 
 public class KeyPress implements Renderer<ClientApp, RenderContext>, KeyboardListener {
