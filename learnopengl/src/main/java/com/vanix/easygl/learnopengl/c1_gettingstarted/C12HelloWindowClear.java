@@ -13,8 +13,8 @@ public class C12HelloWindowClear {
 
         try (var window = Window.of(800, 600, "LearnOpenGL");
              var graphics = Graphics.of(window)) {
-            window.bind().inputCtlr().keyboard().onKey(Keyboard.KEY_ESCAPE)
-                    .subscribe((keyboard, key, scancode, action, modifiers) -> keyboard.window().shouldClose(true));
+            window.bind().inputCtlr().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
+                    .subscribe((event) -> event.source().window().shouldClose(true));
 
             while (!window.shouldClose()) {
                 graphics.clearColor(0.2f, 0.3f, 0.3f, 1.0f)

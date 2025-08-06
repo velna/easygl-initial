@@ -4,8 +4,9 @@ import com.vanix.easygl.core.ClientApp;
 import com.vanix.easygl.core.RenderContext;
 import com.vanix.easygl.core.Renderer;
 import com.vanix.easygl.core.graphics.*;
-import com.vanix.easygl.core.window.event.KeyboardListener;
 import com.vanix.easygl.core.window.Keyboard;
+import com.vanix.easygl.core.window.event.KeyboardEvent;
+import com.vanix.easygl.core.window.event.KeyboardListener;
 import org.joml.Vector4f;
 
 public class KeyPress implements Renderer<ClientApp, RenderContext>, KeyboardListener {
@@ -19,7 +20,7 @@ public class KeyPress implements Renderer<ClientApp, RenderContext>, KeyboardLis
     @Override
     public void init(ClientApp clientApp) throws GraphicsException {
         this.clientApp = clientApp;
-        clientApp.window().inputCtlr().keyboard().onKey(Keyboard.KEY_M).subscribe(this);
+        clientApp.window().inputCtlr().keyboard().onKey(Keyboard.PrintableKey.M).subscribe(this);
         vbo = Buffer.of(Buffer.Type.Array, DataType.Float)
                 .bind()
                 .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
@@ -60,8 +61,8 @@ public class KeyPress implements Renderer<ClientApp, RenderContext>, KeyboardLis
     }
 
     @Override
-    public void keyboardOnKey(Keyboard keyboard, int key, int scancode, int action, int modifiers) {
-        if (action == Keyboard.KEY_ACT_PRESS) {
+    public void keyboardOnKey(KeyboardEvent event) {
+        if (event.isActionPress()) {
             polygonMode = polygonMode == PolygonMode.Fill ? PolygonMode.Line : PolygonMode.Fill;
             clientApp.graphics().polygonMode(PolygonFace.FrontAndBack, polygonMode);
         }

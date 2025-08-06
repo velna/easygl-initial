@@ -5,6 +5,7 @@ import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.window.Keyboard;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.core.window.event.KeyboardEvent;
 
 public class C46TexturesExercise4 {
 
@@ -115,14 +116,14 @@ public class C46TexturesExercise4 {
         }
     }
 
-    static void processInput(Keyboard keyboard, int key, int scancode, int action, int modifiers) {
-        if (key == Keyboard.KEY_ESCAPE) {
-            keyboard.window().shouldClose(true);
+    static void processInput(KeyboardEvent event) {
+        if (event.key()== Keyboard.FunctionKey.ESCAPE) {
+            event.source().window().shouldClose(true);
         }
-        if (keyboard.isKeyPressed(Keyboard.KEY_UP)) {
+        if (event.source().isKeyPressed(Keyboard.FunctionKey.UP)) {
             mixValue = Math.min(mixValue + 0.001f, 1.0f);
         }
-        if (keyboard.isKeyPressed(Keyboard.KEY_DOWN)) {
+        if (event.source().isKeyPressed(Keyboard.FunctionKey.DOWN)) {
             mixValue = Math.max(mixValue - 0.001f, 0.0f);
         }
     }

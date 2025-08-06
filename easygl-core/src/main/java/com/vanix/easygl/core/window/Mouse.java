@@ -2,6 +2,7 @@ package com.vanix.easygl.core.window;
 
 import com.vanix.easygl.commons.Position;
 import com.vanix.easygl.commons.event.ListenerOperation;
+import com.vanix.easygl.commons.value.FloatValue;
 import com.vanix.easygl.core.meta.MetaSystem;
 import com.vanix.easygl.core.window.event.MouseMoveListener;
 import com.vanix.easygl.core.window.event.MouseScrollListener;
@@ -35,11 +36,11 @@ public interface Mouse extends Position {
         }
     }
 
-    Window getWindow();
+    Window window();
 
-    void setCursorMode(CursorMode mode);
+    void cursorMode(CursorMode mode);
 
-    CursorMode getCursorMode();
+    CursorMode cursorMode();
 
     ListenerOperation<MouseScrollListener> onScroll();
 
@@ -49,6 +50,6 @@ public interface Mouse extends Position {
 
     float pitch();
 
-    float sensitivity();
+    FloatValue sensitivity();
 
 }

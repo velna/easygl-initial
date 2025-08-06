@@ -4,5 +4,5 @@ import com.vanix.easygl.core.window.Mouse;
 import com.vanix.easygl.commons.event.EventListener;
 
 public interface MouseScrollListener extends EventListener {
-	void onMouseScroll(Mouse mouse, double xoffset, double yoffset);
+	void mouseOnScroll(Mouse mouse, double xOffset, double yOffset);
 }

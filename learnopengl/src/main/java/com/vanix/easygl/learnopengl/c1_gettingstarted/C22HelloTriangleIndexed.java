@@ -19,8 +19,8 @@ public class C22HelloTriangleIndexed {
              var vao = VertexArray.of();
              var vbo = Buffer.ofArray(vao, DataType.Float);
              var ebo = Buffer.ofElementArray(vao, DataType.UnsignedInt)) {
-            window.bind().inputCtlr().keyboard().onKey(Keyboard.KEY_ESCAPE)
-                    .subscribe((keyboard, key, scancode, action, modifiers) -> keyboard.window().shouldClose(true));
+            window.bind().inputCtlr().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
+                    .subscribe((event) -> event.source().window().shouldClose(true));
 
             program.attach(vertex.source("""
                                     #version 330 core

@@ -1,152 +1,225 @@
 package com.vanix.easygl.core.window;
 
 import com.vanix.easygl.commons.event.ListenerOperation;
+import com.vanix.easygl.core.meta.MetaSystem;
 import com.vanix.easygl.core.window.event.KeyboardListener;
 
 public interface Keyboard {
 
-    // @formatter:off
-  int
-      KEY_ACT_PRESS     = 1,
-      KEY_ACT_RELEASE   = 0,
-      KEY_ACT_REPEAT    = 2;
-  int
-      KEY_MOD_SHIFT     = 0x1,
-      KEY_MOD_CONTROL   = 0x2,
-      KEY_MOD_ALT       = 0x4,
-      KEY_MOD_SUPER     = 0x8,
-      KEY_MOD_CAPS_LOCK = 0x10,
-      KEY_MOD_NUM_LOCK  = 0x20;
-  int
-      KEY_SPACE         = 32,
-      KEY_APOSTROPHE    = 39,
-      KEY_COMMA         = 44,
-      KEY_MINUS         = 45,
-      KEY_PERIOD        = 46,
-      KEY_SLASH         = 47,
-      KEY_0             = 48,
-      KEY_1             = 49,
-      KEY_2             = 50,
-      KEY_3             = 51,
-      KEY_4             = 52,
-      KEY_5             = 53,
-      KEY_6             = 54,
-      KEY_7             = 55,
-      KEY_8             = 56,
-      KEY_9             = 57,
-      KEY_SEMICOLON     = 59,
-      KEY_EQUAL         = 61,
-      KEY_A             = 65,
-      KEY_B             = 66,
-      KEY_C             = 67,
-      KEY_D             = 68,
-      KEY_E             = 69,
-      KEY_F             = 70,
-      KEY_G             = 71,
-      KEY_H             = 72,
-      KEY_I             = 73,
-      KEY_J             = 74,
-      KEY_K             = 75,
-      KEY_L             = 76,
-      KEY_M             = 77,
-      KEY_N             = 78,
-      KEY_O             = 79,
-      KEY_P             = 80,
-      KEY_Q             = 81,
-      KEY_R             = 82,
-      KEY_S             = 83,
-      KEY_T             = 84,
-      KEY_U             = 85,
-      KEY_V             = 86,
-      KEY_W             = 87,
-      KEY_X             = 88,
-      KEY_Y             = 89,
-      KEY_Z             = 90,
-      KEY_LEFT_BRACKET  = 91,
-      KEY_BACKSLASH     = 92,
-      KEY_RIGHT_BRACKET = 93,
-      KEY_GRAVE_ACCENT  = 96,
-      KEY_WORLD_1       = 161,
-      KEY_WORLD_2       = 162;
+    boolean isKeyPressed(Keyboard.Key key);
 
-  /** Function keys. */
-  int
-      KEY_ESCAPE        = 256,
-      KEY_ENTER         = 257,
-      KEY_TAB           = 258,
-      KEY_BACKSPACE     = 259,
-      KEY_INSERT        = 260,
-      KEY_DELETE        = 261,
-      KEY_RIGHT         = 262,
-      KEY_LEFT          = 263,
-      KEY_DOWN          = 264,
-      KEY_UP            = 265,
-      KEY_PAGE_UP       = 266,
-      KEY_PAGE_DOWN     = 267,
-      KEY_HOME          = 268,
-      KEY_END           = 269,
-      KEY_CAPS_LOCK     = 280,
-      KEY_SCROLL_LOCK   = 281,
-      KEY_NUM_LOCK      = 282,
-      KEY_PRINT_SCREEN  = 283,
-      KEY_PAUSE         = 284,
-      KEY_F1            = 290,
-      KEY_F2            = 291,
-      KEY_F3            = 292,
-      KEY_F4            = 293,
-      KEY_F5            = 294,
-      KEY_F6            = 295,
-      KEY_F7            = 296,
-      KEY_F8            = 297,
-      KEY_F9            = 298,
-      KEY_F10           = 299,
-      KEY_F11           = 300,
-      KEY_F12           = 301,
-      KEY_F13           = 302,
-      KEY_F14           = 303,
-      KEY_F15           = 304,
-      KEY_F16           = 305,
-      KEY_F17           = 306,
-      KEY_F18           = 307,
-      KEY_F19           = 308,
-      KEY_F20           = 309,
-      KEY_F21           = 310,
-      KEY_F22           = 311,
-      KEY_F23           = 312,
-      KEY_F24           = 313,
-      KEY_F25           = 314,
-      KEY_KP_0          = 320,
-      KEY_KP_1          = 321,
-      KEY_KP_2          = 322,
-      KEY_KP_3          = 323,
-      KEY_KP_4          = 324,
-      KEY_KP_5          = 325,
-      KEY_KP_6          = 326,
-      KEY_KP_7          = 327,
-      KEY_KP_8          = 328,
-      KEY_KP_9          = 329,
-      KEY_KP_DECIMAL    = 330,
-      KEY_KP_DIVIDE     = 331,
-      KEY_KP_MULTIPLY   = 332,
-      KEY_KP_SUBTRACT   = 333,
-      KEY_KP_ADD        = 334,
-      KEY_KP_ENTER      = 335,
-      KEY_KP_EQUAL      = 336,
-      KEY_LEFT_SHIFT    = 340,
-      KEY_LEFT_CONTROL  = 341,
-      KEY_LEFT_ALT      = 342,
-      KEY_LEFT_SUPER    = 343,
-      KEY_RIGHT_SHIFT   = 344,
-      KEY_RIGHT_CONTROL = 345,
-      KEY_RIGHT_ALT     = 346,
-      KEY_RIGHT_SUPER   = 347,
-      KEY_MENU          = 348,
-      KEY_LAST          = KEY_MENU;
-  //@formatter:on
-
-    boolean isKeyPressed(int key);
-
-    ListenerOperation<KeyboardListener> onKey(int... keys);
+    ListenerOperation<KeyboardListener> onKey(Keyboard.Key... keys);
 
     Window window();
+
+    enum Action {
+        Release(MetaSystem.Window.queryInt("RELEASE")),
+        Press(MetaSystem.Window.queryInt("PRESS")),
+        Repeat(MetaSystem.Window.queryInt("REPEAT"));
+        private final int value;
+
+        Action(int value) {
+            this.value = value;
+        }
+
+        public int value() {
+            return value;
+        }
+    }
+
+    enum Modifier {
+        Shift(MetaSystem.Window.queryInt("MOD_SHIFT")),
+        Control(MetaSystem.Window.queryInt("MOD_CONTROL")),
+        Alt(MetaSystem.Window.queryInt("MOD_ALT")),
+        Super(MetaSystem.Window.queryInt("MOD_SUPER")),
+        CapsLock(MetaSystem.Window.queryInt("MOD_CAPS_LOCK")),
+        NumLock(MetaSystem.Window.queryInt("MOD_NUM_LOCK"));
+        private final int value;
+
+        Modifier(int value) {
+            this.value = value;
+        }
+
+        public int value() {
+            return value;
+        }
+    }
+
+
+    sealed interface Key permits PrintableKey, FunctionKey {
+        int code();
+
+        boolean isFunctionKey();
+
+        boolean isPrintableKey();
+    }
+
+    enum PrintableKey implements Key {
+        SPACE(MetaSystem.Window.queryInt("KEY_SPACE")),
+        APOSTROPHE(MetaSystem.Window.queryInt("KEY_APOSTROPHE")),
+        COMMA(MetaSystem.Window.queryInt("KEY_COMMA")),
+        MINUS(MetaSystem.Window.queryInt("KEY_MINUS")),
+        PERIOD(MetaSystem.Window.queryInt("KEY_PERIOD")),
+        SLASH(MetaSystem.Window.queryInt("KEY_SLASH")),
+        N0(MetaSystem.Window.queryInt("KEY_0")),
+        N1(MetaSystem.Window.queryInt("KEY_1")),
+        N2(MetaSystem.Window.queryInt("KEY_2")),
+        N3(MetaSystem.Window.queryInt("KEY_3")),
+        N4(MetaSystem.Window.queryInt("KEY_4")),
+        N5(MetaSystem.Window.queryInt("KEY_5")),
+        N6(MetaSystem.Window.queryInt("KEY_6")),
+        N7(MetaSystem.Window.queryInt("KEY_7")),
+        N8(MetaSystem.Window.queryInt("KEY_8")),
+        N9(MetaSystem.Window.queryInt("KEY_9")),
+        SEMICOLON(MetaSystem.Window.queryInt("KEY_SEMICOLON")),
+        EQUAL(MetaSystem.Window.queryInt("KEY_EQUAL")),
+        A(MetaSystem.Window.queryInt("KEY_A")),
+        B(MetaSystem.Window.queryInt("KEY_B")),
+        C(MetaSystem.Window.queryInt("KEY_C")),
+        D(MetaSystem.Window.queryInt("KEY_D")),
+        E(MetaSystem.Window.queryInt("KEY_E")),
+        F(MetaSystem.Window.queryInt("KEY_F")),
+        G(MetaSystem.Window.queryInt("KEY_G")),
+        H(MetaSystem.Window.queryInt("KEY_H")),
+        I(MetaSystem.Window.queryInt("KEY_I")),
+        J(MetaSystem.Window.queryInt("KEY_J")),
+        K(MetaSystem.Window.queryInt("KEY_K")),
+        L(MetaSystem.Window.queryInt("KEY_L")),
+        M(MetaSystem.Window.queryInt("KEY_M")),
+        N(MetaSystem.Window.queryInt("KEY_N")),
+        O(MetaSystem.Window.queryInt("KEY_O")),
+        P(MetaSystem.Window.queryInt("KEY_P")),
+        Q(MetaSystem.Window.queryInt("KEY_Q")),
+        R(MetaSystem.Window.queryInt("KEY_R")),
+        S(MetaSystem.Window.queryInt("KEY_S")),
+        T(MetaSystem.Window.queryInt("KEY_T")),
+        U(MetaSystem.Window.queryInt("KEY_U")),
+        V(MetaSystem.Window.queryInt("KEY_V")),
+        W(MetaSystem.Window.queryInt("KEY_W")),
+        X(MetaSystem.Window.queryInt("KEY_X")),
+        Y(MetaSystem.Window.queryInt("KEY_Y")),
+        Z(MetaSystem.Window.queryInt("KEY_Z")),
+        LEFT_BRACKET(MetaSystem.Window.queryInt("KEY_LEFT_BRACKET")),
+        BACKSLASH(MetaSystem.Window.queryInt("KEY_BACKSLASH")),
+        RIGHT_BRACKET(MetaSystem.Window.queryInt("KEY_RIGHT_BRACKET")),
+        GRAVE_ACCENT(MetaSystem.Window.queryInt("KEY_GRAVE_ACCENT")),
+        WORLD_1(MetaSystem.Window.queryInt("KEY_WORLD_1")),
+        WORLD_2(MetaSystem.Window.queryInt("KEY_WORLD_2"));
+
+        private final int value;
+
+        PrintableKey(int value) {
+            this.value = value;
+        }
+
+        @Override
+        public int code() {
+            return value;
+        }
+
+        @Override
+        public boolean isFunctionKey() {
+            return false;
+        }
+
+        @Override
+        public boolean isPrintableKey() {
+            return true;
+        }
+    }
+
+    enum FunctionKey implements Key {
+        ESCAPE(MetaSystem.Window.queryInt("KEY_ESCAPE")),
+        ENTER(MetaSystem.Window.queryInt("KEY_ENTER")),
+        TAB(MetaSystem.Window.queryInt("KEY_TAB")),
+        BACKSPACE(MetaSystem.Window.queryInt("KEY_BACKSPACE")),
+        INSERT(MetaSystem.Window.queryInt("KEY_INSERT")),
+        DELETE(MetaSystem.Window.queryInt("KEY_DELETE")),
+        RIGHT(MetaSystem.Window.queryInt("KEY_RIGHT")),
+        LEFT(MetaSystem.Window.queryInt("KEY_LEFT")),
+        DOWN(MetaSystem.Window.queryInt("KEY_DOWN")),
+        UP(MetaSystem.Window.queryInt("KEY_UP")),
+        PAGE_UP(MetaSystem.Window.queryInt("KEY_PAGE_UP")),
+        PAGE_DOWN(MetaSystem.Window.queryInt("KEY_PAGE_DOWN")),
+        HOME(MetaSystem.Window.queryInt("KEY_HOME")),
+        END(MetaSystem.Window.queryInt("KEY_END")),
+        CAPS_LOCK(MetaSystem.Window.queryInt("KEY_CAPS_LOCK")),
+        SCROLL_LOCK(MetaSystem.Window.queryInt("KEY_SCROLL_LOCK")),
+        NUM_LOCK(MetaSystem.Window.queryInt("KEY_NUM_LOCK")),
+        PRINT_SCREEN(MetaSystem.Window.queryInt("KEY_PRINT_SCREEN")),
+        PAUSE(MetaSystem.Window.queryInt("KEY_PAUSE")),
+        F1(MetaSystem.Window.queryInt("KEY_F1")),
+        F2(MetaSystem.Window.queryInt("KEY_F2")),
+        F3(MetaSystem.Window.queryInt("KEY_F3")),
+        F4(MetaSystem.Window.queryInt("KEY_F4")),
+        F5(MetaSystem.Window.queryInt("KEY_F5")),
+        F6(MetaSystem.Window.queryInt("KEY_F6")),
+        F7(MetaSystem.Window.queryInt("KEY_F7")),
+        F8(MetaSystem.Window.queryInt("KEY_F8")),
+        F9(MetaSystem.Window.queryInt("KEY_F9")),
+        F10(MetaSystem.Window.queryInt("KEY_F10")),
+        F11(MetaSystem.Window.queryInt("KEY_F11")),
+        F12(MetaSystem.Window.queryInt("KEY_F12")),
+        F13(MetaSystem.Window.queryInt("KEY_F13")),
+        F14(MetaSystem.Window.queryInt("KEY_F14")),
+        F15(MetaSystem.Window.queryInt("KEY_F15")),
+        F16(MetaSystem.Window.queryInt("KEY_F16")),
+        F17(MetaSystem.Window.queryInt("KEY_F17")),
+        F18(MetaSystem.Window.queryInt("KEY_F18")),
+        F19(MetaSystem.Window.queryInt("KEY_F19")),
+        F20(MetaSystem.Window.queryInt("KEY_F20")),
+        F21(MetaSystem.Window.queryInt("KEY_F21")),
+        F22(MetaSystem.Window.queryInt("KEY_F22")),
+        F23(MetaSystem.Window.queryInt("KEY_F23")),
+        F24(MetaSystem.Window.queryInt("KEY_F24")),
+        F25(MetaSystem.Window.queryInt("KEY_F25")),
+        KP_0(MetaSystem.Window.queryInt("KEY_KP_0")),
+        KP_1(MetaSystem.Window.queryInt("KEY_KP_1")),
+        KP_2(MetaSystem.Window.queryInt("KEY_KP_2")),
+        KP_3(MetaSystem.Window.queryInt("KEY_KP_3")),
+        KP_4(MetaSystem.Window.queryInt("KEY_KP_4")),
+        KP_5(MetaSystem.Window.queryInt("KEY_KP_5")),
+        KP_6(MetaSystem.Window.queryInt("KEY_KP_6")),
+        KP_7(MetaSystem.Window.queryInt("KEY_KP_7")),
+        KP_8(MetaSystem.Window.queryInt("KEY_KP_8")),
+        KP_9(MetaSystem.Window.queryInt("KEY_KP_9")),
+        KP_DECIMAL(MetaSystem.Window.queryInt("KEY_KP_DECIMAL")),
+        KP_DIVIDE(MetaSystem.Window.queryInt("KEY_KP_DIVIDE")),
+        KP_MULTIPLY(MetaSystem.Window.queryInt("KEY_KP_MULTIPLY")),
+        KP_SUBTRACT(MetaSystem.Window.queryInt("KEY_KP_SUBTRACT")),
+        KP_ADD(MetaSystem.Window.queryInt("KEY_KP_ADD")),
+        KP_ENTER(MetaSystem.Window.queryInt("KEY_KP_ENTER")),
+        KP_EQUAL(MetaSystem.Window.queryInt("KEY_KP_EQUAL")),
+        LEFT_SHIFT(MetaSystem.Window.queryInt("KEY_LEFT_SHIFT")),
+        LEFT_CONTROL(MetaSystem.Window.queryInt("KEY_LEFT_CONTROL")),
+        LEFT_ALT(MetaSystem.Window.queryInt("KEY_LEFT_ALT")),
+        LEFT_SUPER(MetaSystem.Window.queryInt("KEY_LEFT_SUPER")),
+        RIGHT_SHIFT(MetaSystem.Window.queryInt("KEY_RIGHT_SHIFT")),
+        RIGHT_CONTROL(MetaSystem.Window.queryInt("KEY_RIGHT_CONTROL")),
+        RIGHT_ALT(MetaSystem.Window.queryInt("KEY_RIGHT_ALT")),
+        RIGHT_SUPER(MetaSystem.Window.queryInt("KEY_RIGHT_SUPER")),
+        MENU(MetaSystem.Window.queryInt("KEY_MENU")),
+        LAST(MetaSystem.Window.queryInt("KEY_LAST"));
+        private final int value;
+
+        FunctionKey(int value) {
+            this.value = value;
+        }
+
+        @Override
+        public int code() {
+            return value;
+        }
+
+        @Override
+        public boolean isFunctionKey() {
+            return true;
+        }
+
+        @Override
+        public boolean isPrintableKey() {
+            return false;
+        }
+    }
+
 }

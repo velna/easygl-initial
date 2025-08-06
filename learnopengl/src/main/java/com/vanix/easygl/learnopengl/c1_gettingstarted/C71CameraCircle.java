@@ -25,8 +25,8 @@ public class C71CameraCircle {
              var vbo = Buffer.ofArray(vao, DataType.Float);
              var texture1 = Texture.of2D("t1");
              var texture2 = Texture.of2D("t2")) {
-            window.bind().inputCtlr().keyboard().onKey(Keyboard.KEY_ESCAPE)
-                    .subscribe((keyboard, key, scancode, action, modifiers) -> keyboard.window().shouldClose(true));
+            window.bind().inputCtlr().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
+                    .subscribe((event) -> event.source().window().shouldClose(true));
 
             graphics.depth().enable();
 

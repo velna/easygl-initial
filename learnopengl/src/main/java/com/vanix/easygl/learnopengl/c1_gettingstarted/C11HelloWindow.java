@@ -13,8 +13,8 @@ public class C11HelloWindow {
 
         try (var window = Window.of(800, 600, "LearnOpenGL");
              var graphics = Graphics.of()) {
-            window.bind().inputCtlr().keyboard().onKey(Keyboard.KEY_ESCAPE)
-                    .subscribe((keyboard, key, scancode, action, modifiers) -> keyboard.window().shouldClose(true));
+            window.bind().inputCtlr().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
+                    .subscribe((event) -> event.source().window().shouldClose(true));
             graphics.viewPort(0, 0, window.frameBufferWidth(), window.frameBufferHeight());
 
             while (!window.shouldClose()) {

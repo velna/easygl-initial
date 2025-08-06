@@ -18,50 +18,49 @@ public class GlMouse implements Mouse {
 
     private final Window window;
     private final ListenerSupport listenerSupport = new ListenerSupport();
-    private float sensitivity = 0.05f;
+    private final FloatValue sensitivity = Value.of(0.05f);
     private double x;
     private double y;
-    private double lastX;
-    private double lastY;
-    private FloatValue yaw = Value.of(-90.0f);
-    private FloatValue pitch = Value.limited(0.0f, -89.0f, 89.0f);
+    private final FloatValue yaw = Value.of(-90.0f);
+    private final FloatValue pitch = Value.limited(0.0f, -89.0f, 89.0f);
 
     public GlMouse(Window window) {
         this.window = window;
         GLFW.glfwSetCursorPosCallback(window.handle(), this::moveCallback);
-        GLFW.glfwSetScrollCallback(window.handle(), this::scollCallback);
+        GLFW.glfwSetScrollCallback(window.handle(), this::scrollCallback);
         yaw.addInterceptor((oldV, newV) -> newV % 360.0f);
     }
 
     private void moveCallback(long window, double xpos, double ypos) {
-        lastX = x;
-        lastY = y;
+        double lastX = x;
+        double lastY = y;
         this.x = xpos;
         this.y = ypos;
         double xoffset = x - lastX;
         double yoffset = y - lastY;
 
-        xoffset *= sensitivity;
-        yoffset *= sensitivity;
+        float sens = sensitivity.get();
+        xoffset *= sens;
+        yoffset *= sens;
 
         yaw.incr((float) xoffset);
         pitch.incr(-(float) yoffset);
 
-        listenerSupport.forEach(MouseMoveKey, l -> l.onMouseMove(this));
+        listenerSupport.forEach(MouseMoveKey, l -> l.mouseOnMove(this));
     }
 
-    private void scollCallback(long window, double xoffset, double yoffset) {
-        listenerSupport.forEach(MouseScrollKey, l -> l.onMouseScroll(this, xoffset, yoffset));
+    private void scrollCallback(long window, double xOffset, double yOffset) {
+        listenerSupport.forEach(MouseScrollKey, l -> l.mouseOnScroll(this, xOffset, yOffset));
     }
 
     @Override
-    public CursorMode getCursorMode() {
+    public CursorMode cursorMode() {
         int mode = GLFW.glfwGetInputMode(window.handle(), GLFW.GLFW_CURSOR);
         return CursorMode.valueOf(mode);
     }
 
     @Override
-    public void setCursorMode(CursorMode mode) {
+    public void cursorMode(CursorMode mode) {
         GLFW.glfwSetInputMode(window.handle(), GLFW.GLFW_CURSOR, mode.getValue());
     }
 
@@ -76,7 +75,7 @@ public class GlMouse implements Mouse {
     }
 
     @Override
-    public Window getWindow() {
+    public Window window() {
         return window;
     }
 
@@ -101,7 +100,7 @@ public class GlMouse implements Mouse {
     }
 
     @Override
-    public float sensitivity() {
+    public FloatValue sensitivity() {
         return sensitivity;
     }
 }

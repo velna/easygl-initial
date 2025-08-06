@@ -19,8 +19,8 @@ public class C25HelloTriangleExercises3 {
              var programYellow = Program.of("p-yellow");
              var vaos = VertexArray.of(2);
              var vbos = Buffer.of(2, Buffer.Type.Array, DataType.Float)) {
-            window.bind().inputCtlr().keyboard().onKey(Keyboard.KEY_ESCAPE)
-                    .subscribe((keyboard, key, scancode, action, modifiers) -> keyboard.window().shouldClose(true));
+            window.bind().inputCtlr().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
+                    .subscribe((event) -> event.source().window().shouldClose(true));
 
             vertex.source("""
                             #version 330 core

@@ -69,7 +69,7 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
             frameBufferWidth = bWidth.get();
             frameBufferHeight = bHeight.get();
         }
-        listenerSupport.forEach(WindowResizeKey, l -> l.onWindowResized(this));
+        listenerSupport.forEach(WindowResizeKey, l -> l.windowOnResize(this));
     }
 
     @Override
