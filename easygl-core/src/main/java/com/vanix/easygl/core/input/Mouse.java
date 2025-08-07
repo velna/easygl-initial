@@ -3,10 +3,10 @@ package com.vanix.easygl.core.input;
 import com.vanix.easygl.commons.Position;
 import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.commons.value.FloatValue;
-import com.vanix.easygl.core.meta.MetaSystem;
 import com.vanix.easygl.core.input.event.MouseButtonListener;
 import com.vanix.easygl.core.input.event.MouseMoveListener;
 import com.vanix.easygl.core.input.event.MouseScrollListener;
+import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface Mouse extends Position, InputDevice<Mouse.Button> {
 

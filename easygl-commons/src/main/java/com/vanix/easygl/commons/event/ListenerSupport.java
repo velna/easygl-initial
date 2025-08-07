@@ -1,74 +1,85 @@
 package com.vanix.easygl.commons.event;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.ToIntFunction;
 
-import org.apache.commons.collections4.list.GrowthList;
-import org.apache.commons.collections4.list.LazyList;
+public class ListenerSupport<T extends EventListener> {
 
-public class ListenerSupport {
+    private final List<T>[] array;
+    private int size;
+    private final Runnable initFunction;
+    private final Runnable closeFunction;
 
-	private final List<Collection<?>> list = new ArrayList<>(4);
-	private final List<Collection<?>> listeners = LazyList.lazyList(list, LinkedList::new);
-	private final List<ListenerKey<?>> listenerKeys = new GrowthList<>();
+    @SuppressWarnings("unchecked")
+    public ListenerSupport(int maxKey, Runnable initFunction, Runnable closeFunction) {
+        this.array = new List[maxKey + 1];
+        this.initFunction = initFunction;
+        this.closeFunction = closeFunction;
+    }
 
-	public <T extends EventListener> ListenerOperation<T> of(ListenerKey<T> key) {
-		return new ListenerOperation<T>() {
+    @SafeVarargs
+    public final <K> ListenerOperation<T> listen(ToIntFunction<K> mapper, K... keys) {
+        int[] ks = new int[keys.length];
+        for (int i = 0; i < keys.length; i++) {
+            ks[i] = mapper.applyAsInt(keys[i]);
+        }
+        return listen(ks);
+    }
 
-			@Override
-			public void subscribe(T listener) {
-				ListenerSupport.this.add(key, listener);
-			}
+    public ListenerOperation<T> listen(int... keys) {
+        return new ListenerOperation<>() {
+            @Override
+            public void subscribe(T listener) {
+                if (keys.length == 0) {
+                    add(0, listener);
+                } else {
+                    for (var k : keys) {
+                        add(k, listener);
+                    }
+                }
+            }
 
-			@Override
-			public void unsubscribe(T listener) {
-				ListenerSupport.this.remove(key, listener);
-			}
+            @Override
+            public void unsubscribe(T listener) {
+                if (keys.length == 0) {
+                    remove(0, listener);
+                } else {
+                    for (var k : keys) {
+                        remove(k, listener);
+                    }
+                }
+            }
+        };
+    }
 
-		};
-	}
+    private void add(int key, T listener) {
+        var listeners = array[key];
+        if (listeners == null) {
+            array[key] = listeners = new ArrayList<>();
+        }
+        if (listeners.contains(listener)) {
+            return;
+        }
+        listeners.add(listener);
+        if (size++ == 0) {
+            initFunction.run();
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	public <T extends EventListener> ListenerKey<T> keyOf(int key) {
-		ListenerKey<T> ret;
-		if (key >= listenerKeys.size()) {
-			ret = ListenerKey.of(key);
-			listenerKeys.set(key, ret);
-		} else {
-			ret = (ListenerKey<T>) listenerKeys.get(key);
-			if (null == ret) {
-				ret = ListenerKey.of(key);
-				listenerKeys.set(key, ret);
-			}
-		}
-		return ret;
-	}
+    private void remove(int key, T listener) {
+        var listeners = array[key];
+        if (listeners != null && listeners.remove(listener) && --size == 0) {
+            closeFunction.run();
+        }
+    }
 
-	public <T extends EventListener> void add(ListenerKey<T> key, T listener) {
-		get(key).add(listener);
-	}
+    public void forEach(int key, Consumer<T> consumer) {
+        var listeners = array[key];
+        if (listeners != null && !listeners.isEmpty()) {
+            listeners.forEach(consumer);
+        }
+    }
 
-	public <T extends EventListener> void remove(ListenerKey<T> key, T listener) {
-		get(key).remove(listener);
-	}
-
-	@SuppressWarnings("unchecked")
-	public <T extends EventListener> void forEach(ListenerKey<T> key, Consumer<? super T> consumer) {
-		Collection<T> ls = null;
-		if (key.value() < this.list.size() && (ls = (Collection<T>) this.list.get(key.value())) != null) {
-			ls.forEach(consumer);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private <T extends EventListener> Collection<T> get(ListenerKey<T> key) {
-		return (Collection<T>) listeners.get(key.value());
-	}
-
-	public void clear() {
-		listeners.clear();
-	}
 }

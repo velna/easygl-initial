@@ -1,8 +1,8 @@
 package com.vanix.easygl.core.input;
 
 import com.vanix.easygl.commons.event.ListenerOperation;
-import com.vanix.easygl.core.meta.MetaSystem;
 import com.vanix.easygl.core.input.event.KeyboardListener;
+import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface Keyboard extends InputDevice<Keyboard.Key> {
 

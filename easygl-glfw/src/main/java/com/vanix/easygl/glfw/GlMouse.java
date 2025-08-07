@@ -1,8 +1,7 @@
 package com.vanix.easygl.glfw;
 
-import com.vanix.easygl.commons.event.ListenerKey;
-import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.commons.event.ListenerSupport;
+import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.commons.value.FloatValue;
 import com.vanix.easygl.commons.value.Value;
 import com.vanix.easygl.core.input.Mouse;
@@ -12,23 +11,30 @@ import org.lwjgl.glfw.GLFW;
 
 
 public class GlMouse implements Mouse {
-    private final static ListenerKey<MouseScrollListener> MouseScrollKey = ListenerKey.of(0);
-    private final static ListenerKey<MouseMoveListener> MouseMoveKey = ListenerKey.of(1);
-    private final static ListenerKey<MouseButtonListener> MouseButtonKey = ListenerKey.of(2);
+    private final ListenerSupport<MouseScrollListener> scrollListeners;
+    private final ListenerSupport<MouseMoveListener> moveListeners;
+    private final ListenerSupport<MouseButtonListener> buttonListeners;
 
     private final Window window;
-    private final ListenerSupport listenerSupport = new ListenerSupport();
     private final FloatValue sensitivity = Value.of(0.05f);
     private double x;
     private double y;
     private final FloatValue yaw = Value.of(-90.0f);
     private final FloatValue pitch = Value.limited(0.0f, -89.0f, 89.0f);
 
-    public GlMouse(Window window) {
+    public GlMouse(GlWindow window) {
         this.window = window;
-        GLFW.glfwSetCursorPosCallback(window.handle(), this::moveCallback);
-        GLFW.glfwSetScrollCallback(window.handle(), this::scrollCallback);
         yaw.addInterceptor((oldV, newV) -> newV % 360.0f);
+        moveListeners = window.newListenerSupport(1, GLFW::glfwSetCursorPosCallback, this::moveCallback);
+        scrollListeners = window.newListenerSupport(1, GLFW::glfwSetScrollCallback, this::scrollCallback);
+        buttonListeners = window.newListenerSupport(
+                GLFW.GLFW_MOUSE_BUTTON_LAST + 1,
+                GLFW::glfwSetMouseButtonCallback,
+                this::buttonCallback);
+    }
+
+    private void buttonCallback(long window, int button, int action, int mods) {
+
     }
 
     private void moveCallback(long window, double xpos, double ypos) {
@@ -47,12 +53,12 @@ public class GlMouse implements Mouse {
         pitch.incr(-(float) yoffset);
 
         MouseMoveEvent event = new MouseMoveEvent(this, xpos, ypos);
-        listenerSupport.forEach(MouseMoveKey, l -> l.mouseOnMove(event));
+        moveListeners.forEach(0, l -> l.mouseOnMove(event));
     }
 
     private void scrollCallback(long window, double xOffset, double yOffset) {
         MouseScrollEvent event = new MouseScrollEvent(this, xOffset, yOffset);
-        listenerSupport.forEach(MouseScrollKey, l -> l.mouseOnScroll(event));
+        scrollListeners.forEach(0, l -> l.mouseOnScroll(event));
     }
 
     @Override
@@ -73,17 +79,17 @@ public class GlMouse implements Mouse {
 
     @Override
     public ListenerOperation<MouseButtonListener> onButton(Button... buttons) {
-        return listenerSupport.of(MouseButtonKey);
+        return buttonListeners.listen(Button::code, buttons);
     }
 
     @Override
     public ListenerOperation<MouseMoveListener> onMove() {
-        return listenerSupport.of(MouseMoveKey);
+        return moveListeners.listen();
     }
 
     @Override
     public ListenerOperation<MouseScrollListener> onScroll() {
-        return listenerSupport.of(MouseScrollKey);
+        return scrollListeners.listen();
     }
 
     @Override

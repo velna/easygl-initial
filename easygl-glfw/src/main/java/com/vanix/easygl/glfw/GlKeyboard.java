@@ -1,30 +1,29 @@
 package com.vanix.easygl.glfw;
 
-import com.vanix.easygl.commons.event.ListenerKey;
-import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.commons.event.ListenerSupport;
+import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.core.input.Keyboard;
-import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.input.event.KeyboardEvent;
 import com.vanix.easygl.core.input.event.KeyboardListener;
+import com.vanix.easygl.core.window.Window;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.function.Consumer;
+
 public class GlKeyboard implements Keyboard {
-    private final ListenerSupport listenerSupport = new ListenerSupport();
+    private final ListenerSupport<KeyboardListener> listenerSupport;
     private final Window window;
 
-    public GlKeyboard(Window window) {
+    public GlKeyboard(GlWindow window) {
         this.window = window;
-        GLFW.glfwSetKeyCallback(window.handle(), this::onKey);
+        listenerSupport = window.newListenerSupport(GLFW.GLFW_KEY_LAST + 1, GLFW::glfwSetKeyCallback, this::onKey);
     }
 
     private void onKey(long window, int key, int scancode, int action, int mods) {
         KeyboardEvent event = new KeyboardEvent(this, Cache.keyOfValue(key), Cache.actionOfValue(action), scancode, mods);
-        ListenerKey<KeyboardListener> lk0 = listenerSupport.keyOf(0);
-        listenerSupport.forEach(lk0, l -> l.keyboardOnKey(event));
-
-        ListenerKey<KeyboardListener> lk = listenerSupport.keyOf(key);
-        listenerSupport.forEach(lk, l -> l.keyboardOnKey(event));
+        Consumer<KeyboardListener> consumer = l -> l.keyboardOnKey(event);
+        listenerSupport.forEach(0, consumer);
+        listenerSupport.forEach(key, consumer);
     }
 
     @Override
@@ -34,31 +33,7 @@ public class GlKeyboard implements Keyboard {
 
     @Override
     public ListenerOperation<KeyboardListener> onKey(Key... keys) {
-        return new ListenerOperation<>() {
-
-            @Override
-            public void subscribe(KeyboardListener listener) {
-                if (null == keys || keys.length == 0) {
-                    listenerSupport.add(listenerSupport.keyOf(0), listener);
-                } else {
-                    for (var key : keys) {
-                        listenerSupport.add(listenerSupport.keyOf(key.code()), listener);
-                    }
-                }
-            }
-
-            @Override
-            public void unsubscribe(KeyboardListener listener) {
-                if (null == keys || keys.length == 0) {
-                    listenerSupport.remove(listenerSupport.keyOf(0), listener);
-                } else {
-                    for (var key : keys) {
-                        listenerSupport.remove(listenerSupport.keyOf(key.code()), listener);
-                    }
-                }
-            }
-
-        };
+        return listenerSupport.listen(Key::code, keys);
     }
 
     @Override

@@ -15,7 +15,7 @@ public class GlInputController implements InputController {
     private final Keyboard keyboard;
     private final List<InputDevice<?>> devices;
 
-    public GlInputController(Window window) {
+    public GlInputController(GlWindow window) {
         mouse = new GlMouse(window);
         keyboard = new GlKeyboard(window);
         devices = List.of(mouse, keyboard);

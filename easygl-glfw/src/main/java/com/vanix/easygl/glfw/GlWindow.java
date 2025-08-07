@@ -1,6 +1,6 @@
 package com.vanix.easygl.glfw;
 
-import com.vanix.easygl.commons.event.ListenerKey;
+import com.vanix.easygl.commons.event.EventListener;
 import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.commons.event.ListenerSupport;
 import com.vanix.easygl.core.AbstractBindable;
@@ -15,9 +15,10 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
+import org.lwjgl.system.NativeResource;
 
 import java.nio.IntBuffer;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.BiFunction;
 
 @Slf4j
 public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Window> implements Window {
@@ -29,11 +30,9 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
             BindingState.<BindTarget.Default<Window>, Window>ofLong("Window", GLFW::glfwMakeContextCurrent)
     );
 
-    private static final AtomicBoolean INIT = new AtomicBoolean();
-    private static final ListenerKey<WindowResizeListener> WindowResizeKey = ListenerKey.of(0);
-    private static final ListenerKey<WindowRefreshListener> WindowRefreshKey = ListenerKey.of(1);
-    private final ListenerSupport listenerSupport = new ListenerSupport();
-    private final InputController inputCtlr;
+    private final ListenerSupport<WindowResizeListener> resizeListeners;
+    private final ListenerSupport<WindowRefreshListener> refreshListeners;
+    private final InputController inputController;
 
     private int width;
     private int height;
@@ -50,12 +49,23 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
         this.height = (Integer) args[1];
         this.title = (String) args[2];
         bind();
-        var prevCallback = GLFW.glfwSetFramebufferSizeCallback(handle(), this::onWindowResized);
-        if (prevCallback != null) {
-            prevCallback.close();
-        }
+        inputController = new GlInputController(this);
+        resizeListeners = newListenerSupport(1, GLFW::glfwSetFramebufferSizeCallback, this::onWindowResized);
+        refreshListeners = newListenerSupport(1, GLFW::glfwSetWindowRefreshCallback, this::onWindowRefresh);
         onWindowResized(handle(), width, height);
-        inputCtlr = new GlInputController(this);
+    }
+
+    private <C> void setCallback(BiFunction<Long, C, NativeResource> setter, C callback) {
+        NativeResource closeable = setter.apply(handle, callback);
+        if (closeable != null) {
+            closeable.close();
+        }
+    }
+
+    <T extends EventListener, C> ListenerSupport<T> newListenerSupport(int maxKeys, BiFunction<Long, C, NativeResource> setter, C callback) {
+        return new ListenerSupport<>(maxKeys,
+                () -> setCallback(setter, callback),
+                () -> setCallback(setter, null));
     }
 
     private void onWindowResized(long window, int width, int height) {
@@ -69,7 +79,11 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
             frameBufferWidth = bWidth.get();
             frameBufferHeight = bHeight.get();
         }
-        listenerSupport.forEach(WindowResizeKey, l -> l.windowOnResize(this));
+        resizeListeners.forEach(0, l -> l.windowOnResize(this));
+    }
+
+    private void onWindowRefresh(long window) {
+        refreshListeners.forEach(0, l -> l.windowOnRefresh(this));
     }
 
     @Override
@@ -86,7 +100,7 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
 
     @Override
     public InputController inputCtlr() {
-        return inputCtlr;
+        return inputController;
     }
 
     @Override
@@ -101,12 +115,12 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
 
     @Override
     public ListenerOperation<WindowResizeListener> onResize() {
-        return listenerSupport.of(WindowResizeKey);
+        return resizeListeners.listen();
     }
 
     @Override
     public ListenerOperation<WindowRefreshListener> onRefresh() {
-        return listenerSupport.of(WindowRefreshKey);
+        return refreshListeners.listen();
     }
 
     @Override

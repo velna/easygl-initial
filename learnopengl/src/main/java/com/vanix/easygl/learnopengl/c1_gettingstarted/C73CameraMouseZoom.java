@@ -1,12 +1,12 @@
 package com.vanix.easygl.learnopengl.c1_gettingstarted;
 
 import com.vanix.easygl.core.graphics.*;
-import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.input.Keyboard;
-import com.vanix.easygl.core.window.Window;
-import com.vanix.easygl.core.window.WindowHints;
 import com.vanix.easygl.core.input.event.MouseMoveEvent;
 import com.vanix.easygl.core.input.event.MouseScrollEvent;
+import com.vanix.easygl.core.media.Image;
+import com.vanix.easygl.core.window.Window;
+import com.vanix.easygl.core.window.WindowHints;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
