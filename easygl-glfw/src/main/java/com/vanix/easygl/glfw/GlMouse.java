@@ -8,6 +8,7 @@ import com.vanix.easygl.core.input.event.*;
 import com.vanix.easygl.core.window.Window;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.system.MemoryUtil;
 
 import java.nio.DoubleBuffer;
 
@@ -17,7 +18,10 @@ public class GlMouse implements Mouse {
     private final ListenerSupport<MouseButtonListener> buttonListeners;
     private final Window window;
     private final DoubleBuffer xPosBuf = BufferUtils.createDoubleBuffer(1);
+    private final long xPosAddress = MemoryUtil.memAddressSafe(xPosBuf);
     private final DoubleBuffer yPosBuf = BufferUtils.createDoubleBuffer(1);
+    private final long yPosAddress = MemoryUtil.memAddressSafe(yPosBuf);
+    private final boolean rawMotionSupported;
 //    private final FloatValue sensitivity = Value.of(0.05f);
 //    private double x;
 //    private double y;
@@ -33,6 +37,7 @@ public class GlMouse implements Mouse {
                 GLFW.GLFW_MOUSE_BUTTON_LAST + 1,
                 GLFW::glfwSetMouseButtonCallback,
                 this::buttonCallback);
+        rawMotionSupported = GLFW.glfwRawMouseMotionSupported();
     }
 
     private void buttonCallback(long window, int button, int action, int mods) {
@@ -103,19 +108,19 @@ public class GlMouse implements Mouse {
 
     @Override
     public double getX() {
-        GLFW.glfwGetCursorPos(window.handle(), xPosBuf, null);
+        GLFW.nglfwGetCursorPos(window.handle(), xPosAddress, MemoryUtil.NULL);
         return xPosBuf.get();
     }
 
     @Override
     public double getY() {
-        GLFW.glfwGetCursorPos(window.handle(), null, yPosBuf);
+        GLFW.nglfwGetCursorPos(window.handle(), MemoryUtil.NULL, yPosAddress);
         return yPosBuf.get();
     }
 
     @Override
     public Position getPosition() {
-        GLFW.glfwGetCursorPos(window.handle(), xPosBuf, yPosBuf);
+        GLFW.nglfwGetCursorPos(window.handle(), xPosAddress, yPosAddress);
         return Position.of(xPosBuf.get(), yPosBuf.get());
     }
 
@@ -132,5 +137,22 @@ public class GlMouse implements Mouse {
     @Override
     public void setY(double y) {
         GLFW.glfwSetCursorPos(window.handle(), xPosBuf.get(), y);
+    }
+
+    @Override
+    public boolean isRawMotionSupported() {
+        return rawMotionSupported;
+    }
+
+    @Override
+    public boolean rawMotion() {
+        return rawMotionSupported && GLFW.glfwGetInputMode(window.handle(), GLFW.GLFW_RAW_MOUSE_MOTION) == GLFW.GLFW_TRUE;
+    }
+
+    @Override
+    public void rawMotion(boolean enable) {
+        if (rawMotionSupported) {
+            GLFW.glfwSetInputMode(window.handle(), GLFW.GLFW_RAW_MOUSE_MOTION, enable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+        }
     }
 }

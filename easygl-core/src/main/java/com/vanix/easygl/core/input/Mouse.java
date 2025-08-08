@@ -13,6 +13,12 @@ public interface Mouse extends Positional, InputDevice<Mouse.Button> {
 
     CursorMode cursorMode();
 
+    boolean isRawMotionSupported();
+
+    boolean rawMotion();
+
+    void rawMotion(boolean enable);
+
     ListenerOperation<MouseButtonListener> onButton(Button... buttons);
 
     ListenerOperation<MouseScrollListener> onScroll();
