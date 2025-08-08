@@ -121,7 +121,7 @@ public class GlMouse implements Mouse {
     @Override
     public Position getPosition() {
         GLFW.nglfwGetCursorPos(window.handle(), xPosAddress, yPosAddress);
-        return Position.of(xPosBuf.get(), yPosBuf.get());
+        return Position.of(xPosBuf.get(0), yPosBuf.get(0));
     }
 
     @Override
@@ -131,12 +131,12 @@ public class GlMouse implements Mouse {
 
     @Override
     public void setX(double x) {
-        GLFW.glfwSetCursorPos(window.handle(), x, yPosBuf.get());
+        GLFW.glfwSetCursorPos(window.handle(), x, yPosBuf.get(0));
     }
 
     @Override
     public void setY(double y) {
-        GLFW.glfwSetCursorPos(window.handle(), xPosBuf.get(), y);
+        GLFW.glfwSetCursorPos(window.handle(), xPosBuf.get(0), y);
     }
 
     @Override
