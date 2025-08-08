@@ -152,7 +152,7 @@ public class C72CameraKeyboardDt {
                     .set("texture1", 0)
                     .set("texture2", 1)
                     .setMatrix4("projection", new Matrix4f()
-                            .perspective(Math.toRadians(45.0f), window.width() * 1.0f / window.height(), 0.1f, 100.0f)
+                            .perspective(Math.toRadians(45.0f), window.getAspect(), 0.1f, 100.0f)
                             .get(mat4f));
 
             long start = System.currentTimeMillis();
@@ -162,7 +162,7 @@ public class C72CameraKeyboardDt {
                 deltaTime = currentFrame - lastFrame;
                 lastFrame = currentFrame;
 
-                processInput(window.inputCtlr().keyboard());
+                processInput(window.inputs().keyboard());
 
                 graphics.clearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(Graphics.BufferMask.Color, Graphics.BufferMask.Depth);

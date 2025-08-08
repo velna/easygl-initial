@@ -25,7 +25,7 @@ public class C62CoordinateSystemsDepth {
              var vbo = Buffer.ofArray(vao, DataType.Float);
              var texture1 = Texture.of2D("t1");
              var texture2 = Texture.of2D("t2")) {
-            window.bind().inputCtlr().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
+            window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
 
             graphics.depth().enable();
@@ -153,7 +153,7 @@ public class C62CoordinateSystemsDepth {
                                 .translate(new Vector3f(0.0f, 0.0f, -3.0f))
                                 .get(mat4f))
                         .setMatrix4("projection", new Matrix4f()
-                                .perspective(Math.toRadians(45.0f), window.width() * 1.0f / window.height(), 0.1f, 100.0f)
+                                .perspective(Math.toRadians(45.0f), window.getAspect(), 0.1f, 100.0f)
                                 .get(mat4f));
                 vao.drawArray(DrawMode.Triangles, vbo);
 

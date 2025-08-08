@@ -4,7 +4,6 @@ import com.vanix.easygl.core.input.InputController;
 import com.vanix.easygl.core.input.InputDevice;
 import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.Mouse;
-import com.vanix.easygl.core.window.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;

@@ -1,6 +1,12 @@
 package com.vanix.easygl.commons;
 
-public interface Dimension extends Position {
+public interface Dimension {
+    int getWidth();
 
-	int size();
+    int getHeight();
+
+    default Dimension getDimension() {
+        return this;
+    }
+
 }

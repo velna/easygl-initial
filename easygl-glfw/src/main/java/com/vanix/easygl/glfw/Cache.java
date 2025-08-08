@@ -2,28 +2,35 @@ package com.vanix.easygl.glfw;
 
 import com.vanix.easygl.core.input.InputDevice;
 import com.vanix.easygl.core.input.Keyboard;
-import org.eclipse.collections.api.factory.primitive.IntObjectMaps;
-import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import com.vanix.easygl.core.input.Mouse;
+import org.lwjgl.glfw.GLFW;
 
 class Cache {
-
-    private static final MutableIntObjectMap<Keyboard.Key> KEY_MAP = IntObjectMaps.mutable.of();
+    private static final Mouse.Button[] BUTTONS = new Mouse.Button[GLFW.GLFW_MOUSE_BUTTON_LAST + 1];
+    private static final Keyboard.Key[] KEYS = new Keyboard.Key[GLFW.GLFW_KEY_LAST + 1];
     private static final InputDevice.Action[] ACTIONS = {InputDevice.Action.Release, InputDevice.Action.Press, InputDevice.Action.Repeat};
 
     static {
         for (var key : Keyboard.PrintableKey.values()) {
-            KEY_MAP.put(key.code(), key);
+            KEYS[key.code()] = key;
         }
         for (var key : Keyboard.FunctionKey.values()) {
-            KEY_MAP.put(key.code(), key);
+            KEYS[key.code()] = key;
+        }
+        for (var button : Mouse.Button.values()) {
+            BUTTONS[button.code()] = button;
         }
     }
 
-    static InputDevice.Action actionOfValue(int value){
-        return ACTIONS[value];
+    static InputDevice.Action actionOfCode(int code) {
+        return ACTIONS[code];
     }
 
-    static Keyboard.Key keyOfValue(int code){
-        return KEY_MAP.get(code);
+    static Keyboard.Key keyOfCode(int code) {
+        return KEYS[code];
+    }
+
+    static Mouse.Button buttonOfCode(int code) {
+        return BUTTONS[code];
     }
 }

@@ -20,7 +20,7 @@ public class KeyPress implements Renderer<ClientApp, RenderContext>, KeyboardLis
     @Override
     public void init(ClientApp clientApp) throws GraphicsException {
         this.clientApp = clientApp;
-        clientApp.window().inputCtlr().keyboard().onKey(Keyboard.PrintableKey.M).subscribe(this);
+        clientApp.window().inputs().keyboard().onKey(Keyboard.PrintableKey.M).subscribe(this);
         vbo = Buffer.of(Buffer.Type.Array, DataType.Float)
                 .bind()
                 .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{

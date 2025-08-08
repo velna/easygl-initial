@@ -3,7 +3,7 @@ package com.vanix.easygl.core.input.event;
 import com.vanix.easygl.core.input.InputDevice;
 import com.vanix.easygl.core.input.Keyboard;
 
-public class KeyboardEvent extends InputEvent<Keyboard, Keyboard.Key> {
+public class KeyboardEvent extends InputEvent<Keyboard, Keyboard.Key> implements ActionInputEvent, ModifierInputEvent {
     private final int scancode;
     private final int modifiers;
 
@@ -17,6 +17,11 @@ public class KeyboardEvent extends InputEvent<Keyboard, Keyboard.Key> {
         return input;
     }
 
+    @Override
+    public InputDevice.Action action() {
+        return action;
+    }
+
     public int scancode() {
         return scancode;
     }
@@ -24,9 +29,4 @@ public class KeyboardEvent extends InputEvent<Keyboard, Keyboard.Key> {
     public int modifiers() {
         return modifiers;
     }
-
-    public boolean hasModifier(Keyboard.Modifier modifier) {
-        return (modifiers & modifier.value()) != 0;
-    }
-
 }

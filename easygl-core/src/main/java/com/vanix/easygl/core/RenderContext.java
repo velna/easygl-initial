@@ -11,7 +11,7 @@ public interface RenderContext {
     Window window();
 
     default InputController inputCtlr() {
-        return window().inputCtlr();
+        return window().inputs();
     }
 
     double tickDelta();

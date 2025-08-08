@@ -6,11 +6,13 @@ import com.vanix.easygl.commons.value.DoubleValue;
 import com.vanix.easygl.commons.value.Value;
 import com.vanix.easygl.core.graphics.Graphics;
 import com.vanix.easygl.core.graphics.GraphicsException;
+import com.vanix.easygl.core.meta.MetaSystem;
 import com.vanix.easygl.core.window.Window;
 import org.apache.commons.collections4.map.ListOrderedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class DefaultClientApp implements ClientApp {
@@ -101,13 +103,15 @@ public class DefaultClientApp implements ClientApp {
     }
 
     public void close() {
-        closeRenderers();
-        log.info("window close");
-        shutdown = true;
-        if (window != null) {
-            window.close();
+        if(!shutdown) {
+            log.info("Client application shutdown.");
+            closeRenderers();
+            shutdown = true;
+            if (window != null) {
+                window.close();
+            }
+            MetaSystem.closeAll();
         }
-        log.info("Client application shutdown.");
     }
 
     protected void initRenderers() {

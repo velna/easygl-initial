@@ -19,6 +19,10 @@ public class ListenerSupport<T extends EventListener> {
         this.closeFunction = closeFunction;
     }
 
+    public ListenerSupport(int maxKey) {
+        this(maxKey, null, null);
+    }
+
     @SafeVarargs
     public final <K> ListenerOperation<T> listen(ToIntFunction<K> mapper, K... keys) {
         int[] ks = new int[keys.length];
@@ -63,14 +67,14 @@ public class ListenerSupport<T extends EventListener> {
             return;
         }
         listeners.add(listener);
-        if (size++ == 0) {
+        if (size++ == 0 && initFunction != null) {
             initFunction.run();
         }
     }
 
     private void remove(int key, T listener) {
         var listeners = array[key];
-        if (listeners != null && listeners.remove(listener) && --size == 0) {
+        if (listeners != null && listeners.remove(listener) && --size == 0 && closeFunction != null) {
             closeFunction.run();
         }
     }

@@ -38,4 +38,11 @@ public enum MetaSystem implements MetaService {
     public void close() {
         metaService.close();
     }
+
+    public static void closeAll() {
+        for (var system : values()) {
+            system.close();
+        }
+    }
+
 }

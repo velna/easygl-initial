@@ -1,14 +1,13 @@
 package com.vanix.easygl.core.input;
 
-import com.vanix.easygl.commons.Position;
+import com.vanix.easygl.commons.Positional;
 import com.vanix.easygl.commons.event.ListenerOperation;
-import com.vanix.easygl.commons.value.FloatValue;
 import com.vanix.easygl.core.input.event.MouseButtonListener;
 import com.vanix.easygl.core.input.event.MouseMoveListener;
 import com.vanix.easygl.core.input.event.MouseScrollListener;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public interface Mouse extends Position, InputDevice<Mouse.Button> {
+public interface Mouse extends Positional, InputDevice<Mouse.Button> {
 
     void cursorMode(CursorMode mode);
 
@@ -19,12 +18,6 @@ public interface Mouse extends Position, InputDevice<Mouse.Button> {
     ListenerOperation<MouseScrollListener> onScroll();
 
     ListenerOperation<MouseMoveListener> onMove();
-
-    float yaw();
-
-    float pitch();
-
-    FloatValue sensitivity();
 
     @Override
     default Type type() {

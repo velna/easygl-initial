@@ -18,7 +18,7 @@ public class C31ShaderUniform {
              var program = Program.of("p1");
              var vao = VertexArray.of();
              var vbo = Buffer.ofArray(vao, DataType.Float)) {
-            window.bind().inputCtlr().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
+            window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
 
             program.attach(vertex.source("""

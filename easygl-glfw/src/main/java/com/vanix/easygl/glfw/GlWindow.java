@@ -1,5 +1,7 @@
 package com.vanix.easygl.glfw;
 
+import com.vanix.easygl.commons.Dimension;
+import com.vanix.easygl.commons.Position;
 import com.vanix.easygl.commons.event.EventListener;
 import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.commons.event.ListenerSupport;
@@ -8,23 +10,20 @@ import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.BindingState;
 import com.vanix.easygl.core.input.InputController;
 import com.vanix.easygl.core.window.Window;
+import com.vanix.easygl.core.window.event.WindowPositionListener;
 import com.vanix.easygl.core.window.event.WindowRefreshListener;
 import com.vanix.easygl.core.window.event.WindowResizeListener;
-import lombok.extern.slf4j.Slf4j;
 import org.lwjgl.glfw.GLFW;
-import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 import org.lwjgl.system.NativeResource;
 
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiFunction;
 
-@Slf4j
 public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Window> implements Window {
-    static {
-        GLFW.glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.out));
-    }
 
     protected static final BindTarget.Default<Window> Target = new BindTarget.Default<>(
             BindingState.<BindTarget.Default<Window>, Window>ofLong("Window", GLFW::glfwMakeContextCurrent)
@@ -32,14 +31,16 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
 
     private final ListenerSupport<WindowResizeListener> resizeListeners;
     private final ListenerSupport<WindowRefreshListener> refreshListeners;
-    private final InputController inputController;
-
+    private final ListenerSupport<WindowPositionListener> positionListeners;
+    private final List<Runnable> closeRunnableList = new ArrayList<>();
+    private InputController inputController;
+    private int x;
+    private int y;
     private int width;
     private int height;
-
     private int frameBufferWidth;
     private int frameBufferHeight;
-    private final String title;
+    private String title;
 
     protected GlWindow(Object... args) {
         super(GLFW.glfwCreateWindow((Integer) args[0], (Integer) args[1], (String) args[2], MemoryUtil.NULL, MemoryUtil.NULL),
@@ -49,10 +50,10 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
         this.height = (Integer) args[1];
         this.title = (String) args[2];
         bind();
-        inputController = new GlInputController(this);
-        resizeListeners = newListenerSupport(1, GLFW::glfwSetFramebufferSizeCallback, this::onWindowResized);
-        refreshListeners = newListenerSupport(1, GLFW::glfwSetWindowRefreshCallback, this::onWindowRefresh);
-        onWindowResized(handle(), width, height);
+        resizeListeners = autoListenerSupport(1, GLFW::glfwSetFramebufferSizeCallback, this::fireWindowResized);
+        positionListeners = autoListenerSupport(1, GLFW::glfwSetWindowPosCallback, this::fireWindowPosition);
+        refreshListeners = newListenerSupport(1, GLFW::glfwSetWindowRefreshCallback, this::fireWindowRefresh);
+        fireWindowResized(handle(), width, height);
     }
 
     private <C> void setCallback(BiFunction<Long, C, NativeResource> setter, C callback) {
@@ -62,14 +63,19 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
         }
     }
 
+    <T extends EventListener, C> ListenerSupport<T> autoListenerSupport(int maxKeys, BiFunction<Long, C, NativeResource> setter, C callback) {
+        setCallback(setter, callback);
+        closeRunnableList.add(() -> setCallback(setter, null));
+        return new ListenerSupport<>(maxKeys);
+    }
+
     <T extends EventListener, C> ListenerSupport<T> newListenerSupport(int maxKeys, BiFunction<Long, C, NativeResource> setter, C callback) {
         return new ListenerSupport<>(maxKeys,
                 () -> setCallback(setter, callback),
                 () -> setCallback(setter, null));
     }
 
-    private void onWindowResized(long window, int width, int height) {
-        log.info("window resized to {},{}", width, height);
+    private void fireWindowResized(long window, int width, int height) {
         this.width = width;
         this.height = height;
         try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -82,7 +88,13 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
         resizeListeners.forEach(0, l -> l.windowOnResize(this));
     }
 
-    private void onWindowRefresh(long window) {
+    private void fireWindowPosition(long window, int x, int y) {
+        this.x = x;
+        this.y = y;
+        positionListeners.forEach(0, l -> l.windowOnPosition(this));
+    }
+
+    private void fireWindowRefresh(long window) {
         refreshListeners.forEach(0, l -> l.windowOnRefresh(this));
     }
 
@@ -99,7 +111,10 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
     }
 
     @Override
-    public InputController inputCtlr() {
+    public InputController inputs() {
+        if (inputController == null) {
+            inputController = new GlInputController(this);
+        }
         return inputController;
     }
 
@@ -124,18 +139,69 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
     }
 
     @Override
-    public int width() {
+    public ListenerOperation<WindowPositionListener> onPosition() {
+        return positionListeners.listen();
+    }
+
+    @Override
+    public int getWidth() {
         return width;
     }
 
     @Override
-    public int height() {
+    public int getHeight() {
         return height;
     }
 
     @Override
-    public String title() {
+    public void setWidth(int w) {
+        GLFW.glfwSetWindowSize(handle, w, height);
+    }
+
+    @Override
+    public void setHeight(int h) {
+        GLFW.glfwSetWindowSize(handle, width, h);
+    }
+
+    @Override
+    public void setDimension(Dimension dimension) {
+        GLFW.glfwSetWindowSize(handle, dimension.getWidth(), dimension.getHeight());
+    }
+
+    @Override
+    public int getXAsInt() {
+        return x;
+    }
+
+    @Override
+    public int getYAsInt() {
+        return y;
+    }
+
+    @Override
+    public void setX(int v) {
+        GLFW.glfwSetWindowPos(handle, v, this.y);
+    }
+
+    @Override
+    public void setY(int v) {
+        GLFW.glfwSetWindowPos(handle, this.x, v);
+    }
+
+    @Override
+    public void setPosition(Position position) {
+        GLFW.glfwSetWindowPos(handle, (int) position.getX(), (int) position.getY());
+    }
+
+    @Override
+    public String getTitle() {
         return title;
+    }
+
+    @Override
+    public void setTitle(String title) {
+        GLFW.glfwSetWindowTitle(handle, title);
+        this.title = title;
     }
 
     @Override
@@ -148,4 +214,9 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
         return frameBufferHeight;
     }
 
+    @Override
+    public void close() {
+        super.close();
+        closeRunnableList.forEach(Runnable::run);
+    }
 }

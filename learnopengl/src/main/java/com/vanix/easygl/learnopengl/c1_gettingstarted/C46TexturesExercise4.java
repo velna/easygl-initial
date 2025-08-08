@@ -24,7 +24,7 @@ public class C46TexturesExercise4 {
              var ebo = Buffer.ofElementArray(vao, DataType.UnsignedInt);
              var texture1 = Texture.of2D("t1");
              var texture2 = Texture.of2D("t2")) {
-            window.bind().inputCtlr().keyboard().onKey()
+            window.bind().inputs().keyboard().onKey()
                     .subscribe(C46TexturesExercise4::processInput);
 
             program.attach(Shader.Type.Vertex, """

@@ -44,8 +44,8 @@ public class C73CameraMouseZoom {
              var vbo = Buffer.ofArray(vao, DataType.Float);
              var texture1 = Texture.of2D("t1");
              var texture2 = Texture.of2D("t2")) {
-            window.inputCtlr().mouse().onMove().subscribe(C73CameraMouseZoom::onMouseMove);
-            window.inputCtlr().mouse().onScroll().subscribe(C73CameraMouseZoom::onMouseScroll);
+            window.inputs().mouse().onMove().subscribe(C73CameraMouseZoom::onMouseMove);
+            window.inputs().mouse().onScroll().subscribe(C73CameraMouseZoom::onMouseScroll);
 
             graphics.depth().enable();
 
@@ -171,7 +171,7 @@ public class C73CameraMouseZoom {
                 deltaTime = currentFrame - lastFrame;
                 lastFrame = currentFrame;
 
-                processInput(window.inputCtlr().keyboard());
+                processInput(window.inputs().keyboard());
 
                 graphics.clearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(Graphics.BufferMask.Color, Graphics.BufferMask.Depth);
@@ -183,7 +183,7 @@ public class C73CameraMouseZoom {
 
                 program.bind()
                         .setMatrix4("projection", new Matrix4f()
-                                .perspective(Math.toRadians(fov), window.width() * 1.0f / window.height(), 0.1f, 100.0f)
+                                .perspective(Math.toRadians(fov), window.getAspect(), 0.1f, 100.0f)
                                 .get(mat4f))
                         .setMatrix4("view", new Matrix4f()
                                 .lookAt(cameraPos, cameraPos.add(cameraFront, new Vector3f()), cameraUp)

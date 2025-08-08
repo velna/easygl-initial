@@ -19,7 +19,7 @@ public class C41Textures {
              var vbo = Buffer.ofArray(vao, DataType.Float);
              var ebo = Buffer.ofElementArray(vao, DataType.UnsignedInt);
              var texture = Texture.of2D("t1")) {
-            window.bind().inputCtlr().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
+            window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
 
             program.attach(Shader.Type.Vertex, """

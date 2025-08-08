@@ -39,4 +39,22 @@ public interface InputDevice<I extends InputDevice.Input> {
         }
     }
 
+    enum Modifier {
+        Shift(MetaSystem.Window.queryInt("MOD_SHIFT")),
+        Control(MetaSystem.Window.queryInt("MOD_CONTROL")),
+        Alt(MetaSystem.Window.queryInt("MOD_ALT")),
+        Super(MetaSystem.Window.queryInt("MOD_SUPER")),
+        CapsLock(MetaSystem.Window.queryInt("MOD_CAPS_LOCK")),
+        NumLock(MetaSystem.Window.queryInt("MOD_NUM_LOCK"));
+        private final int value;
+
+        Modifier(int value) {
+            this.value = value;
+        }
+
+        public int value() {
+            return value;
+        }
+    }
+
 }
