@@ -32,6 +32,10 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program>,
         }
     }
 
+    default Program attachResource(Shader.Type type, String resource) throws IOException {
+        return attach(type, Thread.currentThread().getContextClassLoader().getResourceAsStream(resource));
+    }
+
     Program detach(Shader shader);
 
     Program link();

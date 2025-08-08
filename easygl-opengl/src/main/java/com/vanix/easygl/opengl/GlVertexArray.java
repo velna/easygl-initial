@@ -2,10 +2,12 @@ package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
-import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.Buffer;
+import com.vanix.easygl.core.graphics.DataType;
+import com.vanix.easygl.core.graphics.DrawMode;
+import com.vanix.easygl.core.graphics.VertexArray;
 
 import java.util.function.IntConsumer;
-import java.util.stream.IntStream;
 
 public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArray>, VertexArray> implements VertexArray {
 
@@ -24,14 +26,20 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
         assertBinding();
         buffer.bind();
         int pointer = 0;
-        int stride = IntStream.of(layouts).sum();
+        int stride = 0;
+        for (int layout : layouts) {
+            stride += Math.abs(layout);
+        }
         DataType dataType = buffer.dataType();
         for (int i = 0; i < layouts.length; i++) {
-            GLX.glEnableVertexAttribArray(i);
-            GLX.checkError();
-            GLX.glVertexAttribPointer(i, layouts[i], dataType.value(), false, stride * dataType.bytes(), pointer);
-            pointer += layouts[i] * dataType.bytes();
-            GLX.checkError();
+            int layout = layouts[i];
+            if (layout > 0) {
+                GLX.glEnableVertexAttribArray(i);
+                GLX.checkError();
+                GLX.glVertexAttribPointer(i, layout, dataType.value(), false, stride * dataType.bytes(), pointer);
+                pointer += layout * dataType.bytes();
+                GLX.checkError();
+            }
         }
         return this;
     }

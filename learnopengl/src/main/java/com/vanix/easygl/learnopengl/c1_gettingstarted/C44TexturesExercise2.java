@@ -6,8 +6,10 @@ import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
 
+import java.io.IOException;
+
 public class C44TexturesExercise2 {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         WindowHints.ContextVersionMajor.set(3);
         WindowHints.ContextVersionMinor.set(3);
         WindowHints.OpenGlProfile.Core.set();
@@ -23,39 +25,8 @@ public class C44TexturesExercise2 {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
 
-            program.attach(Shader.Type.Vertex, """
-                            #version 330 core
-                             layout (location = 0) in vec3 aPos;
-                             layout (location = 1) in vec3 aColor;
-                             layout (location = 2) in vec2 aTexCoord;
-                             
-                             out vec3 ourColor;
-                             out vec2 TexCoord;
-                             
-                             void main()
-                             {
-                             	gl_Position = vec4(aPos, 1.0);
-                             	ourColor = aColor;
-                             	TexCoord = vec2(aTexCoord.x, aTexCoord.y);
-                             }
-                            """)
-                    .attach(Shader.Type.Fragment, """
-                            #version 330 core
-                             out vec4 FragColor;
-                             
-                             in vec3 ourColor;
-                             in vec2 TexCoord;
-                             
-                             // texture samplers
-                             uniform sampler2D texture1;
-                             uniform sampler2D texture2;
-                             
-                             void main()
-                             {
-                             	// linearly interpolate between both textures (80% container, 20% awesomeface)
-                             	FragColor = mix(texture(texture1, TexCoord), texture(texture2, TexCoord), 0.2);
-                             }
-                            """)
+            program.attachResource(Shader.Type.Vertex, "shaders/1_getting_started/4.5.texture.vs")
+                    .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/4.5.texture.fs")
                     .link();
 
             vao.bind().attributes(vbo.bind()

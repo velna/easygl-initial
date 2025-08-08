@@ -10,11 +10,12 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 
+import java.io.IOException;
 import java.nio.FloatBuffer;
 
-public class C21Colors {
+public class C1Colors {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         WindowHints.ContextVersionMajor.set(3);
         WindowHints.ContextVersionMinor.set(3);
         WindowHints.OpenGlProfile.Core.set();
@@ -30,55 +31,12 @@ public class C21Colors {
             window.inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
             graphics.depth().enable();
 
-            lightingProgram.attach(Shader.Type.Vertex, """
-                            #version 330 core
-                            layout (location = 0) in vec3 aPos;
-                                                        
-                            uniform mat4 model;
-                            uniform mat4 view;
-                            uniform mat4 projection;
-                                                        
-                            void main()
-                            {
-                            	gl_Position = projection * view * model * vec4(aPos, 1.0);
-                            }
-                            """)
-                    .attach(Shader.Type.Fragment, """
-                            #version 330 core
-                            out vec4 FragColor;
-                                                        
-                            uniform vec3 objectColor;
-                            uniform vec3 lightColor;
-                                                        
-                            void main()
-                            {
-                                FragColor = vec4(lightColor * objectColor, 1.0);
-                            }
-                            """)
+            lightingProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/1.colors.vs")
+                    .attachResource(Shader.Type.Fragment, "shaders/2_lighting/1.colors.fs")
                     .link();
 
-            lightCubeProgram.attach(Shader.Type.Vertex, """
-                            #version 330 core
-                            layout (location = 0) in vec3 aPos;
-                                                        
-                            uniform mat4 model;
-                            uniform mat4 view;
-                            uniform mat4 projection;
-                                                        
-                            void main()
-                            {
-                            	gl_Position = projection * view * model * vec4(aPos, 1.0);
-                            }
-                            """)
-                    .attach(Shader.Type.Fragment, """
-                            #version 330 core
-                             out vec4 FragColor;
-                             
-                             void main()
-                             {
-                                 FragColor = vec4(1.0); // set all 4 vector values to 1.0
-                             }
-                            """)
+            lightCubeProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/1.light_cube.vs")
+                    .attachResource(Shader.Type.Fragment, "shaders/2_lighting/1.light_cube.fs")
                     .link();
 
             vbo.bind().realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
