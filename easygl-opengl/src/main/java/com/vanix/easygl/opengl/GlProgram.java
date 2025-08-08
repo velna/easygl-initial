@@ -95,7 +95,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, int v1, int v2) {
+    public Program setVec2(String key, int v1, int v2) {
         assertBinding();
         GLX.glUniform2i(uniform(key), v1, v2);
         GLX.checkError();
@@ -103,7 +103,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, int v1, int v2, int v3) {
+    public Program setVec3(String key, int v1, int v2, int v3) {
         assertBinding();
         GLX.glUniform3i(uniform(key), v1, v2, v3);
         GLX.checkError();
@@ -111,7 +111,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, int v1, int v2, int v3, int v4) {
+    public Program setVec4(String key, int v1, int v2, int v3, int v4) {
         assertBinding();
         GLX.glUniform4i(uniform(key), v1, v2, v3, v4);
         GLX.checkError();
@@ -287,7 +287,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, float v1, float v2) {
+    public Program setVec2(String key, float v1, float v2) {
         assertBinding();
         GLX.glUniform2f(uniform(key), v1, v2);
         GLX.checkError();
@@ -295,7 +295,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, float v1, float v2, float v3) {
+    public Program setVec3(String key, float v1, float v2, float v3) {
         assertBinding();
         GLX.glUniform3f(uniform(key), v1, v2, v3);
         GLX.checkError();
@@ -303,7 +303,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, float v1, float v2, float v3, float v4) {
+    public Program setVec4(String key, float v1, float v2, float v3, float v4) {
         assertBinding();
         GLX.glUniform4f(uniform(key), v1, v2, v3, v4);
         GLX.checkError();

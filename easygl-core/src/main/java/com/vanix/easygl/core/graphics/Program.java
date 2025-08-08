@@ -41,23 +41,23 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program>,
 
     Program set(String key, int value);
 
-    Program set(String key, int v1, int v2);
-
-    Program set(String key, int v1, int v2, int v3);
-
-    Program set(String key, int v1, int v2, int v3, int v4);
-
     Program setVec1(String key, int[] value);
 
     Program setVec1(String key, IntBuffer buffer);
+
+    Program setVec2(String key, int v1, int v2);
 
     Program setVec2(String key, int[] value);
 
     Program setVec2(String key, IntBuffer buffer);
 
+    Program setVec3(String key, int v1, int v2, int v3);
+
     Program setVec3(String key, int[] value);
 
     Program setVec3(String key, IntBuffer buffer);
+
+    Program setVec4(String key, int v1, int v2, int v3, int v4);
 
     Program setVec4(String key, int[] value);
 
@@ -89,11 +89,11 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program>,
 
     Program set(String key, float value);
 
-    Program set(String key, float v1, float v2);
+    Program setVec2(String key, float v1, float v2);
 
-    Program set(String key, float v1, float v2, float v3);
+    Program setVec3(String key, float v1, float v2, float v3);
 
-    Program set(String key, float v1, float v2, float v3, float v4);
+    Program setVec4(String key, float v1, float v2, float v3, float v4);
 
     Program setVec1(String key, float[] value);
 
@@ -148,15 +148,15 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program>,
     Program setMatrix4x3(String key, FloatBuffer buffer);
 
     default Program set(String key, Vector2f value) {
-        return set(key, value.x, value.y);
+        return setVec2(key, value.x, value.y);
     }
 
     default Program set(String key, Vector3f value) {
-        return set(key, value.x, value.y, value.z);
+        return setVec3(key, value.x, value.y, value.z);
     }
 
     default Program set(String key, Vector4f value) {
-        return set(key, value.x, value.y, value.z, value.w);
+        return setVec4(key, value.x, value.y, value.z, value.w);
     }
 
     default Program set(String key, Matrix2f value) {

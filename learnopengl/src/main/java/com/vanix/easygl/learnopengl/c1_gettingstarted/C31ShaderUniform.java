@@ -53,7 +53,7 @@ public class C31ShaderUniform {
 
                 program.bind();
                 float greenValue = (float) (Math.sin(System.currentTimeMillis() / 1000.0) / 2.0 + 0.5);
-                program.set("ourColor", 0.0f, greenValue, 0.0f, 1.0f);
+                program.setVec4("ourColor", 0.0f, greenValue, 0.0f, 1.0f);
                 vao.drawArray(DrawMode.Triangles, vbo);
 
                 window.swapBuffers().pollEvents();
