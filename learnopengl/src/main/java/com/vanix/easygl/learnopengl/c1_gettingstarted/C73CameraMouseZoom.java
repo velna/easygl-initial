@@ -42,7 +42,7 @@ public class C73CameraMouseZoom {
              var graphics = Graphics.of(window);
              var program = Program.of();
              var vao = VertexArray.of();
-             var vbo = Buffer.ofArray(vao, DataType.Float);
+             var vbo = Buffer.ofArray(DataType.Float);
              var texture1 = Texture.of2D();
              var texture2 = Texture.of2D()) {
             window.inputs().mouse().onMove().subscribe(C73CameraMouseZoom::onMouseMove);

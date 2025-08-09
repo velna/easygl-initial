@@ -26,7 +26,7 @@ public class C21BasicLightingDiffuse {
              var lightCubeProgram = Program.of();
              var cubeVAO = VertexArray.of();
              var lightCubeVAO = VertexArray.of();
-             var vbo = Buffer.ofArray(cubeVAO, DataType.Float)) {
+             var vbo = Buffer.ofArray(DataType.Float)) {
 
             window.inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
             graphics.depth().enable();

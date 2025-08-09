@@ -23,7 +23,7 @@ public class C63CoordinateSystemsMultiple {
              var graphics = Graphics.of(window);
              var program = Program.of();
              var vao = VertexArray.of();
-             var vbo = Buffer.ofArray(vao, DataType.Float);
+             var vbo = Buffer.ofArray(DataType.Float);
              var texture1 = Texture.of2D();
              var texture2 = Texture.of2D()) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)

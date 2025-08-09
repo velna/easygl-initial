@@ -17,8 +17,8 @@ public class C22HelloTriangleIndexed {
              var fragment = Shader.fragment();
              var program = Program.of();
              var vao = VertexArray.of();
-             var vbo = Buffer.ofArray(vao, DataType.Float);
-             var ebo = Buffer.ofElementArray(vao, DataType.UnsignedInt)) {
+             var vbo = Buffer.ofArray(DataType.Float);
+             var ebo = Buffer.ofElementArray(DataType.UnsignedInt)) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
 

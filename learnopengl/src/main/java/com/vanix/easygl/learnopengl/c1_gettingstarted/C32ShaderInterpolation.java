@@ -17,7 +17,7 @@ public class C32ShaderInterpolation {
              var fragment = Shader.fragment();
              var program = Program.of();
              var vao = VertexArray.of();
-             var vbo = Buffer.ofArray(vao, DataType.Float)) {
+             var vbo = Buffer.ofArray(DataType.Float)) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
 

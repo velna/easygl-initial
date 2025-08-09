@@ -19,6 +19,18 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     Program attach(Shader shader);
 
+    default Program attachVertex(String shaderSource) {
+        return attach(Shader.Type.Vertex, shaderSource);
+    }
+
+    default Program attachFragment(String shaderSource) {
+        return attach(Shader.Type.Fragment, shaderSource);
+    }
+
+    default Program attachGeometry(String shaderSource) {
+        return attach(Shader.Type.Geometry, shaderSource);
+    }
+
     default Program attach(Shader.Type type, String shaderSource) {
         try (var shader = Shader.of(type).source(shaderSource).compile()) {
             return attach(shader);

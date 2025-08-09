@@ -13,30 +13,26 @@ public class C21HelloTriangle {
 
         try (var window = Window.of(800, 600, "LearnOpenGL");
              var graphics = Graphics.of(window);
-             var vertex = Shader.vertex();
-             var fragment = Shader.fragment();
              var program = Program.of();
              var vao = VertexArray.of();
-             var vbo = Buffer.ofArray(vao, DataType.Float)) {
+             var vbo = Buffer.ofArray(DataType.Float)) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
 
-            program.attach(vertex.source("""
-                                    #version 330 core
-                                    layout (location = 0) in vec3 aPos;
-                                    void main() {
-                                        gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-                                    }
-                                    """)
-                            .compile())
-                    .attach(fragment.source("""
-                                    #version 330 core
-                                    out vec4 FragColor;
-                                    void main(){
-                                        FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
-                                    }
-                                    """)
-                            .compile())
+            program.attachVertex("""
+                            #version 330 core
+                            layout (location = 0) in vec3 aPos;
+                            void main() {
+                                gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+                            }
+                            """)
+                    .attachFragment("""
+                            #version 330 core
+                            out vec4 FragColor;
+                            void main(){
+                                FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+                            }
+                            """)
                     .link();
 
             vao.bind().attributes(vbo.bind()

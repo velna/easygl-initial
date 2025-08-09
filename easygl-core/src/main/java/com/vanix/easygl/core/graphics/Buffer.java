@@ -1,9 +1,9 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.commons.util.TypeReference;
 import com.vanix.easygl.core.*;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
-import com.vanix.easygl.commons.util.TypeReference;
 
 import java.nio.*;
 import java.util.function.Consumer;
@@ -168,23 +168,19 @@ public interface Buffer extends Handle, Bindable<Buffer.Type, Buffer> {
         return Meta.createArray(n, type, dataType);
     }
 
-    static Buffer ofArray(VertexArray vao, DataType dataType) {
-        vao.bind();
+    static Buffer ofArray(DataType dataType) {
         return of(Type.Array, dataType);
     }
 
-    static CloseableArray<Buffer> ofArray(VertexArray vao, int n, DataType dataType) {
-        vao.bind();
+    static CloseableArray<Buffer> ofArray(int n, DataType dataType) {
         return of(n, Type.Array, dataType);
     }
 
-    static Buffer ofElementArray(VertexArray vao, DataType dataType) {
-        vao.bind();
+    static Buffer ofElementArray(DataType dataType) {
         return of(Type.ElementArray, dataType);
     }
 
-    static CloseableArray<Buffer> ofElementArray(VertexArray vao, int n, DataType dataType) {
-        vao.bind();
+    static CloseableArray<Buffer> ofElementArray(int n, DataType dataType) {
         return of(n, Type.ElementArray, dataType);
     }
 }

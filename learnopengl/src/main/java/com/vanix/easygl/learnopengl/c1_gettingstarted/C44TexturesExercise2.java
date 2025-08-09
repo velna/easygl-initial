@@ -18,8 +18,8 @@ public class C44TexturesExercise2 {
              var graphics = Graphics.of(window);
              var program = Program.of();
              var vao = VertexArray.of();
-             var vbo = Buffer.ofArray(vao, DataType.Float);
-             var ebo = Buffer.ofElementArray(vao, DataType.UnsignedInt);
+             var vbo = Buffer.ofArray(DataType.Float);
+             var ebo = Buffer.ofElementArray(DataType.UnsignedInt);
              var texture1 = Texture.of2D();
              var texture2 = Texture.of2D()) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)

@@ -25,7 +25,7 @@ public class C51LightCastersDirectional {
              var lightCubeProgram = Program.of();
              var cubeVAO = VertexArray.of();
              var lightCubeVAO = VertexArray.of();
-             var vbo = Buffer.ofArray(cubeVAO, DataType.Float);
+             var vbo = Buffer.ofArray(DataType.Float);
              var diffuseMap = Texture.of2D();
              var specularMap = Texture.of2D()) {
 

@@ -18,7 +18,7 @@ public class GlShader extends AbstractHandle implements Shader {
     private String source;
 
     public GlShader(Object... args) {
-        this(GLX.glCreateShader(((Shader.Type) args[1]).value()), args);
+        this(GLX.glCreateShader(((Shader.Type) args[0]).value()), args);
     }
 
     public GlShader(int handle, Object... args) {
