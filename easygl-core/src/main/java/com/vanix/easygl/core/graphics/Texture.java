@@ -1,13 +1,13 @@
 package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.Identified;
+import com.vanix.easygl.commons.util.TypeReference;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
 import com.vanix.easygl.core.BindingState;
 import com.vanix.easygl.core.Handle;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
-import com.vanix.easygl.commons.util.TypeReference;
 
 public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>, T>, Handle, Identified<String> {
     BindableMeta<Texture.Unit, Texture.Unit> UnitMeta = MetaSystem.Graphics.of(Texture.Unit.class, new TypeReference<>() {
@@ -170,6 +170,11 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
         public int value() {
             return value;
         }
+    }
+
+    default T bind(Texture.Unit unit) {
+        unit.bind();
+        return this.bind();
     }
 
     T allocate(int width, int height, PixelFormat format);

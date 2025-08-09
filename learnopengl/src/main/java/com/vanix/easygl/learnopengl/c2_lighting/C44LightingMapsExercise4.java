@@ -13,7 +13,7 @@ import org.lwjgl.BufferUtils;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 
-public class C41LightingMapsDiffuse {
+public class C44LightingMapsExercise4 {
     public static void main(String[] args) throws IOException {
         WindowHints.ContextVersionMajor.set(3);
         WindowHints.ContextVersionMinor.set(3);
@@ -26,17 +26,19 @@ public class C41LightingMapsDiffuse {
              var cubeVAO = VertexArray.of();
              var lightCubeVAO = VertexArray.of();
              var vbo = Buffer.ofArray(cubeVAO, DataType.Float);
-             var diffuseMap = Texture.of2D("t1")) {
+             var diffuseMap = Texture.of2D("diffuse");
+             var specularMap = Texture.of2D("specular");
+             var emissionMap = Texture.of2D("emission")) {
 
             window.inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
             graphics.depth().enable();
 
-            lightingProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/4.1.lighting_maps.vs")
-                    .attachResource(Shader.Type.Fragment, "shaders/2_lighting/4.1.lighting_maps.fs")
+            lightingProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/4.4.lighting_maps.vs")
+                    .attachResource(Shader.Type.Fragment, "shaders/2_lighting/4.4.lighting_maps.fs")
                     .link();
 
-            lightCubeProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/4.1.light_cube.vs")
-                    .attachResource(Shader.Type.Fragment, "shaders/2_lighting/4.1.light_cube.fs")
+            lightCubeProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/4.4.light_cube.vs")
+                    .attachResource(Shader.Type.Fragment, "shaders/2_lighting/4.4.light_cube.fs")
                     .link();
 
             vbo.bind().realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
@@ -88,14 +90,22 @@ public class C41LightingMapsDiffuse {
 
 
             diffuseMap.bind()
-                    .wrapS(Texture.Wrap.Repeat)
-                    .wrapT(Texture.Wrap.Repeat)
                     .minFilter(Texture.MinFilter.LinearMipmapLinear)
-                    .magFilter(Texture.MagFilter.Linear)
                     .load("textures/container2.png")
                     .generateMipmap();
+            specularMap.bind()
+                    .minFilter(Texture.MinFilter.LinearMipmapLinear)
+                    .load("textures/container2_specular.png")
+                    .generateMipmap();
+            emissionMap.bind()
+                    .minFilter(Texture.MinFilter.LinearMipmapLinear)
+                    .load("textures/matrix.jpg")
+                    .generateMipmap();
 
-            lightingProgram.bind().set("material.diffuse", 0);
+            lightingProgram.bind()
+                    .set("material.diffuse", 0)
+                    .set("material.specular", 1)
+                    .set("material.emission", 2);
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             var lightPos = new Vector3f(1.2f, 1.0f, 2.0f);
@@ -122,15 +132,15 @@ public class C41LightingMapsDiffuse {
                         .setVec3("light.diffuse", 0.5f, 0.5f, 0.5f)
                         .setVec3("light.specular", 1.0f, 1.0f, 1.0f)
                         // material properties
-                        .setVec3("material.specular", 0.5f, 0.5f, 0.5f)// specular lighting doesn't have full effect on this object's material
                         .set("material.shininess", 64.0f)
                         .set("viewPos", camera.position())
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))
                         .set("model", new Matrix4f());
 
-                Texture.Unit.U0.bind();
-                diffuseMap.bind();
+                diffuseMap.bind(Texture.Unit.U0);
+                specularMap.bind(Texture.Unit.U1);
+                emissionMap.bind(Texture.Unit.U2);
 
                 cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 

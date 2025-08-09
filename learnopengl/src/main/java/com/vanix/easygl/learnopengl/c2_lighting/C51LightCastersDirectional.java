@@ -13,7 +13,7 @@ import org.lwjgl.BufferUtils;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 
-public class C41LightingMapsDiffuse {
+public class C51LightCastersDirectional {
     public static void main(String[] args) throws IOException {
         WindowHints.ContextVersionMajor.set(3);
         WindowHints.ContextVersionMinor.set(3);
@@ -26,17 +26,18 @@ public class C41LightingMapsDiffuse {
              var cubeVAO = VertexArray.of();
              var lightCubeVAO = VertexArray.of();
              var vbo = Buffer.ofArray(cubeVAO, DataType.Float);
-             var diffuseMap = Texture.of2D("t1")) {
+             var diffuseMap = Texture.of2D("diffuse");
+             var specularMap = Texture.of2D("specular")) {
 
             window.inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
             graphics.depth().enable();
 
-            lightingProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/4.1.lighting_maps.vs")
-                    .attachResource(Shader.Type.Fragment, "shaders/2_lighting/4.1.lighting_maps.fs")
+            lightingProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/5.1.light_casters.vs")
+                    .attachResource(Shader.Type.Fragment, "shaders/2_lighting/5.1.light_casters.fs")
                     .link();
 
-            lightCubeProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/4.1.light_cube.vs")
-                    .attachResource(Shader.Type.Fragment, "shaders/2_lighting/4.1.light_cube.fs")
+            lightCubeProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/5.1.light_cube.vs")
+                    .attachResource(Shader.Type.Fragment, "shaders/2_lighting/5.1.light_cube.fs")
                     .link();
 
             vbo.bind().realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
@@ -83,19 +84,35 @@ public class C41LightingMapsDiffuse {
                     -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
             });
+
+            var cubePositions = new Vector3f[]{
+                    new Vector3f(0.0f, 0.0f, 0.0f),
+                    new Vector3f(2.0f, 5.0f, -15.0f),
+                    new Vector3f(-1.5f, -2.2f, -2.5f),
+                    new Vector3f(-3.8f, -2.0f, -12.3f),
+                    new Vector3f(2.4f, -0.4f, -3.5f),
+                    new Vector3f(-1.7f, 3.0f, -7.5f),
+                    new Vector3f(1.3f, -2.0f, -2.5f),
+                    new Vector3f(1.5f, 2.0f, -2.5f),
+                    new Vector3f(1.5f, 0.2f, -1.5f),
+                    new Vector3f(-1.3f, 1.0f, -1.5f)};
+
             cubeVAO.bind().attributes(vbo, 3, 3, 2);
             lightCubeVAO.bind().attributes(vbo, 3, -3, -2);
 
 
             diffuseMap.bind()
-                    .wrapS(Texture.Wrap.Repeat)
-                    .wrapT(Texture.Wrap.Repeat)
                     .minFilter(Texture.MinFilter.LinearMipmapLinear)
-                    .magFilter(Texture.MagFilter.Linear)
                     .load("textures/container2.png")
                     .generateMipmap();
+            specularMap.bind()
+                    .minFilter(Texture.MinFilter.LinearMipmapLinear)
+                    .load("textures/container2_specular.png")
+                    .generateMipmap();
 
-            lightingProgram.bind().set("material.diffuse", 0);
+            lightingProgram.bind()
+                    .set("material.diffuse", 0)
+                    .set("material.specular", 1);
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             var lightPos = new Vector3f(1.2f, 1.0f, 2.0f);
@@ -117,22 +134,29 @@ public class C41LightingMapsDiffuse {
 
                 lightingProgram.bind()
                         // light properties
-                        .set("light.position", lightPos)
                         .setVec3("light.ambient", 0.2f, 0.2f, 0.2f)
                         .setVec3("light.diffuse", 0.5f, 0.5f, 0.5f)
                         .setVec3("light.specular", 1.0f, 1.0f, 1.0f)
                         // material properties
-                        .setVec3("material.specular", 0.5f, 0.5f, 0.5f)// specular lighting doesn't have full effect on this object's material
-                        .set("material.shininess", 64.0f)
+                        .set("material.shininess", 32.0f)
                         .set("viewPos", camera.position())
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))
                         .set("model", new Matrix4f());
 
-                Texture.Unit.U0.bind();
-                diffuseMap.bind();
+                diffuseMap.bind(Texture.Unit.U0);
+                specularMap.bind(Texture.Unit.U1);
 
-                cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
+//                cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
+
+                for (var i = 0; i < cubePositions.length; i++) {
+                    lightingProgram.setMatrix4("model", new Matrix4f()
+                            .translate(cubePositions[i])
+                            .rotate(Math.toRadians(20.0f * i), new Vector3f(1.0f, 0.3f, 0.5f))
+                            .get(mat4f))
+                            .set("light.direction", lightPos);
+                    cubeVAO.drawArray(DrawMode.Triangles, vbo);
+                }
 
                 lightCubeProgram.bind()
                         .setMatrix4("projection", projection.get(mat4f))
