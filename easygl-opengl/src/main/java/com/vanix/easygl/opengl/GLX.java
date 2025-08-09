@@ -1,6 +1,5 @@
 package com.vanix.easygl.opengl;
 
-import com.vanix.easygl.core.graphics.*;
 import org.lwjgl.opengl.GL45;
 
 public class GLX extends GL45 {
@@ -8,9 +7,18 @@ public class GLX extends GL45 {
     }
 
     public static void checkError() {
-        Graphics.ErrorCode errorCode = Graphics.ErrorCode.of(GLX.glGetError());
-        if (errorCode.isError()) {
-            throw new IllegalStateException(errorCode.toString());
+        int errno = GLX.glGetError();
+        if (errno != GLX.GL_NO_ERROR) {
+            throw new IllegalStateException(switch (errno) {
+                case GLX.GL_INVALID_ENUM -> "INVALID_ENU";
+                case GLX.GL_INVALID_OPERATION -> "INVALID_OPERATION";
+                case GLX.GL_INVALID_VALUE -> "INVALID_VALUE";
+                case GLX.GL_STACK_OVERFLOW -> "STACK_OVERFLOW";
+                case GLX.GL_STACK_UNDERFLOW -> "STACK_UNDERFLOW";
+                case GLX.GL_INVALID_FRAMEBUFFER_OPERATION -> "INVALID_FRAMEBUFFER_OPERATION";
+                case GLX.GL_OUT_OF_MEMORY -> "OUT_OF_MEMORY";
+                default -> "UNKNOWN_ERROR";
+            });
         }
     }
 }

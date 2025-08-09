@@ -8,6 +8,7 @@ import com.vanix.easygl.core.meta.LongBindableMeta;
 import com.vanix.easygl.core.meta.SystemName;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHint;
+import lombok.extern.slf4j.Slf4j;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 
@@ -15,6 +16,7 @@ import java.util.function.Function;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+@Slf4j
 @SystemName("Window")
 public class GlfwMetaService extends AbstractMetaService {
     static final BindableMeta<BindTarget.Default<Window>, Window> WindowMeta = new LongBindableMeta<>(
@@ -35,7 +37,8 @@ public class GlfwMetaService extends AbstractMetaService {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-        glfwSetErrorCallback(GLFWErrorCallback.createPrint(System.out));
+        glfwSetErrorCallback(((error, description) ->
+                log.error("GLFW error({}): {}", error, GLFWErrorCallback.getDescription(description))));
         register(Window.class, WindowMeta);
         register(WindowHint.IntHint.class,
                 (Function<Object[], ?>) args -> new GlWindowHint.GlIntHint((Integer) args[0]));

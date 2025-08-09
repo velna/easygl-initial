@@ -20,28 +20,10 @@ public interface Graphics extends Closeable {
         InvalidFramebufferOperation(MetaSystem.Graphics.queryInt("INVALID_FRAMEBUFFER_OPERATION")),
         OutOfMemory(MetaSystem.Graphics.queryInt("OUT_OF_MEMORY"));
 
-        private static final ErrorCode[] Errors = new ErrorCode[ErrorCode.values().length - 2];
-
-        static {
-            for (ErrorCode e : ErrorCode.values()) {
-                if (e != Unknown && e != None) {
-                    Errors[e.value - InvalidEnum.value] = e;
-                }
-            }
-        }
-
         private final int value;
 
-        private ErrorCode(int value) {
+        ErrorCode(int value) {
             this.value = value;
-        }
-
-        public static ErrorCode of(int error) {
-            if (error == None.value) {
-                return None;
-            }
-            int i = error - InvalidEnum.value;
-            return i >= Errors.length || i < 0 ? Unknown : Errors[i];
         }
 
         public boolean isError() {
@@ -69,9 +51,7 @@ public interface Graphics extends Closeable {
         }
     }
 
-    default ErrorCode getError() {
-        return ErrorCode.of(MetaSystem.Graphics.getError());
-    }
+    ErrorCode getError();
 
     Graphics viewPort(int x, int y, int width, int height);
 
