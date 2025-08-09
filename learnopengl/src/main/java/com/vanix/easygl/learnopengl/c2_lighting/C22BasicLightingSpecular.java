@@ -2,7 +2,7 @@ package com.vanix.easygl.learnopengl.c2_lighting;
 
 import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.input.Keyboard;
-import com.vanix.easygl.core.window.ControllableCamera;
+import com.vanix.easygl.core.g3d.ControllableCamera;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
 import org.joml.Math;

@@ -1,4 +1,4 @@
-package com.vanix.easygl.core.window;
+package com.vanix.easygl.core.g3d;
 
 import com.vanix.easygl.commons.value.FloatValue;
 import com.vanix.easygl.commons.value.Value;

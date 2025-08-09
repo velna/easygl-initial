@@ -1,4 +1,4 @@
-package com.vanix.easygl.core.graphics;
+package com.vanix.easygl.core.g3d;
 
 
 import org.joml.Matrix4f;
