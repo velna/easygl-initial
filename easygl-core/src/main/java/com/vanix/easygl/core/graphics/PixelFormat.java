@@ -34,8 +34,7 @@ public enum PixelFormat {
 
     public static PixelFormat ofChannels(int n) {
         return switch (n) {
-            case 1 -> LUMINANCE;
-            case 2 -> LUMINANCE_ALPHA;
+            case 1 -> RED;
             case 3 -> RGB;
             case 4 -> RGBA;
             default -> throw new IllegalArgumentException("Invalid channel number: " + n);
