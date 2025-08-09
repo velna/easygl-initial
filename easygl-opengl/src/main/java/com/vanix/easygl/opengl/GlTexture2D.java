@@ -13,7 +13,7 @@ public class GlTexture2D extends AbstractTexture<Texture2D> implements Texture2D
     }
 
     protected GlTexture2D(int handle, Object... args) {
-        super(handle, (String) args[0], Texture.Type.T2D);
+        super(handle, Texture.Type.T2D);
     }
 
     @Override

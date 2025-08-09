@@ -9,7 +9,7 @@ import com.vanix.easygl.core.Handle;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>, T>, Handle, Identified<String> {
+public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>, T>, Handle {
     BindableMeta<Texture.Unit, Texture.Unit> UnitMeta = MetaSystem.Graphics.of(Texture.Unit.class, new TypeReference<>() {
     });
 
@@ -219,11 +219,11 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
 
     T generateMipmap();
 
-    static Texture2D of2D(String id) {
-        return Texture2D.Meta.create(id);
+    static Texture2D of2D() {
+        return Texture2D.Meta.create();
     }
 
-    static TextureCube ofCube(String id) {
-        return TextureCube.Meta.create(id);
+    static TextureCube ofCube() {
+        return TextureCube.Meta.create();
     }
 }

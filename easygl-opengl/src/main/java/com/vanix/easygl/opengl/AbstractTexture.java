@@ -10,20 +10,12 @@ import java.util.function.IntConsumer;
 
 public abstract class AbstractTexture<T extends Texture<T>> extends AbstractBindable<Texture.Type<T>, T> implements Texture<T> {
 
-    private final String id;
-
-    protected AbstractTexture(int handle, String id, Type<T> type) {
+    protected AbstractTexture(int handle, Type<T> type) {
         super(handle, type, (IntConsumer) GLX::glDeleteTextures);
-        this.id = id;
     }
 
-    public AbstractTexture(String id, Type<T> type) {
-        this(GLX.glGenTextures(), id, type);
-    }
-
-    @Override
-    public String id() {
-        return id;
+    public AbstractTexture(Type<T> type) {
+        this(GLX.glGenTextures(), type);
     }
 
     @Override

@@ -21,8 +21,8 @@ public class C22BasicLightingSpecular {
 
         try (var window = Window.of(800, 600, "LearnOpenGL");
              var graphics = Graphics.of(window);
-             var lightingProgram = Program.of("p1");
-             var lightCubeProgram = Program.of("p1");
+             var lightingProgram = Program.of();
+             var lightCubeProgram = Program.of();
              var cubeVAO = VertexArray.of();
              var lightCubeVAO = VertexArray.of();
              var vbo = Buffer.ofArray(cubeVAO, DataType.Float)) {

@@ -1,6 +1,5 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.commons.Identified;
 import com.vanix.easygl.commons.util.TypeReference;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
@@ -13,7 +12,7 @@ import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-public interface Program extends Bindable<BindTarget.Default<Program>, Program>, Identified<String> {
+public interface Program extends Bindable<BindTarget.Default<Program>, Program> {
 
     BindableMeta<BindTarget.Default<Program>, Program> Meta = MetaSystem.Graphics.of(Program.class, new TypeReference<>() {
     });
@@ -21,13 +20,13 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program>,
     Program attach(Shader shader);
 
     default Program attach(Shader.Type type, String shaderSource) {
-        try (var shader = Shader.of(id() + "-" + type.name(), type).source(shaderSource).compile()) {
+        try (var shader = Shader.of(type).source(shaderSource).compile()) {
             return attach(shader);
         }
     }
 
     default Program attach(Shader.Type type, InputStream inputStream) throws IOException {
-        try (var shader = Shader.of(id() + "-" + type.name(), type).source(inputStream).compile()) {
+        try (var shader = Shader.of(type).source(inputStream).compile()) {
             return attach(shader);
         }
     }
@@ -185,8 +184,8 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program>,
 
     Program set(String key, Texture.Unit unit, Texture<?> texture);
 
-    static Program of(String id) {
-        return Meta.create(id);
+    static Program of() {
+        return Meta.create();
     }
 
 }

@@ -16,11 +16,11 @@ public class C41Textures {
 
         try (var window = Window.of(800, 600, "LearnOpenGL");
              var graphics = Graphics.of(window);
-             var program = Program.of("p1");
+             var program = Program.of();
              var vao = VertexArray.of();
              var vbo = Buffer.ofArray(vao, DataType.Float);
              var ebo = Buffer.ofElementArray(vao, DataType.UnsignedInt);
-             var texture = Texture.of2D("t1")) {
+             var texture = Texture.of2D()) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
 

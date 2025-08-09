@@ -1,6 +1,5 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.commons.Identified;
 import com.vanix.easygl.commons.util.TypeReference;
 import com.vanix.easygl.core.Handle;
 import com.vanix.easygl.core.meta.HandleMeta;
@@ -9,7 +8,7 @@ import com.vanix.easygl.core.meta.MetaSystem;
 import java.io.IOException;
 import java.io.InputStream;
 
-public interface Shader extends Handle, Identified<String> {
+public interface Shader extends Handle {
     HandleMeta<Shader> Meta = MetaSystem.Graphics.of(Shader.class, new TypeReference<>() {
     });
 
@@ -39,24 +38,24 @@ public interface Shader extends Handle, Identified<String> {
 
     Shader compile() throws GraphicsException;
 
-    static Shader of(String id, Type type) {
-        return Meta.create(id, type);
+    static Shader of(Type type) {
+        return Meta.create(type);
     }
 
-    static Shader vertex(String id) {
-        return of(id, Type.Vertex);
+    static Shader vertex() {
+        return of(Type.Vertex);
     }
 
-    static Shader geometry(String id) {
-        return of(id, Type.Geometry);
+    static Shader geometry() {
+        return of(Type.Geometry);
     }
 
-    static Shader fragment(String id) {
-        return of(id, Type.Fragment);
+    static Shader fragment() {
+        return of(Type.Fragment);
     }
 
-    private static Shader of(String id, Type type, String resourceFile) {
-        Shader shader = of(id, type);
+    private static Shader of(Type type, String resourceFile) {
+        Shader shader = of(type);
         try {
             shader.source(Shader.class.getClassLoader().getResourceAsStream(resourceFile));
         } catch (IOException e) {
@@ -65,15 +64,15 @@ public interface Shader extends Handle, Identified<String> {
         return shader;
     }
 
-    static Shader vertex(String id, String resourceFile) {
-        return of(id, Type.Vertex, resourceFile);
+    static Shader vertex(String resourceFile) {
+        return of(Type.Vertex, resourceFile);
     }
 
-    static Shader geometry(String id, String resourceFile) {
-        return of(id, Type.Geometry, resourceFile);
+    static Shader geometry(String resourceFile) {
+        return of(Type.Geometry, resourceFile);
     }
 
-    static Shader fragment(String id, String resourceFile) {
-        return of(id, Type.Fragment, resourceFile);
+    static Shader fragment(String resourceFile) {
+        return of(Type.Fragment, resourceFile);
     }
 }

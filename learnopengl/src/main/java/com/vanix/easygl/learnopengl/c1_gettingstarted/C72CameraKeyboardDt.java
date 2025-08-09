@@ -30,11 +30,11 @@ public class C72CameraKeyboardDt {
 
         try (var window = Window.of(800, 600, "LearnOpenGL");
              var graphics = Graphics.of(window);
-             var program = Program.of("p1");
+             var program = Program.of();
              var vao = VertexArray.of();
              var vbo = Buffer.ofArray(vao, DataType.Float);
-             var texture1 = Texture.of2D("t1");
-             var texture2 = Texture.of2D("t2")) {
+             var texture1 = Texture.of2D();
+             var texture2 = Texture.of2D()) {
 
             graphics.depth().enable();
 

@@ -14,7 +14,6 @@ import java.nio.charset.StandardCharsets;
 
 public class GlShader extends AbstractHandle implements Shader {
 
-    private final String id;
     private final Shader.Type type;
     private String source;
 
@@ -24,18 +23,12 @@ public class GlShader extends AbstractHandle implements Shader {
 
     public GlShader(int handle, Object... args) {
         super(handle, GLX::glDeleteShader);
-        this.id = (String) args[0];
-        this.type = (Shader.Type) args[1];
+        this.type = (Shader.Type) args[0];
     }
 
     @Override
     public Type type() {
         return type;
-    }
-
-    @Override
-    public String id() {
-        return id;
     }
 
     @Override

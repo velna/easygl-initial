@@ -11,7 +11,7 @@ public class GlTextureCube extends AbstractTexture<TextureCube> implements Textu
     }
 
     protected GlTextureCube(int handle, Object... args) {
-        super(handle, (String) args[0], Texture.Type.CubeMap);
+        super(handle, Texture.Type.CubeMap);
     }
 
     public TextureCube load(Image[] images) {

@@ -12,9 +12,9 @@ public class C24HelloTriangleExercises2 {
         WindowHints.OpenGlProfile.Core.set();
         try (var window = Window.of(800, 600, "LearnOpenGL");
              var graphics = Graphics.of(window);
-             var vertex = Shader.vertex("v1");
-             var fragment = Shader.fragment("f1");
-             var program = Program.of("p1");
+             var vertex = Shader.vertex();
+             var fragment = Shader.fragment();
+             var program = Program.of();
              var vaos = VertexArray.of(2);
              var vbos = Buffer.of(2, Buffer.Type.Array, DataType.Float)) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)

@@ -19,7 +19,6 @@ import java.nio.IntBuffer;
 public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Program> implements Program {
     protected static final BindTarget.Default<Program> Target = new BindTarget.Default<>("Program", GlMetaService.ProgramMeta);
 
-    private final String id;
     private final MutableIntObjectMap<Shader> shaders = new IntObjectHashMap<>();
     private final MutableObjectIntMap<String> uniforms = ObjectIntMaps.mutable.of();
 
@@ -29,12 +28,6 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
 
     protected GlProgram(int handle, Object... args) {
         super(handle, Target, GLX::glDeleteProgram);
-        this.id = (String) args[0];
-    }
-
-    @Override
-    public String id() {
-        return id;
     }
 
     @Override

@@ -11,10 +11,5 @@
 			<groupId>com.vanix.easygl</groupId>
 			<artifactId>easygl-commons</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.joml</groupId>
-			<artifactId>joml</artifactId>
-			<version>${joml.version}</version>
-		</dependency>
 	</dependencies>
 </project>

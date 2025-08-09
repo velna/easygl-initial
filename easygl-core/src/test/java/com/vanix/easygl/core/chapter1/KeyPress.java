@@ -33,15 +33,15 @@ public class KeyPress implements Renderer<ClientApp, RenderContext>, KeyboardLis
                         0.90f, 0.90f,
                         -0.85f, 0.90f
                 });
-        program = Program.of(ID)
-                .attach(Shader.vertex(ID).source("""
+        program = Program.of()
+                .attach(Shader.vertex().source("""
                         #version 400 core
                         layout( location = 0 ) in vec4 vPosition;
                         void main() {
                             gl_Position = vPosition;
                         }
                         """).compile())
-                .attach(Shader.fragment(ID).source("""
+                .attach(Shader.fragment().source("""
                         #version 400 core
                         out vec4 fColor;
                         void main() {
