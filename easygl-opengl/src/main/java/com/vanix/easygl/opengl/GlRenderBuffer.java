@@ -8,21 +8,13 @@ import java.util.function.IntConsumer;
 
 public class GlRenderBuffer extends AbstractBindable<BindTarget.Default<RenderBuffer>, RenderBuffer> implements RenderBuffer {
 
-    protected static final BindTarget.Default<RenderBuffer> Target = new BindTarget.Default<>(
-            GLX.GL_RENDERBUFFER, "RenderBuffer", GlMetaService.RenderBufferMeta);
+    protected GlRenderBuffer() {
+        this(GLX.glGenRenderbuffers());
+    }
 
-    private GlRenderBuffer(int handle) {
+    protected GlRenderBuffer(int handle) {
         super(handle, Target, (IntConsumer) GLX::glDeleteRenderbuffers);
     }
-
-    protected GlRenderBuffer(Object... args) {
-        this(GLX.glGenRenderbuffers(), args);
-    }
-
-    protected GlRenderBuffer(int handle, Object... args) {
-        this(handle);
-    }
-
 
     @Override
     public RenderBuffer storage(Format internalFormat, int width, int height) {

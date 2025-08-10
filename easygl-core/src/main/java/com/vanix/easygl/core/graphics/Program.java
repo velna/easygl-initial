@@ -16,6 +16,7 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     BindableMeta<BindTarget.Default<Program>, Program> Meta = MetaSystem.Graphics.of(Program.class, new TypeReference<>() {
     });
+    BindTarget.Default<Program> Target = new BindTarget.Default<>("Program", Meta);
 
     Program attach(Shader shader);
 

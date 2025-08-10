@@ -8,11 +8,11 @@ import com.vanix.easygl.core.media.Image;
 
 public class GlTexture2D extends AbstractTexture<Texture2D> implements Texture2D {
 
-    protected GlTexture2D(Object... args) {
-        this(GLX.glGenTextures(), args);
+    protected GlTexture2D() {
+        this(GLX.glGenTextures());
     }
 
-    protected GlTexture2D(int handle, Object... args) {
+    protected GlTexture2D(int handle) {
         super(handle, Texture.Type.T2D);
     }
 

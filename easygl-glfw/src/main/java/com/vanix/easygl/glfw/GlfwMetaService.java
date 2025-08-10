@@ -20,7 +20,7 @@ import static org.lwjgl.glfw.GLFW.*;
 @SystemName("Window")
 public class GlfwMetaService extends AbstractMetaService {
     static final BindableMeta<BindTarget.Default<Window>, Window> WindowMeta = new LongBindableMeta<>(
-            GlWindow::new,
+            args -> new GlWindow((Integer) args[0], (Integer) args[1], (String) args[2]),
             (target, h) -> glfwMakeContextCurrent(h),
             (target, h) -> glfwMakeContextCurrent(h),
             0L

@@ -11,13 +11,11 @@ import java.util.function.IntConsumer;
 
 public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArray>, VertexArray> implements VertexArray {
 
-    private static final BindTarget.Default<VertexArray> Target = new BindTarget.Default<>("VertexArray", GlMetaService.VertexArrayMeta);
-
-    GlVertexArray(Object... args) {
-        this(GLX.glGenVertexArrays(), args);
+    GlVertexArray() {
+        this(GLX.glGenVertexArrays());
     }
 
-    GlVertexArray(int handle, Object... args) {
+    GlVertexArray(int handle) {
         super(handle, Target, (IntConsumer) GLX::glDeleteVertexArrays);
     }
 

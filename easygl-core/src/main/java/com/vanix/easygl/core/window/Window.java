@@ -16,6 +16,7 @@ import com.vanix.easygl.core.window.event.WindowResizeListener;
 public interface Window extends Bindable<BindTarget.Default<Window>, Window>, Dimensional, Positional {
     BindableMeta<BindTarget.Default<Window>, Window> Meta = MetaSystem.Window.of(Window.class, new TypeReference<>() {
     });
+    BindTarget.Default<Window> Target = new BindTarget.Default<>("Window", Meta);
 
     String getTitle();
 

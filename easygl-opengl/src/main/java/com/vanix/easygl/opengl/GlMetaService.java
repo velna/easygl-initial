@@ -11,57 +11,57 @@ import java.util.function.Function;
 public class GlMetaService extends AbstractMetaService {
 
     static final BindableMeta<Buffer.Type, Buffer> BufferMeta = new IntBindableMeta<>(
-            GlBuffer::new,
+            args -> new GlBuffer((Buffer.Type) args[0], (DataType) args[1]),
             GLX::glBindBuffer,
             GLX::glBindBuffer,
             0,
             GLX::glDeleteBuffers,
-            GlBuffer::new,
+            (handle, args) -> new GlBuffer(handle, (Buffer.Type) args[0], (DataType) args[1]),
             GLX::glGenBuffers,
             GLX::glDeleteBuffers);
 
     static final BindableMeta<BindTarget.Default<VertexArray>, VertexArray> VertexArrayMeta = new IntBindableMeta<>(
-            GlVertexArray::new,
+            args -> new GlVertexArray(),
             (target, handle) -> GLX.glBindVertexArray(handle),
             (target, handle) -> GLX.glBindVertexArray(handle),
             0,
             GLX::glDeleteVertexArrays,
-            GlVertexArray::new,
+            (handle, args) -> new GlVertexArray(handle),
             GLX::glGenVertexArrays,
             GLX::glDeleteVertexArrays);
 
     static final BindableMeta<FrameBuffer.Type, FrameBuffer> FrameBufferMeta = new IntBindableMeta<>(
-            GlFrameBuffer::new,
+            args -> new GlFrameBuffer((FrameBuffer.Type) args[0]),
             GLX::glBindFramebuffer,
             GLX::glBindFramebuffer,
             0,
             GLX::glDeleteFramebuffers,
-            GlFrameBuffer::new,
+            (handle, args) -> new GlFrameBuffer(handle, (FrameBuffer.Type) args[0]),
             GLX::glGenFramebuffers,
             GLX::glDeleteFramebuffers);
 
     static final HandleMeta<Shader> ShaderMeta = new IntHandleMeta<>(
-            GlShader::new,
+            args -> new GlShader((Shader.Type) args[0]),
             GLX::glDeleteShader,
-            GlShader::new,
+            (handle, args) -> new GlShader(handle, (Shader.Type) args[0]),
             null,
             null);
 
     static final BindableMeta<BindTarget.Default<Program>, Program> ProgramMeta = new IntBindableMeta<>(
-            GlProgram::new,
+            args -> new GlProgram(),
             (target, handle) -> GLX.glUseProgram(handle),
             (target, handle) -> GLX.glUseProgram(handle),
             0,
             GLX::glDeleteProgram,
-            GlProgram::new);
+            (handle, args) -> new GlProgram(handle));
 
     static final BindableMeta<BindTarget.Default<RenderBuffer>, RenderBuffer> RenderBufferMeta = new IntBindableMeta<>(
-            GlRenderBuffer::new,
+            args -> new GlRenderBuffer(),
             GLX::glBindRenderbuffer,
             GLX::glBindRenderbuffer,
             0,
             GLX::glDeleteRenderbuffers,
-            GlRenderBuffer::new,
+            (handle, args) -> new GlRenderBuffer(handle),
             GLX::glGenRenderbuffers,
             GLX::glDeleteRenderbuffers);
 
@@ -75,12 +75,12 @@ public class GlMetaService extends AbstractMetaService {
     );
 
     static final BindableMeta<Texture.Type<Texture2D>, Texture2D> Texture2DMeta = createTextureMeta(
-            GlTexture2D::new,
-            GlTexture2D::new);
+            args -> new GlTexture2D(),
+            (handle, args) -> new GlTexture2D(handle));
 
     static final BindableMeta<Texture.Type<TextureCube>, TextureCube> TextureCubeMeta = createTextureMeta(
-            GlTextureCube::new,
-            GlTextureCube::new);
+            args -> new GlTextureCube(),
+            (handle, args) -> new GlTextureCube(handle));
 
     public GlMetaService() {
         register(Buffer.class, BufferMeta);

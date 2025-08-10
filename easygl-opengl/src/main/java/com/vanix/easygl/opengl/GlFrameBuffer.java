@@ -1,21 +1,24 @@
 package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.core.AbstractBindable;
-import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.DrawBufferIndex;
+import com.vanix.easygl.core.graphics.FrameBuffer;
+import com.vanix.easygl.core.graphics.RenderBuffer;
+import com.vanix.easygl.core.graphics.Texture2D;
 import org.joml.Vector4f;
 import org.joml.Vector4i;
 
 import java.util.function.IntConsumer;
 
 public class GlFrameBuffer extends AbstractBindable<FrameBuffer.Type, FrameBuffer> implements FrameBuffer {
-    public static final FrameBuffer DefaultFrameBuffer = new GlFrameBuffer(0, new Object[]{Type.FrameBuffer});
+    public static final FrameBuffer DefaultFrameBuffer = new GlFrameBuffer(0, Type.FrameBuffer);
 
-    protected GlFrameBuffer(Object... args) {
-        this(GLX.glGenFramebuffers(), args);
+    protected GlFrameBuffer(Type type) {
+        this(GLX.glGenFramebuffers(), type);
     }
 
-    protected GlFrameBuffer(int handle, Object... args) {
-        super(handle, (Type) args[0], (IntConsumer) GLX::glDeleteFramebuffers);
+    protected GlFrameBuffer(int handle, Type type) {
+        super(handle, type, (IntConsumer) GLX::glDeleteFramebuffers);
     }
 
     @Override

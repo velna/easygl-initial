@@ -11,13 +11,13 @@ public class GlBuffer extends AbstractBindable<Buffer.Type, Buffer> implements B
     private final DataType dataType;
     private int bytes;
 
-    protected GlBuffer(int handle, Object... args) {
-        super(handle, (Type) args[0], (IntConsumer) GLX::glDeleteBuffers);
-        this.dataType = (DataType) args[1];
+    protected GlBuffer(int handle, Type type, DataType dataType) {
+        super(handle, type, (IntConsumer) GLX::glDeleteBuffers);
+        this.dataType = dataType;
     }
 
-    protected GlBuffer(Object... args) {
-        this(GLX.glGenBuffers(), args);
+    protected GlBuffer(Type type, DataType dataType) {
+        this(GLX.glGenBuffers(), type, dataType);
     }
 
     @Override

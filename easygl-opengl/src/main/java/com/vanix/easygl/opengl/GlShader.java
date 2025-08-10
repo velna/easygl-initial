@@ -17,13 +17,13 @@ public class GlShader extends AbstractHandle implements Shader {
     private final Shader.Type type;
     private String source;
 
-    public GlShader(Object... args) {
-        this(GLX.glCreateShader(((Shader.Type) args[0]).value()), args);
+    public GlShader(Shader.Type type) {
+        this(GLX.glCreateShader(type.value()), type);
     }
 
-    public GlShader(int handle, Object... args) {
+    public GlShader(int handle, Shader.Type type) {
         super(handle, GLX::glDeleteShader);
-        this.type = (Shader.Type) args[0];
+        this.type = type;
     }
 
     @Override

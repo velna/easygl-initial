@@ -17,16 +17,14 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Program> implements Program {
-    protected static final BindTarget.Default<Program> Target = new BindTarget.Default<>("Program", GlMetaService.ProgramMeta);
-
     private final MutableIntObjectMap<Shader> shaders = new IntObjectHashMap<>();
     private final MutableObjectIntMap<String> uniforms = ObjectIntMaps.mutable.of();
 
-    protected GlProgram(Object... args) {
-        this(GLX.glCreateProgram(), args);
+    protected GlProgram() {
+        this(GLX.glCreateProgram());
     }
 
-    protected GlProgram(int handle, Object... args) {
+    protected GlProgram(int handle) {
         super(handle, Target, GLX::glDeleteProgram);
     }
 

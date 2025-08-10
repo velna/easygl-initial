@@ -9,7 +9,6 @@ public interface Texture2D extends Texture<Texture2D> {
     BindableMeta<Type<Texture2D>, Texture2D> Meta = MetaSystem.Graphics.of(Texture2D.class, new TypeReference<>() {
     });
 
-
     default Texture2D load(String imageResource) {
         try (var image = Image.load(imageResource)) {
             return load(image);

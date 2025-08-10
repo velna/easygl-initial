@@ -6,11 +6,11 @@ import com.vanix.easygl.core.media.Image;
 
 public class GlTextureCube extends AbstractTexture<TextureCube> implements TextureCube {
 
-    protected GlTextureCube(Object... args) {
-        this(GLX.glGenTextures(), args);
+    protected GlTextureCube() {
+        this(GLX.glGenTextures());
     }
 
-    protected GlTextureCube(int handle, Object... args) {
+    protected GlTextureCube(int handle) {
         super(handle, Texture.Type.CubeMap);
     }
 

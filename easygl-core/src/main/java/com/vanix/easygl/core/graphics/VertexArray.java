@@ -1,16 +1,17 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.commons.util.TypeReference;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
 import com.vanix.easygl.core.CloseableArray;
 import com.vanix.easygl.core.Handle;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
-import com.vanix.easygl.commons.util.TypeReference;
 
 public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, VertexArray>, Handle {
     BindableMeta<BindTarget.Default<VertexArray>, VertexArray> Meta = MetaSystem.Graphics.of(VertexArray.class, new TypeReference<>() {
     });
+    BindTarget.Default<VertexArray> Target = new BindTarget.Default<>("VertexArray", Meta);
 
     VertexArray attributes(Buffer buffer, int... layouts);
 
