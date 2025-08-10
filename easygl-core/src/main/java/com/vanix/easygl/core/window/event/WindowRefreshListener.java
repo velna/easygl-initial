@@ -5,6 +5,6 @@ import com.vanix.easygl.commons.event.EventListener;
 
 public interface WindowRefreshListener extends EventListener {
 
-	void windowOnRefresh(Window window);
+	void windowOnRefresh(WindowEvent event);
 
 }

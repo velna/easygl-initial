@@ -9,4 +9,7 @@ public interface Dimension {
         return this;
     }
 
+    static Dimension of(int width, int height) {
+        return new SimpleDimension(width, height);
+    }
 }

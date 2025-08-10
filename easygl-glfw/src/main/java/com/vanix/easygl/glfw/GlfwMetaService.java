@@ -6,8 +6,10 @@ import com.vanix.easygl.core.meta.AbstractMetaService;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.LongBindableMeta;
 import com.vanix.easygl.core.meta.SystemName;
+import com.vanix.easygl.core.window.Monitor;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHint;
+import com.vanix.easygl.core.window.event.MonitorListener;
 import lombok.extern.slf4j.Slf4j;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -39,6 +41,7 @@ public class GlfwMetaService extends AbstractMetaService {
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
         glfwSetErrorCallback(((error, description) ->
                 log.error("GLFW error({}): {}", error, GLFWErrorCallback.getDescription(description))));
+        GLFW.glfwSetMonitorCallback(GlMonitor::fireMonitorOnConnection);
         register(Window.class, WindowMeta);
         register(WindowHint.IntHint.class,
                 (Function<Object[], ?>) args -> new GlWindowHint.GlIntHint((Integer) args[0]));
@@ -46,6 +49,9 @@ public class GlfwMetaService extends AbstractMetaService {
                 (Function<Object[], ?>) args -> new GlWindowHint.GlBooleanHint((Integer) args[0]));
         register(WindowHint.StringHint.class,
                 (Function<Object[], ?>) args -> new GlWindowHint.GlStringHint((Integer) args[0]));
+        register(MonitorListener.class, (Function<Object[], ?>) args -> GlMonitor.MonitorListeners.listen());
+        register(Monitor[].class, (Function<Object[], ?>) args -> GlMonitor.monitors());
+        register(Monitor.class, (Function<Object[], ?>) args -> GlMonitor.primary());
     }
 
     @Override

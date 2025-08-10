@@ -5,6 +5,6 @@ import com.vanix.easygl.commons.event.EventListener;
 
 public interface WindowResizeListener extends EventListener {
 
-	void windowOnResize(Window window);
+	void windowOnResize(WindowResizeEvent event);
 
 }

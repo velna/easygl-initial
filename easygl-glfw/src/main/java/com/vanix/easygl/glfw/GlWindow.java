@@ -8,10 +8,10 @@ import com.vanix.easygl.commons.event.ListenerSupport;
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.input.InputController;
+import com.vanix.easygl.core.window.Monitor;
 import com.vanix.easygl.core.window.Window;
-import com.vanix.easygl.core.window.event.WindowPositionListener;
-import com.vanix.easygl.core.window.event.WindowRefreshListener;
-import com.vanix.easygl.core.window.event.WindowResizeListener;
+import com.vanix.easygl.core.window.event.*;
+import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
@@ -22,10 +22,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 
+import static org.lwjgl.glfw.GLFW.*;
+
 public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Window> implements Window {
     private final ListenerSupport<WindowResizeListener> resizeListeners;
     private final ListenerSupport<WindowRefreshListener> refreshListeners;
     private final ListenerSupport<WindowPositionListener> positionListeners;
+    private final ListenerSupport<WindowCloseListener> closeListeners;
+    private final ListenerSupport<WindowContentScaleListener> contentScaleListeners;
+    private final ListenerSupport<WindowFocusListener> focusListeners;
+    private final ListenerSupport<WindowIconifyListener> iconifyListeners;
+    private final ListenerSupport<WindowMaximizeListener> maximizeListeners;
     private final List<Runnable> closeRunnableList = new ArrayList<>();
     private InputController inputController;
     private int x;
@@ -46,6 +53,11 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
         resizeListeners = autoListenerSupport(1, GLFW::glfwSetFramebufferSizeCallback, this::fireWindowResized);
         positionListeners = autoListenerSupport(1, GLFW::glfwSetWindowPosCallback, this::fireWindowPosition);
         refreshListeners = newListenerSupport(1, GLFW::glfwSetWindowRefreshCallback, this::fireWindowRefresh);
+        closeListeners = newListenerSupport(1, GLFW::glfwSetWindowCloseCallback, this::fireWindowClose);
+        contentScaleListeners = newListenerSupport(1, GLFW::glfwSetWindowContentScaleCallback, this::fireWindowContentScale);
+        focusListeners = newListenerSupport(1, GLFW::glfwSetWindowFocusCallback, this::fireWindowFocus);
+        iconifyListeners = newListenerSupport(1, GLFW::glfwSetWindowIconifyCallback, this::fireWindowIconify);
+        maximizeListeners = newListenerSupport(1, GLFW::glfwSetWindowMaximizeCallback, this::fireWindowMaximize);
         fireWindowResized(handle(), width, height);
     }
 
@@ -78,17 +90,45 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
             frameBufferWidth = bWidth.get();
             frameBufferHeight = bHeight.get();
         }
-        resizeListeners.forEach(0, l -> l.windowOnResize(this));
+        var event = new WindowResizeEvent(this, width, height);
+        resizeListeners.forEach(0, l -> l.windowOnResize(event));
     }
 
     private void fireWindowPosition(long window, int x, int y) {
         this.x = x;
         this.y = y;
-        positionListeners.forEach(0, l -> l.windowOnPosition(this));
+        var event = new WindowPositionEvent(this, x, y);
+        positionListeners.forEach(0, l -> l.windowOnPosition(event));
     }
 
     private void fireWindowRefresh(long window) {
-        refreshListeners.forEach(0, l -> l.windowOnRefresh(this));
+        var event = new WindowEvent(this);
+        refreshListeners.forEach(0, l -> l.windowOnRefresh(event));
+    }
+
+    private void fireWindowClose(long window) {
+        var event = new WindowEvent(this);
+        closeListeners.forEach(0, l -> l.windowOnClose(event));
+    }
+
+    private void fireWindowContentScale(long window, float xScale, float yScale) {
+        var event = new WindowContentScaleEvent(this, xScale, yScale);
+        contentScaleListeners.forEach(0, l -> l.windowOnContentScale(event));
+    }
+
+    private void fireWindowFocus(long window, boolean focus) {
+        var event = new WindowFocusEvent(this, focus);
+        focusListeners.forEach(0, l -> l.windowOnFocus(event));
+    }
+
+    private void fireWindowIconify(long window, boolean iconify) {
+        var event = new WindowIconifyEvent(this, iconify);
+        iconifyListeners.forEach(0, l -> l.windowOnIconify(event));
+    }
+
+    private void fireWindowMaximize(long window, boolean maximize) {
+        var event = new WindowMaximizeEvent(this, maximize);
+        maximizeListeners.forEach(0, l -> l.windowOnMaximize(event));
     }
 
     @Override
@@ -211,5 +251,78 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
     public void close() {
         super.close();
         closeRunnableList.forEach(Runnable::run);
+    }
+
+    @Override
+    public Window focus() {
+        glfwFocusWindow(handle);
+        return this;
+    }
+
+    @Override
+    public Window hide() {
+        glfwHideWindow(handle);
+        return this;
+    }
+
+    @Override
+    public Window show() {
+        glfwShowWindow(handle);
+        return this;
+    }
+
+    @Override
+    public float opacity() {
+        return glfwGetWindowOpacity(handle);
+    }
+
+    @Override
+    public Window opacity(float value) {
+        glfwSetWindowOpacity(handle, value);
+        return this;
+    }
+
+    @Override
+    public Window iconify() {
+        glfwIconifyWindow(handle);
+        return this;
+    }
+
+    @Override
+    public Window maximize() {
+        glfwMaximizeWindow(handle);
+        return this;
+    }
+
+    @Override
+    public Window requestAttention() {
+        glfwRequestWindowAttention(handle);
+        return this;
+    }
+
+    @Override
+    public Window restore() {
+        glfwRestoreWindow(handle);
+        return this;
+    }
+
+    @Override
+    public Vector2f contentScale() {
+        float[] x = new float[1];
+        float[] y = new float[1];
+        glfwGetMonitorContentScale(handle, x, y);
+        return new Vector2f(x[0], y[0]);
+    }
+
+    @Override
+    public Monitor monitor() {
+        long monitor = glfwGetWindowMonitor(handle);
+        return monitor == MemoryUtil.NULL ? null : GlMonitor.of(monitor);
+    }
+
+    @Override
+    public Window monitor(Monitor monitor, int x, int y, int width, int height, int refreshRate) {
+        glfwSetWindowMonitor(handle, monitor == null ? MemoryUtil.NULL : monitor.handle(), x, y, width, height, refreshRate);
+        return this;
     }
 }

@@ -12,6 +12,7 @@ import com.vanix.easygl.core.meta.MetaSystem;
 import com.vanix.easygl.core.window.event.WindowPositionListener;
 import com.vanix.easygl.core.window.event.WindowRefreshListener;
 import com.vanix.easygl.core.window.event.WindowResizeListener;
+import org.joml.Vector2f;
 
 public interface Window extends Bindable<BindTarget.Default<Window>, Window>, Dimensional, Positional {
     BindableMeta<BindTarget.Default<Window>, Window> Meta = MetaSystem.Window.of(Window.class, new TypeReference<>() {
@@ -77,4 +78,28 @@ public interface Window extends Bindable<BindTarget.Default<Window>, Window>, Di
     default float getAspect() {
         return getWidth() * 1.0f / getHeight();
     }
+
+    Window focus();
+
+    Window hide();
+
+    Window show();
+
+    float opacity();
+
+    Window opacity(float value);
+
+    Window iconify();
+
+    Window maximize();
+
+    Window requestAttention();
+
+    Window restore();
+
+    Vector2f contentScale();
+
+    Monitor monitor();
+
+    Window monitor(Monitor monitor, int x, int y, int width, int height, int refreshRate);
 }
