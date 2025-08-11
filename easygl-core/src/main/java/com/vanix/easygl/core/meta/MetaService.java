@@ -15,6 +15,10 @@ public interface MetaService {
 
     int queryInt(String id);
 
+    default Object[] queryArray(String id) {
+        throw new UnsupportedOperationException();
+    }
+
     int getError();
 
     void close();

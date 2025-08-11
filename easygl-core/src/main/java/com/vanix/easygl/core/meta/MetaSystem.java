@@ -30,6 +30,11 @@ public enum MetaSystem implements MetaService {
     }
 
     @Override
+    public Object[] queryArray(String id) {
+        return metaService.queryArray(id);
+    }
+
+    @Override
     public int getError() {
         return metaService.getError();
     }

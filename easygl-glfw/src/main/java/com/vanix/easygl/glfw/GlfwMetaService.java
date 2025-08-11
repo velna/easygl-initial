@@ -60,6 +60,17 @@ public class GlfwMetaService extends AbstractMetaService {
     }
 
     @Override
+    public Object[] queryArray(String id) {
+        if (id.startsWith("KEY_")) {
+            int keyCode = queryInt(id);
+            int scancode = GLFW.glfwGetKeyScancode(keyCode);
+            String keyName = GLFW.glfwGetKeyName(keyCode, scancode);
+            return new Object[]{keyCode, scancode, keyName};
+        }
+        return new Object[0];
+    }
+
+    @Override
     public int getError() {
         return GLFW.glfwGetError(null);
     }
