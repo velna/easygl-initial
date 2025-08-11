@@ -14,13 +14,13 @@ public interface RenderBuffer extends Bindable<BindTarget.Default<RenderBuffer>,
             MetaSystem.Graphics.queryInt("RENDERBUFFER"), "RenderBuffer", Meta);
 
     enum Format {
-        Color(MetaSystem.Graphics.queryInt("COLOR_RENDERABLE")),
-        Depth(MetaSystem.Graphics.queryInt("DEPTH_RENDERABLE")),
-        Stencil(MetaSystem.Graphics.queryInt("STENCIL_RENDERABLE"));
+        Color("COLOR_RENDERABLE"),
+        Depth("DEPTH_RENDERABLE"),
+        Stencil("STENCIL_RENDERABLE");
         private final int value;
 
-        Format(int value) {
-            this.value = value;
+        Format(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
         }
 
         public int value() {

@@ -15,22 +15,22 @@ public interface Buffer extends Handle, Bindable<Buffer.Type, Buffer> {
 
     enum Type implements BindTarget<Type, Buffer> {
         //        Array(EasyGL.queryInt("ARRAY_BUFFER),
-        Array(MetaSystem.Graphics.queryInt("ARRAY_BUFFER")),
-        CopyRead(MetaSystem.Graphics.queryInt("COPY_READ_BUFFER")),
-        CopyWrite(MetaSystem.Graphics.queryInt("COPY_WRITE_BUFFER")),
-        ElementArray(MetaSystem.Graphics.queryInt("ELEMENT_ARRAY_BUFFER")),
-        PixelPack(MetaSystem.Graphics.queryInt("PIXEL_PACK_BUFFER")),
-        PixelUnpack(MetaSystem.Graphics.queryInt("PIXEL_UNPACK_BUFFER")),
-        Texture(MetaSystem.Graphics.queryInt("TEXTURE_BUFFER")),
-        TransformFeedback(MetaSystem.Graphics.queryInt("TRANSFORM_FEEDBACK_BUFFER")),
-        Uniform(MetaSystem.Graphics.queryInt("UNIFORM_BUFFER"));
+        Array("ARRAY_BUFFER"),
+        CopyRead("COPY_READ_BUFFER"),
+        CopyWrite("COPY_WRITE_BUFFER"),
+        ElementArray("ELEMENT_ARRAY_BUFFER"),
+        PixelPack("PIXEL_PACK_BUFFER"),
+        PixelUnpack("PIXEL_UNPACK_BUFFER"),
+        Texture("TEXTURE_BUFFER"),
+        TransformFeedback("TRANSFORM_FEEDBACK_BUFFER"),
+        Uniform("UNIFORM_BUFFER");
 
         final int value;
 
         private final BindingState<Type, Buffer> state;
 
-        Type(int value) {
-            this.value = value;
+        Type(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
             state = Meta.newBindingState(name(), this);
         }
 
@@ -47,20 +47,20 @@ public interface Buffer extends Handle, Bindable<Buffer.Type, Buffer> {
     }
 
     enum DataUsage {
-        STREAM_DRAW(MetaSystem.Graphics.queryInt("STREAM_DRAW")),
-        STREAM_READ(MetaSystem.Graphics.queryInt("STREAM_READ")),
-        STREAM_COPY(MetaSystem.Graphics.queryInt("STREAM_COPY")),
-        STATIC_DRAW(MetaSystem.Graphics.queryInt("STATIC_DRAW")),
-        STATIC_READ(MetaSystem.Graphics.queryInt("STATIC_READ")),
-        STATIC_COPY(MetaSystem.Graphics.queryInt("STATIC_COPY")),
-        DYNAMIC_DRAW(MetaSystem.Graphics.queryInt("DYNAMIC_DRAW")),
-        DYNAMIC_READ(MetaSystem.Graphics.queryInt("DYNAMIC_READ")),
-        DYNAMIC_COPY(MetaSystem.Graphics.queryInt("DYNAMIC_COPY"));
+        STREAM_DRAW("STREAM_DRAW"),
+        STREAM_READ("STREAM_READ"),
+        STREAM_COPY("STREAM_COPY"),
+        STATIC_DRAW("STATIC_DRAW"),
+        STATIC_READ("STATIC_READ"),
+        STATIC_COPY("STATIC_COPY"),
+        DYNAMIC_DRAW("DYNAMIC_DRAW"),
+        DYNAMIC_READ("DYNAMIC_READ"),
+        DYNAMIC_COPY("DYNAMIC_COPY");
 
         final int value;
 
-        private DataUsage(int value) {
-            this.value = value;
+        private DataUsage(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
         }
 
         public int value() {
@@ -69,12 +69,12 @@ public interface Buffer extends Handle, Bindable<Buffer.Type, Buffer> {
     }
 
     enum StorageFlags {
-        MapRead(MetaSystem.Graphics.queryInt("MAP_READ_BIT")),
-        MapWrite(MetaSystem.Graphics.queryInt("MAP_WRITE_BIT"));
+        MapRead("MAP_READ_BIT"),
+        MapWrite("MAP_WRITE_BIT");
         private final int value;
 
-        StorageFlags(int value) {
-            this.value = value;
+        StorageFlags(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
         }
 
         public int value() {

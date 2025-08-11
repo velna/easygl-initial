@@ -5,22 +5,22 @@ import com.vanix.easygl.core.meta.MetaSystem;
 import java.nio.Buffer;
 
 public enum DataType {
-    Byte(MetaSystem.Graphics.queryInt("BYTE"), java.lang.Byte.BYTES),
-    UnsignedByte(MetaSystem.Graphics.queryInt("UNSIGNED_BYTE"), java.lang.Byte.BYTES),
-    Short(MetaSystem.Graphics.queryInt("SHORT"), java.lang.Short.BYTES),
-    UnsignedShort(MetaSystem.Graphics.queryInt("UNSIGNED_SHORT"), java.lang.Short.BYTES),
-    Int(MetaSystem.Graphics.queryInt("INT"), Integer.BYTES),
-    UnsignedInt(MetaSystem.Graphics.queryInt("UNSIGNED_INT"), Integer.BYTES),
-    Float(MetaSystem.Graphics.queryInt("FLOAT"), java.lang.Float.BYTES),
-    UnsignedFlot(MetaSystem.Graphics.queryInt("2_BYTES"), java.lang.Float.BYTES),
-    Bytes3(MetaSystem.Graphics.queryInt("3_BYTES"), 3),
-    Bytes4(MetaSystem.Graphics.queryInt("4_BYTES"), 4),
-    Double(MetaSystem.Graphics.queryInt("DOUBLE"), java.lang.Double.BYTES);
+    Byte("BYTE", java.lang.Byte.BYTES),
+    UnsignedByte("UNSIGNED_BYTE", java.lang.Byte.BYTES),
+    Short("SHORT", java.lang.Short.BYTES),
+    UnsignedShort("UNSIGNED_SHORT", java.lang.Short.BYTES),
+    Int("INT", Integer.BYTES),
+    UnsignedInt("UNSIGNED_INT", Integer.BYTES),
+    Float("FLOAT", java.lang.Float.BYTES),
+    UnsignedFlot("2_BYTES", java.lang.Float.BYTES),
+    Bytes3("3_BYTES", 3),
+    Bytes4("4_BYTES", 4),
+    Double("DOUBLE", java.lang.Double.BYTES);
     private final int value;
     private final int bytes;
 
-    DataType(int value, int bytes) {
-        this.value = value;
+    DataType(String id, int bytes) {
+        this.value = MetaSystem.Graphics.queryInt(id);
         this.bytes = bytes;
     }
 

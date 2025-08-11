@@ -10,14 +10,14 @@ import java.util.ServiceLoader;
 public interface Graphics extends Closeable {
 
     enum BufferMask {
-        Color(MetaSystem.Graphics.queryInt("COLOR_BUFFER_BIT")), //
-        Depth(MetaSystem.Graphics.queryInt("DEPTH_BUFFER_BIT")), //
-        Stencil(MetaSystem.Graphics.queryInt("STENCIL_BUFFER_BIT"));
+        Color("COLOR_BUFFER_BIT"), //
+        Depth("DEPTH_BUFFER_BIT"), //
+        Stencil("STENCIL_BUFFER_BIT");
 
         private final int value;
 
-        private BufferMask(int value) {
-            this.value = value;
+        BufferMask(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
         }
 
         public int value() {

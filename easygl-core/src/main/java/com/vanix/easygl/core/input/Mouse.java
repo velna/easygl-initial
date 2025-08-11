@@ -31,23 +31,23 @@ public interface Mouse extends Positional, InputDevice<Mouse.Button> {
     }
 
     enum Button implements Input {
-        BTN1(MetaSystem.Window.queryInt("MOUSE_BUTTON_1")),
-        BTN2(MetaSystem.Window.queryInt("MOUSE_BUTTON_2")),
-        BTN3(MetaSystem.Window.queryInt("MOUSE_BUTTON_3")),
-        BTN4(MetaSystem.Window.queryInt("MOUSE_BUTTON_4")),
-        BTN5(MetaSystem.Window.queryInt("MOUSE_BUTTON_5")),
-        BTN6(MetaSystem.Window.queryInt("MOUSE_BUTTON_6")),
-        BTN7(MetaSystem.Window.queryInt("MOUSE_BUTTON_7")),
-        BTN8(MetaSystem.Window.queryInt("MOUSE_BUTTON_8")),
-        LAST(MetaSystem.Window.queryInt("MOUSE_BUTTON_LAST")),
-        LEFT(MetaSystem.Window.queryInt("MOUSE_BUTTON_LEFT")),
-        RIGHT(MetaSystem.Window.queryInt("MOUSE_BUTTON_RIGHT")),
-        MIDDLE(MetaSystem.Window.queryInt("MOUSE_BUTTON_MIDDLE"));
+        BTN1("MOUSE_BUTTON_1"),
+        BTN2("MOUSE_BUTTON_2"),
+        BTN3("MOUSE_BUTTON_3"),
+        BTN4("MOUSE_BUTTON_4"),
+        BTN5("MOUSE_BUTTON_5"),
+        BTN6("MOUSE_BUTTON_6"),
+        BTN7("MOUSE_BUTTON_7"),
+        BTN8("MOUSE_BUTTON_8"),
+        LAST("MOUSE_BUTTON_LAST"),
+        LEFT("MOUSE_BUTTON_LEFT"),
+        RIGHT("MOUSE_BUTTON_RIGHT"),
+        MIDDLE("MOUSE_BUTTON_MIDDLE");
 
         private final int code;
 
-        Button(int code) {
-            this.code = code;
+        Button(String id) {
+            this.code = MetaSystem.Window.queryInt(id);
         }
 
         @Override
@@ -59,15 +59,19 @@ public interface Mouse extends Positional, InputDevice<Mouse.Button> {
 
     enum CursorMode {
         UNKNOWN(-1), //
-        CURSOR_NORMAL(MetaSystem.Window.queryInt("CURSOR_NORMAL")), //
-        CURSOR_HIDDEN(MetaSystem.Window.queryInt("CURSOR_HIDDEN")), //
-        CURSOR_DISABLED(MetaSystem.Window.queryInt("CURSOR_DISABLED")), //
-        CURSOR_CAPTURED(MetaSystem.Window.queryInt("CURSOR_CAPTURED"));
+        CURSOR_NORMAL("CURSOR_NORMAL"), //
+        CURSOR_HIDDEN("CURSOR_HIDDEN"), //
+        CURSOR_DISABLED("CURSOR_DISABLED"), //
+        CURSOR_CAPTURED("CURSOR_CAPTURED");
 
         private final int value;
 
         CursorMode(int value) {
             this.value = value;
+        }
+
+        CursorMode(String id) {
+            this(MetaSystem.Window.queryInt(id));
         }
 
         public int value() {

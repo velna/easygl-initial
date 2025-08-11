@@ -25,13 +25,13 @@ public interface InputDevice<I extends InputDevice.Input> {
     }
 
     enum Action {
-        Release(MetaSystem.Window.queryInt("RELEASE")),
-        Press(MetaSystem.Window.queryInt("PRESS")),
-        Repeat(MetaSystem.Window.queryInt("REPEAT"));
+        Release("RELEASE"),
+        Press("PRESS"),
+        Repeat("REPEAT");
         private final int value;
 
-        Action(int value) {
-            this.value = value;
+        Action(String id) {
+            this.value = MetaSystem.Window.queryInt(id);
         }
 
         public int value() {
@@ -40,16 +40,16 @@ public interface InputDevice<I extends InputDevice.Input> {
     }
 
     enum Modifier {
-        Shift(MetaSystem.Window.queryInt("MOD_SHIFT")),
-        Control(MetaSystem.Window.queryInt("MOD_CONTROL")),
-        Alt(MetaSystem.Window.queryInt("MOD_ALT")),
-        Super(MetaSystem.Window.queryInt("MOD_SUPER")),
-        CapsLock(MetaSystem.Window.queryInt("MOD_CAPS_LOCK")),
-        NumLock(MetaSystem.Window.queryInt("MOD_NUM_LOCK"));
+        Shift("MOD_SHIFT"),
+        Control("MOD_CONTROL"),
+        Alt("MOD_ALT"),
+        Super("MOD_SUPER"),
+        CapsLock("MOD_CAPS_LOCK"),
+        NumLock("MOD_NUM_LOCK");
         private final int value;
 
-        Modifier(int value) {
-            this.value = value;
+        Modifier(String id) {
+            this.value = MetaSystem.Window.queryInt(id);
         }
 
         public int value() {

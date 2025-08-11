@@ -13,14 +13,14 @@ public interface Shader extends Handle {
     });
 
     enum Type {
-        Vertex(MetaSystem.Graphics.queryInt("VERTEX_SHADER")),
-        Geometry(MetaSystem.Graphics.queryInt("GEOMETRY_SHADER")),
-        Fragment(MetaSystem.Graphics.queryInt("FRAGMENT_SHADER"));
+        Vertex("VERTEX_SHADER"),
+        Geometry("GEOMETRY_SHADER"),
+        Fragment("FRAGMENT_SHADER");
 
         private final int value;
 
-        private Type(int value) {
-            this.value = value;
+        private Type(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
         }
 
         public int value() {

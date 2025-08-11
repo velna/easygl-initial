@@ -8,23 +8,23 @@ import java.nio.ByteBuffer;
 
 public interface WindowHint {
 
-    static BooleanHint ofBoolean(int key) {
-        return newHint(BooleanHint.class, key);
+    static BooleanHint ofBoolean(String id) {
+        return newHint(BooleanHint.class, id);
     }
 
-    static IntHint ofInt(int key) {
-        return newHint(IntHint.class, key);
+    static IntHint ofInt(String id) {
+        return newHint(IntHint.class, id);
     }
 
-    static StringHint ofString(int key) {
-        return newHint(StringHint.class, key);
+    static StringHint ofString(String id) {
+        return newHint(StringHint.class, id);
     }
 
     int key();
 
-    private static <T extends WindowHint> T newHint(Class<T> type, int key) {
+    private static <T extends WindowHint> T newHint(Class<T> type, String id) {
         return MetaSystem.Window.of(type, new TypeReference<>() {
-        }, key);
+        }, MetaSystem.Window.queryInt(id));
     }
 
     interface BooleanHint extends WindowHint {

@@ -8,16 +8,16 @@ import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface Query extends Handle, Bindable<Query.Type, Query> {
     enum Type implements BindTarget<Type, Query> {
-        SamplesPassed(MetaSystem.Graphics.queryInt("SAMPLES_PASSED")),
-        AnySamplesPassed(MetaSystem.Graphics.queryInt("ANY_SAMPLES_PASSED")),
-        AnySamplesPassedConservative(MetaSystem.Graphics.queryInt("ANY_SAMPLES_PASSED_CONSERVATIVE")),
-        PrimitivesGenerated(MetaSystem.Graphics.queryInt("PRIMITIVES_GENERATED")),
-        TransformFeedbackPrimitivesWritten(MetaSystem.Graphics.queryInt("TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN")),
-        TimeElapsed(MetaSystem.Graphics.queryInt("TIME_ELAPSED"));
+        SamplesPassed("SAMPLES_PASSED"),
+        AnySamplesPassed("ANY_SAMPLES_PASSED"),
+        AnySamplesPassedConservative("ANY_SAMPLES_PASSED_CONSERVATIVE"),
+        PrimitivesGenerated("PRIMITIVES_GENERATED"),
+        TransformFeedbackPrimitivesWritten("TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN"),
+        TimeElapsed("TIME_ELAPSED");
         private final int value;
 
-        Type(int value) {
-            this.value = value;
+        Type(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
         }
 
         @Override

@@ -4,27 +4,27 @@ import com.vanix.easygl.core.meta.MetaSystem;
 
 public enum PixelFormat {
 
-    COLOR_INDEX(MetaSystem.Graphics.queryInt("COLOR_INDEX")),
-    STENCIL_INDEX(MetaSystem.Graphics.queryInt("STENCIL_INDEX")),
-    DEPTH_COMPONENT(MetaSystem.Graphics.queryInt("DEPTH_COMPONENT"), InternalPixelFormat.BaseFormat.DEPTH_COMPONENT),
-    RED(MetaSystem.Graphics.queryInt("RED"), InternalPixelFormat.BaseFormat.RED),
-    GREEN(MetaSystem.Graphics.queryInt("GREEN")),
-    BLUE(MetaSystem.Graphics.queryInt("BLUE")),
-    ALPHA(MetaSystem.Graphics.queryInt("ALPHA")),
-    RGB(MetaSystem.Graphics.queryInt("RGB"), InternalPixelFormat.BaseFormat.RGB),
-    RGBA(MetaSystem.Graphics.queryInt("RGBA"), InternalPixelFormat.BaseFormat.RGBA),
-    LUMINANCE(MetaSystem.Graphics.queryInt("LUMINANCE")),
-    LUMINANCE_ALPHA(MetaSystem.Graphics.queryInt("LUMINANCE_ALPHA"));
+    COLOR_INDEX("COLOR_INDEX"),
+    STENCIL_INDEX("STENCIL_INDEX"),
+    DEPTH_COMPONENT("DEPTH_COMPONENT", InternalPixelFormat.BaseFormat.DEPTH_COMPONENT),
+    RED("RED", InternalPixelFormat.BaseFormat.RED),
+    GREEN("GREEN"),
+    BLUE("BLUE"),
+    ALPHA("ALPHA"),
+    RGB("RGB", InternalPixelFormat.BaseFormat.RGB),
+    RGBA("RGBA", InternalPixelFormat.BaseFormat.RGBA),
+    LUMINANCE("LUMINANCE"),
+    LUMINANCE_ALPHA("LUMINANCE_ALPHA");
 
     private final int value;
     private final InternalPixelFormat internalPixelFormat;
 
-    private PixelFormat(int value) {
-        this(value, null);
+    PixelFormat(String id) {
+        this(id, null);
     }
 
-    private PixelFormat(int value, InternalPixelFormat internalPixelFormat) {
-        this.value = value;
+    PixelFormat(String id, InternalPixelFormat internalPixelFormat) {
+        this.value = MetaSystem.Graphics.queryInt(id);
         this.internalPixelFormat = internalPixelFormat;
     }
 

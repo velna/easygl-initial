@@ -104,12 +104,13 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
     }
 
     enum MagFilter {
-        Nearest(MetaSystem.Graphics.queryInt("NEAREST")), Linear(MetaSystem.Graphics.queryInt("LINEAR"));
+        Nearest("NEAREST"),
+        Linear("LINEAR");
 
         private final int value;
 
-        MagFilter(int value) {
-            this.value = value;
+        MagFilter(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
         }
 
         public int value() {
@@ -118,17 +119,17 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
     }
 
     enum Swizzle {
-        Red(MetaSystem.Graphics.queryInt("RED")),
-        Green(MetaSystem.Graphics.queryInt("GREEN")),
-        Blue(MetaSystem.Graphics.queryInt("BLUE")),
-        Alpha(MetaSystem.Graphics.queryInt("ALPHA")),
-        Zero(MetaSystem.Graphics.queryInt("ZERO")),
-        One(MetaSystem.Graphics.queryInt("ONE"));
+        Red("RED"),
+        Green("GREEN"),
+        Blue("BLUE"),
+        Alpha("ALPHA"),
+        Zero("ZERO"),
+        One("ONE");
 
         private final int value;
 
-        private Swizzle(int value) {
-            this.value = value;
+        Swizzle(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
         }
 
         public int value() {
@@ -137,15 +138,15 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
     }
 
     enum Wrap {
-        ClampToEdge(MetaSystem.Graphics.queryInt("CLAMP_TO_EDGE")),
-        ClampToBorder(MetaSystem.Graphics.queryInt("CLAMP_TO_BORDER")),
-        MirroredRepeat(MetaSystem.Graphics.queryInt("MIRRORED_REPEAT")),
-        Repeat(MetaSystem.Graphics.queryInt("REPEAT"));
+        ClampToEdge("CLAMP_TO_EDGE"),
+        ClampToBorder("CLAMP_TO_BORDER"),
+        MirroredRepeat("MIRRORED_REPEAT"),
+        Repeat("REPEAT");
 
         private final int value;
 
-        private Wrap(int value) {
-            this.value = value;
+        Wrap(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
         }
 
         public int value() {
@@ -154,17 +155,17 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
     }
 
     enum MinFilter {
-        Nearest(MetaSystem.Graphics.queryInt("NEAREST")),
-        Linear(MetaSystem.Graphics.queryInt("LINEAR")),
-        NearestMipmapNearest(MetaSystem.Graphics.queryInt("NEAREST_MIPMAP_NEAREST")),
-        LinearMipmapNearest(MetaSystem.Graphics.queryInt("LINEAR_MIPMAP_NEAREST")),
-        NearestMipmapLinear(MetaSystem.Graphics.queryInt("NEAREST_MIPMAP_LINEAR")),
-        LinearMipmapLinear(MetaSystem.Graphics.queryInt("LINEAR_MIPMAP_LINEAR"));
+        Nearest("NEAREST"),
+        Linear("LINEAR"),
+        NearestMipmapNearest("NEAREST_MIPMAP_NEAREST"),
+        LinearMipmapNearest("LINEAR_MIPMAP_NEAREST"),
+        NearestMipmapLinear("NEAREST_MIPMAP_LINEAR"),
+        LinearMipmapLinear("LINEAR_MIPMAP_LINEAR");
 
         private final int value;
 
-        private MinFilter(int value) {
-            this.value = value;
+        MinFilter(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
         }
 
         public int value() {

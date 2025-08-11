@@ -5,13 +5,13 @@ import com.vanix.easygl.core.meta.MetaSystem;
 
 public abstract class CullFace implements Feature<CullFace> {
     public enum Mode {
-        Front(MetaSystem.Graphics.queryInt("FRONT")),
-        Back(MetaSystem.Graphics.queryInt("BACK")),
-        FrontAndBack(MetaSystem.Graphics.queryInt("FRONT_AND_BACK"));
+        Front("FRONT"),
+        Back("BACK"),
+        FrontAndBack("FRONT_AND_BACK");
         private final int value;
 
-        Mode(int value) {
-            this.value = value;
+        Mode(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
         }
 
         public int value() {

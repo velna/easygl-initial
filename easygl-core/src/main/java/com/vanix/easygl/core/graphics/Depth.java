@@ -6,12 +6,12 @@ import com.vanix.easygl.core.meta.MetaSystem;
 public abstract class Depth implements MultiFeature<Depth.Capability, Depth> {
 
     public enum Capability {
-        DepthTest(MetaSystem.Graphics.queryInt("DEPTH_TEST")),
-        DepthClamp(MetaSystem.Graphics.queryInt("DEPTH_CLAMP"));
+        DepthTest("DEPTH_TEST"),
+        DepthClamp("DEPTH_CLAMP");
         private final int value;
 
-        Capability(int value) {
-            this.value = value;
+        Capability(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
         }
 
         public int value() {
@@ -20,18 +20,18 @@ public abstract class Depth implements MultiFeature<Depth.Capability, Depth> {
     }
 
     public enum Functions {
-        Never(MetaSystem.Graphics.queryInt("NEVER")),
-        LT(MetaSystem.Graphics.queryInt("LESS")),
-        EQ(MetaSystem.Graphics.queryInt("EQUAL")),
-        LE(MetaSystem.Graphics.queryInt("LEQUAL")),
-        GT(MetaSystem.Graphics.queryInt("GREATER")),
-        NE(MetaSystem.Graphics.queryInt("NOTEQUAL")),
-        GE(MetaSystem.Graphics.queryInt("GEQUAL")),
-        ALWAYS(MetaSystem.Graphics.queryInt("ALWAYS"));
+        Never("NEVER"),
+        LT("LESS"),
+        EQ("EQUAL"),
+        LE("LEQUAL"),
+        GT("GREATER"),
+        NE("NOTEQUAL"),
+        GE("GEQUAL"),
+        ALWAYS("ALWAYS");
         private final int value;
 
-        Functions(int value) {
-            this.value = value;
+        Functions(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
         }
 
         public int value() {
