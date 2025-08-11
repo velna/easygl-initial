@@ -5,12 +5,14 @@ import com.vanix.easygl.commons.Rectangle;
 import com.vanix.easygl.commons.event.ListenerSupport;
 import com.vanix.easygl.core.AbstractHandle;
 import com.vanix.easygl.core.window.Monitor;
+import com.vanix.easygl.core.window.VideoMode;
 import com.vanix.easygl.core.window.event.MonitorEvent;
 import com.vanix.easygl.core.window.event.MonitorListener;
 import org.eclipse.collections.api.factory.primitive.LongObjectMaps;
 import org.eclipse.collections.api.map.primitive.MutableLongObjectMap;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.system.MemoryUtil;
 
 import java.util.ArrayList;
@@ -87,6 +89,15 @@ public class GlMonitor extends AbstractHandle implements Monitor {
         int[] h = new int[1];
         glfwGetMonitorWorkarea(handle, x, y, w, h);
         return Rectangle.of(x[0], y[0], w[0], h[0]);
+    }
+
+    @Override
+    public VideoMode videoMode() {
+        GLFWVidMode vm = glfwGetVideoMode(handle);
+        if (vm == null) {
+            return null;
+        }
+        return new VideoMode(vm.width(), vm.height(), vm.redBits(), vm.greenBits(), vm.blueBits(), vm.refreshRate());
     }
 
     static Monitor of(long handle) {

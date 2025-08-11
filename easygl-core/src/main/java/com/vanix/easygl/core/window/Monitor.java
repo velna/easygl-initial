@@ -19,6 +19,8 @@ public interface Monitor extends Position, Dimension, Handle {
 
     Rectangle workArea();
 
+    VideoMode videoMode();
+
     static Monitor primary() {
         return MetaSystem.Window.of(Monitor.class);
     }
