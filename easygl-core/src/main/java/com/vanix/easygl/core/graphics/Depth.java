@@ -1,5 +1,6 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.core.MultiFeature;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public abstract class Depth implements MultiFeature<Depth.Capability, Depth> {
