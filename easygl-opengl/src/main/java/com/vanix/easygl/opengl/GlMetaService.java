@@ -100,8 +100,22 @@ public class GlMetaService extends AbstractMetaService {
     }
 
     @Override
-    public int getError() {
-        return GLX.glGetError();
+    public ErrorCode getError() {
+        int code = GLX.glGetError();
+        if (code == GLX.GL_NO_ERROR) {
+            return GraphicsErrorCode.NoError;
+        }
+        code = code & 0xff;
+        return switch (code) {
+            case GLX.GL_INVALID_ENUM & 0xf -> GraphicsErrorCode.InvalidEnum;
+            case GLX.GL_INVALID_OPERATION & 0xf -> GraphicsErrorCode.InvalidOperation;
+            case GLX.GL_INVALID_VALUE & 0xf -> GraphicsErrorCode.InvalidValue;
+            case GLX.GL_STACK_OVERFLOW & 0xf -> GraphicsErrorCode.StackOverflow;
+            case GLX.GL_STACK_UNDERFLOW & 0xf -> GraphicsErrorCode.StackUnderflow;
+            case GLX.GL_INVALID_FRAMEBUFFER_OPERATION & 0xf -> GraphicsErrorCode.InvalidFramebufferOperation;
+            case GLX.GL_OUT_OF_MEMORY & 0xf -> GraphicsErrorCode.OutOfMemory;
+            default -> GraphicsErrorCode.Unknown;
+        };
     }
 
     @Override

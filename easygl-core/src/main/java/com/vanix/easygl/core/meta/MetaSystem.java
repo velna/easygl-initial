@@ -35,7 +35,7 @@ public enum MetaSystem implements MetaService {
     }
 
     @Override
-    public int getError() {
+    public ErrorCode getError() {
         return metaService.getError();
     }
 

@@ -5,6 +5,7 @@ import com.vanix.easygl.commons.util.Counters;
 import com.vanix.easygl.commons.value.DoubleValue;
 import com.vanix.easygl.commons.value.Value;
 import com.vanix.easygl.core.graphics.Graphics;
+import com.vanix.easygl.core.graphics.GraphicsErrorCode;
 import com.vanix.easygl.core.graphics.GraphicsException;
 import com.vanix.easygl.core.meta.MetaSystem;
 import com.vanix.easygl.core.window.Window;
@@ -12,7 +13,6 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Map;
 
 public class DefaultClientApp implements ClientApp {
@@ -86,7 +86,7 @@ public class DefaultClientApp implements ClientApp {
     }
 
     private void updateAndRender(RenderContext context) {
-        var error = graphics.getError();
+        var error = GraphicsErrorCode.get();
         if (error.isError()) {
             log.error(String.format("GL error: %s", error));
         }
@@ -103,7 +103,7 @@ public class DefaultClientApp implements ClientApp {
     }
 
     public void close() {
-        if(!shutdown) {
+        if (!shutdown) {
             log.info("Client application shutdown.");
             closeRenderers();
             shutdown = true;

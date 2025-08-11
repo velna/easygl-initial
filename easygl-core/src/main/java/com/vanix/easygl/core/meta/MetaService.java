@@ -19,7 +19,7 @@ public interface MetaService {
         throw new UnsupportedOperationException();
     }
 
-    int getError();
+    ErrorCode getError();
 
     void close();
 }

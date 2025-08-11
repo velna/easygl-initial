@@ -3,6 +3,7 @@ package com.vanix.easygl.stb;
 import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.meta.AbstractMetaService;
 import com.vanix.easygl.core.meta.DefaultMeta;
+import com.vanix.easygl.core.meta.ErrorCode;
 import com.vanix.easygl.core.meta.SystemName;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.stb.STBImageResize;
@@ -21,8 +22,8 @@ public class StbMetaService extends AbstractMetaService {
     }
 
     @Override
-    public int getError() {
-        return 0;
+    public ErrorCode getError() {
+        return null;
     }
 
     @Override

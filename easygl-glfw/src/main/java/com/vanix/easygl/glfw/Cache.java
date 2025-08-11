@@ -3,12 +3,15 @@ package com.vanix.easygl.glfw;
 import com.vanix.easygl.core.input.InputDevice;
 import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.Mouse;
+import com.vanix.easygl.core.window.WindowErrorCode;
 import org.lwjgl.glfw.GLFW;
 
 class Cache {
     private static final Mouse.Button[] BUTTONS = new Mouse.Button[GLFW.GLFW_MOUSE_BUTTON_LAST + 1];
     private static final Keyboard.Key[] KEYS = new Keyboard.Key[GLFW.GLFW_KEY_LAST + 1];
     private static final InputDevice.Action[] ACTIONS = {InputDevice.Action.Release, InputDevice.Action.Press, InputDevice.Action.Repeat};
+
+    private static final WindowErrorCode[] ERROR_CODES = new WindowErrorCode[WindowErrorCode.values().length - 1];
 
     static {
         for (var key : Keyboard.PrintableKey.values()) {
@@ -19,6 +22,20 @@ class Cache {
         }
         for (var button : Mouse.Button.values()) {
             BUTTONS[button.code()] = button;
+        }
+        for (var errorCode : WindowErrorCode.values()) {
+            if (errorCode.code() >= 0) {
+                ERROR_CODES[errorCode.code() & 0xf] = errorCode;
+            }
+        }
+    }
+
+    static WindowErrorCode errorCodeOf(int code) {
+        int index = code & 0xf;
+        if (index >= ERROR_CODES.length) {
+            return WindowErrorCode.UnKnown;
+        } else {
+            return ERROR_CODES[index];
         }
     }
 

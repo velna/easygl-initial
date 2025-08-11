@@ -9,32 +9,6 @@ import java.util.ServiceLoader;
 
 public interface Graphics extends Closeable {
 
-    enum ErrorCode {
-        Unknown(-1),
-        None(MetaSystem.Graphics.queryInt("NO_ERROR")),
-        InvalidEnum(MetaSystem.Graphics.queryInt("INVALID_ENUM")),
-        InvalidValue(MetaSystem.Graphics.queryInt("INVALID_VALUE")),
-        InvalidOperation(MetaSystem.Graphics.queryInt("INVALID_OPERATION")),
-        StackOverflow(MetaSystem.Graphics.queryInt("STACK_OVERFLOW")),
-        StackUnderflow(MetaSystem.Graphics.queryInt("STACK_UNDERFLOW")),
-        InvalidFramebufferOperation(MetaSystem.Graphics.queryInt("INVALID_FRAMEBUFFER_OPERATION")),
-        OutOfMemory(MetaSystem.Graphics.queryInt("OUT_OF_MEMORY"));
-
-        private final int value;
-
-        ErrorCode(int value) {
-            this.value = value;
-        }
-
-        public boolean isError() {
-            return this != None;
-        }
-
-        public int value() {
-            return value;
-        }
-    }
-
     enum BufferMask {
         Color(MetaSystem.Graphics.queryInt("COLOR_BUFFER_BIT")), //
         Depth(MetaSystem.Graphics.queryInt("DEPTH_BUFFER_BIT")), //
@@ -50,8 +24,6 @@ public interface Graphics extends Closeable {
             return value;
         }
     }
-
-    ErrorCode getError();
 
     Graphics viewPort(int x, int y, int width, int height);
 

@@ -2,10 +2,7 @@ package com.vanix.easygl.glfw;
 
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.graphics.GraphicsException;
-import com.vanix.easygl.core.meta.AbstractMetaService;
-import com.vanix.easygl.core.meta.BindableMeta;
-import com.vanix.easygl.core.meta.LongBindableMeta;
-import com.vanix.easygl.core.meta.SystemName;
+import com.vanix.easygl.core.meta.*;
 import com.vanix.easygl.core.window.Monitor;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHint;
@@ -71,8 +68,8 @@ public class GlfwMetaService extends AbstractMetaService {
     }
 
     @Override
-    public int getError() {
-        return GLFW.glfwGetError(null);
+    public ErrorCode getError() {
+        return Cache.errorCodeOf(GLFW.glfwGetError(null));
     }
 
     @Override

@@ -71,21 +71,6 @@ public class GlGraphics implements Graphics {
     }
 
     @Override
-    public ErrorCode getError() {
-        return switch (GLX.glGetError()) {
-            case GLX.GL_NO_ERROR -> ErrorCode.None;
-            case GLX.GL_INVALID_ENUM -> ErrorCode.InvalidEnum;
-            case GLX.GL_INVALID_OPERATION -> ErrorCode.InvalidOperation;
-            case GLX.GL_INVALID_VALUE -> ErrorCode.InvalidValue;
-            case GLX.GL_STACK_OVERFLOW -> ErrorCode.StackOverflow;
-            case GLX.GL_STACK_UNDERFLOW -> ErrorCode.StackUnderflow;
-            case GLX.GL_INVALID_FRAMEBUFFER_OPERATION -> ErrorCode.InvalidFramebufferOperation;
-            case GLX.GL_OUT_OF_MEMORY -> ErrorCode.OutOfMemory;
-            default -> ErrorCode.Unknown;
-        };
-    }
-
-    @Override
     public void close() {
 
     }
