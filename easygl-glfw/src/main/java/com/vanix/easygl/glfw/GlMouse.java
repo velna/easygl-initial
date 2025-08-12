@@ -3,6 +3,7 @@ package com.vanix.easygl.glfw;
 import com.vanix.easygl.commons.Position;
 import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.commons.event.ListenerSupport;
+import com.vanix.easygl.core.input.Cursor;
 import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.input.event.*;
 import com.vanix.easygl.core.window.Window;
@@ -16,23 +17,20 @@ public class GlMouse implements Mouse {
     private final ListenerSupport<MouseScrollListener> scrollListeners;
     private final ListenerSupport<MouseMoveListener> moveListeners;
     private final ListenerSupport<MouseButtonListener> buttonListeners;
+    private final ListenerSupport<MouseEnterListener> enterListeners;
     private final Window window;
     private final DoubleBuffer xPosBuf = BufferUtils.createDoubleBuffer(1);
     private final long xPosAddress = MemoryUtil.memAddressSafe(xPosBuf);
     private final DoubleBuffer yPosBuf = BufferUtils.createDoubleBuffer(1);
     private final long yPosAddress = MemoryUtil.memAddressSafe(yPosBuf);
     private final boolean rawMotionSupported;
-//    private final FloatValue sensitivity = Value.of(0.05f);
-//    private double x;
-//    private double y;
-//    private final FloatValue yaw = Value.of(-90.0f);
-//    private final FloatValue pitch = Value.limited(0.0f, -89.0f, 89.0f);
 
     public GlMouse(GlWindow window) {
         this.window = window;
 //        yaw.addInterceptor((oldV, newV) -> newV % 360.0f);
         moveListeners = window.newListenerSupport(1, GLFW::glfwSetCursorPosCallback, this::moveCallback);
         scrollListeners = window.newListenerSupport(1, GLFW::glfwSetScrollCallback, this::scrollCallback);
+        enterListeners = window.newListenerSupport(1, GLFW::glfwSetCursorEnterCallback, this::enterCallback);
         buttonListeners = window.newListenerSupport(
                 GLFW.GLFW_MOUSE_BUTTON_LAST + 1,
                 GLFW::glfwSetMouseButtonCallback,
@@ -47,20 +45,6 @@ public class GlMouse implements Mouse {
     }
 
     private void moveCallback(long window, double xpos, double ypos) {
-//        double lastX = x;
-//        double lastY = y;
-//        this.x = xpos;
-//        this.y = ypos;
-//        double xoffset = x - lastX;
-//        double yoffset = y - lastY;
-//
-//        float sens = sensitivity.get();
-//        xoffset *= sens;
-//        yoffset *= sens;
-//
-//        yaw.incr((float) xoffset);
-//        pitch.incr(-(float) yoffset);
-
         MouseMoveEvent event = new MouseMoveEvent(this, xpos, ypos);
         moveListeners.forEach(0, l -> l.mouseOnMove(event));
     }
@@ -68,6 +52,11 @@ public class GlMouse implements Mouse {
     private void scrollCallback(long window, double xOffset, double yOffset) {
         MouseScrollEvent event = new MouseScrollEvent(this, xOffset, yOffset);
         scrollListeners.forEach(0, l -> l.mouseOnScroll(event));
+    }
+
+    private void enterCallback(long window, boolean enter) {
+        var event = new MouseEnterEvent(this, enter);
+        enterListeners.forEach(0, l -> l.mouseOnEnter(event));
     }
 
     @Override
@@ -82,8 +71,9 @@ public class GlMouse implements Mouse {
     }
 
     @Override
-    public void cursorMode(CursorMode mode) {
+    public Mouse cursorMode(CursorMode mode) {
         GLFW.glfwSetInputMode(window.handle(), GLFW.GLFW_CURSOR, mode.value());
+        return this;
     }
 
     @Override
@@ -99,6 +89,11 @@ public class GlMouse implements Mouse {
     @Override
     public ListenerOperation<MouseScrollListener> onScroll() {
         return scrollListeners.listen();
+    }
+
+    @Override
+    public ListenerOperation<MouseEnterListener> onEnter() {
+        return enterListeners.listen();
     }
 
     @Override
@@ -150,9 +145,16 @@ public class GlMouse implements Mouse {
     }
 
     @Override
-    public void rawMotion(boolean enable) {
+    public Mouse rawMotion(boolean enable) {
         if (rawMotionSupported) {
             GLFW.glfwSetInputMode(window.handle(), GLFW.GLFW_RAW_MOUSE_MOTION, enable ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
         }
+        return this;
+    }
+
+    @Override
+    public Mouse cursor(Cursor cursor) {
+        GLFW.glfwSetCursor(window.handle(), cursor.handle());
+        return this;
     }
 }

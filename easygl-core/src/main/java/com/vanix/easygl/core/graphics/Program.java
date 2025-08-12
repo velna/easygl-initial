@@ -1,6 +1,5 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.commons.util.TypeReference;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
 import com.vanix.easygl.core.meta.BindableMeta;
@@ -14,8 +13,7 @@ import java.nio.IntBuffer;
 
 public interface Program extends Bindable<BindTarget.Default<Program>, Program> {
 
-    BindableMeta<BindTarget.Default<Program>, Program> Meta = MetaSystem.Graphics.of(Program.class, new TypeReference<>() {
-    });
+    BindableMeta<BindTarget.Default<Program>, Program> Meta = MetaSystem.Graphics.of(Program.class);
     BindTarget.Default<Program> Target = new BindTarget.Default<>("Program", Meta);
 
     Program attach(Shader shader);

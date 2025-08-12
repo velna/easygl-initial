@@ -2,7 +2,6 @@ package com.vanix.easygl.core.window;
 
 
 import com.vanix.easygl.core.meta.MetaSystem;
-import com.vanix.easygl.commons.util.TypeReference;
 
 import java.nio.ByteBuffer;
 
@@ -23,8 +22,7 @@ public interface WindowHint {
     int key();
 
     private static <T extends WindowHint> T newHint(Class<T> type, String id) {
-        return MetaSystem.Window.of(type, new TypeReference<>() {
-        }, MetaSystem.Window.queryInt(id));
+        return MetaSystem.Window.of(type, MetaSystem.Window.queryInt(id));
     }
 
     interface BooleanHint extends WindowHint {

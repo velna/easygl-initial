@@ -2,12 +2,12 @@ package com.vanix.easygl.core.input.event;
 
 import com.vanix.easygl.core.input.Mouse;
 
-public class MouseScrollEvent extends InputEvent<Mouse, Mouse.Button> {
+public class MouseScrollEvent extends MouseEvent {
     private final double xOffset;
     private final double yOffset;
 
     public MouseScrollEvent(Mouse device, double xOffset, double yOffset) {
-        super(device, null, null);
+        super(device);
         this.xOffset = xOffset;
         this.yOffset = yOffset;
     }

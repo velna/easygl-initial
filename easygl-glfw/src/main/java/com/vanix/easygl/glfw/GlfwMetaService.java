@@ -2,6 +2,8 @@ package com.vanix.easygl.glfw;
 
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.graphics.GraphicsException;
+import com.vanix.easygl.core.input.Cursor;
+import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.meta.*;
 import com.vanix.easygl.core.window.Monitor;
 import com.vanix.easygl.core.window.Window;
@@ -49,6 +51,8 @@ public class GlfwMetaService extends AbstractMetaService {
         register(MonitorListener.class, (Function<Object[], ?>) args -> GlMonitor.MonitorListeners.listen());
         register(Monitor[].class, (Function<Object[], ?>) args -> GlMonitor.monitors());
         register(Monitor.class, (Function<Object[], ?>) args -> GlMonitor.primary());
+        register(Cursor.class, (Function<Object[], ?>) args -> new GlCursor((Image) args[0], (Integer) args[1], (Integer) args[2]));
+        register(Cursor.StandardShape.class, (Function<Object[], ?>) args -> new GlCursor((Cursor.StandardShape) args[0]));
     }
 
     @Override

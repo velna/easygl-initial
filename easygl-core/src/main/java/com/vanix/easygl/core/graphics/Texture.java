@@ -1,7 +1,6 @@
 package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.Identified;
-import com.vanix.easygl.commons.util.TypeReference;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
 import com.vanix.easygl.core.BindingState;
@@ -10,8 +9,7 @@ import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>, T>, Handle {
-    BindableMeta<Texture.Unit, Texture.Unit> UnitMeta = MetaSystem.Graphics.of(Texture.Unit.class, new TypeReference<>() {
-    });
+    BindableMeta<Texture.Unit, Texture.Unit> UnitMeta = MetaSystem.Graphics.of(Texture.Unit.class);
 
     enum Unit implements Bindable<Unit, Unit>, BindTarget<Unit, Unit> {
         // @formatter:off

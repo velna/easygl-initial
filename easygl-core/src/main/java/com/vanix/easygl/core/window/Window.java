@@ -3,7 +3,6 @@ package com.vanix.easygl.core.window;
 import com.vanix.easygl.commons.Dimensional;
 import com.vanix.easygl.commons.Positional;
 import com.vanix.easygl.commons.event.ListenerOperation;
-import com.vanix.easygl.commons.util.TypeReference;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
 import com.vanix.easygl.core.input.InputController;
@@ -15,8 +14,7 @@ import com.vanix.easygl.core.window.event.WindowResizeListener;
 import org.joml.Vector2f;
 
 public interface Window extends Bindable<BindTarget.Default<Window>, Window>, Dimensional, Positional {
-    BindableMeta<BindTarget.Default<Window>, Window> Meta = MetaSystem.Window.of(Window.class, new TypeReference<>() {
-    });
+    BindableMeta<BindTarget.Default<Window>, Window> Meta = MetaSystem.Window.of(Window.class);
     BindTarget.Default<Window> Target = new BindTarget.Default<>("Window", Meta);
 
     String getTitle();

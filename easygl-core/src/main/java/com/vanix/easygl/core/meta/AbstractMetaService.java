@@ -1,7 +1,5 @@
 package com.vanix.easygl.core.meta;
 
-import com.vanix.easygl.commons.util.TypeReference;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -18,7 +16,7 @@ public abstract class AbstractMetaService implements MetaService {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public <T> T of(Class<?> key, TypeReference<T> returnType, Object... args) {
+    public <T> T of(Class<?> key, Object... args) {
         return switch (registry.get(key)) {
             case Function function -> (T) function.apply(args);
             case Object obj -> (T) obj;

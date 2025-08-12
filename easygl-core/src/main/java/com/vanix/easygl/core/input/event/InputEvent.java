@@ -7,6 +7,10 @@ public class InputEvent<T extends InputDevice<I>, I extends InputDevice.Input> e
     protected final I input;
     protected final InputDevice.Action action;
 
+    public InputEvent(T device) {
+        this(device, null, null);
+    }
+
     public InputEvent(T device, I input) {
         this(device, input, null);
     }
@@ -17,7 +21,4 @@ public class InputEvent<T extends InputDevice<I>, I extends InputDevice.Input> e
         this.action = action;
     }
 
-    public I input() {
-        return input;
-    }
 }

@@ -3,13 +3,16 @@ package com.vanix.easygl.core.input;
 import com.vanix.easygl.commons.Positional;
 import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.core.input.event.MouseButtonListener;
+import com.vanix.easygl.core.input.event.MouseEnterListener;
 import com.vanix.easygl.core.input.event.MouseMoveListener;
 import com.vanix.easygl.core.input.event.MouseScrollListener;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface Mouse extends Positional, InputDevice<Mouse.Button> {
 
-    void cursorMode(CursorMode mode);
+    Mouse cursor(Cursor cursor);
+
+    Mouse cursorMode(CursorMode mode);
 
     CursorMode cursorMode();
 
@@ -17,13 +20,15 @@ public interface Mouse extends Positional, InputDevice<Mouse.Button> {
 
     boolean rawMotion();
 
-    void rawMotion(boolean enable);
+    Mouse rawMotion(boolean enable);
 
     ListenerOperation<MouseButtonListener> onButton(Button... buttons);
 
     ListenerOperation<MouseScrollListener> onScroll();
 
     ListenerOperation<MouseMoveListener> onMove();
+
+    ListenerOperation<MouseEnterListener> onEnter();
 
     @Override
     default Type type() {

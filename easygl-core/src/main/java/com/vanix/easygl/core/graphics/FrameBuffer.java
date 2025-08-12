@@ -1,6 +1,5 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.commons.util.TypeReference;
 import com.vanix.easygl.core.*;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
@@ -8,8 +7,7 @@ import org.joml.Vector4f;
 import org.joml.Vector4i;
 
 public interface FrameBuffer extends Bindable<FrameBuffer.Type, FrameBuffer>, Handle {
-    BindableMeta<Type, FrameBuffer> Meta = MetaSystem.Graphics.of(FrameBuffer.class, new TypeReference<>() {
-    });
+    BindableMeta<Type, FrameBuffer> Meta = MetaSystem.Graphics.of(FrameBuffer.class);
 
     enum Type implements BindTarget<Type, FrameBuffer> {
         FrameBuffer("FRAMEBUFFER"),

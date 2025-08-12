@@ -1,7 +1,5 @@
 package com.vanix.easygl.core.meta;
 
-import com.vanix.easygl.commons.util.TypeReference;
-
 import java.util.ServiceLoader;
 
 public enum MetaSystem implements MetaService {
@@ -20,8 +18,8 @@ public enum MetaSystem implements MetaService {
     }
 
     @Override
-    public <T> T of(Class<?> key, TypeReference<T> returnType, Object... args) {
-        return metaService.of(key, returnType, args);
+    public <T> T of(Class<?> key, Object... args) {
+        return metaService.of(key, args);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.commons.util.TypeReference;
 import com.vanix.easygl.core.*;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
@@ -10,8 +9,7 @@ import java.util.function.Consumer;
 
 public interface Buffer extends Handle, Bindable<Buffer.Type, Buffer> {
 
-    BindableMeta<Type, Buffer> Meta = MetaSystem.Graphics.of(Buffer.class, new TypeReference<>() {
-    });
+    BindableMeta<Type, Buffer> Meta = MetaSystem.Graphics.of(Buffer.class);
 
     enum Type implements BindTarget<Type, Buffer> {
         //        Array(EasyGL.queryInt("ARRAY_BUFFER),
