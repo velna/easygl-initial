@@ -15,13 +15,13 @@ public class AbstractValue<I> implements Value<I> {
 	}
 
 	@Override
-	public void addInterceptor(I iterceptor) {
-		getInterceptors().add(iterceptor);
+	public void addInterceptor(I interceptor) {
+		getInterceptors().add(interceptor);
 	}
 
 	@Override
-	public void removeInterceptor(I iterceptor) {
-		getInterceptors().remove(iterceptor);
+	public void removeInterceptor(I interceptor) {
+		getInterceptors().remove(interceptor);
 	}
 
 }

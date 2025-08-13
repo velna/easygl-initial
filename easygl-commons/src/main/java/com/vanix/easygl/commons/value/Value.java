@@ -2,9 +2,9 @@ package com.vanix.easygl.commons.value;
 
 public interface Value<I> {
 
-	void addInterceptor(I iterceptor);
+	void addInterceptor(I interceptor);
 
-	void removeInterceptor(I iterceptor);
+	void removeInterceptor(I interceptor);
 
 	static IntValue of(int v) {
 		return new DefaultIntValue(v);
