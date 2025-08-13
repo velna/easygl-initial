@@ -1,8 +1,8 @@
 package com.vanix.easygl.learnopengl.c2_lighting;
 
+import com.vanix.easygl.core.g3d.ControllableCamera;
 import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.input.Keyboard;
-import com.vanix.easygl.core.g3d.ControllableCamera;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
 import org.joml.Math;
@@ -29,7 +29,9 @@ public class C51LightCastersDirectional {
              var diffuseMap = Texture.of2D();
              var specularMap = Texture.of2D()) {
 
-            window.inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
+            window
+                    .attributes().Resizable.disable()
+                    .inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
             graphics.depth().enable();
 
             lightingProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/5.1.light_casters.vs")
@@ -151,9 +153,9 @@ public class C51LightCastersDirectional {
 
                 for (var i = 0; i < cubePositions.length; i++) {
                     lightingProgram.setMatrix4("model", new Matrix4f()
-                            .translate(cubePositions[i])
-                            .rotate(Math.toRadians(20.0f * i), new Vector3f(1.0f, 0.3f, 0.5f))
-                            .get(mat4f))
+                                    .translate(cubePositions[i])
+                                    .rotate(Math.toRadians(20.0f * i), new Vector3f(1.0f, 0.3f, 0.5f))
+                                    .get(mat4f))
                             .set("light.direction", lightPos);
                     cubeVAO.drawArray(DrawMode.Triangles, vbo);
                 }

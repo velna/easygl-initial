@@ -38,8 +38,8 @@ public class GlfwMetaService extends AbstractMetaService {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
-        glfwSetErrorCallback(((error, description) ->
-                log.error("GLFW error({}): {}", error, GLFWErrorCallback.getDescription(description))));
+        glfwSetErrorCallback((error, description) ->
+                log.error("GLFW error({}): {}", error, GLFWErrorCallback.getDescription(description)));
         GLFW.glfwSetMonitorCallback(GlMonitor::fireMonitorOnConnection);
         register(Window.class, WindowMeta);
         register(WindowHint.IntHint.class,

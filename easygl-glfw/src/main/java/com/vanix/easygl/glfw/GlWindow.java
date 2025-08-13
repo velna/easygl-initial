@@ -10,6 +10,7 @@ import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.input.InputController;
 import com.vanix.easygl.core.window.Monitor;
 import com.vanix.easygl.core.window.Window;
+import com.vanix.easygl.core.window.WindowAttributes;
 import com.vanix.easygl.core.window.event.*;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
@@ -42,6 +43,7 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
     private int frameBufferWidth;
     private int frameBufferHeight;
     private String title;
+    private WindowAttributes attributes;
 
     protected GlWindow(int width, int height, String title) {
         super(GLFW.glfwCreateWindow(width, height, title, MemoryUtil.NULL, MemoryUtil.NULL),
@@ -324,5 +326,24 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
     public Window monitor(Monitor monitor, int x, int y, int width, int height, int refreshRate) {
         glfwSetWindowMonitor(handle, monitor == null ? MemoryUtil.NULL : monitor.handle(), x, y, width, height, refreshRate);
         return this;
+    }
+
+    @Override
+    public String clipboard() {
+        return glfwGetClipboardString(handle);
+    }
+
+    @Override
+    public Window clipboard(String value) {
+        glfwSetClipboardString(handle, value);
+        return this;
+    }
+
+    @Override
+    public WindowAttributes attributes() {
+        if (null == attributes) {
+            attributes = new GlWindowAttributes(this);
+        }
+        return attributes;
     }
 }

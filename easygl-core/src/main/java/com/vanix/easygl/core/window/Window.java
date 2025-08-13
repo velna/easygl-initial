@@ -100,4 +100,11 @@ public interface Window extends Bindable<BindTarget.Default<Window>, Window>, Di
     Monitor monitor();
 
     Window monitor(Monitor monitor, int x, int y, int width, int height, int refreshRate);
+
+    String clipboard();
+
+    Window clipboard(String value);
+
+    WindowAttributes attributes();
+
 }
