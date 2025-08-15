@@ -92,7 +92,7 @@ public class C1Colors {
 
             while (!window.shouldClose()) {
                 graphics.setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(FrameBufferOps.BufferMask.Color, FrameBufferOps.BufferMask.Depth);
+                        .clear(FrameBuffer.Color, FrameBuffer.Depth);
 
                 var projection = new Matrix4f()
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 100.0f);

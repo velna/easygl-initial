@@ -3,7 +3,7 @@ package com.vanix.easygl.opengl;
 import com.vanix.easygl.core.graphics.*;
 import org.lwjgl.opengl.GL;
 
-public class GlGraphics implements Graphics, GlFrameBufferOps<Graphics> {
+public class GlGraphics implements Graphics, GlFrameOps<Graphics> {
 
     private final DepthTest depthTest = new GlDepthTest();
     private final CullFace cullFace = new GlCullFace();
@@ -42,8 +42,8 @@ public class GlGraphics implements Graphics, GlFrameBufferOps<Graphics> {
     }
 
     @Override
-    public FrameBuffer defaultFrameBuffer() {
-        return GlFrameBuffer.DefaultFrameBuffer;
+    public Frame defaultFrameBuffer() {
+        return GlFrame.DEFAULT_FRAME;
     }
 
     @Override

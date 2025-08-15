@@ -30,13 +30,13 @@ public class GlMetaService extends AbstractMetaService {
             GLX::glGenVertexArrays,
             GLX::glDeleteVertexArrays);
 
-    static final BindableMeta<FrameBuffer.Target, FrameBuffer> FrameBufferMeta = new IntBindableMeta<>(
-            args -> new GlFrameBuffer(),
+    static final BindableMeta<Frame.Target, Frame> FrameBufferMeta = new IntBindableMeta<>(
+            args -> new GlFrame(),
             GLX::glBindFramebuffer,
             GLX::glBindFramebuffer,
             0,
             GLX::glDeleteFramebuffers,
-            (handle, args) -> new GlFrameBuffer(handle),
+            (handle, args) -> new GlFrame(handle),
             GLX::glGenFramebuffers,
             GLX::glDeleteFramebuffers);
 
@@ -84,7 +84,7 @@ public class GlMetaService extends AbstractMetaService {
 
     public GlMetaService() {
         register(Buffer.class, BufferMeta);
-        register(FrameBuffer.class, FrameBufferMeta);
+        register(Frame.class, FrameBufferMeta);
         register(VertexArray.class, VertexArrayMeta);
         register(RenderBuffer.class, RenderBufferMeta);
         register(Program.class, ProgramMeta);

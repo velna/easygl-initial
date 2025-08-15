@@ -92,7 +92,7 @@ public class C23BasicLightingExercise1 {
             long start = System.currentTimeMillis();
             while (!window.shouldClose()) {
                 graphics.setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(FrameBufferOps.BufferMask.Color, FrameBufferOps.BufferMask.Depth);
+                        .clear(FrameBuffer.Color, FrameBuffer.Depth);
 
                 float time = (System.currentTimeMillis() - start) / 1000.0f;
 

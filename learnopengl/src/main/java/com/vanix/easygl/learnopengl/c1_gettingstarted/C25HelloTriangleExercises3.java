@@ -70,7 +70,7 @@ public class C25HelloTriangleExercises3 {
 
             while (!window.shouldClose()) {
                 graphics.setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(FrameBufferOps.BufferMask.Color);
+                        .clear(FrameBuffer.Color);
 
                 programOrange.bind();
                 vaos.getFirst().drawArray(DrawMode.Triangles, vbos.getFirst());

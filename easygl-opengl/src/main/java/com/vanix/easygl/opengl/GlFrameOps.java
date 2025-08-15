@@ -1,29 +1,30 @@
 package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.commons.Color;
-import com.vanix.easygl.core.graphics.DrawBuffer;
-import com.vanix.easygl.core.graphics.FrameBufferOps;
+import com.vanix.easygl.core.graphics.FrameColorBuffer;
+import com.vanix.easygl.core.graphics.FrameBuffer;
+import com.vanix.easygl.core.graphics.FrameOps;
 
-public interface GlFrameBufferOps<T extends FrameBufferOps<T>> extends FrameBufferOps<T> {
+public interface GlFrameOps<T extends FrameOps<T>> extends FrameOps<T> {
     @SuppressWarnings("unchecked")
     default T self() {
         return (T) this;
     }
 
     @Override
-    default T clear(FrameBufferOps.BufferMask attr) {
+    default T clear(FrameBuffer attr) {
         GLX.glClear(attr.value());
         return self();
     }
 
     @Override
-    default T clear(FrameBufferOps.BufferMask attr1, FrameBufferOps.BufferMask attr2) {
+    default T clear(FrameBuffer attr1, FrameBuffer attr2) {
         GLX.glClear(attr1.value() | attr2.value());
         return self();
     }
 
     @Override
-    default T clear(FrameBufferOps.BufferMask attr1, FrameBufferOps.BufferMask attr2, FrameBufferOps.BufferMask attr3) {
+    default T clear(FrameBuffer attr1, FrameBuffer attr2, FrameBuffer attr3) {
         GLX.glClear(attr1.value() | attr2.value() | attr3.value());
         return self();
     }
@@ -64,13 +65,13 @@ public interface GlFrameBufferOps<T extends FrameBufferOps<T>> extends FrameBuff
     }
 
     @Override
-    default T selectDrawBuffer(DrawBuffer drawBuffer) {
-        GLX.glDrawBuffer(drawBuffer.value());
+    default T selectDrawBuffer(FrameColorBuffer frameColorBuffer) {
+        GLX.glDrawBuffer(frameColorBuffer.value());
         return self();
     }
 
     @Override
-    default T selectDrawBuffers(DrawBuffer.MultiSelectable... drawBuffers) {
+    default T selectDrawBuffers(FrameColorBuffer.MultiSelectable... drawBuffers) {
         int[] values = new int[drawBuffers.length];
         for (int i = 0; i < drawBuffers.length; i++) {
             values[i] = drawBuffers[i].value();

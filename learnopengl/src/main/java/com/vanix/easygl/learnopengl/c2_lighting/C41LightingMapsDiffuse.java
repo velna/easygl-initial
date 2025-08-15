@@ -104,7 +104,7 @@ public class C41LightingMapsDiffuse {
             long start = System.currentTimeMillis();
             while (!window.shouldClose()) {
                 graphics.setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
-                        .clear(FrameBufferOps.BufferMask.Color, FrameBufferOps.BufferMask.Depth);
+                        .clear(FrameBuffer.Color, FrameBuffer.Depth);
 
                 float time = (System.currentTimeMillis() - start) / 1000.0f;
 
