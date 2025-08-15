@@ -36,7 +36,7 @@ public class C72CameraKeyboardDt {
              var texture1 = Texture.of2D();
              var texture2 = Texture.of2D()) {
 
-            graphics.depth().enable();
+            graphics.depthTest().enable();
 
             program.attachResource(Shader.Type.Vertex, "shaders/1_getting_started/7.2.camera.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/7.2.camera.fs")
@@ -134,8 +134,8 @@ public class C72CameraKeyboardDt {
 
                 processInput(window.inputs().keyboard());
 
-                graphics.clearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(Graphics.BufferMask.Color, Graphics.BufferMask.Depth);
+                graphics.setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
+                        .clear(FrameBufferOps.BufferMask.Color, FrameBufferOps.BufferMask.Depth);
 
                 Texture.Unit.U0.bind();
                 texture1.bind();

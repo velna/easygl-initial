@@ -1,7 +1,7 @@
 package com.vanix.easygl.glfw;
 
-import com.vanix.easygl.commons.event.ListenerSupport;
 import com.vanix.easygl.commons.event.ListenerOperation;
+import com.vanix.easygl.commons.event.ListenerSupport;
 import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.event.KeyboardEvent;
 import com.vanix.easygl.core.input.event.KeyboardListener;
@@ -41,4 +41,27 @@ public class GlKeyboard implements Keyboard {
         return window;
     }
 
+    @Override
+    public boolean stickKeys() {
+        int ret = GLFW.glfwGetInputMode(window.handle(), GLFW.GLFW_STICKY_KEYS);
+        return ret == GLFW.GLFW_TRUE;
+    }
+
+    @Override
+    public Keyboard stickKeys(boolean value) {
+        GLFW.glfwSetInputMode(window.handle(), GLFW.GLFW_STICKY_KEYS, value ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+        return this;
+    }
+
+    @Override
+    public boolean lockModifiers() {
+        int ret = GLFW.glfwGetInputMode(window.handle(), GLFW.GLFW_LOCK_KEY_MODS);
+        return ret == GLFW.GLFW_TRUE;
+    }
+
+    @Override
+    public Keyboard lockModifiers(boolean value) {
+        GLFW.glfwSetInputMode(window.handle(), GLFW.GLFW_LOCK_KEY_MODS, value ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+        return this;
+    }
 }

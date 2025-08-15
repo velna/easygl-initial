@@ -9,6 +9,7 @@ import com.vanix.easygl.core.meta.MetaSystem;
 import com.vanix.easygl.core.window.event.MonitorListener;
 import org.joml.Vector2f;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public interface Monitor extends Position, Dimension, Handle {
@@ -19,7 +20,17 @@ public interface Monitor extends Position, Dimension, Handle {
 
     Rectangle workArea();
 
+    @Nullable
     VideoMode videoMode();
+
+    List<VideoMode> supportedVideoModes();
+
+    Monitor gamma(float value);
+
+    Monitor gamma(GammaRamp gammaRamp);
+
+    @Nullable
+    GammaRamp gamma();
 
     static Monitor primary() {
         return MetaSystem.Window.of(Monitor.class);

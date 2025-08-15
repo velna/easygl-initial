@@ -18,7 +18,7 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
 		U16, U17, U18, U19, U20, U21, U22, U23,
 		U24, U25, U26, U27, U28, U29, U30, U31;
 	    // @formatter:on
-        private final BindingState<Unit, Unit> state = UnitMeta.newBindingState("TextureUnit", this);
+        private final BindingState<Unit, Unit> state = UnitMeta.newBindingState("TextureUnit");
 
         private final int value = (int) state.unbindValue() + ordinal();
 
@@ -44,13 +44,12 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
 
         @Override
         public Unit bind() {
-            return state.bind(this);
+            return bind(this);
         }
 
         @Override
         public Unit unbind() {
-            state.unbind();
-            return this;
+            return unbind(this);
         }
 
         @Override
@@ -82,7 +81,7 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
         private Type(String id, int value, BindableMeta<Type<T>, T> meta) {
             this.id = id;
             this.value = value;
-            this.state = meta.newBindingState(id, this);
+            this.state = meta.newBindingState(id);
         }
 
         @Override

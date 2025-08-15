@@ -1,5 +1,6 @@
 package com.vanix.easygl.learnopengl.c1_gettingstarted;
 
+import com.vanix.easygl.core.graphics.FrameBufferOps;
 import com.vanix.easygl.core.graphics.Graphics;
 import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.window.Window;
@@ -17,8 +18,8 @@ public class C12HelloWindowClear {
                     .subscribe((event) -> event.source().window().shouldClose(true));
 
             while (!window.shouldClose()) {
-                graphics.clearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(Graphics.BufferMask.Color);
+                graphics.setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
+                        .clear(FrameBufferOps.BufferMask.Color);
                 window.swapBuffers().pollEvents();
             }
         }

@@ -28,7 +28,7 @@ public class C32MaterialsExercise1 {
              var vbo = Buffer.ofArray(DataType.Float)) {
 
             window.inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
-            graphics.depth().enable();
+            graphics.depthTest().enable();
 
             lightingProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/3.2.materials.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/2_lighting/3.2.materials.fs")
@@ -91,8 +91,8 @@ public class C32MaterialsExercise1 {
 
             long start = System.currentTimeMillis();
             while (!window.shouldClose()) {
-                graphics.clearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(Graphics.BufferMask.Color, Graphics.BufferMask.Depth);
+                graphics.setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
+                        .clear(FrameBufferOps.BufferMask.Color, FrameBufferOps.BufferMask.Depth);
 
                 float time = (System.currentTimeMillis() - start) / 1000.0f;
 

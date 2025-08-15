@@ -6,6 +6,14 @@ import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface Keyboard extends InputDevice<Keyboard.Key> {
 
+    boolean stickKeys();
+
+    Keyboard stickKeys(boolean value);
+
+    boolean lockModifiers();
+
+    Keyboard lockModifiers(boolean value);
+
     ListenerOperation<KeyboardListener> onKey(Key... keys);
 
     @Override

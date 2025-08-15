@@ -4,6 +4,7 @@ import com.vanix.easygl.commons.Position;
 import com.vanix.easygl.commons.Rectangle;
 import com.vanix.easygl.commons.event.ListenerSupport;
 import com.vanix.easygl.core.AbstractHandle;
+import com.vanix.easygl.core.window.GammaRamp;
 import com.vanix.easygl.core.window.Monitor;
 import com.vanix.easygl.core.window.VideoMode;
 import com.vanix.easygl.core.window.event.MonitorEvent;
@@ -12,7 +13,9 @@ import org.eclipse.collections.api.factory.primitive.LongObjectMaps;
 import org.eclipse.collections.api.map.primitive.MutableLongObjectMap;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.glfw.GLFWGammaRamp;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
 import java.util.ArrayList;
@@ -98,6 +101,43 @@ public class GlMonitor extends AbstractHandle implements Monitor {
             return null;
         }
         return new VideoMode(vm.width(), vm.height(), vm.redBits(), vm.greenBits(), vm.blueBits(), vm.refreshRate());
+    }
+
+    @Override
+    public List<VideoMode> supportedVideoModes() {
+        List<VideoMode> modes = new ArrayList<>();
+        var buffer = GLFW.glfwGetVideoModes(handle);
+        if (buffer != null) {
+            while (buffer.hasRemaining()) {
+                var vm = buffer.get();
+                modes.add(new VideoMode(vm.width(), vm.height(), vm.redBits(), vm.greenBits(), vm.blueBits(), vm.refreshRate()));
+            }
+        }
+        return modes;
+    }
+
+    @Override
+    public Monitor gamma(float value) {
+        GLFW.glfwSetGamma(handle, value);
+        return this;
+    }
+
+    @Override
+    public Monitor gamma(GammaRamp gammaRamp) {
+        try (var ramp = GLFWGammaRamp.malloc(MemoryStack.stackGet())) {
+            GLFW.glfwSetGammaRamp(handle,
+                    ramp.red(gammaRamp.red()).green(gammaRamp.green()).blue(gammaRamp.blue()).size(gammaRamp.size()));
+            return this;
+        }
+    }
+
+    @Override
+    public GammaRamp gamma() {
+        var ramp = GLFW.glfwGetGammaRamp(handle);
+        if (ramp == null) {
+            return null;
+        }
+        return new GammaRamp(ramp.red(), ramp.green(), ramp.blue(), ramp.size());
     }
 
     static Monitor of(long handle) {

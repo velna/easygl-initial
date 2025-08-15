@@ -29,7 +29,7 @@ public interface Buffer extends Handle, Bindable<Buffer.Type, Buffer> {
 
         Type(String id) {
             this.value = MetaSystem.Graphics.queryInt(id);
-            state = Meta.newBindingState(name(), this);
+            state = Meta.newBindingState(name());
         }
 
         @Override

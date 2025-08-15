@@ -30,13 +30,13 @@ public class GlMetaService extends AbstractMetaService {
             GLX::glGenVertexArrays,
             GLX::glDeleteVertexArrays);
 
-    static final BindableMeta<FrameBuffer.Type, FrameBuffer> FrameBufferMeta = new IntBindableMeta<>(
-            args -> new GlFrameBuffer((FrameBuffer.Type) args[0]),
+    static final BindableMeta<FrameBuffer.Target, FrameBuffer> FrameBufferMeta = new IntBindableMeta<>(
+            args -> new GlFrameBuffer(),
             GLX::glBindFramebuffer,
             GLX::glBindFramebuffer,
             0,
             GLX::glDeleteFramebuffers,
-            (handle, args) -> new GlFrameBuffer(handle, (FrameBuffer.Type) args[0]),
+            (handle, args) -> new GlFrameBuffer(handle),
             GLX::glGenFramebuffers,
             GLX::glDeleteFramebuffers);
 
@@ -96,6 +96,10 @@ public class GlMetaService extends AbstractMetaService {
 
     @Override
     public int queryInt(String id) {
+        if (id.startsWith("GET.")) {
+            id = id.substring(4);
+            return GLX.glGetInteger(queryStaticIntField(GLX.class, "GL_", id).orElseThrow());
+        }
         return queryStaticIntField(GLX.class, "GL_", id).orElseThrow();
     }
 

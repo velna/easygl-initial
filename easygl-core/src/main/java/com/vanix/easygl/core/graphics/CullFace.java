@@ -3,8 +3,8 @@ package com.vanix.easygl.core.graphics;
 import com.vanix.easygl.core.Feature;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public abstract class CullFace implements Feature<CullFace> {
-    public enum Mode {
+public interface CullFace extends Feature<CullFace> {
+    enum Mode {
         Front("FRONT"),
         Back("BACK"),
         FrontAndBack("FRONT_AND_BACK");
@@ -19,6 +19,13 @@ public abstract class CullFace implements Feature<CullFace> {
         }
     }
 
-    public abstract CullFace mode(Mode mode);
+    CullFace mode(Mode mode);
 
+    CullFace frontClockwise();
+
+    CullFace frontCounterclockwise();
+
+    boolean isFrontClockwise();
+
+    boolean isFrontCounterclockwise();
 }

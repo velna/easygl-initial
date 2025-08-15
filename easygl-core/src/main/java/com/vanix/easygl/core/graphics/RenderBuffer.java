@@ -11,24 +11,9 @@ public interface RenderBuffer extends Bindable<BindTarget.Default<RenderBuffer>,
     BindTarget.Default<RenderBuffer> Target = new BindTarget.Default<>(
             MetaSystem.Graphics.queryInt("RENDERBUFFER"), "RenderBuffer", Meta);
 
-    enum Format {
-        Color("COLOR_RENDERABLE"),
-        Depth("DEPTH_RENDERABLE"),
-        Stencil("STENCIL_RENDERABLE");
-        private final int value;
+    RenderBuffer storage(InternalPixelFormat internalFormat, int width, int height);
 
-        Format(String id) {
-            this.value = MetaSystem.Graphics.queryInt(id);
-        }
-
-        public int value() {
-            return value;
-        }
-    }
-
-    RenderBuffer storage(Format internalFormat, int width, int height);
-
-    RenderBuffer storageMultiSample(int samples, Format internalFormat, int width, int height);
+    RenderBuffer storageMultiSample(int samples, InternalPixelFormat internalFormat, int width, int height);
 
     static RenderBuffer of() {
         return Meta.create();

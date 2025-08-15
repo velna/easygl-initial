@@ -39,13 +39,12 @@ public abstract class AbstractBindable<E extends BindTarget<E, T>, T extends Bin
 
     @Override
     public T bind() {
-        return target.state().bind(self());
+        return target.bind(self());
     }
 
     @Override
     public T unbind() {
-        target.state().unbind();
-        return self();
+        return target.unbind(self());
     }
 
 }

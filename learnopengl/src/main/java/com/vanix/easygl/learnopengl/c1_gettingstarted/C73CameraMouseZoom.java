@@ -48,7 +48,7 @@ public class C73CameraMouseZoom {
             window.inputs().mouse().onMove().subscribe(C73CameraMouseZoom::onMouseMove);
             window.inputs().mouse().onScroll().subscribe(C73CameraMouseZoom::onMouseScroll);
 
-            graphics.depth().enable();
+            graphics.depthTest().enable();
 
             program.attachResource(Shader.Type.Vertex, "shaders/1_getting_started/7.3.camera.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/7.3.camera.fs")
@@ -143,8 +143,8 @@ public class C73CameraMouseZoom {
 
                 processInput(window.inputs().keyboard());
 
-                graphics.clearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(Graphics.BufferMask.Color, Graphics.BufferMask.Depth);
+                graphics.setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
+                        .clear(FrameBufferOps.BufferMask.Color, FrameBufferOps.BufferMask.Depth);
 
                 Texture.Unit.U0.bind();
                 texture1.bind();

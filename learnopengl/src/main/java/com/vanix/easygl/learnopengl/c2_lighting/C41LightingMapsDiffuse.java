@@ -29,7 +29,7 @@ public class C41LightingMapsDiffuse {
              var diffuseMap = Texture.of2D()) {
 
             window.inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
-            graphics.depth().enable();
+            graphics.depthTest().enable();
 
             lightingProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/4.1.lighting_maps.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/2_lighting/4.1.lighting_maps.fs")
@@ -103,8 +103,8 @@ public class C41LightingMapsDiffuse {
 
             long start = System.currentTimeMillis();
             while (!window.shouldClose()) {
-                graphics.clearColor(0.1f, 0.1f, 0.1f, 1.0f)
-                        .clear(Graphics.BufferMask.Color, Graphics.BufferMask.Depth);
+                graphics.setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
+                        .clear(FrameBufferOps.BufferMask.Color, FrameBufferOps.BufferMask.Depth);
 
                 float time = (System.currentTimeMillis() - start) / 1000.0f;
 

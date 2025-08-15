@@ -1,11 +1,13 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.commons.Color;
+import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.Feature;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public abstract class Blend implements Feature<Blend> {
+public interface Blend extends Feature<Blend> {
 
-    public enum Factor {
+    enum Function implements IntEnum {
         Zero("ZERO"),
         One("ONE"),
         SrcColor("SRC_COLOR"),
@@ -22,16 +24,17 @@ public abstract class Blend implements Feature<Blend> {
         OneMinusConstantAlpha("ONE_MINUS_CONSTANT_ALPHA");
         private final int value;
 
-        Factor(String id) {
+        Function(String id) {
             this.value = MetaSystem.Graphics.queryInt(id);
         }
 
+        @Override
         public int value() {
             return value;
         }
     }
 
-    public enum Equation {
+    enum Equation implements IntEnum {
         FuncAdd("FUNC_ADD"),
         FuncSubtract("FUNC_SUBTRACT"),
         FuncReverseSubtract("FUNC_REVERSE_SUBTRACT"),
@@ -43,10 +46,41 @@ public abstract class Blend implements Feature<Blend> {
             this.value = MetaSystem.Graphics.queryInt(id);
         }
 
+        @Override
         public int value() {
             return value;
         }
     }
 
-    public abstract Blend func(Factor src, Factor dst);
+    Blend function(Function src, Function dst);
+
+    Blend function(Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha);
+
+    Function functionSrcRGB();
+
+    Function functionDstRGB();
+
+    Function functionSrcAlpha();
+
+    Function functionDstAlpha();
+
+    default Function[] functions() {
+        return new Function[]{functionSrcRGB(), functionDstRGB(), functionSrcAlpha(), functionDstAlpha()};
+    }
+
+    default Blend color(Color rgba) {
+        return color(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha());
+    }
+
+    Blend color(float red, float green, float blue, float alpha);
+
+    Color color();
+
+    Blend equation(Equation equation);
+
+    Blend equation(Equation equationRgb, Equation equationAlpha);
+
+    Equation equationRGB();
+
+    Equation equationAlpha();
 }

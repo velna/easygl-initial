@@ -157,4 +157,16 @@ public class GlMouse implements Mouse {
         GLFW.glfwSetCursor(window.handle(), cursor.handle());
         return this;
     }
+
+    @Override
+    public boolean stickButtons() {
+        int ret = GLFW.glfwGetInputMode(window.handle(), GLFW.GLFW_STICKY_MOUSE_BUTTONS);
+        return ret == GLFW.GLFW_TRUE;
+    }
+
+    @Override
+    public Mouse stickButtons(boolean value) {
+        GLFW.glfwSetInputMode(window.handle(), GLFW.GLFW_STICKY_MOUSE_BUTTONS, value ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+        return this;
+    }
 }

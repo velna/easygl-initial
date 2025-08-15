@@ -29,7 +29,7 @@ public class C1Colors {
              var vbo = Buffer.ofArray(DataType.Float)) {
 
             window.inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
-            graphics.depth().enable();
+            graphics.depthTest().enable();
 
             lightingProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/1.colors.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/2_lighting/1.colors.fs")
@@ -91,8 +91,8 @@ public class C1Colors {
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
 
             while (!window.shouldClose()) {
-                graphics.clearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(Graphics.BufferMask.Color, Graphics.BufferMask.Depth);
+                graphics.setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
+                        .clear(FrameBufferOps.BufferMask.Color, FrameBufferOps.BufferMask.Depth);
 
                 var projection = new Matrix4f()
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 100.0f);

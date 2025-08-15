@@ -1,49 +1,19 @@
 package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.Closeable;
-import com.vanix.easygl.core.meta.MetaSystem;
 import com.vanix.easygl.core.window.Window;
-import org.joml.Vector4f;
 
 import java.util.ServiceLoader;
 
-public interface Graphics extends Closeable {
-
-    enum BufferMask {
-        Color("COLOR_BUFFER_BIT"), //
-        Depth("DEPTH_BUFFER_BIT"), //
-        Stencil("STENCIL_BUFFER_BIT");
-
-        private final int value;
-
-        BufferMask(String id) {
-            this.value = MetaSystem.Graphics.queryInt(id);
-        }
-
-        public int value() {
-            return value;
-        }
-    }
+public interface Graphics extends FrameBufferOps<Graphics>, Closeable {
 
     Graphics viewPort(int x, int y, int width, int height);
 
-    Depth depth();
+    DepthTest depthTest();
 
     CullFace cullFace();
 
     Blend blend();
-
-    Graphics clear(BufferMask mask);
-
-    Graphics clear(BufferMask mask1, BufferMask mask2);
-
-    Graphics clear(BufferMask mask, BufferMask mask2, BufferMask mask3);
-
-    Graphics clearColor(float red, float blue, float green, float alpha);
-
-    default Graphics clearColor(Vector4f color) {
-        return clearColor(color.x, color.y, color.z, color.w);
-    }
 
     Graphics polygonMode(PolygonFace face, PolygonMode mode);
 

@@ -29,7 +29,7 @@ public class C62CoordinateSystemsDepth {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
 
-            graphics.depth().enable();
+            graphics.depthTest().enable();
 
             program.attachResource(Shader.Type.Vertex, "shaders/1_getting_started/6.2.coordinate_systems.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/6.2.coordinate_systems.fs")
@@ -105,8 +105,8 @@ public class C62CoordinateSystemsDepth {
             long start = System.currentTimeMillis();
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
             while (!window.shouldClose()) {
-                graphics.clearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(Graphics.BufferMask.Color, Graphics.BufferMask.Depth);
+                graphics.setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
+                        .clear(FrameBufferOps.BufferMask.Color, FrameBufferOps.BufferMask.Depth);
 
                 Texture.Unit.U0.bind();
                 texture1.bind();

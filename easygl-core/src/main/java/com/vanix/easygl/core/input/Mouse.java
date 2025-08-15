@@ -16,6 +16,10 @@ public interface Mouse extends Positional, InputDevice<Mouse.Button> {
 
     CursorMode cursorMode();
 
+    boolean stickButtons();
+
+    Mouse stickButtons(boolean value);
+
     boolean isRawMotionSupported();
 
     boolean rawMotion();

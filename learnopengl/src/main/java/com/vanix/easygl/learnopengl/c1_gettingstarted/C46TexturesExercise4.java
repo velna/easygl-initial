@@ -69,8 +69,8 @@ public class C46TexturesExercise4 {
                     .set("texture2", 1);
 
             while (!window.shouldClose()) {
-                graphics.clearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(Graphics.BufferMask.Color);
+                graphics.setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
+                        .clear(FrameBufferOps.BufferMask.Color);
 
                 Texture.Unit.U0.bind();
                 texture1.bind();
