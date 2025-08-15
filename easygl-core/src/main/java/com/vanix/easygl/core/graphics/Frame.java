@@ -42,10 +42,6 @@ public interface Frame extends MultiTargetBindable<Frame.Target, Frame> {
     }
 
     Frame attach(Target target, FrameAttachment attachment, Texture2D texture2D, int level);
-//
-//    default FrameBuffer attach(Attachment attachment, TextureCube textureCube){
-//        return attach(attachment, textureCube, 0);
-//    }
 
     Frame attach(Target target, FrameAttachment.Renderable attachment, RenderBuffer renderBuffer);
 
