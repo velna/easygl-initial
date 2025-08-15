@@ -81,11 +81,17 @@ public interface Frame extends MultiTargetBindable<Frame.Target, Frame> {
                 buffers, filter);
     }
 
-    Frame clearColor(DrawBufferIndex index, Vector4f color);
+    Frame clearColor(int colorAttachmentIndex, Vector4f color);
 
-    Frame clearColor(DrawBufferIndex index, Vector4i color);
+    Frame clearColor(int colorAttachmentIndex, Vector4i color);
 
-    Frame clearColorUnsigned(DrawBufferIndex index, Vector4i color);
+    Frame clearColorUnsigned(int colorAttachmentIndex, Vector4i color);
+
+    Frame clearDepth(float value);
+
+    Frame clearStencil(int value);
+
+    Frame clearDepthAndStencil(float depthValue, int stencilValue);
 
     static Frame of() {
         return Meta.create();

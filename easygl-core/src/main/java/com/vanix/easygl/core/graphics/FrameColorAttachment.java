@@ -16,7 +16,7 @@ public final class FrameColorAttachment implements FrameColorBuffer.MultiSelecta
     public static final FrameColorAttachment CA5 = of(5);
     public static final FrameColorAttachment CA6 = of(6);
     public static final FrameColorAttachment CA7 = of(7);
-    public static final int MAX = MetaSystem.Graphics.queryInt("GET.GL_MAX_COLOR_ATTACHMENTS");
+    public static final int MAX = MetaSystem.Graphics.queryInt("GET.MAX_COLOR_ATTACHMENTS");
     private static final List<FrameColorAttachment> cache = LazyList.lazyList(new ArrayList<>(), FrameColorAttachment::new);
     private final int value;
 

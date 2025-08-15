@@ -103,23 +103,38 @@ public class GlFrame extends AbstractHandle implements Frame {
     }
 
     @Override
-    public Frame clearColor(DrawBufferIndex index, Vector4f color) {
-        GLX.glClearBufferfv(GLX.GL_COLOR, index.ordinal(), new float[]{color.x, color.y, color.z, color.w});
-        GLX.checkError();
+    public Frame clearColor(int colorAttachmentIndex, Vector4f color) {
+        GLX.glClearBufferfv(GLX.GL_COLOR, colorAttachmentIndex, new float[]{color.x, color.y, color.z, color.w});
         return this;
     }
 
     @Override
-    public Frame clearColor(DrawBufferIndex index, Vector4i color) {
-        GLX.glClearBufferiv(GLX.GL_COLOR, index.ordinal(), new int[]{color.x, color.y, color.z, color.w});
-        GLX.checkError();
+    public Frame clearColor(int colorAttachmentIndex, Vector4i color) {
+        GLX.glClearBufferiv(GLX.GL_COLOR, colorAttachmentIndex, new int[]{color.x, color.y, color.z, color.w});
         return this;
     }
 
     @Override
-    public Frame clearColorUnsigned(DrawBufferIndex index, Vector4i color) {
-        GLX.glClearBufferuiv(GLX.GL_COLOR, index.ordinal(), new int[]{color.x, color.y, color.z, color.w});
-        GLX.checkError();
+    public Frame clearColorUnsigned(int colorAttachmentIndex, Vector4i color) {
+        GLX.glClearBufferuiv(GLX.GL_COLOR, colorAttachmentIndex, new int[]{color.x, color.y, color.z, color.w});
+        return this;
+    }
+
+    @Override
+    public Frame clearDepth(float value) {
+        GLX.glClearBufferfv(GLX.GL_DEPTH, 0, new float[]{value});
+        return this;
+    }
+
+    @Override
+    public Frame clearStencil(int value) {
+        GLX.glClearBufferiv(GLX.GL_STENCIL, 0, new int[]{value});
+        return this;
+    }
+
+    @Override
+    public Frame clearDepthAndStencil(float depthValue, int stencilValue) {
+        GLX.glClearBufferfi(GLX.GL_DEPTH_STENCIL, 0, depthValue, stencilValue);
         return this;
     }
 }
