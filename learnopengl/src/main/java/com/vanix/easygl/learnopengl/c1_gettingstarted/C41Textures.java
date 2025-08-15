@@ -51,7 +51,7 @@ public class C41Textures {
             }
 
             while (!window.shouldClose()) {
-                graphics.setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
+                graphics.defaultFrame().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameBuffers.Color);
 
                 texture.bind();

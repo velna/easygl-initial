@@ -5,7 +5,7 @@ import com.vanix.easygl.core.window.Window;
 
 import java.util.ServiceLoader;
 
-public interface Graphics extends FrameOps<Graphics>, Closeable {
+public interface Graphics extends Closeable {
 
     Graphics viewPort(int x, int y, int width, int height);
 
@@ -17,7 +17,7 @@ public interface Graphics extends FrameOps<Graphics>, Closeable {
 
     Graphics polygonMode(PolygonFace face, PolygonMode mode);
 
-    Frame defaultFrameBuffer();
+    Frame defaultFrame();
 
     static Graphics of() {
         return ServiceLoader.load(Graphics.class).findFirst().orElseThrow();

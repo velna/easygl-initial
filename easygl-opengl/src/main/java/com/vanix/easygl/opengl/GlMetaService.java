@@ -3,6 +3,7 @@ package com.vanix.easygl.opengl;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.meta.*;
+import org.lwjgl.opengl.GL45;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -98,9 +99,9 @@ public class GlMetaService extends AbstractMetaService {
     public int queryInt(String id) {
         if (id.startsWith("GET.")) {
             id = id.substring(4);
-            return GLX.glGetInteger(queryStaticIntField(GLX.class, "GL_", id).orElseThrow());
+            return GLX.glGetInteger(queryStaticIntField(GL45.class, "GL_", id).orElseThrow());
         }
-        return queryStaticIntField(GLX.class, "GL_", id).orElseThrow();
+        return queryStaticIntField(GL45.class, "GL_", id).orElseThrow();
     }
 
     @Override

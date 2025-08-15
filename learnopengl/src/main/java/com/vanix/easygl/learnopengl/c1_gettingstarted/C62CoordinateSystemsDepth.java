@@ -105,7 +105,7 @@ public class C62CoordinateSystemsDepth {
             long start = System.currentTimeMillis();
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
             while (!window.shouldClose()) {
-                graphics.setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
+                graphics.defaultFrame().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameBuffers.ColorAndDepth);
 
                 Texture.Unit.U0.bind();
