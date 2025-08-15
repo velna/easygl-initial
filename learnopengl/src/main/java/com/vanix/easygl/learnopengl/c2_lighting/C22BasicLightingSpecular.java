@@ -91,7 +91,7 @@ public class C22BasicLightingSpecular {
 
             while (!window.shouldClose()) {
                 graphics.setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(FrameBuffer.Color, FrameBuffer.Depth);
+                        .clear(FrameBuffers.ColorAndDepth);
 
                 var projection = new Matrix4f()
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 100.0f);

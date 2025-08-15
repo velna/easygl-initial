@@ -53,7 +53,7 @@ public class C23HelloTriangleExercises1 {
 
             while (!window.shouldClose()) {
                 graphics.setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(FrameBuffer.Color);
+                        .clear(FrameBuffers.Color);
 
                 program.bind();
                 vao.drawArray(DrawMode.Triangles, vbo);

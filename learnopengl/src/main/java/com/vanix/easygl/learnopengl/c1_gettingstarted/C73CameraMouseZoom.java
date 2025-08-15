@@ -144,7 +144,7 @@ public class C73CameraMouseZoom {
                 processInput(window.inputs().keyboard());
 
                 graphics.setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(FrameBuffer.Color, FrameBuffer.Depth);
+                        .clear(FrameBuffers.ColorAndDepth);
 
                 Texture.Unit.U0.bind();
                 texture1.bind();

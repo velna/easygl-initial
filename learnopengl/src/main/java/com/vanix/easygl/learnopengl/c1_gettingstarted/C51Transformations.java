@@ -69,7 +69,7 @@ public class C51Transformations {
             long start = System.currentTimeMillis();
             while (!window.shouldClose()) {
                 graphics.setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(FrameBuffer.Color);
+                        .clear(FrameBuffers.Color);
 
                 Texture.Unit.U0.bind();
                 texture1.bind();
