@@ -208,4 +208,12 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Type, Buffer> i
         GLX.checkError();
         return this;
     }
+
+    @Override
+    public Buffer bindBase(int index) {
+        assertBinding();
+        GLX.glBindBufferBase(target.value(), index, intHandle());
+        GLX.checkError();
+        return this;
+    }
 }

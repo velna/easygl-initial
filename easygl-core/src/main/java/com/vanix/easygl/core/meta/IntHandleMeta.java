@@ -9,23 +9,34 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntConsumer;
 
-public class IntHandleMeta<T extends Handle> extends DefaultMeta<T> implements HandleMeta<T>{
+public class IntHandleMeta<T extends Handle> extends DefaultMeta<T> implements HandleMeta<T> {
 
     private final IntConsumer close;
     private final BiFunction<Integer, Object[], T> init;
     private final Consumer<int[]> initArray;
     private final Consumer<int[]> closeArray;
+    private final ArrayFactory<T> arrayFactory;
 
     public IntHandleMeta(Function<Object[], T> factory,
                          IntConsumer close,
                          BiFunction<Integer, Object[], T> init,
                          Consumer<int[]> initArray,
                          Consumer<int[]> closeArray) {
+        this(factory, close, init, initArray, closeArray, CloseableArray::new);
+    }
+
+    public IntHandleMeta(Function<Object[], T> factory,
+                         IntConsumer close,
+                         BiFunction<Integer, Object[], T> init,
+                         Consumer<int[]> initArray,
+                         Consumer<int[]> closeArray,
+                         ArrayFactory<T> arrayFactory) {
         super(factory);
         this.close = close;
         this.init = init;
         this.initArray = initArray;
         this.closeArray = closeArray;
+        this.arrayFactory = arrayFactory;
     }
 
     @Override
@@ -46,7 +57,7 @@ public class IntHandleMeta<T extends Handle> extends DefaultMeta<T> implements H
         } else {
             throw new UnsupportedOperationException();
         }
-        return new CloseableArray<>(list, handles, this::close);
+        return arrayFactory.createArray(list, handles, this::close);
     }
 
     void close(int[] handles) {

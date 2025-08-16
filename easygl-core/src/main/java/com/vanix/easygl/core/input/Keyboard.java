@@ -80,8 +80,8 @@ public interface Keyboard extends InputDevice<Keyboard.Key> {
         BACKSLASH("KEY_BACKSLASH"),
         RIGHT_BRACKET("KEY_RIGHT_BRACKET"),
         GRAVE_ACCENT("KEY_GRAVE_ACCENT"),
-        WORLD_1("KEY_WORLD_1"),
-        WORLD_2("KEY_WORLD_2");
+        WORLD_1("KEY_WORLD_1");
+//        WORLD_2("KEY_WORLD_2"); // Reports error on MacOS, scancode returns -1
 
         private final int value;
         private final int scancode;

@@ -1,6 +1,9 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.core.*;
+import com.vanix.easygl.core.BindTarget;
+import com.vanix.easygl.core.BindingState;
+import com.vanix.easygl.core.Handle;
+import com.vanix.easygl.core.MultiTargetBindable;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 import java.nio.*;
@@ -161,12 +164,14 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer>
 
     Buffer bindRange(int index, long offset, long size);
 
+    Buffer bindBase(int index);
+
     static Buffer of(DataType dataType) {
         return MetaHolder.Buffer.create(dataType);
     }
 
-    static CloseableArray<Buffer> of(int n, DataType dataType) {
-        return MetaHolder.Buffer.createArray(n, dataType);
+    static BufferArray of(int n, DataType dataType) {
+        return (BufferArray) MetaHolder.Buffer.createArray(n, dataType);
     }
 
 }

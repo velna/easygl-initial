@@ -19,7 +19,8 @@ public class GlMetaService extends AbstractMetaService {
             GLX::glDeleteBuffers,
             (handle, args) -> new GlBuffer(handle, (DataType) args[0]),
             GLX::glGenBuffers,
-            GLX::glDeleteBuffers);
+            GLX::glDeleteBuffers,
+            GlBufferArray::new);
 
     static final BindableMeta<BindTarget.Default<VertexArray>, VertexArray> VertexArrayMeta = new IntBindableMeta<>(
             args -> new GlVertexArray(),

@@ -12,7 +12,7 @@ import java.util.function.Supplier;
 
 public class CloseableArray<T extends Closeable> implements Closeable, ExtendedIterable<T> {
     private final Consumer<int[]> closeFunction;
-    private final int[] handles;
+    protected final int[] handles;
     private final List<T> list;
 
     public CloseableArray(List<T> list, int[] handles, Consumer<int[]> closeFunction) {
