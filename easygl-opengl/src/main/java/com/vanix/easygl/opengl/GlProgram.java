@@ -13,6 +13,7 @@ import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -30,6 +31,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
 
     @Override
     public Program attach(Shader shader) {
+        assertBinding();
         shaders.getIfAbsentPut(shader.intHandle(), () -> {
             GLX.glAttachShader(intHandle(), shader.intHandle());
             GLX.checkError();
@@ -40,6 +42,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
 
     @Override
     public Program detach(Shader shader) {
+        assertBinding();
         if (shaders.remove(shader.intHandle()) != null) {
             GLX.glDetachShader(intHandle(), shader.intHandle());
             GLX.checkError();
@@ -51,6 +54,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
 
     @Override
     public Program link() {
+        assertBinding();
         int program = intHandle();
         GLX.glLinkProgram(program);
         IntBuffer success = MemoryStack.stackMallocInt(1);
@@ -60,6 +64,43 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
             throw new GraphicsException("error link program: " + infoLog);
         }
         return self();
+    }
+
+    @Override
+    public Program setBinaryRetrievable(boolean retrievable) {
+        assertBinding();
+        GLX.glProgramParameteri(intHandle(), GLX.GL_PROGRAM_BINARY_RETRIEVABLE_HINT, retrievable ? GLX.GL_TRUE : GLX.GL_FALSE);
+        return this;
+    }
+
+    @Override
+    public Binary getBinary() {
+        assertBinding();
+        int len = GLX.glGetProgrami(intHandle(), GLX.GL_PROGRAM_BINARY_LENGTH);
+        if (len <= 0) {
+            GLX.checkError();
+            return null;
+        }
+        ByteBuffer buffer = ByteBuffer.allocate(len);
+        int[] format = new int[1];
+        GLX.glGetProgramBinary(intHandle(), null, format, buffer);
+        GLX.checkError();
+        return new Binary(format[0], buffer);
+    }
+
+    @Override
+    public Program loadBinary(int format, ByteBuffer data) {
+        assertBinding();
+        GLX.glProgramBinary(intHandle(), format, data);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setSeparable(boolean separable) {
+        assertBinding();
+        GLX.glProgramParameteri(intHandle(), GLX.GL_PROGRAM_SEPARABLE, separable ? GLX.GL_TRUE : GLX.GL_FALSE);
+        return this;
     }
 
     @Override

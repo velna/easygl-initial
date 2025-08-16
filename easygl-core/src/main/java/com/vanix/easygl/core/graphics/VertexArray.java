@@ -2,7 +2,7 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
-import com.vanix.easygl.core.CloseableArray;
+import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.Handle;
 
 public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, VertexArray>, Handle {
@@ -26,7 +26,7 @@ public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, V
         return MetaHolder.VertexArray.create();
     }
 
-    static CloseableArray<VertexArray> of(int n) {
+    static HandleArray<VertexArray> of(int n) {
         return MetaHolder.VertexArray.createArray(n);
     }
 }

@@ -21,6 +21,8 @@ public interface Graphics extends Closeable {
 
     Graphics flush();
 
+    Graphics releaseShaderCompiler();
+
     static Graphics of() {
         return ServiceLoader.load(Graphics.class).findFirst().orElseThrow();
     }

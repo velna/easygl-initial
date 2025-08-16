@@ -10,30 +10,30 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class CloseableArray<T extends Closeable> implements Closeable, ExtendedIterable<T> {
+public class HandleArray<T extends Handle> implements Closeable, ExtendedIterable<T> {
     private final Consumer<int[]> closeFunction;
     protected final int[] handles;
     private final List<T> list;
 
-    public CloseableArray(List<T> list, int[] handles, Consumer<int[]> closeFunction) {
+    public HandleArray(List<T> list, int[] handles, Consumer<int[]> closeFunction) {
         this.list = list;
-        this.handles = handles;
+        this.handles = handles == null ? list.stream().mapToInt(Handle::intHandle).toArray() : handles;
         this.closeFunction = closeFunction;
     }
 
-    public CloseableArray(List<T> list) {
+    public HandleArray(List<T> list) {
         this(list, null, null);
     }
 
-    public static <T extends Closeable> CloseableArray<T> of(int n, Supplier<T> factory) {
+    public static <T extends Handle> HandleArray<T> of(int n, Supplier<T> factory) {
         List<T> list = new ArrayList<>(n);
         for (int i = 0; i < n; i++) {
             list.add(factory.get());
         }
-        return new CloseableArray<>(list);
+        return new HandleArray<>(list);
     }
 
-    public static <T extends Handle> CloseableArray<T> initInit(List<T> list, int[] handles, Consumer<int[]> closeFunction) {
+    public static <T extends Handle> HandleArray<T> initInit(List<T> list, int[] handles, Consumer<int[]> closeFunction) {
         if (handles != null && list.size() != handles.length) {
             throw new IllegalArgumentException();
         }
@@ -47,7 +47,7 @@ public class CloseableArray<T extends Closeable> implements Closeable, ExtendedI
                 handlesArray[i++] = e.intHandle();
             }
         }
-        return new CloseableArray<>(new ArrayList<>(list), handlesArray, closeFunction);
+        return new HandleArray<>(new ArrayList<>(list), handlesArray, closeFunction);
     }
 
     public T getFirst() {

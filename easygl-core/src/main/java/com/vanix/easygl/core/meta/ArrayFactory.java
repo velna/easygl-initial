@@ -1,11 +1,11 @@
 package com.vanix.easygl.core.meta;
 
-import com.vanix.easygl.core.Closeable;
-import com.vanix.easygl.core.CloseableArray;
+import com.vanix.easygl.core.HandleArray;
+import com.vanix.easygl.core.Handle;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-public interface ArrayFactory<T extends Closeable> {
-    CloseableArray<T> createArray(List<T> list, int[] handles, Consumer<int[]> closeFunction);
+public interface ArrayFactory<T extends Handle> {
+    HandleArray<T> createArray(List<T> list, int[] handles, Consumer<int[]> closeFunction);
 }

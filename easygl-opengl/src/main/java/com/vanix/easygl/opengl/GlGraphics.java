@@ -53,6 +53,12 @@ public class GlGraphics implements Graphics {
     }
 
     @Override
+    public Graphics releaseShaderCompiler() {
+        GLX.glReleaseShaderCompiler();
+        return this;
+    }
+
+    @Override
     public void close() {
 
     }

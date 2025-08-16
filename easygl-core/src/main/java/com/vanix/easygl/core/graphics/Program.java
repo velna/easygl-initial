@@ -6,6 +6,7 @@ import org.joml.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
@@ -47,8 +48,17 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     Program link();
 
-    @Override
-    Program bind();
+    Program setBinaryRetrievable(boolean retrievable);
+
+    Binary getBinary();
+
+    Program loadBinary(int format, ByteBuffer data);
+
+    default Program loadBinary(Binary binary) {
+        return loadBinary(binary.format, binary.data);
+    }
+
+    Program setSeparable(boolean separable);
 
     Program set(String key, int value);
 
@@ -196,4 +206,6 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
         return MetaHolder.Program.create();
     }
 
+    record Binary(int format, ByteBuffer data) {
+    }
 }

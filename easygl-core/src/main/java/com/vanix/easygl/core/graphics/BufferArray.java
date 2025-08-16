@@ -1,12 +1,12 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.core.CloseableArray;
+import com.vanix.easygl.core.HandleArray;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-public abstract class BufferArray extends CloseableArray<Buffer> {
+public abstract class BufferArray extends HandleArray<Buffer> {
     public BufferArray(List<Buffer> list, int[] handles, Consumer<int[]> closeFunction) {
         super(list, handles, closeFunction);
     }

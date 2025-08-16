@@ -1,6 +1,6 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.core.CloseableArray;
+import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.Handle;
 import com.vanix.easygl.core.meta.MetaSystem;
 
@@ -24,7 +24,7 @@ public interface Query<T extends Query<T>> extends Handle {
         return MetaHolder.SampleQuery.create(type);
     }
 
-    static CloseableArray<SampleQuery> ofSample(SampleType type, int n) {
+    static HandleArray<SampleQuery> ofSample(SampleType type, int n) {
         return MetaHolder.SampleQuery.createArray(n, type);
     }
 
@@ -32,7 +32,7 @@ public interface Query<T extends Query<T>> extends Handle {
         return MetaHolder.IndexQuery.create(type);
     }
 
-    static CloseableArray<IndexQuery> ofIndex(IndexType type, int n) {
+    static HandleArray<IndexQuery> ofIndex(IndexType type, int n) {
         return MetaHolder.IndexQuery.createArray(n, type);
     }
 
@@ -40,7 +40,7 @@ public interface Query<T extends Query<T>> extends Handle {
         return MetaHolder.TimerQuery.create();
     }
 
-    static CloseableArray<TimerQuery> ofTimer(int n) {
+    static HandleArray<TimerQuery> ofTimer(int n) {
         return MetaHolder.TimerQuery.createArray(n);
     }
 

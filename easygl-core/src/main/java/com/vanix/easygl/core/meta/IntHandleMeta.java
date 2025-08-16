@@ -1,6 +1,6 @@
 package com.vanix.easygl.core.meta;
 
-import com.vanix.easygl.core.CloseableArray;
+import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.Handle;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class IntHandleMeta<T extends Handle> extends DefaultMeta<T> implements H
                          BiFunction<Integer, Object[], T> init,
                          Consumer<int[]> initArray,
                          Consumer<int[]> closeArray) {
-        this(factory, close, init, initArray, closeArray, CloseableArray::new);
+        this(factory, close, init, initArray, closeArray, HandleArray::new);
     }
 
     public IntHandleMeta(Function<Object[], T> factory,
@@ -40,7 +40,7 @@ public class IntHandleMeta<T extends Handle> extends DefaultMeta<T> implements H
     }
 
     @Override
-    public CloseableArray<T> createArray(int n, Object... args) {
+    public HandleArray<T> createArray(int n, Object... args) {
         var list = new ArrayList<T>(n);
         int[] handles = new int[n];
         if (initArray != null && init != null) {

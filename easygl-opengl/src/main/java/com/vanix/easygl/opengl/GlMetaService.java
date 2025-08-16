@@ -5,6 +5,7 @@ import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.meta.*;
 import org.lwjgl.opengl.GL45;
 
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -107,6 +108,7 @@ public class GlMetaService extends AbstractMetaService {
             GLX::glGenQueries,
             GLX::glDeleteQueries);
 
+    @SuppressWarnings("unchecked")
     public GlMetaService() {
         register(Buffer.class, BufferMeta);
         register(FrameBuffer.class, FrameBufferMeta);
@@ -121,6 +123,7 @@ public class GlMetaService extends AbstractMetaService {
         register(Query.SampleQuery.class, SampleQueryMeta);
         register(Query.IndexQuery.class, IndexQueryMeta);
         register(Query.TimerQuery.class, TimerQueryMeta);
+        register(ShaderArray.class, (Function<Object[], ShaderArray>) args -> new GlShaderArray((List<Shader>) args[0]));
     }
 
     @Override

@@ -4,7 +4,7 @@ import com.vanix.easygl.commons.Color;
 import com.vanix.easygl.commons.Rectangle;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.BindingState;
-import com.vanix.easygl.core.CloseableArray;
+import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.MultiTargetBindable;
 import com.vanix.easygl.core.meta.MetaSystem;
 import org.joml.Vector4f;
@@ -91,7 +91,7 @@ public interface FrameBuffer extends MultiTargetBindable<FrameBuffer.Target, Fra
         return MetaHolder.FrameBuffer.create();
     }
 
-    static CloseableArray<FrameBuffer> of(int n) {
+    static HandleArray<FrameBuffer> of(int n) {
         return MetaHolder.FrameBuffer.createArray(n);
     }
 
