@@ -7,5 +7,5 @@ public interface MultiTargetBindable<E extends BindTarget<E, T>, T extends Multi
 
     E target();
 
-    T assertBinding();
+    void assertBinding() throws IllegalStateException;
 }

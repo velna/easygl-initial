@@ -36,9 +36,10 @@ public class AbstractMultiTargetBindable<E extends BindTarget<E, T>, T extends M
         return target;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public T assertBinding() {
-        return (T) this;
+    public void assertBinding() {
+        if (target == null) {
+            throw new IllegalStateException();
+        }
     }
 }

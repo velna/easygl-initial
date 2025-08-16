@@ -45,14 +45,14 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
     @Override
     public void drawArray(DrawMode mode, Buffer vbo, int first) {
         bind();
-        GLX.glDrawArrays(mode.value(), first, vbo.count());
+        GLX.glDrawArrays(mode.value(), first, (int) vbo.count());
         GLX.checkError();
     }
 
     @Override
     public void drawElements(DrawMode mode, Buffer vbo, Buffer ebo, int indices) {
         bind();
-        GLX.glDrawElements(mode.value(), ebo.count(), ebo.dataType().value(), indices);
+        GLX.glDrawElements(mode.value(), (int) ebo.count(), ebo.dataType().value(), indices);
         GLX.checkError();
     }
 }
