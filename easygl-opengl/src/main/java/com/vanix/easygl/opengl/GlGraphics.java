@@ -42,8 +42,8 @@ public class GlGraphics implements Graphics {
     }
 
     @Override
-    public Frame defaultFrame() {
-        return GlFrame.DEFAULT_FRAME;
+    public FrameBuffer defaultFrame() {
+        return GlFrameBuffer.DEFAULT_FRAME_BUFFER;
     }
 
     @Override

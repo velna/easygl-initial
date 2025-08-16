@@ -8,45 +8,45 @@ import org.joml.Vector4i;
 
 import java.util.function.IntConsumer;
 
-public class GlFrame extends AbstractHandle implements Frame {
-    public static final Frame DEFAULT_FRAME = new GlFrame(0);
+public class GlFrameBuffer extends AbstractHandle implements FrameBuffer {
+    public static final FrameBuffer DEFAULT_FRAME_BUFFER = new GlFrameBuffer(0);
 
-    protected GlFrame() {
+    protected GlFrameBuffer() {
         this(GLX.glGenFramebuffers());
     }
 
-    protected GlFrame(int handle) {
+    protected GlFrameBuffer(int handle) {
         super(handle, (IntConsumer) GLX::glDeleteFramebuffers);
     }
 
     @Override
-    public Frame attach(Target target, FrameAttachment attachment, Texture2D texture, int level) {
+    public FrameBuffer attach(Target target, Attachment attachment, Texture2D texture, int level) {
         GLX.glFramebufferTexture2D(target.value(), attachment.value(), texture.target().value(), texture.intHandle(), level);
         GLX.checkError();
         return this;
     }
 
     @Override
-    public Frame attach(Target target, FrameAttachment.Renderable attachment, RenderBuffer renderBuffer) {
+    public FrameBuffer attach(Target target, Attachment.Renderable attachment, RenderBuffer renderBuffer) {
         GLX.glFramebufferRenderbuffer(target.value(), attachment.value(), GLX.GL_RENDERBUFFER, renderBuffer.intHandle());
         GLX.checkError();
         return this;
     }
 
     @Override
-    public Frame detachRenderBuffer(Target target, FrameAttachment.Renderable attachment) {
+    public FrameBuffer detachRenderBuffer(Target target, Attachment.Renderable attachment) {
         GLX.glFramebufferRenderbuffer(target.value(), attachment.value(), GLX.GL_RENDERBUFFER, 0);
         return this;
     }
 
     @Override
-    public Frame clear(FrameBuffers attr) {
+    public FrameBuffer clear(FrameBuffers attr) {
         GLX.glClear(attr.value());
         return this;
     }
 
     @Override
-    public Frame setClearColor(float red, float blue, float green, float alpha) {
+    public FrameBuffer setClearColor(float red, float blue, float green, float alpha) {
         GLX.glClearColor(red, blue, green, alpha);
         return this;
     }
@@ -59,7 +59,7 @@ public class GlFrame extends AbstractHandle implements Frame {
     }
 
     @Override
-    public Frame setClearDepth(float depth) {
+    public FrameBuffer setClearDepth(float depth) {
         GLX.glClearDepth(depth);
         return this;
     }
@@ -70,7 +70,7 @@ public class GlFrame extends AbstractHandle implements Frame {
     }
 
     @Override
-    public Frame setClearStencil(int s) {
+    public FrameBuffer setClearStencil(int s) {
         GLX.glClearStencil(s);
         return this;
     }
@@ -81,13 +81,13 @@ public class GlFrame extends AbstractHandle implements Frame {
     }
 
     @Override
-    public Frame selectDrawBuffer(FrameColorBuffer frameColorBuffer) {
-        GLX.glDrawBuffer(frameColorBuffer.value());
+    public FrameBuffer selectDrawBuffer(ColorBuffer colorBuffer) {
+        GLX.glDrawBuffer(colorBuffer.value());
         return this;
     }
 
     @Override
-    public Frame selectDrawBuffers(FrameColorBuffer.MultiSelectable... drawBuffers) {
+    public FrameBuffer selectDrawBuffers(ColorBuffer.MultiSelectable... drawBuffers) {
         int[] values = new int[drawBuffers.length];
         for (int i = 0; i < drawBuffers.length; i++) {
             values[i] = drawBuffers[i].value();
@@ -97,43 +97,43 @@ public class GlFrame extends AbstractHandle implements Frame {
     }
 
     @Override
-    public Frame blit(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, FrameBuffers buffers, Texture.MagFilter filter) {
+    public FrameBuffer blit(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, FrameBuffers buffers, Texture.MagFilter filter) {
         GLX.glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, buffers.value(), filter.value());
         return this;
     }
 
     @Override
-    public Frame clearColor(int colorAttachmentIndex, Vector4f color) {
+    public FrameBuffer clearColor(int colorAttachmentIndex, Vector4f color) {
         GLX.glClearBufferfv(GLX.GL_COLOR, colorAttachmentIndex, new float[]{color.x, color.y, color.z, color.w});
         return this;
     }
 
     @Override
-    public Frame clearColor(int colorAttachmentIndex, Vector4i color) {
+    public FrameBuffer clearColor(int colorAttachmentIndex, Vector4i color) {
         GLX.glClearBufferiv(GLX.GL_COLOR, colorAttachmentIndex, new int[]{color.x, color.y, color.z, color.w});
         return this;
     }
 
     @Override
-    public Frame clearColorUnsigned(int colorAttachmentIndex, Vector4i color) {
+    public FrameBuffer clearColorUnsigned(int colorAttachmentIndex, Vector4i color) {
         GLX.glClearBufferuiv(GLX.GL_COLOR, colorAttachmentIndex, new int[]{color.x, color.y, color.z, color.w});
         return this;
     }
 
     @Override
-    public Frame clearDepth(float value) {
+    public FrameBuffer clearDepth(float value) {
         GLX.glClearBufferfv(GLX.GL_DEPTH, 0, new float[]{value});
         return this;
     }
 
     @Override
-    public Frame clearStencil(int value) {
+    public FrameBuffer clearStencil(int value) {
         GLX.glClearBufferiv(GLX.GL_STENCIL, 0, new int[]{value});
         return this;
     }
 
     @Override
-    public Frame clearDepthAndStencil(float depthValue, int stencilValue) {
+    public FrameBuffer clearDepthAndStencil(float depthValue, int stencilValue) {
         GLX.glClearBufferfi(GLX.GL_DEPTH_STENCIL, 0, depthValue, stencilValue);
         return this;
     }

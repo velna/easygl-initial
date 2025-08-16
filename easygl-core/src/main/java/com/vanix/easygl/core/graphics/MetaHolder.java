@@ -17,6 +17,6 @@ class MetaHolder {
     static final HandleMeta<Query.IndexQuery> IndexQuery = MetaSystem.Graphics.of(Query.IndexQuery.class);
     static final HandleMeta<Query.SampleQuery> SampleQuery = MetaSystem.Graphics.of(Query.SampleQuery.class);
     static final BindableMeta<BindTarget.Default<Program>, Program> Program = MetaSystem.Graphics.of(Program.class);
-    static final BindableMeta<Frame.Target, Frame> Frame = MetaSystem.Graphics.of(Frame.class);
+    static final BindableMeta<FrameBuffer.Target, FrameBuffer> FrameBuffer = MetaSystem.Graphics.of(FrameBuffer.class);
     static final BindableMeta<Buffer.Type, Buffer> Buffer = MetaSystem.Graphics.of(Buffer.class);
 }

@@ -17,7 +17,7 @@ public interface Graphics extends Closeable {
 
     Graphics polygonMode(PolygonFace face, PolygonMode mode);
 
-    Frame defaultFrame();
+    FrameBuffer defaultFrame();
 
     Graphics flush();
 
