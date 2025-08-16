@@ -17,8 +17,8 @@ public class C22HelloTriangleIndexed {
              var fragment = Shader.fragment();
              var program = Program.of();
              var vao = VertexArray.of();
-             var vbo = Buffer.ofArray(DataType.Float);
-             var ebo = Buffer.ofElementArray(DataType.UnsignedInt)) {
+             var vbo = Buffer.of(DataType.Float);
+             var ebo = Buffer.of(DataType.UnsignedInt)) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
 
@@ -40,14 +40,14 @@ public class C22HelloTriangleIndexed {
                             .compile())
                     .link();
 
-            vao.bind().attributes(vbo.bind()
+            vao.bind().attributes(vbo.bind(Buffer.Type.Array)
                     .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
                             0.5f, 0.5f, 0.0f,  // top right
                             0.5f, -0.5f, 0.0f,  // bottom right
                             -0.5f, -0.5f, 0.0f,  // bottom left
                             -0.5f, 0.5f, 0.0f   // top left
                     }), 3);
-            ebo.bind()
+            ebo.bind(Buffer.Type.ElementArray)
                     .realloc(Buffer.DataUsage.STATIC_DRAW, new int[]{
                             // note that we start from 0!
                             0, 1, 3,  // first Triangle

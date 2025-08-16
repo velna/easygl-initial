@@ -12,12 +12,12 @@ import java.util.function.Function;
 public class GlMetaService extends AbstractMetaService {
 
     static final BindableMeta<Buffer.Type, Buffer> BufferMeta = new IntBindableMeta<>(
-            args -> new GlBuffer((Buffer.Type) args[0], (DataType) args[1]),
+            args -> new GlBuffer((DataType) args[0]),
             GLX::glBindBuffer,
             GLX::glBindBuffer,
             0,
             GLX::glDeleteBuffers,
-            (handle, args) -> new GlBuffer(handle, (Buffer.Type) args[0], (DataType) args[1]),
+            (handle, args) -> new GlBuffer(handle, (DataType) args[0]),
             GLX::glGenBuffers,
             GLX::glDeleteBuffers);
 

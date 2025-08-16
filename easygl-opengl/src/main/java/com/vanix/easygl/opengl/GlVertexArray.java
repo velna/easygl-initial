@@ -22,7 +22,7 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
     @Override
     public VertexArray attributes(Buffer buffer, int... layouts) {
         assertBinding();
-        buffer.bind();
+        buffer.bind(Buffer.Type.Array);
         int pointer = 0;
         int stride = 0;
         for (int layout : layouts) {

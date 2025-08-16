@@ -15,7 +15,7 @@ public class C21HelloTriangle {
              var graphics = Graphics.of(window);
              var program = Program.of();
              var vao = VertexArray.of();
-             var vbo = Buffer.ofArray(DataType.Float)) {
+             var vbo = Buffer.of(DataType.Float)) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
 
@@ -35,7 +35,7 @@ public class C21HelloTriangle {
                             """)
                     .link();
 
-            vao.bind().attributes(vbo.bind()
+            vao.bind().attributes(vbo.bind(Buffer.Type.Array)
                     .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
                             -0.5f, -0.5f, 0.0f, // left
                             0.5f, -0.5f, 0.0f, // right

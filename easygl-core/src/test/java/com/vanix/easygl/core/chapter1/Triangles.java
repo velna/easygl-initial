@@ -14,8 +14,8 @@ public class Triangles implements Renderer<ClientApp, RenderContext> {
 
     @Override
     public void init(ClientApp clientApp) throws GraphicsException {
-        vbo = Buffer.of(Buffer.Type.Array, DataType.Float)
-                .bind()
+        vbo = Buffer.of(DataType.Float)
+                .bind(Buffer.Type.Array)
                 .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
                         // Triangle 1
                         -0.90f, -0.90f,

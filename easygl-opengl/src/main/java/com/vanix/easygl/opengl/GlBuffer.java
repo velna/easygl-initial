@@ -1,23 +1,23 @@
 package com.vanix.easygl.opengl;
 
-import com.vanix.easygl.core.AbstractBindable;
+import com.vanix.easygl.core.AbstractMultiTargetBindable;
 import com.vanix.easygl.core.graphics.Buffer;
 import com.vanix.easygl.core.graphics.DataType;
 
 import java.nio.*;
 import java.util.function.IntConsumer;
 
-public class GlBuffer extends AbstractBindable<Buffer.Type, Buffer> implements Buffer {
+public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Type, Buffer> implements Buffer {
     private final DataType dataType;
     private int bytes;
 
-    protected GlBuffer(int handle, Type type, DataType dataType) {
-        super(handle, type, (IntConsumer) GLX::glDeleteBuffers);
+    protected GlBuffer(int handle, DataType dataType) {
+        super(handle, (IntConsumer) GLX::glDeleteBuffers);
         this.dataType = dataType;
     }
 
-    protected GlBuffer(Type type, DataType dataType) {
-        this(GLX.glGenBuffers(), type, dataType);
+    protected GlBuffer(DataType dataType) {
+        this(GLX.glGenBuffers(), dataType);
     }
 
     @Override
@@ -199,5 +199,13 @@ public class GlBuffer extends AbstractBindable<Buffer.Type, Buffer> implements B
     @Override
     public int bytes() {
         return bytes;
+    }
+
+    @Override
+    public Buffer bindRange(int index, long offset, long size) {
+        assertBinding();
+        GLX.glBindBufferRange(target.value(), index, intHandle(), offset, size);
+        GLX.checkError();
+        return this;
     }
 }

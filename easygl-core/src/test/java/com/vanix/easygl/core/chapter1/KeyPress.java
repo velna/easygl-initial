@@ -21,8 +21,8 @@ public class KeyPress implements Renderer<ClientApp, RenderContext>, KeyboardLis
     public void init(ClientApp clientApp) throws GraphicsException {
         this.clientApp = clientApp;
         clientApp.window().inputs().keyboard().onKey(Keyboard.PrintableKey.M).subscribe(this);
-        vbo = Buffer.of(Buffer.Type.Array, DataType.Float)
-                .bind()
+        vbo = Buffer.of(DataType.Float)
+                .bind(Buffer.Type.Array)
                 .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
                         // Triangle 1
                         -0.90f, -0.90f,

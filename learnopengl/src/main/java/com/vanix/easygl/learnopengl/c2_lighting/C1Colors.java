@@ -26,7 +26,7 @@ public class C1Colors {
              var lightCubeProgram = Program.of();
              var cubeVAO = VertexArray.of();
              var lightCubeVAO = VertexArray.of();
-             var vbo = Buffer.ofArray(DataType.Float)) {
+             var vbo = Buffer.of(DataType.Float)) {
 
             window.inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
             graphics.depthTest().enable();
@@ -39,7 +39,7 @@ public class C1Colors {
                     .attachResource(Shader.Type.Fragment, "shaders/2_lighting/1.light_cube.fs")
                     .link();
 
-            vbo.bind().realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            vbo.bind(Buffer.Type.Array).realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
                     -0.5f, -0.5f, -0.5f,
                     0.5f, -0.5f, -0.5f,
                     0.5f, 0.5f, -0.5f,

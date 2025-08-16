@@ -23,7 +23,7 @@ public class C71CameraCircle {
              var graphics = Graphics.of(window);
              var program = Program.of();
              var vao = VertexArray.of();
-             var vbo = Buffer.ofArray(DataType.Float);
+             var vbo = Buffer.of(DataType.Float);
              var texture1 = Texture.of2D();
              var texture2 = Texture.of2D()) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
@@ -35,7 +35,7 @@ public class C71CameraCircle {
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/7.1.camera.fs")
                     .link();
 
-            vao.bind().attributes(vbo.bind()
+            vao.bind().attributes(vbo.bind(Buffer.Type.Array)
                     .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
                             -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
                             0.5f, -0.5f, -0.5f, 1.0f, 0.0f,

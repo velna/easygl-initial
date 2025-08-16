@@ -18,8 +18,8 @@ public class C41Textures {
              var graphics = Graphics.of(window);
              var program = Program.of();
              var vao = VertexArray.of();
-             var vbo = Buffer.ofArray(DataType.Float);
-             var ebo = Buffer.ofElementArray(DataType.UnsignedInt);
+             var vbo = Buffer.of(DataType.Float);
+             var ebo = Buffer.of(DataType.UnsignedInt);
              var texture = Texture.of2D()) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
@@ -28,7 +28,7 @@ public class C41Textures {
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/4.1.texture.fs")
                     .link();
 
-            vao.bind().attributes(vbo.bind()
+            vao.bind().attributes(vbo.bind(Buffer.Type.Array)
                     .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
                             // positions          // colors           // texture coords
                             0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
@@ -36,7 +36,7 @@ public class C41Textures {
                             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
                             -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
                     }), 3, 3, 2);
-            ebo.bind().realloc(Buffer.DataUsage.STATIC_DRAW, new int[]{
+            ebo.bind(Buffer.Type.ElementArray).realloc(Buffer.DataUsage.STATIC_DRAW, new int[]{
                     0, 1, 3, // first triangle
                     1, 2, 3  // second triangle
             });

@@ -1,14 +1,14 @@
 package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.commons.Color;
-import com.vanix.easygl.core.AbstractHandle;
+import com.vanix.easygl.core.AbstractMultiTargetBindable;
 import com.vanix.easygl.core.graphics.*;
 import org.joml.Vector4f;
 import org.joml.Vector4i;
 
 import java.util.function.IntConsumer;
 
-public class GlFrameBuffer extends AbstractHandle implements FrameBuffer {
+public class GlFrameBuffer extends AbstractMultiTargetBindable<FrameBuffer.Target, FrameBuffer> implements FrameBuffer {
     public static final FrameBuffer DEFAULT_FRAME_BUFFER = new GlFrameBuffer(0);
 
     protected GlFrameBuffer() {

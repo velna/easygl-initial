@@ -17,7 +17,7 @@ public class C32ShaderInterpolation {
              var fragment = Shader.fragment();
              var program = Program.of();
              var vao = VertexArray.of();
-             var vbo = Buffer.ofArray(DataType.Float)) {
+             var vbo = Buffer.of(DataType.Float)) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
 
@@ -43,7 +43,7 @@ public class C32ShaderInterpolation {
                             .compile())
                     .link();
 
-            vao.bind().attributes(vbo.bind()
+            vao.bind().attributes(vbo.bind(Buffer.Type.Array)
                     .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
                             // positions         // colors
                             0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,  // bottom right

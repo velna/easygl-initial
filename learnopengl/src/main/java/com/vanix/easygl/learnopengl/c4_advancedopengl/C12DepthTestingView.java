@@ -23,9 +23,9 @@ public class C12DepthTestingView {
              var graphics = Graphics.of(window);
              var program = Program.of();
              var cubeVAO = VertexArray.of();
-             var cubeVBO = Buffer.ofArray(DataType.Float);
+             var cubeVBO = Buffer.of(DataType.Float);
              var planeVAO = VertexArray.of();
-             var planeVBO = Buffer.ofArray(DataType.Float);
+             var planeVBO = Buffer.of(DataType.Float);
              var cubeTexture = Texture.of2D();
              var floorTexture = Texture.of2D()) {
 
@@ -40,7 +40,7 @@ public class C12DepthTestingView {
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/1.2.depth_testing.fs")
                     .link();
 
-            cubeVBO.bind().realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            cubeVBO.bind(Buffer.Type.Array).realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
                     // positions          // texture Coords
                     -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
                     0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
@@ -87,7 +87,7 @@ public class C12DepthTestingView {
 
             cubeVAO.bind().attributes(cubeVBO, 3, 2);
 
-            planeVBO.bind().realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            planeVBO.bind(Buffer.Type.Array).realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
                     // positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
                     5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
                     -5.0f, -0.5f, 5.0f, 0.0f, 0.0f,

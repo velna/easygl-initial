@@ -6,15 +6,20 @@ import com.vanix.easygl.core.meta.MetaSystem;
 import java.nio.*;
 import java.util.function.Consumer;
 
-public interface Buffer extends Handle, Bindable<Buffer.Type, Buffer> {
+public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer> {
 
     enum Type implements BindTarget<Type, Buffer> {
         Array("ARRAY_BUFFER"),
+        AtomicCounter("ATOMIC_COUNTER_BUFFER"),
         CopyRead("COPY_READ_BUFFER"),
         CopyWrite("COPY_WRITE_BUFFER"),
+        DispatchIndirect("DISPATCH_INDIRECT_BUFFER"),
+        DrawIndirect("DRAW_INDIRECT_BUFFER"),
         ElementArray("ELEMENT_ARRAY_BUFFER"),
         PixelPack("PIXEL_PACK_BUFFER"),
         PixelUnpack("PIXEL_UNPACK_BUFFER"),
+        Query("QUERY_BUFFER"),
+        ShaderStorage("SHADER_STORAGE_BUFFER"),
         Texture("TEXTURE_BUFFER"),
         TransformFeedback("TRANSFORM_FEEDBACK_BUFFER"),
         Uniform("UNIFORM_BUFFER");
@@ -154,27 +159,23 @@ public interface Buffer extends Handle, Bindable<Buffer.Type, Buffer> {
 
     int bytes();
 
-    static Buffer of(Type type, DataType dataType) {
-        return MetaHolder.Buffer.create(type, dataType);
+    Buffer bindRange(int index, long offset, long size);
+
+    static Buffer of(DataType dataType) {
+        return MetaHolder.Buffer.create(dataType);
     }
 
-    static CloseableArray<Buffer> of(int n, Type type, DataType dataType) {
-        return MetaHolder.Buffer.createArray(n, type, dataType);
+    static CloseableArray<Buffer> of(int n, DataType dataType) {
+        return MetaHolder.Buffer.createArray(n, dataType);
     }
 
-    static Buffer ofArray(DataType dataType) {
-        return of(Type.Array, dataType);
+    interface DataBuffer extends Buffer {
+
     }
 
-    static CloseableArray<Buffer> ofArray(int n, DataType dataType) {
-        return of(n, Type.Array, dataType);
-    }
+    interface IndexBuffer extends Buffer {
+        IndexBuffer bindRange(int index, long offset, long size);
 
-    static Buffer ofElementArray(DataType dataType) {
-        return of(Type.ElementArray, dataType);
-    }
-
-    static CloseableArray<Buffer> ofElementArray(int n, DataType dataType) {
-        return of(n, Type.ElementArray, dataType);
+        IndexBuffer bindBase(int index);
     }
 }

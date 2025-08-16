@@ -25,7 +25,7 @@ public class C51LightCastersDirectional {
              var lightCubeProgram = Program.of();
              var cubeVAO = VertexArray.of();
              var lightCubeVAO = VertexArray.of();
-             var vbo = Buffer.ofArray(DataType.Float);
+             var vbo = Buffer.of(DataType.Float);
              var diffuseMap = Texture.of2D();
              var specularMap = Texture.of2D()) {
 
@@ -42,7 +42,7 @@ public class C51LightCastersDirectional {
                     .attachResource(Shader.Type.Fragment, "shaders/2_lighting/5.1.light_cube.fs")
                     .link();
 
-            vbo.bind().realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            vbo.bind(Buffer.Type.Array).realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
                     // positions          // normals           // texture coords
                     -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
                     0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,

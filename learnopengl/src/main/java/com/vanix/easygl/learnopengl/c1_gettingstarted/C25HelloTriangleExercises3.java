@@ -18,7 +18,7 @@ public class C25HelloTriangleExercises3 {
              var programOrange = Program.of();
              var programYellow = Program.of();
              var vaos = VertexArray.of(2);
-             var vbos = Buffer.of(2, Buffer.Type.Array, DataType.Float)) {
+             var vbos = Buffer.of(2, DataType.Float)) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
 
@@ -52,7 +52,7 @@ public class C25HelloTriangleExercises3 {
                             .compile())
                     .link();
 
-            vaos.getFirst().bind().attributes(vbos.getFirst().bind()
+            vaos.getFirst().bind().attributes(vbos.getFirst().bind(Buffer.Type.Array)
                     .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
                             // first triangle
                             -0.9f, -0.45f, 0.0f,  // left
@@ -60,7 +60,7 @@ public class C25HelloTriangleExercises3 {
                             -0.45f, 0.45f, 0.0f
                     }), 3);
 
-            vaos.getLast().bind().attributes(vbos.getLast().bind()
+            vaos.getLast().bind().attributes(vbos.getLast().bind(Buffer.Type.Array)
                     .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
                             // second triangle
                             0.0f, -0.45f, 0.0f,  // left
