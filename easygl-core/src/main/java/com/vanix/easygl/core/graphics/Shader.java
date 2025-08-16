@@ -1,14 +1,12 @@
 package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.Handle;
-import com.vanix.easygl.core.meta.HandleMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 public interface Shader extends Handle {
-    HandleMeta<Shader> Meta = MetaSystem.Graphics.of(Shader.class);
 
     enum Type {
         Vertex("VERTEX_SHADER"),
@@ -37,7 +35,7 @@ public interface Shader extends Handle {
     Shader compile() throws GraphicsException;
 
     static Shader of(Type type) {
-        return Meta.create(type);
+        return MetaHolder.Shader.create(type);
     }
 
     static Shader vertex() {

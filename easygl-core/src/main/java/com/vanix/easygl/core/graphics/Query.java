@@ -2,13 +2,9 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.CloseableArray;
 import com.vanix.easygl.core.Handle;
-import com.vanix.easygl.core.meta.HandleMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface Query<T extends Query<T>> extends Handle {
-    HandleMeta<SampleQuery> SampleQueryMeta = MetaSystem.Graphics.of(SampleQuery.class);
-    HandleMeta<IndexQuery> IndexQueryMeta = MetaSystem.Graphics.of(IndexQuery.class);
-    HandleMeta<TimerQuery> TimerQueryMeta = MetaSystem.Graphics.of(TimerQuery.class);
 
     T begin();
 
@@ -25,27 +21,27 @@ public interface Query<T extends Query<T>> extends Handle {
     boolean isResultAvailable();
 
     static SampleQuery ofSample(SampleType type) {
-        return SampleQueryMeta.create(type);
+        return MetaHolder.SampleQuery.create(type);
     }
 
     static CloseableArray<SampleQuery> ofSample(SampleType type, int n) {
-        return SampleQueryMeta.createArray(n, type);
+        return MetaHolder.SampleQuery.createArray(n, type);
     }
 
     static IndexQuery ofIndex(IndexType type) {
-        return IndexQueryMeta.create(type);
+        return MetaHolder.IndexQuery.create(type);
     }
 
     static CloseableArray<IndexQuery> ofIndex(IndexType type, int n) {
-        return IndexQueryMeta.createArray(n, type);
+        return MetaHolder.IndexQuery.createArray(n, type);
     }
 
     static TimerQuery ofTimer() {
-        return TimerQueryMeta.create();
+        return MetaHolder.TimerQuery.create();
     }
 
     static CloseableArray<TimerQuery> ofTimer(int n) {
-        return TimerQueryMeta.createArray(n);
+        return MetaHolder.TimerQuery.createArray(n);
     }
 
     enum SampleType {

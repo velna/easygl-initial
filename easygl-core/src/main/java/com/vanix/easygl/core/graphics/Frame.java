@@ -6,13 +6,11 @@ import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.BindingState;
 import com.vanix.easygl.core.CloseableArray;
 import com.vanix.easygl.core.MultiTargetBindable;
-import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
 import org.joml.Vector4f;
 import org.joml.Vector4i;
 
 public interface Frame extends MultiTargetBindable<Frame.Target, Frame> {
-    BindableMeta<Target, Frame> Meta = MetaSystem.Graphics.of(Frame.class);
 
     enum Target implements BindTarget<Target, Frame> {
         Read("READ_FRAMEBUFFER"),
@@ -23,7 +21,7 @@ public interface Frame extends MultiTargetBindable<Frame.Target, Frame> {
 
         Target(String id) {
             this.target = MetaSystem.Graphics.queryInt(id);
-            state = Meta.newBindingState(name());
+            state = MetaHolder.Frame.newBindingState(name());
         }
 
         @Override
@@ -90,11 +88,11 @@ public interface Frame extends MultiTargetBindable<Frame.Target, Frame> {
     Frame clearDepthAndStencil(float depthValue, int stencilValue);
 
     static Frame of() {
-        return Meta.create();
+        return MetaHolder.Frame.create();
     }
 
     static CloseableArray<Frame> of(int n) {
-        return Meta.createArray(n);
+        return MetaHolder.Frame.createArray(n);
     }
 
 }

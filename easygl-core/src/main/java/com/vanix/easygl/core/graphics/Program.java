@@ -2,8 +2,6 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
-import com.vanix.easygl.core.meta.BindableMeta;
-import com.vanix.easygl.core.meta.MetaSystem;
 import org.joml.*;
 
 import java.io.IOException;
@@ -13,8 +11,7 @@ import java.nio.IntBuffer;
 
 public interface Program extends Bindable<BindTarget.Default<Program>, Program> {
 
-    BindableMeta<BindTarget.Default<Program>, Program> Meta = MetaSystem.Graphics.of(Program.class);
-    BindTarget.Default<Program> Target = new BindTarget.Default<>("Program", Meta);
+    BindTarget.Default<Program> Target = new BindTarget.Default<>("Program", MetaHolder.Program);
 
     Program attach(Shader shader);
 
@@ -196,7 +193,7 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
     Program set(String key, Texture.Unit unit, Texture<?> texture);
 
     static Program of() {
-        return Meta.create();
+        return MetaHolder.Program.create();
     }
 
 }

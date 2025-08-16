@@ -1,7 +1,6 @@
 package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.*;
-import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 import java.nio.*;
@@ -9,10 +8,7 @@ import java.util.function.Consumer;
 
 public interface Buffer extends Handle, Bindable<Buffer.Type, Buffer> {
 
-    BindableMeta<Type, Buffer> Meta = MetaSystem.Graphics.of(Buffer.class);
-
     enum Type implements BindTarget<Type, Buffer> {
-        //        Array(EasyGL.queryInt("ARRAY_BUFFER),
         Array("ARRAY_BUFFER"),
         CopyRead("COPY_READ_BUFFER"),
         CopyWrite("COPY_WRITE_BUFFER"),
@@ -29,7 +25,7 @@ public interface Buffer extends Handle, Bindable<Buffer.Type, Buffer> {
 
         Type(String id) {
             this.value = MetaSystem.Graphics.queryInt(id);
-            state = Meta.newBindingState(name());
+            state = MetaHolder.Buffer.newBindingState(name());
         }
 
         @Override
@@ -159,11 +155,11 @@ public interface Buffer extends Handle, Bindable<Buffer.Type, Buffer> {
     int bytes();
 
     static Buffer of(Type type, DataType dataType) {
-        return Meta.create(type, dataType);
+        return MetaHolder.Buffer.create(type, dataType);
     }
 
     static CloseableArray<Buffer> of(int n, Type type, DataType dataType) {
-        return Meta.createArray(n, type, dataType);
+        return MetaHolder.Buffer.createArray(n, type, dataType);
     }
 
     static Buffer ofArray(DataType dataType) {

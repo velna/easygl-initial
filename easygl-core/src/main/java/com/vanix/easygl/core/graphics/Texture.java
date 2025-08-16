@@ -9,7 +9,6 @@ import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>, T>, Handle {
-    BindableMeta<Texture.Unit, Texture.Unit> UnitMeta = MetaSystem.Graphics.of(Texture.Unit.class);
 
     enum Unit implements Bindable<Unit, Unit>, BindTarget<Unit, Unit> {
         // @formatter:off
@@ -18,7 +17,7 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
 		U16, U17, U18, U19, U20, U21, U22, U23,
 		U24, U25, U26, U27, U28, U29, U30, U31;
 	    // @formatter:on
-        private final BindingState<Unit, Unit> state = UnitMeta.newBindingState("TextureUnit");
+        private final BindingState<Unit, Unit> state = MetaHolder.TextureUnit.newBindingState("TextureUnit");
 
         private final int value = (int) state.unbindValue() + ordinal();
 
@@ -65,12 +64,12 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
 
     class Type<T extends Texture<T>> implements BindTarget<Type<T>, T>, Identified<String> {
         //        public static final Type<?> T1D = new Type<>("TEXTURE_1D", GLC.GL_TEXTURE_1D);
-        public static final Type<Texture2D> T2D = new Type<>("TEXTURE_2D", MetaSystem.Graphics.queryInt("TEXTURE_2D"), Texture2D.Meta);
+        public static final Type<Texture2D> T2D = new Type<>("TEXTURE_2D", MetaSystem.Graphics.queryInt("TEXTURE_2D"), MetaHolder.Texture2D);
         //        public static final Type<?> T3D = new Type<>("TEXTURE_3D", GLC.GL_TEXTURE_3D);
 //        public static final Type<?> T1DArray = new Type<>("TEXTURE_1D_ARRAY", GLC.GL_TEXTURE_1D_ARRAY);
 //        public static final Type<?> T2DArray = new Type<>("TEXTURE_2D_ARRAY", GLC.GL_TEXTURE_2D_ARRAY);
 //        public static final Type<?> Rectangle = new Type<>("TEXTURE_RECTANGLE", GLC.GL_TEXTURE_RECTANGLE);
-        public static final Type<TextureCube> CubeMap = new Type<>("TEXTURE_CUBE_MAP", MetaSystem.Graphics.queryInt("TEXTURE_CUBE_MAP"), TextureCube.Meta);
+        public static final Type<TextureCube> CubeMap = new Type<>("TEXTURE_CUBE_MAP", MetaSystem.Graphics.queryInt("TEXTURE_CUBE_MAP"), MetaHolder.TextureCube);
 //        public static final Type<?> T2DMultisample = new Type<>("TEXTURE_2D_MULTISAMPLE", GLC.GL_TEXTURE_2D_MULTISAMPLE);
 //        public static final Type<?> T2DMultisampleArray = new Type<>("TEXTURE_2D_MULTISAMPLE_ARRAY", GLC.GL_TEXTURE_2D_MULTISAMPLE_ARRAY);
 
@@ -218,10 +217,10 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
     T generateMipmap();
 
     static Texture2D of2D() {
-        return Texture2D.Meta.create();
+        return MetaHolder.Texture2D.create();
     }
 
     static TextureCube ofCube() {
-        return TextureCube.Meta.create();
+        return MetaHolder.TextureCube.create();
     }
 }
