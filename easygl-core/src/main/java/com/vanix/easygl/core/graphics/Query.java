@@ -1,60 +1,93 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.core.BindTarget;
-import com.vanix.easygl.core.Bindable;
-import com.vanix.easygl.core.BindingState;
+import com.vanix.easygl.core.CloseableArray;
 import com.vanix.easygl.core.Handle;
+import com.vanix.easygl.core.meta.HandleMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public interface Query extends Handle, Bindable<Query.Type, Query> {
-    enum Type implements BindTarget<Type, Query> {
-        SamplesPassed("SAMPLES_PASSED"),
-        AnySamplesPassed("ANY_SAMPLES_PASSED"),
-        AnySamplesPassedConservative("ANY_SAMPLES_PASSED_CONSERVATIVE"),
-        PrimitivesGenerated("PRIMITIVES_GENERATED"),
-        TransformFeedbackPrimitivesWritten("TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN"),
-        TimeElapsed("TIME_ELAPSED");
-        private final int value;
+public interface Query<T extends Query<T>> extends Handle {
+    HandleMeta<SampleQuery> SampleQueryMeta = MetaSystem.Graphics.of(SampleQuery.class);
+    HandleMeta<IndexQuery> IndexQueryMeta = MetaSystem.Graphics.of(IndexQuery.class);
+    HandleMeta<TimerQuery> TimerQueryMeta = MetaSystem.Graphics.of(TimerQuery.class);
 
-        Type(String id) {
-            this.value = MetaSystem.Graphics.queryInt(id);
-        }
+    T begin();
 
-        @Override
-        public int value() {
-            return value;
-        }
-
-        @Override
-        public BindingState<Type, Query> state() {
-            // TODO:
-            return null;
-        }
-    }
-
-    Query begin();
-
-    Query end();
-
-    default Query execute(Runnable runnable) {
-        begin();
-        try {
-            runnable.run();
-        } finally {
-            end();
-        }
-        return this;
-    }
+    T end();
 
     int getIntResult();
 
+    int getIntResultNoWait();
+
     long getLongResult();
 
-    static Query of(Type type) {
-        return null;
+    long getLongResultNoWait();
+
+    boolean isResultAvailable();
+
+    static SampleQuery ofSample(SampleType type) {
+        return SampleQueryMeta.create(type);
     }
 
-    static Query of(Type type, int index) {
-        return null;
+    static CloseableArray<SampleQuery> ofSample(SampleType type, int n) {
+        return SampleQueryMeta.createArray(n, type);
     }
+
+    static IndexQuery ofIndex(IndexType type) {
+        return IndexQueryMeta.create(type);
+    }
+
+    static CloseableArray<IndexQuery> ofIndex(IndexType type, int n) {
+        return IndexQueryMeta.createArray(n, type);
+    }
+
+    static TimerQuery ofTimer() {
+        return TimerQueryMeta.create();
+    }
+
+    static CloseableArray<TimerQuery> ofTimer(int n) {
+        return TimerQueryMeta.createArray(n);
+    }
+
+    enum SampleType {
+        SamplesPassed("SAMPLES_PASSED"),
+        AnySamplesPassed("ANY_SAMPLES_PASSED"),
+        AnySamplesPassedConservative("ANY_SAMPLES_PASSED_CONSERVATIVE");
+        //        TimeElapsed("TIME_ELAPSED");
+        private final int value;
+
+        SampleType(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
+        }
+
+        public int value() {
+            return value;
+        }
+    }
+
+    interface SampleQuery extends Query<SampleQuery> {
+
+    }
+
+    enum IndexType {
+        PrimitivesGenerated("PRIMITIVES_GENERATED"),
+        TransformFeedbackPrimitivesWritten("TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN");
+        private final int value;
+
+        IndexType(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
+        }
+
+        public int value() {
+            return value;
+        }
+    }
+
+    interface IndexQuery extends Query<IndexQuery> {
+        IndexQuery begin(int index);
+    }
+
+    interface TimerQuery extends Query<TimerQuery> {
+        void count();
+    }
+
 }

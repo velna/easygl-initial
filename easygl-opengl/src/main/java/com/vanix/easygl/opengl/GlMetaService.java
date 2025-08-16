@@ -85,6 +85,27 @@ public class GlMetaService extends AbstractMetaService {
 
     static final Meta<Sync> SyncMeta = new DefaultMeta<>(args -> new GlSync());
 
+    static final HandleMeta<Query.SampleQuery> SampleQueryMeta = new IntHandleMeta<>(
+            args -> new GlQuery.GlSampleQuery((Query.SampleType) args[0]),
+            GLX::glDeleteQueries,
+            (handle, args) -> new GlQuery.GlSampleQuery(handle, (Query.SampleType) args[0]),
+            GLX::glGenQueries,
+            GLX::glDeleteQueries);
+
+    static final HandleMeta<Query.IndexQuery> IndexQueryMeta = new IntHandleMeta<>(
+            args -> new GlQuery.GlIndexQuery((Query.IndexType) args[0]),
+            GLX::glDeleteQueries,
+            (handle, args) -> new GlQuery.GlIndexQuery(handle, (Query.IndexType) args[0]),
+            GLX::glGenQueries,
+            GLX::glDeleteQueries);
+
+    static final HandleMeta<Query.TimerQuery> TimerQueryMeta = new IntHandleMeta<>(
+            args -> new GlQuery.GlTimerQuery(),
+            GLX::glDeleteQueries,
+            (handle, args) -> new GlQuery.GlTimerQuery(handle),
+            GLX::glGenQueries,
+            GLX::glDeleteQueries);
+
     public GlMetaService() {
         register(Buffer.class, BufferMeta);
         register(Frame.class, FrameBufferMeta);
@@ -96,6 +117,9 @@ public class GlMetaService extends AbstractMetaService {
         register(TextureCube.class, TextureCubeMeta);
         register(Shader.class, ShaderMeta);
         register(Sync.class, SyncMeta);
+        register(Query.SampleQuery.class, SampleQueryMeta);
+        register(Query.IndexQuery.class, IndexQueryMeta);
+        register(Query.TimerQuery.class, TimerQueryMeta);
     }
 
     @Override

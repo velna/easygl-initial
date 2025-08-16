@@ -1,8 +1,8 @@
 package com.vanix.easygl.opengl;
 
-import org.lwjgl.opengl.GL33;
+import org.lwjgl.opengl.GL45;
 
-public class GLX extends GL33 {
+public class GLX extends GL45 {
     public static final int GL_BLEND_COLOR = 0x8005;
 
     protected GLX() {
