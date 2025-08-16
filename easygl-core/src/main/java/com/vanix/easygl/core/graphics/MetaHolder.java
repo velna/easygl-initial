@@ -19,4 +19,5 @@ class MetaHolder {
     static final BindableMeta<BindTarget.Default<Program>, Program> Program = MetaSystem.Graphics.of(Program.class);
     static final BindableMeta<FrameBuffer.Target, FrameBuffer> FrameBuffer = MetaSystem.Graphics.of(FrameBuffer.class);
     static final BindableMeta<Buffer.Type, Buffer> Buffer = MetaSystem.Graphics.of(Buffer.class);
+    static final BindableMeta<BindTarget.Default<Pipeline>, Pipeline> Pipeline = MetaSystem.Graphics.of(Pipeline.class);
 }

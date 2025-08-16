@@ -58,6 +58,16 @@ public class GlMetaService extends AbstractMetaService {
             GLX::glDeleteProgram,
             (handle, args) -> new GlProgram(handle));
 
+    static final BindableMeta<BindTarget.Default<Pipeline>, Pipeline> PipelineMeta = new IntBindableMeta<>(
+            args -> new GlPipeline(),
+            (target, handle) -> GLX.glBindProgramPipeline(handle),
+            (target, handle) -> GLX.glBindProgramPipeline(handle),
+            0,
+            GLX::glDeleteProgramPipelines,
+            (handle, args) -> new GlPipeline(handle),
+            GLX::glGenProgramPipelines,
+            GLX::glDeleteProgramPipelines);
+
     static final BindableMeta<BindTarget.Default<RenderBuffer>, RenderBuffer> RenderBufferMeta = new IntBindableMeta<>(
             args -> new GlRenderBuffer(),
             GLX::glBindRenderbuffer,
@@ -123,6 +133,7 @@ public class GlMetaService extends AbstractMetaService {
         register(Query.SampleQuery.class, SampleQueryMeta);
         register(Query.IndexQuery.class, IndexQueryMeta);
         register(Query.TimerQuery.class, TimerQueryMeta);
+        register(Pipeline.class, PipelineMeta);
         register(ShaderArray.class, (Function<Object[], ShaderArray>) args -> new GlShaderArray((List<Shader>) args[0]));
     }
 
