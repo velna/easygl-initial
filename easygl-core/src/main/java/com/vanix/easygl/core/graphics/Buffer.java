@@ -169,13 +169,4 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer>
         return MetaHolder.Buffer.createArray(n, dataType);
     }
 
-    interface DataBuffer extends Buffer {
-
-    }
-
-    interface IndexBuffer extends Buffer {
-        IndexBuffer bindRange(int index, long offset, long size);
-
-        IndexBuffer bindBase(int index);
-    }
 }
