@@ -19,6 +19,8 @@ public interface Graphics extends Closeable {
 
     Frame defaultFrame();
 
+    Graphics flush();
+
     static Graphics of() {
         return ServiceLoader.load(Graphics.class).findFirst().orElseThrow();
     }

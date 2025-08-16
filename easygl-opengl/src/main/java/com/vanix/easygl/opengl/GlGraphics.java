@@ -47,6 +47,12 @@ public class GlGraphics implements Graphics {
     }
 
     @Override
+    public Graphics flush() {
+        GLX.glFlush();
+        return this;
+    }
+
+    @Override
     public void close() {
 
     }

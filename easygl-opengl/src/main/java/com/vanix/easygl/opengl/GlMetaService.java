@@ -83,6 +83,8 @@ public class GlMetaService extends AbstractMetaService {
             args -> new GlTextureCube(),
             (handle, args) -> new GlTextureCube(handle));
 
+    static final Meta<Sync> SyncMeta = new DefaultMeta<>(args -> new GlSync());
+
     public GlMetaService() {
         register(Buffer.class, BufferMeta);
         register(Frame.class, FrameBufferMeta);
@@ -93,6 +95,7 @@ public class GlMetaService extends AbstractMetaService {
         register(Texture2D.class, Texture2DMeta);
         register(TextureCube.class, TextureCubeMeta);
         register(Shader.class, ShaderMeta);
+        register(Sync.class, SyncMeta);
     }
 
     @Override
