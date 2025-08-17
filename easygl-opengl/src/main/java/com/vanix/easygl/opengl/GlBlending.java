@@ -2,23 +2,24 @@ package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.commons.Color;
 import com.vanix.easygl.commons.util.IntEnumCache;
-import com.vanix.easygl.core.graphics.Blend;
+import com.vanix.easygl.core.graphics.Blending;
+import com.vanix.easygl.core.graphics.Graphics;
 
-public class GlBlend extends GlFeature<Blend> implements Blend {
+public class GlBlending extends GlFeature<Blending> implements Blending {
     private static final IntEnumCache<Function> FunctionCache = new IntEnumCache<>(Function.class, 2, 0xf);
     private static final IntEnumCache<Equation> EquationCache = new IntEnumCache<>(Equation.class, 0xf);
 
-    public GlBlend() {
-        super(GLX.GL_BLEND);
+    public GlBlending(Graphics graphics) {
+        super(GLX.GL_BLEND, graphics);
     }
 
-    public Blend function(Function src, Function dst) {
+    public Blending function(Function src, Function dst) {
         GLX.glBlendFunc(src.value(), dst.value());
         return this;
     }
 
     @Override
-    public Blend function(Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha) {
+    public Blending function(Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha) {
         GLX.glBlendFuncSeparate(srcRgb.value(), dstRgb.value(), srcAlpha.value(), dstAlpha.value());
         return this;
     }
@@ -44,7 +45,7 @@ public class GlBlend extends GlFeature<Blend> implements Blend {
     }
 
     @Override
-    public Blend color(float red, float green, float blue, float alpha) {
+    public Blending color(float red, float green, float blue, float alpha) {
         GLX.glBlendColor(red, green, blue, alpha);
         return this;
     }
@@ -57,13 +58,13 @@ public class GlBlend extends GlFeature<Blend> implements Blend {
     }
 
     @Override
-    public Blend equation(Equation equation) {
+    public Blending equation(Equation equation) {
         GLX.glBlendEquation(equation.value());
         return this;
     }
 
     @Override
-    public Blend equation(Equation equationRgb, Equation equationAlpha) {
+    public Blending equation(Equation equationRgb, Equation equationAlpha) {
         GLX.glBlendEquationSeparate(equationRgb.value(), equationAlpha.value());
         return this;
     }

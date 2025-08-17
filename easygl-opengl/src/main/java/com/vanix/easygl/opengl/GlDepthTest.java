@@ -1,10 +1,11 @@
 package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.core.graphics.DepthTest;
+import com.vanix.easygl.core.graphics.Graphics;
 
 public class GlDepthTest extends GlFeature<DepthTest> implements DepthTest {
-    public GlDepthTest() {
-        super(GLX.GL_DEPTH_TEST);
+    public GlDepthTest(Graphics graphics) {
+        super(GLX.GL_DEPTH_TEST, graphics);
     }
 
     public DepthTest function(Function function) {

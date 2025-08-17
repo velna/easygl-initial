@@ -1,12 +1,15 @@
 package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.core.Feature;
+import com.vanix.easygl.core.graphics.Graphics;
 
-public abstract class GlFeature<T extends Feature<T>> implements Feature<T> {
+public abstract class GlFeature<T extends Feature<T, Graphics>> implements Feature<T, Graphics> {
     private final int capability;
+    private final Graphics graphics;
 
-    public GlFeature(int capability) {
+    public GlFeature(int capability, Graphics graphics) {
         this.capability = capability;
+        this.graphics = graphics;
     }
 
     @SuppressWarnings("unchecked")
@@ -29,5 +32,10 @@ public abstract class GlFeature<T extends Feature<T>> implements Feature<T> {
     public T disable() {
         GLX.glDisable(capability);
         return self();
+    }
+
+    @Override
+    public Graphics then() {
+        return graphics;
     }
 }

@@ -5,7 +5,7 @@ import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.Feature;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public interface Blend extends Feature<Blend> {
+public interface Blending extends Feature<Blending, Graphics> {
 
     enum Function implements IntEnum {
         Zero("ZERO"),
@@ -52,9 +52,9 @@ public interface Blend extends Feature<Blend> {
         }
     }
 
-    Blend function(Function src, Function dst);
+    Blending function(Function src, Function dst);
 
-    Blend function(Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha);
+    Blending function(Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha);
 
     Function functionSrcRGB();
 
@@ -68,17 +68,17 @@ public interface Blend extends Feature<Blend> {
         return new Function[]{functionSrcRGB(), functionDstRGB(), functionSrcAlpha(), functionDstAlpha()};
     }
 
-    default Blend color(Color rgba) {
+    default Blending color(Color rgba) {
         return color(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha());
     }
 
-    Blend color(float red, float green, float blue, float alpha);
+    Blending color(float red, float green, float blue, float alpha);
 
     Color color();
 
-    Blend equation(Equation equation);
+    Blending equation(Equation equation);
 
-    Blend equation(Equation equationRgb, Equation equationAlpha);
+    Blending equation(Equation equationRgb, Equation equationAlpha);
 
     Equation equationRGB();
 

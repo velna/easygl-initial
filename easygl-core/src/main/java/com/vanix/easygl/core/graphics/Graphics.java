@@ -1,22 +1,21 @@
 package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.Closeable;
+import com.vanix.easygl.core.MultiFeature;
 import com.vanix.easygl.core.window.Window;
 import org.joml.Vector2f;
 
 import java.util.ServiceLoader;
 
-public interface Graphics extends Closeable {
+public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, Graphics> {
 
     Graphics viewPort(int x, int y, int width, int height);
 
     DepthTest depthTest();
 
-    CullFace cullFace();
+    Blending blending();
 
-    Blend blend();
-
-    Graphics polygonMode(PolygonFace face, PolygonMode mode);
+    ScissorTest scissorTest();
 
     FrameBuffer defaultFrame();
 
@@ -24,23 +23,51 @@ public interface Graphics extends Closeable {
 
     Graphics releaseShaderCompiler();
 
+    // region Multisampling
     Vector2f getMultiSample(int index);
 
     Graphics minSampleShading(float value);
+    // endregion
 
-    Graphics pointSize(float size);
+    // region Points, Lines and Polygons
+    Graphics setPointSize(float size);
 
-    Graphics pointFadeThresholdSize(float size);
+    float getPointSize();
 
-    Graphics pointSpriteCoordOrigin(SpriteCoordOrigin spriteCoordOrigin);
+    Graphics setPointFadeThresholdSize(float size);
 
-    Graphics lineWidth(float width);
+    float getPointFadeThresholdSize();
 
-    Graphics frontFaceClockwise();
+    Graphics setPointSpriteCoordOrigin(SpriteCoordOrigin spriteCoordOrigin);
 
-    Graphics frontFaceCounterclockwise();
+    SpriteCoordOrigin getPointSpriteCoordOrigin();
 
-    Graphics polygonOffset(float factor, float units);
+    Graphics setLineWidth(float width);
+
+    float getLineWidth();
+
+    Graphics setFrontFaceDirection(FrontFaceDirection direction);
+
+    FrontFaceDirection getFrontFaceDirection();
+
+    Graphics setCullFaceMode(CullFaceMode mode);
+
+    CullFaceMode getCullFaceMode();
+
+    Graphics setPolygonMode(PolygonFace face, PolygonMode mode);
+
+    PolygonMode[] getPolygonMode();
+
+    Graphics setPolygonOffset(float factor, float units);
+
+    float getPolygonOffsetFactor();
+
+    float getPolygonOffsetUnits();
+
+    default Vector2f getPolygonOffset() {
+        return new Vector2f(getPolygonOffsetFactor(), getPolygonOffsetUnits());
+    }
+    // endregion
 
     static Graphics of() {
         return ServiceLoader.load(Graphics.class).findFirst().orElseThrow();
@@ -50,4 +77,5 @@ public interface Graphics extends Closeable {
         window.bind();
         return of().viewPort(0, 0, window.frameBufferWidth(), window.frameBufferHeight());
     }
+
 }

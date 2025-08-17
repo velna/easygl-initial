@@ -64,7 +64,7 @@ public class KeyPress implements Renderer<ClientApp, RenderContext>, KeyboardLis
     public void keyboardOnKey(KeyboardEvent event) {
         if (event.isActionPress()) {
             polygonMode = polygonMode == PolygonMode.Fill ? PolygonMode.Line : PolygonMode.Fill;
-            clientApp.graphics().polygonMode(PolygonFace.FrontAndBack, polygonMode);
+            clientApp.graphics().setPolygonMode(PolygonFace.FrontAndBack, polygonMode);
         }
     }
 

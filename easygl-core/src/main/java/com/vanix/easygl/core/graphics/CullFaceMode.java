@@ -1,19 +1,17 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public enum PolygonMode implements IntEnum {
-    Point("POINT"),
-    Line("LINE"),
-    Fill("FILL");
+public enum CullFaceMode {
+    Front("FRONT"),
+    Back("BACK"),
+    FrontAndBack("FRONT_AND_BACK");
     private final int value;
 
-    PolygonMode(String id) {
+    CullFaceMode(String id) {
         this.value = MetaSystem.Graphics.queryInt(id);
     }
 
-    @Override
     public int value() {
         return value;
     }

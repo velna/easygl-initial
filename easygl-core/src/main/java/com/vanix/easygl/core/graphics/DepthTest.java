@@ -3,7 +3,7 @@ package com.vanix.easygl.core.graphics;
 import com.vanix.easygl.core.Feature;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public interface DepthTest extends Feature<DepthTest> {
+public interface DepthTest extends Feature<DepthTest, Graphics> {
 
     enum Function {
         Never("NEVER"),
