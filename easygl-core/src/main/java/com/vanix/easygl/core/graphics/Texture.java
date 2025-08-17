@@ -42,21 +42,6 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
         }
 
         @Override
-        public Unit bind() {
-            return bind(this);
-        }
-
-        @Override
-        public Unit unbind() {
-            return unbind(this);
-        }
-
-        @Override
-        public void assertBinding() throws IllegalStateException {
-            state.assertBinding(this.ordinal());
-        }
-
-        @Override
         public void close() {
 
         }

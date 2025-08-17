@@ -4,17 +4,19 @@ import com.vanix.easygl.commons.Identified;
 import com.vanix.easygl.commons.util.IntBiConsumer;
 import com.vanix.easygl.commons.util.IntLongConsumer;
 
+import java.util.Objects;
+
 public class BindingState<E extends BindTarget<E, T>, T extends Handle> implements Identified<String> {
 
     private final String id;
     private final IntLongConsumer unbindFunction;
     private final IntLongConsumer bindFunction;
     final long unbindValue;
-    private long handle;
+    private T handle;
 
     private BindingState(String id, IntLongConsumer bindFunction, IntLongConsumer unbindFunction, long unbindValue) {
         this.id = String.format("Binding#%s", id);
-        this.handle = this.unbindValue = unbindValue;
+        this.unbindValue = unbindValue;
         this.bindFunction = bindFunction;
         this.unbindFunction = unbindFunction;
     }
@@ -48,25 +50,24 @@ public class BindingState<E extends BindTarget<E, T>, T extends Handle> implemen
         return id;
     }
 
-    public T bind(T bindable, E target) {
-        long h = bindable.handle();
+    public T bind(T handle, E target) {
+        long h = handle.handle();
         bindFunction.accept(target.value(), h);
-        this.handle = h;
-        return bindable;
+        this.handle = handle;
+        return handle;
     }
 
     public void unbind(E target) {
         unbindFunction.accept(target.value(), unbindValue);
+        this.handle = null;
     }
 
-    public boolean hasBinding() {
-        return handle != unbindValue;
+    public boolean isBound() {
+        return handle != null;
     }
 
-    public void assertBinding(long handle) {
-        if (this.handle != handle) {
-            throw new IllegalStateException(id() + " not bind.");
-        }
+    public boolean isBoundTo(T handle) {
+        return Objects.equals(this.handle, handle);
     }
 
     public long unbindValue() {
