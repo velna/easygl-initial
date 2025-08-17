@@ -49,7 +49,7 @@ public class C31ShaderUniform {
 
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(FrameBuffers.Color);
+                        .clear(FrameInnerBufferMask.Color);
 
                 program.bind();
                 float greenValue = (float) (Math.sin(System.currentTimeMillis() / 1000.0) / 2.0 + 0.5);

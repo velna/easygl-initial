@@ -122,7 +122,7 @@ public class C71CameraCircle {
 
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(FrameBuffers.ColorAndDepth);
+                        .clear(FrameInnerBufferMask.ColorAndDepth);
 
                 Texture.Unit.U0.bind();
                 texture1.bind();

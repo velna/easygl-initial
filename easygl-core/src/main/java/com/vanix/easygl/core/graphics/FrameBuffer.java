@@ -45,7 +45,24 @@ public interface FrameBuffer extends MultiTargetBindable<FrameBuffer.Target, Fra
 
     FrameBuffer detachRenderBuffer(Target target, Attachment.Renderable attachment);
 
-    FrameBuffer clear(FrameBuffers mask);
+    //region Selecting Buffers for Writing
+    FrameBuffer selectDrawBuffer(ColorBuffer colorBuffer);
+
+    FrameBuffer selectDrawBuffers(ColorBuffer.MultiSelectable... drawBuffers);
+    //endregion
+
+    FrameBuffer blit(int srcX0, int srcY0, int srcX1, int srcY1,
+                     int dstX0, int dstY0, int dstX1, int dstY1,
+                     FrameInnerBufferMask buffers, MagFilter filter);
+
+    default FrameBuffer blit(Rectangle src, Rectangle dst, FrameInnerBufferMask buffers, MagFilter filter) {
+        return blit(src.getX(), src.getY(), src.getX() + src.getWidth(), src.getY() + src.getHeight(),
+                dst.getX(), dst.getY(), dst.getX() + dst.getWidth(), dst.getY() + dst.getHeight(),
+                buffers, filter);
+    }
+
+    //region Clearing the Buffers
+    FrameBuffer clear(FrameInnerBufferMask mask);
 
     FrameBuffer setClearColor(float red, float blue, float green, float alpha);
 
@@ -55,6 +72,16 @@ public interface FrameBuffer extends MultiTargetBindable<FrameBuffer.Target, Fra
 
     Color getClearColor();
 
+    FrameBuffer clearColorBuffer(DrawBuffer drawBuffer, Vector4f color);
+    FrameBuffer clearColorBuffer(DrawBuffer drawBuffer, Vector4i color);
+    FrameBuffer clearColorBufferUnsigned(DrawBuffer drawBuffer, Vector4i color);
+
+    FrameBuffer clearDepthBuffer(float value);
+
+    FrameBuffer clearStencilBuffer(int value);
+
+    FrameBuffer clearDepthAndStencilBuffer(float depthValue, int stencilValue);
+
     FrameBuffer setClearDepth(float depth);
 
     float getClearDepth();
@@ -62,32 +89,17 @@ public interface FrameBuffer extends MultiTargetBindable<FrameBuffer.Target, Fra
     FrameBuffer setClearStencil(int s);
 
     int getClearStencil();
+    //endregion
 
-    FrameBuffer selectDrawBuffer(ColorBuffer colorBuffer);
+    //region Fine Control of Buffer Updates
+    FrameBuffer setColorMask(boolean read, boolean green, boolean blue, boolean alpha);
 
-    FrameBuffer selectDrawBuffers(ColorBuffer.MultiSelectable... drawBuffers);
+    FrameBuffer setDepthMask(boolean flag);
 
-    FrameBuffer blit(int srcX0, int srcY0, int srcX1, int srcY1,
-                     int dstX0, int dstY0, int dstX1, int dstY1,
-                     FrameBuffers buffers, MagFilter filter);
+    FrameBuffer setStencilMask(int mask);
 
-    default FrameBuffer blit(Rectangle src, Rectangle dst, FrameBuffers buffers, MagFilter filter) {
-        return blit(src.getX(), src.getY(), src.getX() + src.getWidth(), src.getY() + src.getHeight(),
-                dst.getX(), dst.getY(), dst.getX() + dst.getWidth(), dst.getY() + dst.getHeight(),
-                buffers, filter);
-    }
-
-    FrameBuffer clearColor(int colorAttachmentIndex, Vector4f color);
-
-    FrameBuffer clearColor(int colorAttachmentIndex, Vector4i color);
-
-    FrameBuffer clearColorUnsigned(int colorAttachmentIndex, Vector4i color);
-
-    FrameBuffer clearDepth(float value);
-
-    FrameBuffer clearStencil(int value);
-
-    FrameBuffer clearDepthAndStencil(float depthValue, int stencilValue);
+    FrameBuffer setStencilMask(Face face, int mask);
+    //endregion
 
     static FrameBuffer of() {
         return MetaHolder.FrameBuffer.create();

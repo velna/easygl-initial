@@ -56,7 +56,7 @@ public class C24HelloTriangleExercises2 {
 
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(FrameBuffers.Color);
+                        .clear(FrameInnerBufferMask.Color);
 
                 program.bind();
                 vaos.forEach((vao, i) -> vao.drawArray(DrawMode.Triangles, vbos.get(i)));

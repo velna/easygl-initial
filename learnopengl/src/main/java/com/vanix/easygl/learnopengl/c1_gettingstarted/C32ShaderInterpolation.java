@@ -53,7 +53,7 @@ public class C32ShaderInterpolation {
 
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(FrameBuffers.Color);
+                        .clear(FrameInnerBufferMask.Color);
 
                 program.bind();
                 vao.drawArray(DrawMode.Triangles, vbo);

@@ -55,7 +55,7 @@ public class KeyPress implements Renderer<ClientApp, RenderContext>, KeyboardLis
 
     @Override
     public void render(RenderContext context) throws GraphicsException {
-        context.graphics().defaultFrameBuffer().clearColor(0, new Vector4f(0.0f));
+        context.graphics().defaultFrameBuffer().setClearColor(0, new Vector4f(0.0f));
         program.bind();
         vao.bind().drawArray(DrawMode.Triangles, vbo);
     }
