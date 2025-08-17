@@ -100,11 +100,11 @@ public class C12DepthTestingView {
             planeVAO.bind().attributes(planeVBO, 3, 2);
 
             cubeTexture.bind()
-                    .minFilter(Texture.MinFilter.LinearMipmapLinear)
+                    .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/marble.jpg")
                     .generateMipmap();
             floorTexture.bind()
-                    .minFilter(Texture.MinFilter.LinearMipmapLinear)
+                    .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/metal.png")
                     .generateMipmap();
 

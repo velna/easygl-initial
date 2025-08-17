@@ -67,9 +67,11 @@ public interface FrameBuffer extends MultiTargetBindable<FrameBuffer.Target, Fra
 
     FrameBuffer selectDrawBuffers(ColorBuffer.MultiSelectable... drawBuffers);
 
-    FrameBuffer blit(int srcX0, int srcY0, int srcX1, int srcY1, int dstX0, int dstY0, int dstX1, int dstY1, FrameBuffers buffers, Texture.MagFilter filter);
+    FrameBuffer blit(int srcX0, int srcY0, int srcX1, int srcY1,
+                     int dstX0, int dstY0, int dstX1, int dstY1,
+                     FrameBuffers buffers, MagFilter filter);
 
-    default FrameBuffer blit(Rectangle src, Rectangle dst, FrameBuffers buffers, Texture.MagFilter filter) {
+    default FrameBuffer blit(Rectangle src, Rectangle dst, FrameBuffers buffers, MagFilter filter) {
         return blit(src.getX(), src.getY(), src.getX() + src.getWidth(), src.getY() + src.getHeight(),
                 dst.getX(), dst.getY(), dst.getX() + dst.getWidth(), dst.getY() + dst.getHeight(),
                 buffers, filter);

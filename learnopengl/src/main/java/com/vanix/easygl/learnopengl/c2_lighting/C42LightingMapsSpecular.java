@@ -91,15 +91,15 @@ public class C42LightingMapsSpecular {
             diffuseMap.bind()
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
-                    .minFilter(Texture.MinFilter.LinearMipmapLinear)
-                    .magFilter(Texture.MagFilter.Linear)
+                    .minFilter(MinFilter.LinearMipmapLinear)
+                    .magFilter(MagFilter.Linear)
                     .load("textures/container2.png")
                     .generateMipmap();
             specularMap.bind()
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
-                    .minFilter(Texture.MinFilter.LinearMipmapLinear)
-                    .magFilter(Texture.MagFilter.Linear)
+                    .minFilter(MinFilter.LinearMipmapLinear)
+                    .magFilter(MagFilter.Linear)
                     .load("textures/container2_specular.png")
                     .generateMipmap();
 

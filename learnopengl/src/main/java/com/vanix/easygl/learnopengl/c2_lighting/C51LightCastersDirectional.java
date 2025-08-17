@@ -104,11 +104,11 @@ public class C51LightCastersDirectional {
 
 
             diffuseMap.bind()
-                    .minFilter(Texture.MinFilter.LinearMipmapLinear)
+                    .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/container2.png")
                     .generateMipmap();
             specularMap.bind()
-                    .minFilter(Texture.MinFilter.LinearMipmapLinear)
+                    .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/container2_specular.png")
                     .generateMipmap();
 

@@ -1,9 +1,7 @@
 package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.core.AbstractBindable;
-import com.vanix.easygl.core.graphics.CompareFunc;
-import com.vanix.easygl.core.graphics.PixelFormat;
-import com.vanix.easygl.core.graphics.Texture;
+import com.vanix.easygl.core.graphics.*;
 import org.lwjgl.system.MemoryUtil;
 
 import java.util.function.IntConsumer;

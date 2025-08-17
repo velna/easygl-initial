@@ -84,21 +84,6 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
         }
     }
 
-    enum MagFilter {
-        Nearest("NEAREST"),
-        Linear("LINEAR");
-
-        private final int value;
-
-        MagFilter(String id) {
-            this.value = MetaSystem.Graphics.queryInt(id);
-        }
-
-        public int value() {
-            return value;
-        }
-    }
-
     enum Swizzle {
         Red("RED"),
         Green("GREEN"),
@@ -127,25 +112,6 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
         private final int value;
 
         Wrap(String id) {
-            this.value = MetaSystem.Graphics.queryInt(id);
-        }
-
-        public int value() {
-            return value;
-        }
-    }
-
-    enum MinFilter {
-        Nearest("NEAREST"),
-        Linear("LINEAR"),
-        NearestMipmapNearest("NEAREST_MIPMAP_NEAREST"),
-        LinearMipmapNearest("LINEAR_MIPMAP_NEAREST"),
-        NearestMipmapLinear("NEAREST_MIPMAP_LINEAR"),
-        LinearMipmapLinear("LINEAR_MIPMAP_LINEAR");
-
-        private final int value;
-
-        MinFilter(String id) {
             this.value = MetaSystem.Graphics.queryInt(id);
         }
 

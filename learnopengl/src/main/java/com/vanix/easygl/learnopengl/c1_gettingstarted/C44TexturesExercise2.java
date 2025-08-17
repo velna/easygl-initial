@@ -45,8 +45,8 @@ public class C44TexturesExercise2 {
             texture1.bind()
                     .wrapS(Texture.Wrap.ClampToEdge)
                     .wrapT(Texture.Wrap.ClampToEdge)
-                    .minFilter(Texture.MinFilter.Linear)
-                    .magFilter(Texture.MagFilter.Linear);
+                    .minFilter(MinFilter.Linear)
+                    .magFilter(MagFilter.Linear);
             try (var image = Image.load("textures/container.jpg")) {
                 texture1.load(image).generateMipmap();
             }
@@ -54,8 +54,8 @@ public class C44TexturesExercise2 {
             texture2.bind()
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
-                    .minFilter(Texture.MinFilter.Linear)
-                    .magFilter(Texture.MagFilter.Linear);
+                    .minFilter(MinFilter.Linear)
+                    .magFilter(MagFilter.Linear);
             try (var image = Image.load("textures/awesomeface.png")) {
                 texture2.load(image, 0, InternalPixelFormat.BaseFormat.RGB).generateMipmap();
             }

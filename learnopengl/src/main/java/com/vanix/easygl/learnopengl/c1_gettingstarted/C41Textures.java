@@ -44,8 +44,8 @@ public class C41Textures {
             texture.bind()
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
-                    .minFilter(Texture.MinFilter.LinearMipmapLinear)
-                    .magFilter(Texture.MagFilter.Linear);
+                    .minFilter(MinFilter.LinearMipmapLinear)
+                    .magFilter(MagFilter.Linear);
             try (var image = Image.load("textures/container.jpg")) {
                 texture.load(image).generateMipmap();
             }

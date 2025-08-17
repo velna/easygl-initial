@@ -83,8 +83,8 @@ public class C62CoordinateSystemsDepth {
             texture1.bind()
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
-                    .minFilter(Texture.MinFilter.Linear)
-                    .magFilter(Texture.MagFilter.Linear);
+                    .minFilter(MinFilter.Linear)
+                    .magFilter(MagFilter.Linear);
             try (var image = Image.load("textures/container.jpg")) {
                 texture1.load(image).generateMipmap();
             }
@@ -92,8 +92,8 @@ public class C62CoordinateSystemsDepth {
             texture2.bind()
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
-                    .minFilter(Texture.MinFilter.Linear)
-                    .magFilter(Texture.MagFilter.Linear);
+                    .minFilter(MinFilter.Linear)
+                    .magFilter(MagFilter.Linear);
             try (var image = Image.load("textures/awesomeface.png")) {
                 texture2.load(image, 0, InternalPixelFormat.BaseFormat.RGB).generateMipmap();
             }

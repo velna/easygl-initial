@@ -90,15 +90,15 @@ public class C44LightingMapsExercise4 {
 
 
             diffuseMap.bind()
-                    .minFilter(Texture.MinFilter.LinearMipmapLinear)
+                    .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/container2.png")
                     .generateMipmap();
             specularMap.bind()
-                    .minFilter(Texture.MinFilter.LinearMipmapLinear)
+                    .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/container2_specular.png")
                     .generateMipmap();
             emissionMap.bind()
-                    .minFilter(Texture.MinFilter.LinearMipmapLinear)
+                    .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/matrix.jpg")
                     .generateMipmap();
 
