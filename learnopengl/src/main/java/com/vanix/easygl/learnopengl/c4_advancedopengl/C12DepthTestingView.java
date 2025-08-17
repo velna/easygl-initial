@@ -34,7 +34,7 @@ public class C12DepthTestingView {
                     .inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
             window.inputs().mouse().cursorMode(Mouse.CursorMode.CURSOR_CAPTURED);
 
-            graphics.depthTest().enable().function(DepthTest.Function.LT);
+            graphics.depthTest().enable().function(CompareFunction.LessThan);
 
             program.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/1.2.depth_testing.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/1.2.depth_testing.fs")
@@ -113,7 +113,7 @@ public class C12DepthTestingView {
 
             long start = System.currentTimeMillis();
             while (!window.shouldClose()) {
-                graphics.defaultFrame().setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
+                graphics.defaultFrameBuffer().setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
                         .clear(FrameBuffers.ColorAndDepth);
 
                 float time = (System.currentTimeMillis() - start) / 1000.0f;

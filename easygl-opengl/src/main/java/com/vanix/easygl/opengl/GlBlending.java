@@ -3,6 +3,7 @@ package com.vanix.easygl.opengl;
 import com.vanix.easygl.commons.Color;
 import com.vanix.easygl.commons.util.IntEnumCache;
 import com.vanix.easygl.core.graphics.Blending;
+import com.vanix.easygl.core.graphics.DrawBuffer;
 import com.vanix.easygl.core.graphics.Graphics;
 
 public class GlBlending extends GlFeature<Blending> implements Blending {
@@ -13,69 +14,121 @@ public class GlBlending extends GlFeature<Blending> implements Blending {
         super(GLX.GL_BLEND, graphics);
     }
 
-    public Blending function(Function src, Function dst) {
+    public Blending setFunction(Function src, Function dst) {
         GLX.glBlendFunc(src.value(), dst.value());
+        GLX.checkError();
         return this;
     }
 
     @Override
-    public Blending function(Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha) {
+    public Blending setFunction(Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha) {
         GLX.glBlendFuncSeparate(srcRgb.value(), dstRgb.value(), srcAlpha.value(), dstAlpha.value());
+        GLX.checkError();
         return this;
     }
 
     @Override
-    public Function functionSrcRGB() {
+    public Blending setFunction(DrawBuffer drawBuffer, Function src, Function dst) {
+        GLX.glBlendFunci(drawBuffer.index(), src.value(), dst.value());
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Blending setFunction(DrawBuffer drawBuffer, Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha) {
+        GLX.glBlendFuncSeparatei(drawBuffer.index(), srcRgb.value(), dstRgb.value(), srcAlpha.value(), dstAlpha.value());
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Function getSrcRGBFunction() {
         return FunctionCache.valueOf(GLX.glGetInteger(GLX.GL_BLEND_SRC_RGB));
     }
 
     @Override
-    public Function functionDstRGB() {
+    public Function getDstRGBFunction() {
         return FunctionCache.valueOf(GLX.glGetInteger(GLX.GL_BLEND_DST_RGB));
     }
 
     @Override
-    public Function functionSrcAlpha() {
+    public Function getSrcAlphaFunction() {
         return FunctionCache.valueOf(GLX.glGetInteger(GLX.GL_BLEND_SRC_ALPHA));
     }
 
     @Override
-    public Function functionDstAlpha() {
+    public Function getDstAlphaFunction() {
         return FunctionCache.valueOf(GLX.glGetInteger(GLX.GL_BLEND_DST_ALPHA));
     }
 
     @Override
-    public Blending color(float red, float green, float blue, float alpha) {
+    public Blending setColor(float red, float green, float blue, float alpha) {
         GLX.glBlendColor(red, green, blue, alpha);
+        GLX.checkError();
         return this;
     }
 
     @Override
-    public Color color() {
+    public Color setColor() {
         float[] data = new float[4];
         GLX.glGetFloatv(GLX.GL_BLEND_COLOR, data);
         return new Color(data[0], data[1], data[2], data[3]);
     }
 
     @Override
-    public Blending equation(Equation equation) {
+    public Blending enableAt(int index) {
+        GLX.glEnablei(GLX.GL_BLEND, index);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Blending disableAt(int index) {
+        GLX.glDisablei(GLX.GL_BLEND, index);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public boolean isEnabledAt(int index) {
+        return GLX.glIsEnabledi(GLX.GL_BLEND, index);
+    }
+
+    @Override
+    public Blending setEquation(DrawBuffer drawBuffer, Equation equation) {
+        GLX.glBlendEquationi(drawBuffer.index(), equation.value());
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Blending setEquation(DrawBuffer drawBuffer, Equation equationRgb, Equation equationAlpha) {
+        GLX.glBlendEquationSeparatei(drawBuffer.index(), equationRgb.value(), equationAlpha.value());
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Blending setEquation(Equation equation) {
         GLX.glBlendEquation(equation.value());
+        GLX.checkError();
         return this;
     }
 
     @Override
-    public Blending equation(Equation equationRgb, Equation equationAlpha) {
+    public Blending setEquation(Equation equationRgb, Equation equationAlpha) {
         GLX.glBlendEquationSeparate(equationRgb.value(), equationAlpha.value());
+        GLX.checkError();
         return this;
     }
 
     @Override
-    public Equation equationRGB() {
+    public Equation getRGBEquation() {
         return EquationCache.valueOf(GLX.glGetInteger(GLX.GL_BLEND_EQUATION_RGB));
     }
 
     @Override
-    public Equation equationAlpha() {
+    public Equation getAlphaEquation() {
         return EquationCache.valueOf(GLX.glGetInteger(GLX.GL_BLEND_EQUATION_ALPHA));
     }
 }

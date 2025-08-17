@@ -2,10 +2,50 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.Color;
 import com.vanix.easygl.commons.IntEnum;
-import com.vanix.easygl.core.Feature;
+import com.vanix.easygl.core.IndexedFeature;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public interface Blending extends Feature<Blending, Graphics> {
+public interface Blending extends IndexedFeature<Blending, Graphics> {
+
+    Blending setFunction(Function src, Function dst);
+
+    Blending setFunction(Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha);
+
+    Blending setFunction(DrawBuffer drawBuffer, Function src, Function dst);
+
+    Blending setFunction(DrawBuffer drawBuffer, Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha);
+
+    Function getSrcRGBFunction();
+
+    Function getDstRGBFunction();
+
+    Function getSrcAlphaFunction();
+
+    Function getDstAlphaFunction();
+
+    default Function[] getFunctions() {
+        return new Function[]{getSrcRGBFunction(), getDstRGBFunction(), getSrcAlphaFunction(), getDstAlphaFunction()};
+    }
+
+    default Blending setColor(Color rgba) {
+        return setColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha());
+    }
+
+    Blending setColor(float red, float green, float blue, float alpha);
+
+    Color setColor();
+
+    Blending setEquation(Equation equation);
+
+    Blending setEquation(DrawBuffer drawBuffer, Equation equation);
+
+    Blending setEquation(DrawBuffer drawBuffer, Equation equationRgb, Equation equationAlpha);
+
+    Blending setEquation(Equation equationRgb, Equation equationAlpha);
+
+    Equation getRGBEquation();
+
+    Equation getAlphaEquation();
 
     enum Function implements IntEnum {
         Zero("ZERO"),
@@ -52,35 +92,4 @@ public interface Blending extends Feature<Blending, Graphics> {
         }
     }
 
-    Blending function(Function src, Function dst);
-
-    Blending function(Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha);
-
-    Function functionSrcRGB();
-
-    Function functionDstRGB();
-
-    Function functionSrcAlpha();
-
-    Function functionDstAlpha();
-
-    default Function[] functions() {
-        return new Function[]{functionSrcRGB(), functionDstRGB(), functionSrcAlpha(), functionDstAlpha()};
-    }
-
-    default Blending color(Color rgba) {
-        return color(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha());
-    }
-
-    Blending color(float red, float green, float blue, float alpha);
-
-    Color color();
-
-    Blending equation(Equation equation);
-
-    Blending equation(Equation equationRgb, Equation equationAlpha);
-
-    Equation equationRGB();
-
-    Equation equationAlpha();
 }

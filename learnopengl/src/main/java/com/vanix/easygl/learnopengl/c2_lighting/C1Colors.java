@@ -91,7 +91,7 @@ public class C1Colors {
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
 
             while (!window.shouldClose()) {
-                graphics.defaultFrame().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
+                graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameBuffers.ColorAndDepth);
 
                 var projection = new Matrix4f()

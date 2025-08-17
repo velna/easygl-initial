@@ -14,7 +14,7 @@ public sealed interface ColorBuffer extends IntEnum permits ColorBuffer.MultiSel
     ColorBuffer Right = new ColorBufferImpl("RIGHT");
     ColorBuffer FrontAndBack = new ColorBufferImpl("FRONT_AND_BACK");
 
-    sealed interface MultiSelectable extends ColorBuffer permits ColorBufferImplMS, ColorAttachment {
+    sealed interface MultiSelectable extends ColorBuffer permits ColorBufferImplMS, DrawBuffer {
 
     }
 

@@ -41,7 +41,7 @@ public abstract class AbstractTexture<T extends Texture<T>> extends AbstractBind
     }
 
     @Override
-    public T compareFunc(CompareFunc func) {
+    public T compareFunc(CompareFunction func) {
         assertBinding();
         GLX.glTexParameteri(target().value(), GLX.GL_TEXTURE_COMPARE_FUNC, func.value());
         GLX.checkError();

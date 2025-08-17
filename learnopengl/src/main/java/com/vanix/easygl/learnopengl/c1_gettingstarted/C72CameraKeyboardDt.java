@@ -134,7 +134,7 @@ public class C72CameraKeyboardDt {
 
                 processInput(window.inputs().keyboard());
 
-                graphics.defaultFrame().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
+                graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameBuffers.ColorAndDepth);
 
                 Texture.Unit.U0.bind();

@@ -11,6 +11,7 @@ public enum Capability implements IntEnum {
     LineSmooth("LINE_SMOOTH"),
     PolygonSmooth("POLYGON_SMOOTH"),
     CullFace("CULL_FACE"),
+    Dither("DITHER"),
     PolygonOffsetPoint("POLYGON_OFFSET_POINT"),
     PolygonOffsetLine("POLYGON_OFFSET_LINE"),
     PolygonOffsetFill("POLYGON_OFFSET_FILL");

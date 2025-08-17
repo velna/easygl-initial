@@ -11,17 +11,21 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
 
     Graphics viewPort(int x, int y, int width, int height);
 
+    FrameBuffer defaultFrameBuffer();
+
+    Graphics flush();
+
+    Graphics releaseShaderCompiler();
+
+    //region Features
     DepthTest depthTest();
 
     Blending blending();
 
     ScissorTest scissorTest();
 
-    FrameBuffer defaultFrame();
-
-    Graphics flush();
-
-    Graphics releaseShaderCompiler();
+    LogicalOperation logicalOperation();
+    //endregion
 
     // region Multisampling
     Vector2f getMultiSample(int index);
@@ -54,7 +58,7 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
 
     CullFaceMode getCullFaceMode();
 
-    Graphics setPolygonMode(PolygonFace face, PolygonMode mode);
+    Graphics setPolygonMode(Face face, PolygonMode mode);
 
     PolygonMode[] getPolygonMode();
 

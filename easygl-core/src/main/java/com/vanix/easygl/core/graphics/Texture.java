@@ -131,7 +131,7 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
 
     T maxLevel(int value);
 
-    T compareFunc(CompareFunc func);
+    T compareFunc(CompareFunction func);
 
     T compareModeRefToTexture();
 

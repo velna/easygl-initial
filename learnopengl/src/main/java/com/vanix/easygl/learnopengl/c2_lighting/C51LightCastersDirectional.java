@@ -122,7 +122,7 @@ public class C51LightCastersDirectional {
 
             long start = System.currentTimeMillis();
             while (!window.shouldClose()) {
-                graphics.defaultFrame().setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
+                graphics.defaultFrameBuffer().setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
                         .clear(FrameBuffers.ColorAndDepth);
 
                 float time = (System.currentTimeMillis() - start) / 1000.0f;

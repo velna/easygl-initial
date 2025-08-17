@@ -10,6 +10,7 @@ public class GlGraphics implements Graphics {
     private final DepthTest depthTest = new GlDepthTest(this);
     private final Blending blending = new GlBlending(this);
     private final ScissorTest scissorTest = new GlScissorTest(this);
+    private final LogicalOperation logicalOperation = new GlLogicalOperation(this);
 
     @Override
     public Graphics viewPort(int x, int y, int width, int height) {
@@ -33,7 +34,12 @@ public class GlGraphics implements Graphics {
     }
 
     @Override
-    public FrameBuffer defaultFrame() {
+    public LogicalOperation logicalOperation() {
+        return logicalOperation;
+    }
+
+    @Override
+    public FrameBuffer defaultFrameBuffer() {
         return GlFrameBuffer.DEFAULT_FRAME_BUFFER;
     }
 
@@ -105,7 +111,7 @@ public class GlGraphics implements Graphics {
     }
 
     @Override
-    public Graphics setPolygonMode(PolygonFace face, PolygonMode mode) {
+    public Graphics setPolygonMode(Face face, PolygonMode mode) {
         GLX.glPolygonMode(face.value(), mode.value());
         return this;
     }

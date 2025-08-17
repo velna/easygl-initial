@@ -55,7 +55,7 @@ public class KeyPress implements Renderer<ClientApp, RenderContext>, KeyboardLis
 
     @Override
     public void render(RenderContext context) throws GraphicsException {
-        context.graphics().defaultFrame().clearColor(0, new Vector4f(0.0f));
+        context.graphics().defaultFrameBuffer().clearColor(0, new Vector4f(0.0f));
         program.bind();
         vao.bind().drawArray(DrawMode.Triangles, vbo);
     }
@@ -64,7 +64,7 @@ public class KeyPress implements Renderer<ClientApp, RenderContext>, KeyboardLis
     public void keyboardOnKey(KeyboardEvent event) {
         if (event.isActionPress()) {
             polygonMode = polygonMode == PolygonMode.Fill ? PolygonMode.Line : PolygonMode.Fill;
-            clientApp.graphics().setPolygonMode(PolygonFace.FrontAndBack, polygonMode);
+            clientApp.graphics().setPolygonMode(Face.FrontAndBack, polygonMode);
         }
     }
 
