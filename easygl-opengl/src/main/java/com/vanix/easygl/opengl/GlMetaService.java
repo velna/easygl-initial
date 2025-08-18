@@ -3,9 +3,7 @@ package com.vanix.easygl.opengl;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.meta.*;
-import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL45;
-import org.lwjgl.opengl.GLCapabilities;
 
 import java.util.List;
 import java.util.function.BiFunction;
@@ -13,7 +11,6 @@ import java.util.function.Function;
 
 @SystemName("Graphics")
 public class GlMetaService extends AbstractMetaService {
-    static final GLCapabilities CAPABILITIES = GL.createCapabilities();
     static final BindableMeta<Buffer.Type, Buffer> BufferMeta = new IntBindableMeta<>(
             args -> new GlBuffer((DataType) args[0]),
             GLX::glBindBuffer,
@@ -35,7 +32,7 @@ public class GlMetaService extends AbstractMetaService {
             GLX::glGenVertexArrays,
             GLX::glDeleteVertexArrays);
 
-    static final BindableMeta<FrameBuffer.Target, FrameBuffer> FrameBufferMeta = new IntBindableMeta<>(
+    static final BindableMeta<BaseFrameBuffer.Target<FrameBuffer>, FrameBuffer> FrameBufferMeta = new IntBindableMeta<>(
             args -> new GlFrameBuffer(),
             GLX::glBindFramebuffer,
             GLX::glBindFramebuffer,
@@ -123,6 +120,7 @@ public class GlMetaService extends AbstractMetaService {
     @SuppressWarnings("unchecked")
     public GlMetaService() {
         register(Buffer.class, BufferMeta);
+        register(BaseFrameBuffer.class, FrameBufferMeta);
         register(FrameBuffer.class, FrameBufferMeta);
         register(VertexArray.class, VertexArrayMeta);
         register(RenderBuffer.class, RenderBufferMeta);

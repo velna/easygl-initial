@@ -44,7 +44,7 @@ public class C21HelloTriangle {
 
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
-                        .clear(FrameInnerBufferMask.Color);
+                        .clear(FrameInnerBuffer.Mask.Color);
 
                 program.bind();
                 vao.drawArray(DrawMode.Triangles, vbo);

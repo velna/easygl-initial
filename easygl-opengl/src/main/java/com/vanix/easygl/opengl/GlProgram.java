@@ -31,7 +31,6 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
 
     @Override
     public Program attach(Shader shader) {
-        assertBinding();
         shaders.getIfAbsentPut(shader.intHandle(), () -> {
             GLX.glAttachShader(intHandle(), shader.intHandle());
             GLX.checkError();
@@ -42,7 +41,6 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
 
     @Override
     public Program detach(Shader shader) {
-        assertBinding();
         if (shaders.remove(shader.intHandle()) != null) {
             GLX.glDetachShader(intHandle(), shader.intHandle());
             GLX.checkError();
@@ -54,7 +52,6 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
 
     @Override
     public Program link() {
-        assertBinding();
         int program = intHandle();
         GLX.glLinkProgram(program);
         IntBuffer success = MemoryStack.stackMallocInt(1);

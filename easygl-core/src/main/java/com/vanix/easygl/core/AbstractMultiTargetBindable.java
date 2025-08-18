@@ -17,6 +17,21 @@ public class AbstractMultiTargetBindable<E extends BindTarget<E, T>, T extends M
         super(handle, closeFunction);
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public T bind(E target) {
+        T self = (T) this;
+        target.state().bind(self, target);
+        this.target = target;
+        return self;
+    }
+
+    @Override
+    public void unbind(E target) {
+        target.state().unbind(target);
+        this.target = null;
+    }
+
     @Override
     public E target() {
         return target;

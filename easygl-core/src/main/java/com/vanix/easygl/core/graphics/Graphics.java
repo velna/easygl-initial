@@ -11,7 +11,7 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
 
     Graphics viewPort(int x, int y, int width, int height);
 
-    FrameBuffer defaultFrameBuffer();
+    DefaultFrameBuffer defaultFrameBuffer();
 
     Graphics flush();
 

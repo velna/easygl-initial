@@ -1,14 +1,9 @@
 package com.vanix.easygl.core;
 
 public interface MultiTargetBindable<E extends BindTarget<E, T>, T extends MultiTargetBindable<E, T>> extends Handle {
-    @SuppressWarnings("unchecked")
-    default T bind(E target) {
-        return target.state().bind((T) this, target);
-    }
+    T bind(E target);
 
-    default void unbind(E target) {
-        target.state().unbind(target);
-    }
+    void unbind(E target);
 
     E target();
 

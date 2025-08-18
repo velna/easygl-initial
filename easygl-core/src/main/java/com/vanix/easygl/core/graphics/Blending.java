@@ -11,9 +11,9 @@ public interface Blending extends IndexedFeature<Blending, Graphics> {
 
     Blending setFunction(Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha);
 
-    Blending setFunction(DrawBuffer drawBuffer, Function src, Function dst);
+    Blending setFunction(FrameInnerBuffer.DrawBuffer drawBuffer, Function src, Function dst);
 
-    Blending setFunction(DrawBuffer drawBuffer, Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha);
+    Blending setFunction(FrameInnerBuffer.DrawBuffer drawBuffer, Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha);
 
     Function getSrcRGBFunction();
 
@@ -37,9 +37,9 @@ public interface Blending extends IndexedFeature<Blending, Graphics> {
 
     Blending setEquation(Equation equation);
 
-    Blending setEquation(DrawBuffer drawBuffer, Equation equation);
+    Blending setEquation(FrameInnerBuffer.DrawBuffer drawBuffer, Equation equation);
 
-    Blending setEquation(DrawBuffer drawBuffer, Equation equationRgb, Equation equationAlpha);
+    Blending setEquation(FrameInnerBuffer.DrawBuffer drawBuffer, Equation equationRgb, Equation equationAlpha);
 
     Blending setEquation(Equation equationRgb, Equation equationAlpha);
 

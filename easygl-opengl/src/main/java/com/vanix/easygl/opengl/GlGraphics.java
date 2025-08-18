@@ -3,14 +3,18 @@ package com.vanix.easygl.opengl;
 import com.vanix.easygl.commons.util.IntEnumCache;
 import com.vanix.easygl.core.graphics.*;
 import org.joml.Vector2f;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLCapabilities;
 
 public class GlGraphics implements Graphics {
+    static final GLCapabilities CAPABILITIES = GL.createCapabilities();
     private static final IntEnumCache<PolygonMode> PolygonModeCache = new IntEnumCache<>(PolygonMode.class, 0xf);
 
     private final DepthTest depthTest = new GlDepthTest(this);
     private final Blending blending = new GlBlending(this);
     private final ScissorTest scissorTest = new GlScissorTest(this);
     private final LogicalOperation logicalOperation = new GlLogicalOperation(this);
+    private final DefaultFrameBuffer defaultFrameBuffer = new GlDefaultFrameBuffer();
 
     @Override
     public Graphics viewPort(int x, int y, int width, int height) {
@@ -39,8 +43,8 @@ public class GlGraphics implements Graphics {
     }
 
     @Override
-    public FrameBuffer defaultFrameBuffer() {
-        return GlFrameBuffer.DEFAULT_FRAME_BUFFER;
+    public DefaultFrameBuffer defaultFrameBuffer() {
+        return defaultFrameBuffer;
     }
 
     @Override

@@ -114,7 +114,7 @@ public class C44LightingMapsExercise4 {
             long start = System.currentTimeMillis();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
-                        .clear(FrameInnerBufferMask.ColorAndDepth);
+                        .clear(FrameInnerBuffer.Mask.ColorAndDepth);
 
                 float time = (System.currentTimeMillis() - start) / 1000.0f;
 

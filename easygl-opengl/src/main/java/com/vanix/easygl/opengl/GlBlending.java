@@ -3,7 +3,7 @@ package com.vanix.easygl.opengl;
 import com.vanix.easygl.commons.Color;
 import com.vanix.easygl.commons.util.IntEnumCache;
 import com.vanix.easygl.core.graphics.Blending;
-import com.vanix.easygl.core.graphics.DrawBuffer;
+import com.vanix.easygl.core.graphics.FrameInnerBuffer;
 import com.vanix.easygl.core.graphics.Graphics;
 
 public class GlBlending extends GlFeature<Blending> implements Blending {
@@ -28,14 +28,14 @@ public class GlBlending extends GlFeature<Blending> implements Blending {
     }
 
     @Override
-    public Blending setFunction(DrawBuffer drawBuffer, Function src, Function dst) {
+    public Blending setFunction(FrameInnerBuffer.DrawBuffer drawBuffer, Function src, Function dst) {
         GLX.glBlendFunci(drawBuffer.index(), src.value(), dst.value());
         GLX.checkError();
         return this;
     }
 
     @Override
-    public Blending setFunction(DrawBuffer drawBuffer, Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha) {
+    public Blending setFunction(FrameInnerBuffer.DrawBuffer drawBuffer, Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha) {
         GLX.glBlendFuncSeparatei(drawBuffer.index(), srcRgb.value(), dstRgb.value(), srcAlpha.value(), dstAlpha.value());
         GLX.checkError();
         return this;
@@ -95,14 +95,14 @@ public class GlBlending extends GlFeature<Blending> implements Blending {
     }
 
     @Override
-    public Blending setEquation(DrawBuffer drawBuffer, Equation equation) {
+    public Blending setEquation(FrameInnerBuffer.DrawBuffer drawBuffer, Equation equation) {
         GLX.glBlendEquationi(drawBuffer.index(), equation.value());
         GLX.checkError();
         return this;
     }
 
     @Override
-    public Blending setEquation(DrawBuffer drawBuffer, Equation equationRgb, Equation equationAlpha) {
+    public Blending setEquation(FrameInnerBuffer.DrawBuffer drawBuffer, Equation equationRgb, Equation equationAlpha) {
         GLX.glBlendEquationSeparatei(drawBuffer.index(), equationRgb.value(), equationAlpha.value());
         GLX.checkError();
         return this;
