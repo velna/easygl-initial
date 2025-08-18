@@ -24,6 +24,8 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
 
     Blending blending();
 
+    StencilTest stencilTest();
+
     ScissorTest scissorTest();
 
     LogicalOperation logicalOperation();

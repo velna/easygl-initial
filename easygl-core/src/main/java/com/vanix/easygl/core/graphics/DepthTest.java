@@ -5,16 +5,17 @@ import com.vanix.easygl.core.Support;
 
 public interface DepthTest extends Feature<DepthTest, Graphics> {
 
-    DepthTest function(CompareFunction function);
+    DepthTest setFunction(CompareFunction function);
 
-    DepthTest range(double near, double far);
+    DepthTest setRange(double near, double far);
 
     @Support(since = Version.GL41)
-    DepthTest range(float near, float far);
+    DepthTest setRange(float near, float far);
 
-    float[] rangeFloat();
+    @Support(since = Version.GL41)
+    float[] getRangeFloat();
 
-    double[] rangeDouble();
+    double[] getRangeDouble();
 
-    int[] rangeIntMapped();
+    int[] getRangeIntMapped();
 }

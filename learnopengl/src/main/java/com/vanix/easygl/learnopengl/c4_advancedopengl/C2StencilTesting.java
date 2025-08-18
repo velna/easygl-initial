@@ -13,7 +13,7 @@ import org.lwjgl.BufferUtils;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 
-public class C11DepthTesting {
+public class C2StencilTesting {
     public static void main(String[] args) throws IOException {
         WindowHints.ContextVersionMajor.set(3);
         WindowHints.ContextVersionMinor.set(3);
@@ -22,6 +22,7 @@ public class C11DepthTesting {
         try (var window = Window.of(800, 600, "LearnOpenGL");
              var graphics = Graphics.of(window);
              var program = Program.of();
+             var singleColorProgram = Program.of();
              var cubeVAO = VertexArray.of();
              var cubeVBO = Buffer.of(DataType.Float);
              var planeVAO = VertexArray.of();
@@ -32,12 +33,19 @@ public class C11DepthTesting {
             window
                     .attributes().Resizable.disable()
                     .inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
-            window.inputs().mouse().cursorMode(Mouse.CursorMode.CURSOR_CAPTURED);
+            window.inputs().mouse().cursorMode(Mouse.CursorMode.CURSOR_DISABLED);
 
-            graphics.depthTest().enable().setFunction(CompareFunction.Always);
+            var depthTest = graphics.depthTest().enable().setFunction(CompareFunction.LessThan);
+            var stencilTest = graphics.stencilTest().enable()
+                    .setFunction(CompareFunction.NotEqual, 1, 0xff)
+                    .setOps(StencilTest.Op.Keep, StencilTest.Op.Keep, StencilTest.Op.Replace);
+            var frameBuffer = graphics.defaultFrameBuffer();
 
-            program.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/1.1.depth_testing.vs")
-                    .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/1.1.depth_testing.fs")
+            program.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/2.stencil_testing.vs")
+                    .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/2.stencil_testing.fs")
+                    .link();
+            singleColorProgram.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/2.stencil_testing.vs")
+                    .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/2.stencil_single_color.fs")
                     .link();
 
             cubeVBO.bind(Buffer.Type.Array).realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
@@ -88,7 +96,9 @@ public class C11DepthTesting {
             cubeVAO.bind().attributes(cubeVBO, 3, 2);
 
             planeVBO.bind(Buffer.Type.Array).realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
-                    // positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
+                    // positions          // texture Coords
+                    // (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode).
+                    // this will cause the floor texture to repeat)
                     5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
                     -5.0f, -0.5f, 5.0f, 0.0f, 0.0f,
                     -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
@@ -108,37 +118,77 @@ public class C11DepthTesting {
                     .load("textures/metal.png")
                     .generateMipmap();
 
-            program.bind()
-                    .set("texture1", 0);
+            program.bind().set("texture1", 0);
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
 
-            long start = System.currentTimeMillis();
             while (!window.shouldClose()) {
-                graphics.defaultFrameBuffer().setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
-                        .clear(FrameInnerBuffer.Mask.ColorAndDepth);
-
-                float time = (System.currentTimeMillis() - start) / 1000.0f;
-
+                frameBuffer.setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
+                        .clear(FrameInnerBuffer.Mask.All);
 
                 var projection = new Matrix4f()
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 100.0f);
                 var view = camera.update().view();
 
+                singleColorProgram.bind()
+                        .setMatrix4("projection", projection.get(mat4f))
+                        .setMatrix4("view", view.get(mat4f));
+
                 program.bind()
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f));
 
+                // draw floor as normal, but don't write the floor to the stencil buffer,
+                // we only care about the containers.
+                // We set its mask to 0x00 to not write to the stencil buffer.
+                frameBuffer.setStencilMask(0x00);
+
+                //floor
+                planeVAO.bind();
+                floorTexture.bind();
+                program.setMatrix4("model", new Matrix4f().get(mat4f));
+                planeVAO.drawArray(DrawMode.Triangles, planeVBO);
+
+                // 1st. render pass, draw objects as normal, writing to the stencil buffer
+                // --------------------------------------------------------------------
+                stencilTest.setFunction(CompareFunction.Always, 1, 0xff);
+                frameBuffer.setStencilMask(0xff);
+
+                // cubes
+                cubeVAO.bind();
                 cubeTexture.bind(Texture.Unit.U0);
                 program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
                 program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
 
-                floorTexture.bind(Texture.Unit.U0);
-                program.setMatrix4("model", new Matrix4f().get(mat4f));
-                planeVAO.bind().drawArray(DrawMode.Triangles, planeVBO);
+                // 2nd. render pass: now draw slightly scaled versions of the objects, this time disabling stencil writing.
+                // Because the stencil buffer is now filled with several 1s.
+                // The parts of the buffer that are 1 are not drawn, thus only drawing the objects' size differences,
+                // making it look like borders.
+                stencilTest.setFunction(CompareFunction.NotEqual, 1, 0xff);
+                frameBuffer.setStencilMask(0x00);
+                depthTest.disable();
+                singleColorProgram.bind();
+                float scale = 1.1f;
+                // cubes
+                cubeVAO.bind();
+                cubeTexture.bind();
+                singleColorProgram.setMatrix4("model", new Matrix4f()
+                        .translate(-1.0f, 0.0f, -1.0f)
+                        .scale(scale)
+                        .get(mat4f));
+                cubeVAO.drawArray(DrawMode.Triangles, cubeVBO);
+                singleColorProgram.setMatrix4("model", new Matrix4f()
+                        .translate(2.0f, 0.0f, 0.0f)
+                        .scale(scale)
+                        .get(mat4f));
+                cubeVAO.drawArray(DrawMode.Triangles, cubeVBO);
+
+                frameBuffer.setStencilMask(0xff);
+                stencilTest.setFunction(CompareFunction.Always, 0, 0xff);
+                depthTest.enable();
 
                 window.swapBuffers().pollEvents();
             }

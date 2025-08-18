@@ -2,11 +2,13 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.Feature;
+import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface StencilTest extends Feature<StencilTest, Graphics> {
     StencilTest setFunction(CompareFunction function, int ref, int mask);
 
+    @Support(since = Version.GL20)
     StencilTest setFunctionSeparate(Face face, CompareFunction function, int ref, int mask);
 
     CompareFunction getCompareFunction(Face face);
@@ -17,6 +19,7 @@ public interface StencilTest extends Feature<StencilTest, Graphics> {
 
     StencilTest setOps(Op stencilTestFailOp, Op depthTestFailOp, Op passOp);
 
+    @Support(since = Version.GL20)
     StencilTest setOpsSeparate(Face face, Op stencilTestFailOp, Op depthTestFailOp, Op passOp);
 
     Op getOpAt(ActionPoint actionPoint);
@@ -42,14 +45,14 @@ public interface StencilTest extends Feature<StencilTest, Graphics> {
     }
 
     enum Op implements IntEnum {
-        ZERO("ZERO"),
-        KEEP("KEEP"),
-        REPLACE("REPLACE"),
-        INCR("INCR"),
-        DECR("DECR"),
-        INCR_WRAP("INCR_WRAP"),
-        DECR_WRAP("DECR_WRAP"),
-        INVERT("INVERT");
+        Zero("ZERO"),
+        Keep("KEEP"),
+        Replace("REPLACE"),
+        Incr("INCR"),
+        Decr("DECR"),
+        IncrWrap("INCR_WRAP"),
+        DecrWrap("DECR_WRAP"),
+        Invert("INVERT");
         private final int value;
 
         Op(String id) {

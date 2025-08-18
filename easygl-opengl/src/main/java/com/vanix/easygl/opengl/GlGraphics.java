@@ -12,6 +12,7 @@ public class GlGraphics implements Graphics {
 
     private final DepthTest depthTest = new GlDepthTest(this);
     private final Blending blending = new GlBlending(this);
+    private final StencilTest stencilTest = new GlStencilTest(this);
     private final ScissorTest scissorTest = new GlScissorTest(this);
     private final LogicalOperation logicalOperation = new GlLogicalOperation(this);
     private final DefaultFrameBuffer defaultFrameBuffer = new GlDefaultFrameBuffer();
@@ -30,6 +31,11 @@ public class GlGraphics implements Graphics {
     @Override
     public Blending blending() {
         return blending;
+    }
+
+    @Override
+    public StencilTest stencilTest() {
+        return stencilTest;
     }
 
     @Override
