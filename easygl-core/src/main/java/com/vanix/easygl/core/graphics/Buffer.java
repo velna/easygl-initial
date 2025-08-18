@@ -69,20 +69,32 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer>
         }
     }
 
-    enum StorageFlags {
-        MapRead("MAP_READ_BIT"),
-        MapWrite("MAP_WRITE_BIT"),
-        MapReadWrite(MapRead, MapWrite);
+    enum StorageBits implements IntEnum {
+        Dynamic("DYNAMIC_STORAGE_BIT"),
+        Client("CLIENT_STORAGE_BIT"),
+        Read("MAP_READ_BIT"),
+        Write("MAP_WRITE_BIT"),
+        @Support(since = Version.GL44)
+        PersistentRead("MAP_PERSISTENT_BIT", Read),
+        @Support(since = Version.GL44)
+        PersistentWrite("MAP_PERSISTENT_BIT", Write),
+        @Support(since = Version.GL44)
+        Coherent("MAP_COHERENT_BIT", "MAP_PERSISTENT_BIT");
         private final int value;
 
-        StorageFlags(StorageFlags f1, StorageFlags f2) {
-            this.value = f1.value | f2.value;
+        StorageBits(String id, StorageBits ma2) {
+            this.value = MetaSystem.Graphics.queryInt(id) | ma2.value;
         }
 
-        StorageFlags(String id) {
+        StorageBits(String id1, String id2) {
+            this.value = MetaSystem.Graphics.queryInt(id1) | MetaSystem.Graphics.queryInt(id2);
+        }
+
+        StorageBits(String id) {
             this.value = MetaSystem.Graphics.queryInt(id);
         }
 
+        @Override
         public int value() {
             return value;
         }
@@ -94,6 +106,7 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer>
         return bytes() / dataType().bytes();
     }
 
+    //region Set buffer data
     Buffer realloc(DataUsage usage, DoubleBuffer data);
 
     Buffer realloc(DataUsage usage, FloatBuffer data);
@@ -111,34 +124,65 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer>
     Buffer realloc(DataUsage usage, int[] data);
 
     Buffer realloc(DataUsage usage, short[] data);
+    //endregion
+
+    //region Data storage
+    @Support(since = Version.GL44)
+    Buffer storage(DoubleBuffer data, StorageBits flags);
 
     @Support(since = Version.GL44)
-    Buffer storage(DoubleBuffer data, StorageFlags flags);
+    Buffer storage(FloatBuffer data, StorageBits flags);
 
     @Support(since = Version.GL44)
-    Buffer storage(FloatBuffer data, StorageFlags flags);
+    Buffer storage(IntBuffer data, StorageBits flags);
 
     @Support(since = Version.GL44)
-    Buffer storage(IntBuffer data, StorageFlags flags);
+    Buffer storage(ShortBuffer data, StorageBits flags);
 
     @Support(since = Version.GL44)
-    Buffer storage(ShortBuffer data, StorageFlags flags);
+    Buffer storage(ByteBuffer data, StorageBits flags);
 
     @Support(since = Version.GL44)
-    Buffer storage(ByteBuffer data, StorageFlags flags);
+    Buffer storage(double[] data, StorageBits flags);
 
     @Support(since = Version.GL44)
-    Buffer storage(double[] data, StorageFlags flags);
+    Buffer storage(float[] data, StorageBits flags);
 
     @Support(since = Version.GL44)
-    Buffer storage(float[] data, StorageFlags flags);
+    Buffer storage(int[] data, StorageBits flags);
 
     @Support(since = Version.GL44)
-    Buffer storage(int[] data, StorageFlags flags);
+    Buffer storage(short[] data, StorageBits flags);
 
     @Support(since = Version.GL44)
-    Buffer storage(short[] data, StorageFlags flags);
+    Buffer storage(DoubleBuffer data, BitSet<StorageBits> flags);
 
+    @Support(since = Version.GL44)
+    Buffer storage(FloatBuffer data, BitSet<StorageBits> flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(IntBuffer data, BitSet<StorageBits> flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(ShortBuffer data, BitSet<StorageBits> flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(ByteBuffer data, BitSet<StorageBits> flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(double[] data, BitSet<StorageBits> flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(float[] data, BitSet<StorageBits> flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(int[] data, BitSet<StorageBits> flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(short[] data, BitSet<StorageBits> flags);
+    //endregion
+
+    //region Set sub data
     Buffer set(int offset, DoubleBuffer data);
 
     Buffer set(int offset, FloatBuffer data);
@@ -156,7 +200,9 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer>
     Buffer set(int offset, int[] data);
 
     Buffer set(int offset, short[] data);
+    //endregion
 
+    //region Clear data
     @Support(since = Version.GL40)
     Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type);
 
@@ -180,7 +226,9 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer>
 
     @Support(since = Version.GL40)
     Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, FloatBuffer data);
+    //endregion
 
+    //region Clear sub data
     @Support(since = Version.GL40)
     Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type);
 
@@ -204,18 +252,21 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer>
 
     @Support(since = Version.GL40)
     Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, FloatBuffer data);
+    //endregion
 
-    ByteBuffer mapRange(long offset, long size, MapAccess access);
+    //region Data mapping
+    ByteBuffer mapRange(long offset, long size, MapAccessBits access);
 
-    ByteBuffer mapRange(long offset, long size, BitSet<MapAccess> access);
+    ByteBuffer mapRange(long offset, long size, BitSet<MapAccessBits> access);
 
-    ByteBuffer map(MapAccess access);
+    ByteBuffer map(MapAccessBits access);
 
-    ByteBuffer map(BitSet<MapAccess> access);
+    ByteBuffer map(BitSet<MapAccessBits> access);
 
     Buffer flushMappedRange(long offset, long size);
 
     boolean unmap();
+    //endregion
 
     @Support(since = Version.GL40)
     Buffer invalidateSubData(long offset, long size);
@@ -223,6 +274,7 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer>
     @Support(since = Version.GL40)
     Buffer invalidateData();
 
+    //region Get buffer data
     Buffer getSubData(long offset, short[] data);
 
     Buffer getSubData(long offset, ShortBuffer data);
@@ -244,6 +296,7 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer>
     Buffer getSubData(long offset, DoubleBuffer data);
 
     Buffer getSubData(long offset, ByteBuffer data);
+    //endregion
 
     Buffer copySubData(long readOffset, Buffer dstBuffer, long writeOffset, long size);
 

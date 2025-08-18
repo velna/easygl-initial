@@ -10,6 +10,7 @@ import java.util.function.IntConsumer;
 
 public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Type, Buffer> implements Buffer {
     private final DataType dataType;
+    private long sizeInBytes;
 
     protected GlBuffer(int handle, DataType dataType) {
         super(handle, (IntConsumer) GLX::glDeleteBuffers);
@@ -33,6 +34,7 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Type, Buffer> i
         assertBinding();
         reallocFn.accept(target().value(), data, usage.value());
         GLX.checkError();
+        sizeInBytes = dataBytes;
         return this;
     }
 
@@ -141,56 +143,102 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Type, Buffer> i
         void accept(int target, T data, int flags);
     }
 
-    private <T> Buffer storage(StorageFunction<T> storageFn, T data, int dataBytes, StorageFlags flags) {
+    private <T> Buffer storage(StorageFunction<T> storageFn, T data, int dataBytes, int flags) {
         assertBinding();
-        storageFn.accept(target.value(), data, flags.value());
+        storageFn.accept(target.value(), data, flags);
         GLX.checkError();
+        sizeInBytes = dataBytes;
         return this;
     }
 
     @Override
-    public Buffer storage(DoubleBuffer data, StorageFlags flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(DoubleBuffer data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     @Override
-    public Buffer storage(FloatBuffer data, StorageFlags flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(FloatBuffer data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     @Override
-    public Buffer storage(IntBuffer data, StorageFlags flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(IntBuffer data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     @Override
-    public Buffer storage(ShortBuffer data, StorageFlags flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(ShortBuffer data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     @Override
-    public Buffer storage(ByteBuffer data, StorageFlags flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(ByteBuffer data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     @Override
-    public Buffer storage(double[] data, StorageFlags flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(double[] data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     @Override
-    public Buffer storage(float[] data, StorageFlags flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(float[] data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     @Override
-    public Buffer storage(int[] data, StorageFlags flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(int[] data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     @Override
-    public Buffer storage(short[] data, StorageFlags flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(short[] data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
+    }
+
+    @Override
+    public Buffer storage(DoubleBuffer data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
+    }
+
+    @Override
+    public Buffer storage(FloatBuffer data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
+    }
+
+    @Override
+    public Buffer storage(IntBuffer data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
+    }
+
+    @Override
+    public Buffer storage(ShortBuffer data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
+    }
+
+    @Override
+    public Buffer storage(ByteBuffer data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
+    }
+
+    @Override
+    public Buffer storage(double[] data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
+    }
+
+    @Override
+    public Buffer storage(float[] data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
+    }
+
+    @Override
+    public Buffer storage(int[] data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
+    }
+
+    @Override
+    public Buffer storage(short[] data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     private interface ClearDataFunction<T> {
@@ -296,7 +344,7 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Type, Buffer> i
     }
 
     @Override
-    public ByteBuffer mapRange(long offset, long size, MapAccess access) {
+    public ByteBuffer mapRange(long offset, long size, MapAccessBits access) {
         assertBinding();
         var ret = GLX.glMapBufferRange(target.value(), offset, size, access.value());
         GLX.checkError();
@@ -304,7 +352,7 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Type, Buffer> i
     }
 
     @Override
-    public ByteBuffer mapRange(long offset, long size, BitSet<MapAccess> access) {
+    public ByteBuffer mapRange(long offset, long size, BitSet<MapAccessBits> access) {
         assertBinding();
         var ret = GLX.glMapBufferRange(target.value(), offset, size, access.value());
         GLX.checkError();
@@ -312,7 +360,7 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Type, Buffer> i
     }
 
     @Override
-    public ByteBuffer map(MapAccess access) {
+    public ByteBuffer map(MapAccessBits access) {
         assertBinding();
         var ret = GLX.glMapBuffer(target.value(), access.value());
         GLX.checkError();
@@ -320,7 +368,7 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Type, Buffer> i
     }
 
     @Override
-    public ByteBuffer map(BitSet<MapAccess> access) {
+    public ByteBuffer map(BitSet<MapAccessBits> access) {
         assertBinding();
         var ret = GLX.glMapBuffer(target.value(), access.value());
         GLX.checkError();
@@ -433,8 +481,7 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Type, Buffer> i
 
     @Override
     public long bytes() {
-        assertBinding();
-        return GLX.glGetBufferParameteri(target.value(), GLX.GL_BUFFER_SIZE);
+        return sizeInBytes;
     }
 
     @Override
