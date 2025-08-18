@@ -87,7 +87,7 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Type, Buffer> i
         void accept(int target, long offset, T data);
     }
 
-    private <T> Buffer set(SubDataFunction<T> subDataFunction, int offset, T data, int dataBytes) {
+    private <T> Buffer setSubData(SubDataFunction<T> subDataFunction, int offset, T data, int dataBytes) {
         assertBinding();
         subDataFunction.accept(target().value(), offset, data);
         GLX.checkError();
@@ -95,48 +95,48 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Type, Buffer> i
     }
 
     @Override
-    public Buffer set(int offset, DoubleBuffer data) {
-        return set(GLX::glBufferSubData, DataType.Double.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(int offset, DoubleBuffer data) {
+        return setSubData(GLX::glBufferSubData, DataType.Double.bytesOfCount(offset), data, DataType.bytesOf(data));
     }
 
     @Override
-    public Buffer set(int offset, FloatBuffer data) {
-        return set(GLX::glBufferSubData, DataType.Float.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(int offset, FloatBuffer data) {
+        return setSubData(GLX::glBufferSubData, DataType.Float.bytesOfCount(offset), data, DataType.bytesOf(data));
     }
 
     @Override
-    public Buffer set(int offset, IntBuffer data) {
-        return set(GLX::glBufferSubData, DataType.Int.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(int offset, IntBuffer data) {
+        return setSubData(GLX::glBufferSubData, DataType.Int.bytesOfCount(offset), data, DataType.bytesOf(data));
     }
 
     @Override
-    public Buffer set(int offset, ShortBuffer data) {
-        return set(GLX::glBufferSubData, DataType.Short.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(int offset, ShortBuffer data) {
+        return setSubData(GLX::glBufferSubData, DataType.Short.bytesOfCount(offset), data, DataType.bytesOf(data));
     }
 
     @Override
-    public Buffer set(int offset, ByteBuffer data) {
-        return set(GLX::glBufferSubData, DataType.Byte.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(int offset, ByteBuffer data) {
+        return setSubData(GLX::glBufferSubData, DataType.Byte.bytesOfCount(offset), data, DataType.bytesOf(data));
     }
 
     @Override
-    public Buffer set(int offset, double[] data) {
-        return set(GLX::glBufferSubData, DataType.Double.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(int offset, double[] data) {
+        return setSubData(GLX::glBufferSubData, DataType.Double.bytesOfCount(offset), data, DataType.bytesOf(data));
     }
 
     @Override
-    public Buffer set(int offset, float[] data) {
-        return set(GLX::glBufferSubData, DataType.Float.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(int offset, float[] data) {
+        return setSubData(GLX::glBufferSubData, DataType.Float.bytesOfCount(offset), data, DataType.bytesOf(data));
     }
 
     @Override
-    public Buffer set(int offset, int[] data) {
-        return set(GLX::glBufferSubData, DataType.Int.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(int offset, int[] data) {
+        return setSubData(GLX::glBufferSubData, DataType.Int.bytesOfCount(offset), data, DataType.bytesOf(data));
     }
 
     @Override
-    public Buffer set(int offset, short[] data) {
-        return set(GLX::glBufferSubData, DataType.Short.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(int offset, short[] data) {
+        return setSubData(GLX::glBufferSubData, DataType.Short.bytesOfCount(offset), data, DataType.bytesOf(data));
     }
 
     private interface StorageFunction<T> {

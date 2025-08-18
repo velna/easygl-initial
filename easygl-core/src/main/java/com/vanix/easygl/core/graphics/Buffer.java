@@ -183,23 +183,23 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer>
     //endregion
 
     //region Set sub data
-    Buffer set(int offset, DoubleBuffer data);
+    Buffer setSubData(int offset, DoubleBuffer data);
 
-    Buffer set(int offset, FloatBuffer data);
+    Buffer setSubData(int offset, FloatBuffer data);
 
-    Buffer set(int offset, IntBuffer data);
+    Buffer setSubData(int offset, IntBuffer data);
 
-    Buffer set(int offset, ShortBuffer data);
+    Buffer setSubData(int offset, ShortBuffer data);
 
-    Buffer set(int offset, ByteBuffer data);
+    Buffer setSubData(int offset, ByteBuffer data);
 
-    Buffer set(int offset, double[] data);
+    Buffer setSubData(int offset, double[] data);
 
-    Buffer set(int offset, float[] data);
+    Buffer setSubData(int offset, float[] data);
 
-    Buffer set(int offset, int[] data);
+    Buffer setSubData(int offset, int[] data);
 
-    Buffer set(int offset, short[] data);
+    Buffer setSubData(int offset, short[] data);
     //endregion
 
     //region Clear data
