@@ -1,6 +1,7 @@
 package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.HandleArray;
+import com.vanix.easygl.core.Support;
 
 import java.util.Arrays;
 import java.util.List;
@@ -11,8 +12,10 @@ public abstract class BufferArray extends HandleArray<Buffer> {
         super(list, handles, closeFunction);
     }
 
+    @Support(since = Version.GL44)
     public abstract BufferArray bindBase(int first);
 
+    @Support(since = Version.GL44)
     public abstract BufferArray bindRange(int first, long[] offsets, long[] sizes);
 
     public BufferArray bindRange(int first, long offset, long size) {

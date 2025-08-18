@@ -2,6 +2,7 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.Rectangle;
 import com.vanix.easygl.core.IndexedFeature;
+import com.vanix.easygl.core.Support;
 
 import java.nio.IntBuffer;
 
@@ -21,20 +22,28 @@ public interface ScissorTest extends IndexedFeature<ScissorTest, Graphics> {
 
     ScissorTest setBox(int x, int y, int width, int height);
 
+    @Support(since = Version.GL41)
     ScissorTest setBoxes(int first, int[] boxes);
 
+    @Support(since = Version.GL41)
     ScissorTest setBoxes(int first, IntBuffer boxes);
 
+    @Support(since = Version.GL41)
     ScissorTest setBoxes(int first, Rectangle... boxes);
 
+    @Support(since = Version.GL41)
     ScissorTest setBoxAt(int index, int[] box);
 
+    @Support(since = Version.GL41)
     ScissorTest setBoxAt(int index, IntBuffer box);
 
+    @Support(since = Version.GL41)
     ScissorTest setBoxAt(int index, Rectangle box);
 
+    @Support(since = Version.GL41)
     ScissorTest setBoxAt(int index, int x, int y, int width, int height);
 
+    @Support(since = Version.GL41)
     Rectangle getBoxAt(int index);
 
     Rectangle getBox();

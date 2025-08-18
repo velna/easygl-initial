@@ -2,6 +2,7 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
+import com.vanix.easygl.core.Support;
 import org.joml.*;
 
 import java.io.IOException;
@@ -48,16 +49,21 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     Program link();
 
+    @Support(since = Version.GL41)
     Program setBinaryRetrievable(boolean retrievable);
 
+    @Support(since = Version.GL41)
     Binary getBinary();
 
+    @Support(since = Version.GL41)
     Program loadBinary(int format, ByteBuffer data);
 
+    @Support(since = Version.GL41)
     default Program loadBinary(Binary binary) {
         return loadBinary(binary.format, binary.data);
     }
 
+    @Support(since = Version.GL41)
     Program setSeparable(boolean separable);
 
     Program set(String key, int value);

@@ -2,11 +2,13 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.commons.Rectangle;
+import com.vanix.easygl.core.Support;
 
 public interface DefaultFrameBuffer extends BaseFrameBuffer<DefaultFrameBuffer> {
 
     DefaultFrameBuffer selectDrawBuffer(DefaultFrameBuffer.DrawBuffer drawBuffer);
 
+    @Support(since = Version.GL43)
     DefaultFrameBuffer invalidate(Target<FrameBuffer> target, int x, int y, int width, int height, Invalidatable attachment);
 
     default DefaultFrameBuffer invalidate(Target<FrameBuffer> target, Rectangle rectangle, Invalidatable attachment) {

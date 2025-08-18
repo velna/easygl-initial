@@ -1,10 +1,8 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.core.BindTarget;
-import com.vanix.easygl.core.Bindable;
-import com.vanix.easygl.core.HandleArray;
-import com.vanix.easygl.core.Handle;
+import com.vanix.easygl.core.*;
 
+@Support(since = Version.GL30)
 public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, VertexArray>, Handle {
     BindTarget.Default<VertexArray> Target = new BindTarget.Default<>("VertexArray", MetaHolder.VertexArray);
 

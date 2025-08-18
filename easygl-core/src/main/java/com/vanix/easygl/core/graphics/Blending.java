@@ -3,6 +3,7 @@ package com.vanix.easygl.core.graphics;
 import com.vanix.easygl.commons.Color;
 import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.IndexedFeature;
+import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface Blending extends IndexedFeature<Blending, Graphics> {
@@ -11,8 +12,10 @@ public interface Blending extends IndexedFeature<Blending, Graphics> {
 
     Blending setFunction(Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha);
 
+    @Support(since = Version.GL40)
     Blending setFunction(FrameInnerBuffer.DrawBuffer drawBuffer, Function src, Function dst);
 
+    @Support(since = Version.GL40)
     Blending setFunction(FrameInnerBuffer.DrawBuffer drawBuffer, Function srcRgb, Function dstRgb, Function srcAlpha, Function dstAlpha);
 
     Function getSrcRGBFunction();
@@ -37,8 +40,10 @@ public interface Blending extends IndexedFeature<Blending, Graphics> {
 
     Blending setEquation(Equation equation);
 
+    @Support(since = Version.GL40)
     Blending setEquation(FrameInnerBuffer.DrawBuffer drawBuffer, Equation equation);
 
+    @Support(since = Version.GL40)
     Blending setEquation(FrameInnerBuffer.DrawBuffer drawBuffer, Equation equationRgb, Equation equationAlpha);
 
     Blending setEquation(Equation equationRgb, Equation equationAlpha);

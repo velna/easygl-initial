@@ -5,8 +5,10 @@ import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
 import com.vanix.easygl.core.HandleArray;
+import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
 
+@Support(since = Version.GL41)
 public interface Pipeline extends Bindable<BindTarget.Default<Pipeline>, Pipeline> {
 
     BindTarget.Default<Pipeline> Target = new BindTarget.Default<>("Pipeline", MetaHolder.Pipeline);
@@ -31,10 +33,13 @@ public interface Pipeline extends Bindable<BindTarget.Default<Pipeline>, Pipelin
         }
     }
 
+    @Support(since = Version.GL41)
     Pipeline useProgramStages(Program program, Stage stage);
 
+    @Support(since = Version.GL41)
     Pipeline useProgramStages(Program program, BitSet<Stage> stages);
 
+    @Support(since = Version.GL41)
     Pipeline activeShaderProgram(Program program);
 
     static Pipeline of() {

@@ -2,18 +2,23 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.Handle;
+import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 import java.util.concurrent.TimeUnit;
 
+@Support(since = Version.GL32)
 public interface Sync extends Handle {
 
+    @Support(since = Version.GL32)
     Sync awaitServer();
 
+    @Support(since = Version.GL32)
     default Result awaitClient(int timeout, TimeUnit timeUnit) {
         return awaitClient(timeout, timeUnit, false);
     }
 
+    @Support(since = Version.GL32)
     Result awaitClient(int timeout, TimeUnit timeUnit, boolean flush);
 
     enum Result implements IntEnum {

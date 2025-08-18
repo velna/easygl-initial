@@ -2,6 +2,7 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.Handle;
+import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface Query<T extends Query<T>> extends Handle {
@@ -12,10 +13,12 @@ public interface Query<T extends Query<T>> extends Handle {
 
     int getIntResult();
 
+    @Support(since = Version.GL44)
     int getIntResultNoWait();
 
     long getLongResult();
 
+    @Support(since = Version.GL44)
     long getLongResultNoWait();
 
     boolean isResultAvailable();

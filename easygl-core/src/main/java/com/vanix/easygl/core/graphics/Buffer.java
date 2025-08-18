@@ -2,10 +2,7 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.BitSet;
 import com.vanix.easygl.commons.IntEnum;
-import com.vanix.easygl.core.BindTarget;
-import com.vanix.easygl.core.BindingState;
-import com.vanix.easygl.core.Handle;
-import com.vanix.easygl.core.MultiTargetBindable;
+import com.vanix.easygl.core.*;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 import java.nio.*;
@@ -115,22 +112,31 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer>
 
     Buffer realloc(DataUsage usage, short[] data);
 
+    @Support(since = Version.GL44)
     Buffer storage(DoubleBuffer data, StorageFlags flags);
 
+    @Support(since = Version.GL44)
     Buffer storage(FloatBuffer data, StorageFlags flags);
 
+    @Support(since = Version.GL44)
     Buffer storage(IntBuffer data, StorageFlags flags);
 
+    @Support(since = Version.GL44)
     Buffer storage(ShortBuffer data, StorageFlags flags);
 
+    @Support(since = Version.GL44)
     Buffer storage(ByteBuffer data, StorageFlags flags);
 
+    @Support(since = Version.GL44)
     Buffer storage(double[] data, StorageFlags flags);
 
+    @Support(since = Version.GL44)
     Buffer storage(float[] data, StorageFlags flags);
 
+    @Support(since = Version.GL44)
     Buffer storage(int[] data, StorageFlags flags);
 
+    @Support(since = Version.GL44)
     Buffer storage(short[] data, StorageFlags flags);
 
     Buffer set(int offset, DoubleBuffer data);
@@ -151,36 +157,52 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer>
 
     Buffer set(int offset, short[] data);
 
+    @Support(since = Version.GL40)
     Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type);
 
+    @Support(since = Version.GL40)
     Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, ByteBuffer data);
 
+    @Support(since = Version.GL40)
     Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, short[] data);
 
+    @Support(since = Version.GL40)
     Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, ShortBuffer data);
 
+    @Support(since = Version.GL40)
     Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, int[] data);
 
+    @Support(since = Version.GL40)
     Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, IntBuffer data);
 
+    @Support(since = Version.GL40)
     Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, float[] data);
 
+    @Support(since = Version.GL40)
     Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, FloatBuffer data);
 
+    @Support(since = Version.GL40)
     Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type);
 
+    @Support(since = Version.GL40)
     Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, ByteBuffer data);
 
+    @Support(since = Version.GL40)
     Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, short[] data);
 
+    @Support(since = Version.GL40)
     Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, ShortBuffer data);
 
+    @Support(since = Version.GL40)
     Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, int[] data);
 
+    @Support(since = Version.GL40)
     Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, IntBuffer data);
 
+    @Support(since = Version.GL40)
     Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, float[] data);
 
+    @Support(since = Version.GL40)
     Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, FloatBuffer data);
 
     ByteBuffer mapRange(long offset, long size, MapAccess access);
@@ -195,8 +217,10 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer>
 
     boolean unmap();
 
+    @Support(since = Version.GL40)
     Buffer invalidateSubData(long offset, long size);
 
+    @Support(since = Version.GL40)
     Buffer invalidateData();
 
     Buffer getSubData(long offset, short[] data);

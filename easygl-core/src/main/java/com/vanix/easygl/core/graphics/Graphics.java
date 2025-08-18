@@ -2,6 +2,7 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.Closeable;
 import com.vanix.easygl.core.MultiFeature;
+import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.window.Window;
 import org.joml.Vector2f;
 
@@ -15,6 +16,7 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
 
     Graphics flush();
 
+    @Support(since = Version.GL41)
     Graphics releaseShaderCompiler();
 
     //region Features

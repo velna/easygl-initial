@@ -4,6 +4,7 @@ import com.vanix.easygl.commons.Color;
 import com.vanix.easygl.commons.Rectangle;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.MultiTargetBindable;
+import com.vanix.easygl.core.Support;
 import org.joml.Vector4f;
 import org.joml.Vector4i;
 
@@ -13,16 +14,21 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
         return attach(target, attachment, texture2D, 0);
     }
 
+    @Support(since = Version.GL30)
     T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture2D texture2D, int level);
 
+    @Support(since = Version.GL30)
     T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, RenderBuffer renderBuffer);
 
+    @Support(since = Version.GL30)
     T detachRenderBuffer(Target<T> target, FrameInnerBuffer.Attachment attachment);
 
+    @Support(since = Version.GL30)
     T blit(int srcX0, int srcY0, int srcX1, int srcY1,
            int dstX0, int dstY0, int dstX1, int dstY1,
            FrameInnerBuffer.Mask buffers, MagFilter filter);
 
+    @Support(since = Version.GL30)
     default T blit(Rectangle src, Rectangle dst, FrameInnerBuffer.Mask buffers, MagFilter filter) {
         return blit(src.getX(), src.getY(), src.getX() + src.getWidth(), src.getY() + src.getHeight(),
                 dst.getX(), dst.getY(), dst.getX() + dst.getWidth(), dst.getY() + dst.getHeight(),
@@ -42,16 +48,22 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
 
     Color getClearColor();
 
+    @Support(since = Version.GL30)
     T clearColorBuffer(FrameInnerBuffer.DrawBuffer drawBuffer, Vector4f color);
 
+    @Support(since = Version.GL30)
     T clearColorBuffer(FrameInnerBuffer.DrawBuffer drawBuffer, Vector4i color);
 
+    @Support(since = Version.GL30)
     T clearColorBufferUnsigned(FrameInnerBuffer.DrawBuffer drawBuffer, Vector4i color);
 
+    @Support(since = Version.GL30)
     T clearDepthBuffer(float value);
 
+    @Support(since = Version.GL30)
     T clearStencilBuffer(int value);
 
+    @Support(since = Version.GL30)
     T clearDepthAndStencilBuffer(float depthValue, int stencilValue);
 
     T setClearDepth(float depth);
