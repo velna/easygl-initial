@@ -13,6 +13,8 @@ public enum PixelFormat {
     ALPHA("ALPHA"),
     RGB("RGB", InternalPixelFormat.BaseFormat.RGB),
     RGBA("RGBA", InternalPixelFormat.BaseFormat.RGBA),
+    BGR("BGR", InternalPixelFormat.BaseFormat.RGB),
+    BGRA("BGRA", InternalPixelFormat.BaseFormat.RGBA),
     LUMINANCE("LUMINANCE"),
     LUMINANCE_ALPHA("LUMINANCE_ALPHA");
 

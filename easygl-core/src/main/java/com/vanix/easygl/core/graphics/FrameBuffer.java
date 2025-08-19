@@ -24,11 +24,11 @@ public interface FrameBuffer extends BaseFrameBuffer<FrameBuffer> {
         return MetaHolder.FrameBuffer.createArray(n);
     }
 
-    sealed interface DrawBuffer extends IntEnum permits FrameInnerBuffer.Constants, FrameInnerBuffer.ColorAttachment {
+    sealed interface DrawBuffer extends IntEnum permits FrameInnerBuffer.Constants, FrameInnerBuffer.ColorAttachmentImpl {
         DrawBuffer None = FrameInnerBuffer.Constants.None;
 
         static DrawBuffer ofColor(int i) {
-            return FrameInnerBuffer.ColorAttachment.of(i);
+            return FrameInnerBuffer.ColorAttachmentImpl.of(i);
         }
     }
 }

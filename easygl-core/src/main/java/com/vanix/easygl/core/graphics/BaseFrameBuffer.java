@@ -8,6 +8,11 @@ import com.vanix.easygl.core.Support;
 import org.joml.Vector4f;
 import org.joml.Vector4i;
 
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
+
 public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTargetBindable<BaseFrameBuffer.Target<T>, T> {
 
     default T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture2D texture2D) {
@@ -36,6 +41,58 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
     }
 
     T selectDrawBuffers(FrameInnerBuffer.MultiSelectableDrawBuffer... drawBuffers);
+
+    //region Reading and Copying Pixels
+    T setReadBuffer(FrameInnerBuffer.ReadBuffer readBuffer);
+
+    FrameInnerBuffer.ReadBuffer getReadBuffer();
+
+    T setClampColor(boolean clamp);
+
+    boolean isClampColor();
+
+    T readPixels(int x, int y, int width, int height, PixelFormat format, DataType dataType, ByteBuffer data);
+
+    T readPixels(int x, int y, int width, int height, PixelFormat format, DataType dataType, short[] data);
+
+    T readPixels(int x, int y, int width, int height, PixelFormat format, DataType dataType, ShortBuffer data);
+
+    T readPixels(int x, int y, int width, int height, PixelFormat format, DataType dataType, int[] data);
+
+    T readPixels(int x, int y, int width, int height, PixelFormat format, DataType dataType, IntBuffer data);
+
+    T readPixels(int x, int y, int width, int height, PixelFormat format, DataType dataType, float[] data);
+
+    T readPixels(int x, int y, int width, int height, PixelFormat format, DataType dataType, FloatBuffer data);
+
+    default T readPixels(Rectangle rect, PixelFormat format, DataType dataType, ByteBuffer data) {
+        return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
+    }
+
+    default T readPixels(Rectangle rect, PixelFormat format, DataType dataType, short[] data) {
+        return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
+    }
+
+    default T readPixels(Rectangle rect, PixelFormat format, DataType dataType, ShortBuffer data) {
+        return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
+    }
+
+    default T readPixels(Rectangle rect, PixelFormat format, DataType dataType, int[] data) {
+        return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
+    }
+
+    default T readPixels(Rectangle rect, PixelFormat format, DataType dataType, IntBuffer data) {
+        return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
+    }
+
+    default T readPixels(Rectangle rect, PixelFormat format, DataType dataType, float[] data) {
+        return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
+    }
+
+    default T readPixels(Rectangle rect, PixelFormat format, DataType dataType, FloatBuffer data) {
+        return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
+    }
+    //endregion
 
     //region Clearing the Buffers
     T clear(FrameInnerBuffer.Mask mask);

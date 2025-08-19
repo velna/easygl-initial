@@ -1,12 +1,9 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.commons.SimpleIndexedIntEnum;
 import com.vanix.easygl.commons.IntEnum;
-import com.vanix.easygl.commons.SimpleIntEnum;
-import com.vanix.easygl.commons.util.LazyList;
+import com.vanix.easygl.commons.util.IndexedEnumCache;
 import com.vanix.easygl.core.meta.MetaSystem;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class FrameInnerBuffer {
 
@@ -16,42 +13,53 @@ public abstract class FrameInnerBuffer {
         Attachment Stencil = Constants.StencilAttachment;
         Attachment DepthStencil = Constants.DepthStencilAttachment;
 
-        static Attachment ofColor(int i) {
-            return ColorAttachment.of(i);
+        static ColorAttachment ofColor(int i) {
+            return ColorAttachmentImpl.of(i);
         }
     }
 
-    public sealed interface MultiSelectableDrawBuffer extends IntEnum permits Constants, ColorAttachment {
-        MultiSelectableDrawBuffer None = FrameInnerBuffer.Constants.None;
-        MultiSelectableDrawBuffer FrontLeft = FrameInnerBuffer.Constants.FrontLeft;
-        MultiSelectableDrawBuffer FrontRight = FrameInnerBuffer.Constants.FrontRight;
-        MultiSelectableDrawBuffer BackLeft = FrameInnerBuffer.Constants.BackLeft;
-        MultiSelectableDrawBuffer BackRight = FrameInnerBuffer.Constants.BackRight;
+    public sealed interface ColorAttachment extends Attachment permits ColorAttachmentImpl {
+        int index();
+    }
+
+    public sealed interface MultiSelectableDrawBuffer extends IntEnum permits Constants, ColorAttachmentImpl {
+        MultiSelectableDrawBuffer None = Constants.None;
+        MultiSelectableDrawBuffer FrontLeft = Constants.FrontLeft;
+        MultiSelectableDrawBuffer FrontRight = Constants.FrontRight;
+        MultiSelectableDrawBuffer BackLeft = Constants.BackLeft;
+        MultiSelectableDrawBuffer BackRight = Constants.BackRight;
 
         static MultiSelectableDrawBuffer ofColor(int i) {
-            return ColorAttachment.of(i);
+            return ColorAttachmentImpl.of(i);
         }
     }
 
-    public static final class DrawBuffer extends SimpleIntEnum {
+    public sealed interface ReadBuffer extends IntEnum permits Constants, ColorAttachmentImpl {
+        ReadBuffer FrontLeft = Constants.FrontLeft;
+        ReadBuffer FrontRight = Constants.FrontRight;
+        ReadBuffer BackLeft = Constants.BackLeft;
+        ReadBuffer BackRight = Constants.BackRight;
+        ReadBuffer Front = Constants.Front;
+        ReadBuffer Back = Constants.Back;
+        ReadBuffer Left = Constants.Left;
+        ReadBuffer Right = Constants.Right;
+
+        static ReadBuffer ofColor(int i) {
+            return ColorAttachmentImpl.of(i);
+        }
+    }
+
+
+    public static final class DrawBuffer extends SimpleIndexedIntEnum {
         public static final int MAX = MetaSystem.Graphics.queryInt("GET.GL_MAX_DRAW_BUFFERS");
-        private static final List<DrawBuffer> cache = LazyList.lazyList(new ArrayList<>(), DrawBuffer::new);
-        private final int index;
+        private static final IndexedEnumCache<DrawBuffer> cache = new IndexedEnumCache<>(MAX, DrawBuffer::new);
 
         private DrawBuffer(int index) {
-            super(MetaSystem.Graphics.queryInt("DRAW_BUFFER" + index));
-            this.index = index;
-        }
-
-        public int index() {
-            return index;
+            super(MetaSystem.Graphics.queryInt("DRAW_BUFFER" + index), index);
         }
 
         public static DrawBuffer of(int i) {
-            if (i >= MAX || i < 0) {
-                throw new IllegalArgumentException("Color attachment out of range: " + i);
-            }
-            return cache.get(i);
+            return cache.valueOf(i);
         }
     }
 
@@ -83,23 +91,22 @@ public abstract class FrameInnerBuffer {
         }
     }
 
-    static final class ColorAttachment extends SimpleIntEnum implements Attachment, FrameBuffer.DrawBuffer, MultiSelectableDrawBuffer {
-        private static final List<ColorAttachment> cache = LazyList.lazyList(new ArrayList<>(), ColorAttachment::new);
+    static final class ColorAttachmentImpl extends SimpleIndexedIntEnum implements
+            ColorAttachment, ReadBuffer, FrameBuffer.DrawBuffer, MultiSelectableDrawBuffer {
+        private static final IndexedEnumCache<ColorAttachmentImpl> cache = new IndexedEnumCache<>(MAX_COLOR_ATTACHMENTS, ColorAttachmentImpl::new);
 
-        private ColorAttachment(int index) {
-            super(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT" + index));
+        private ColorAttachmentImpl(int index) {
+            super(MetaSystem.Graphics.queryInt("COLOR_ATTACHMENT" + index), index);
         }
 
-        static ColorAttachment of(int i) {
-            if (i >= MAX_COLOR_ATTACHMENTS || i < 0) {
-                throw new IllegalArgumentException("Color attachment out of range: " + i);
-            }
-            return cache.get(i);
+        static ColorAttachmentImpl of(int i) {
+            return cache.valueOf(i);
         }
     }
 
     enum Constants implements
             Attachment,
+            ReadBuffer,
             MultiSelectableDrawBuffer,
             DefaultFrameBuffer.DrawBuffer,
             DefaultFrameBuffer.Invalidatable,

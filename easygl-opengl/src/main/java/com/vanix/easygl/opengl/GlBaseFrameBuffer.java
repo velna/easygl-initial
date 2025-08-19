@@ -6,6 +6,10 @@ import com.vanix.easygl.core.graphics.*;
 import org.joml.Vector4f;
 import org.joml.Vector4i;
 
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.function.IntConsumer;
 
 public abstract class GlBaseFrameBuffer<T extends BaseFrameBuffer<T>>
@@ -154,6 +158,70 @@ public abstract class GlBaseFrameBuffer<T extends BaseFrameBuffer<T>>
     @Override
     public T setStencilMask(Face face, int mask) {
         GLX.glStencilMaskSeparate(face.value(), mask);
+        return self();
+    }
+
+    @Override
+    public T setReadBuffer(FrameInnerBuffer.ReadBuffer readBuffer) {
+        GLX.glReadBuffer(readBuffer.value());
+        return self();
+    }
+
+    @Override
+    public FrameInnerBuffer.ReadBuffer getReadBuffer() {
+        return Cache.FrameReadBuffer.get(GLX.glGetInteger(GLX.GL_READ_BUFFER));
+    }
+
+    @Override
+    public T setClampColor(boolean clamp) {
+        GLX.glClampColor(GLX.GL_CLAMP_READ_COLOR, clamp ? GLX.GL_TRUE : GLX.GL_FALSE);
+        return self();
+    }
+
+    @Override
+    public boolean isClampColor() {
+        return GLX.glGetBoolean(GLX.GL_CLAMP_READ_COLOR);
+    }
+
+    @Override
+    public T readPixels(int x, int y, int width, int height, PixelFormat format, DataType dataType, ByteBuffer data) {
+        GLX.glReadPixels(x, y, width, height, format.value(), dataType.value(), data);
+        return self();
+    }
+
+    @Override
+    public T readPixels(int x, int y, int width, int height, PixelFormat format, DataType dataType, short[] data) {
+        GLX.glReadPixels(x, y, width, height, format.value(), dataType.value(), data);
+        return self();
+    }
+
+    @Override
+    public T readPixels(int x, int y, int width, int height, PixelFormat format, DataType dataType, ShortBuffer data) {
+        GLX.glReadPixels(x, y, width, height, format.value(), dataType.value(), data);
+        return self();
+    }
+
+    @Override
+    public T readPixels(int x, int y, int width, int height, PixelFormat format, DataType dataType, int[] data) {
+        GLX.glReadPixels(x, y, width, height, format.value(), dataType.value(), data);
+        return self();
+    }
+
+    @Override
+    public T readPixels(int x, int y, int width, int height, PixelFormat format, DataType dataType, IntBuffer data) {
+        GLX.glReadPixels(x, y, width, height, format.value(), dataType.value(), data);
+        return self();
+    }
+
+    @Override
+    public T readPixels(int x, int y, int width, int height, PixelFormat format, DataType dataType, float[] data) {
+        GLX.glReadPixels(x, y, width, height, format.value(), dataType.value(), data);
+        return self();
+    }
+
+    @Override
+    public T readPixels(int x, int y, int width, int height, PixelFormat format, DataType dataType, FloatBuffer data) {
+        GLX.glReadPixels(x, y, width, height, format.value(), dataType.value(), data);
         return self();
     }
 }
