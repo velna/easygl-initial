@@ -4,6 +4,8 @@ import com.vanix.easygl.commons.Identified;
 import com.vanix.easygl.core.*;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
+import org.joml.Vector3i;
+import org.joml.primitives.AABBi;
 
 public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Texture.Type<T>, T>, Handle {
 
@@ -167,6 +169,40 @@ public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Textu
     T wrapR(Wrap wrap);
 
     T generateMipmap();
+
+    //region CopyImageSubData
+    @Support(since = Version.GL43)
+    T copyImageSubData(int srcMipMapLevel, int srcX, int srcY, int srcZ, int width, int height, int depth,
+                       RenderBuffer dst, int dstX, int dstY, int dstZ);
+
+    @Support(since = Version.GL43)
+    T copyImageSubData(int srcMipMapLevel, int srcX, int srcY, int srcZ, int width, int height, int depth,
+                       Texture<?> dst, int dstMipmapLevel, int dstX, int dstY, int dstZ);
+
+    @Support(since = Version.GL43)
+    default T copyImageSubData(int srcMipMapLevel, Vector3i srcXyz, Vector3i size, RenderBuffer dst, Vector3i dstXyz) {
+        return copyImageSubData(srcMipMapLevel, srcXyz.x, srcXyz.y, srcXyz.z, size.x, size.y, size.z,
+                dst, dstXyz.x, dstXyz.y, dstXyz.z);
+    }
+
+    @Support(since = Version.GL43)
+    default T copyImageSubData(int srcMipMapLevel, Vector3i srcXyz, Vector3i size, Texture<?> dst, int dstMipmapLevel, Vector3i dstXyz) {
+        return copyImageSubData(srcMipMapLevel, srcXyz.x, srcXyz.y, srcXyz.z, size.x, size.y, size.z,
+                dst, dstMipmapLevel, dstXyz.x, dstXyz.y, dstXyz.z);
+    }
+
+    @Support(since = Version.GL43)
+    default T copyImageSubData(int srcMipMapLevel, AABBi src, RenderBuffer dst, Vector3i dstXyz) {
+        return copyImageSubData(srcMipMapLevel, src.minX, src.minY, src.minZ, src.lengthX(), src.lengthY(), src.lengthZ(),
+                dst, dstXyz.x, dstXyz.y, dstXyz.z);
+    }
+
+    @Support(since = Version.GL43)
+    default T copyImageSubData(int srcMipMapLevel, AABBi src, Texture<?> dst, int dstMipmapLevel, Vector3i dstXyz) {
+        return copyImageSubData(srcMipMapLevel, src.minX, src.minY, src.minZ, src.lengthX(), src.lengthY(), src.lengthZ(),
+                dst, dstMipmapLevel, dstXyz.x, dstXyz.y, dstXyz.z);
+    }
+    //endregion
 
     static Texture2D of2D() {
         return MetaHolder.Texture2D.create();

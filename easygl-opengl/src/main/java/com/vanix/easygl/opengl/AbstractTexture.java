@@ -168,4 +168,23 @@ public abstract class AbstractTexture<T extends Texture<T>> extends AbstractMult
         return self();
     }
 
+    @Override
+    public T copyImageSubData(int srcMipMapLevel, int srcX, int srcY, int srcZ, int width, int height, int depth,
+                              RenderBuffer dst, int dstX, int dstY, int dstZ) {
+        GLX.glCopyImageSubData(intHandle(), target.value(), srcMipMapLevel, srcX, srcY, srcZ,
+                dst.intHandle(), dst.target().value(), 0, dstX, dstY, dstZ,
+                width, height, depth);
+        GLX.checkError();
+        return self();
+    }
+
+    @Override
+    public T copyImageSubData(int srcMipMapLevel, int srcX, int srcY, int srcZ, int width, int height, int depth,
+                              Texture<?> dst, int dstMipmapLevel, int dstX, int dstY, int dstZ) {
+        GLX.glCopyImageSubData(intHandle(), target.value(), srcMipMapLevel, srcX, srcY, srcZ,
+                dst.intHandle(), dst.target().value(), dstMipmapLevel, dstX, dstY, dstZ,
+                width, height, depth);
+        GLX.checkError();
+        return self();
+    }
 }
