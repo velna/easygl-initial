@@ -6,6 +6,7 @@ import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.opengl.GLX;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -109,11 +110,11 @@ public class C2StencilTesting {
             });
             planeVAO.bind().attributes(planeVBO, 3, 2);
 
-            cubeTexture.bind()
+            cubeTexture.bind(Texture.Type.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/marble.jpg")
                     .generateMipmap();
-            floorTexture.bind()
+            floorTexture.bind(Texture.Type.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/metal.png")
                     .generateMipmap();
@@ -146,7 +147,7 @@ public class C2StencilTesting {
 
                 //floor
                 planeVAO.bind();
-                floorTexture.bind();
+                floorTexture.bind(Texture.Type.T2D);
                 program.setMatrix4("model", new Matrix4f().get(mat4f));
                 planeVAO.drawArray(DrawMode.Triangles, planeVBO);
 
@@ -157,7 +158,7 @@ public class C2StencilTesting {
 
                 // cubes
                 cubeVAO.bind();
-                cubeTexture.bind(Texture.Unit.U0);
+                cubeTexture.bind(Texture.Type.T2D, Texture.Unit.U0);
                 program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
                 program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
@@ -174,7 +175,7 @@ public class C2StencilTesting {
                 float scale = 1.1f;
                 // cubes
                 cubeVAO.bind();
-                cubeTexture.bind();
+                cubeTexture.bind(Texture.Type.T2D);
                 singleColorProgram.setMatrix4("model", new Matrix4f()
                         .translate(-1.0f, 0.0f, -1.0f)
                         .scale(scale)

@@ -5,7 +5,7 @@ import com.vanix.easygl.core.*;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>, T>, Handle {
+public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Texture.Type<T>, T>, Handle {
 
     enum Unit implements Bindable<Unit, Unit>, BindTarget<Unit, Unit> {
         // @formatter:off
@@ -117,9 +117,9 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
         }
     }
 
-    default T bind(Texture.Unit unit) {
+    default T bind(Type<T> type, Texture.Unit unit) {
         unit.bind();
-        return this.bind();
+        return this.bind(type);
     }
 
     T allocate(int width, int height, PixelFormat format);

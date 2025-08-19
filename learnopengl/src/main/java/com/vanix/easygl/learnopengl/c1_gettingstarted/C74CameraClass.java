@@ -93,7 +93,7 @@ public class C74CameraClass {
                     new Vector3f(1.5f, 0.2f, -1.5f),
                     new Vector3f(-1.3f, 1.0f, -1.5f)};
 
-            texture1.bind()
+            texture1.bind(Texture.Type.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.Linear)
@@ -102,7 +102,7 @@ public class C74CameraClass {
                 texture1.load(image).generateMipmap();
             }
 
-            texture2.bind()
+            texture2.bind(Texture.Type.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.Linear)
@@ -124,9 +124,9 @@ public class C74CameraClass {
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
 
                 Texture.Unit.U0.bind();
-                texture1.bind();
+                texture1.bind(Texture.Type.T2D);
                 Texture.Unit.U1.bind();
-                texture2.bind();
+                texture2.bind(Texture.Type.T2D);
 
                 program.bind()
                         .setMatrix4("projection", new Matrix4f()

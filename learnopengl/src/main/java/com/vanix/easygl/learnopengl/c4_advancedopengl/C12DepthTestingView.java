@@ -99,11 +99,11 @@ public class C12DepthTestingView {
             });
             planeVAO.bind().attributes(planeVBO, 3, 2);
 
-            cubeTexture.bind()
+            cubeTexture.bind(Texture.Type.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/marble.jpg")
                     .generateMipmap();
-            floorTexture.bind()
+            floorTexture.bind(Texture.Type.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/metal.png")
                     .generateMipmap();
@@ -127,13 +127,13 @@ public class C12DepthTestingView {
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f));
 
-                cubeTexture.bind(Texture.Unit.U0);
+                cubeTexture.bind(Texture.Type.T2D, Texture.Unit.U0);
                 program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
                 program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
 
-                floorTexture.bind(Texture.Unit.U0);
+                floorTexture.bind(Texture.Type.T2D, Texture.Unit.U0);
                 program.setMatrix4("model", new Matrix4f().get(mat4f));
                 planeVAO.bind().drawArray(DrawMode.Triangles, planeVBO);
 

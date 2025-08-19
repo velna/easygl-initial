@@ -87,7 +87,7 @@ public class C41LightingMapsDiffuse {
             lightCubeVAO.bind().attributes(vbo, 3, -3, -2);
 
 
-            diffuseMap.bind()
+            diffuseMap.bind(Texture.Type.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.LinearMipmapLinear)
@@ -130,7 +130,7 @@ public class C41LightingMapsDiffuse {
                         .set("model", new Matrix4f());
 
                 Texture.Unit.U0.bind();
-                diffuseMap.bind();
+                diffuseMap.bind(Texture.Type.T2D);
 
                 cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 

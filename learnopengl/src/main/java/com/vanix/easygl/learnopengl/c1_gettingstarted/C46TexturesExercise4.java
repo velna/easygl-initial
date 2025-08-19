@@ -46,7 +46,7 @@ public class C46TexturesExercise4 {
                     1, 2, 3  // second triangle
             });
 
-            texture1.bind()
+            texture1.bind(Texture.Type.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.Linear)
@@ -55,7 +55,7 @@ public class C46TexturesExercise4 {
                 texture1.load(image).generateMipmap();
             }
 
-            texture2.bind()
+            texture2.bind(Texture.Type.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.Linear)
@@ -73,9 +73,9 @@ public class C46TexturesExercise4 {
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 Texture.Unit.U0.bind();
-                texture1.bind();
+                texture1.bind(Texture.Type.T2D);
                 Texture.Unit.U1.bind();
-                texture2.bind();
+                texture2.bind(Texture.Type.T2D);
 
                 program.bind().set("mixValue", mixValue);
                 vao.drawElements(DrawMode.Triangles, vbo, ebo, 0);

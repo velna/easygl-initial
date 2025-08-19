@@ -80,7 +80,7 @@ public class C62CoordinateSystemsDepth {
                             -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
                     }), 3, 2);
 
-            texture1.bind()
+            texture1.bind(Texture.Type.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.Linear)
@@ -89,7 +89,7 @@ public class C62CoordinateSystemsDepth {
                 texture1.load(image).generateMipmap();
             }
 
-            texture2.bind()
+            texture2.bind(Texture.Type.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.Linear)
@@ -109,9 +109,9 @@ public class C62CoordinateSystemsDepth {
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
 
                 Texture.Unit.U0.bind();
-                texture1.bind();
+                texture1.bind(Texture.Type.T2D);
                 Texture.Unit.U1.bind();
-                texture2.bind();
+                texture2.bind(Texture.Type.T2D);
 
                 float time = (System.currentTimeMillis() - start) / 1000.0f;
 

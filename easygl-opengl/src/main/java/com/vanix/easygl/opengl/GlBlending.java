@@ -1,14 +1,11 @@
 package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.commons.Color;
-import com.vanix.easygl.commons.util.IntEnumCache;
 import com.vanix.easygl.core.graphics.Blending;
 import com.vanix.easygl.core.graphics.FrameInnerBuffer;
 import com.vanix.easygl.core.graphics.Graphics;
 
 public class GlBlending extends GlFeature<Blending> implements Blending {
-    private static final IntEnumCache<Function> FunctionCache = new IntEnumCache<>(Function.class, 2, 0xf);
-    private static final IntEnumCache<Equation> EquationCache = new IntEnumCache<>(Equation.class, 0xf);
 
     public GlBlending(Graphics graphics) {
         super(GLX.GL_BLEND, graphics);
@@ -43,22 +40,22 @@ public class GlBlending extends GlFeature<Blending> implements Blending {
 
     @Override
     public Function getSrcRGBFunction() {
-        return FunctionCache.valueOf(GLX.glGetInteger(GLX.GL_BLEND_SRC_RGB));
+        return Cache.BlendingFunction.valueOf(GLX.glGetInteger(GLX.GL_BLEND_SRC_RGB));
     }
 
     @Override
     public Function getDstRGBFunction() {
-        return FunctionCache.valueOf(GLX.glGetInteger(GLX.GL_BLEND_DST_RGB));
+        return Cache.BlendingFunction.valueOf(GLX.glGetInteger(GLX.GL_BLEND_DST_RGB));
     }
 
     @Override
     public Function getSrcAlphaFunction() {
-        return FunctionCache.valueOf(GLX.glGetInteger(GLX.GL_BLEND_SRC_ALPHA));
+        return Cache.BlendingFunction.valueOf(GLX.glGetInteger(GLX.GL_BLEND_SRC_ALPHA));
     }
 
     @Override
     public Function getDstAlphaFunction() {
-        return FunctionCache.valueOf(GLX.glGetInteger(GLX.GL_BLEND_DST_ALPHA));
+        return Cache.BlendingFunction.valueOf(GLX.glGetInteger(GLX.GL_BLEND_DST_ALPHA));
     }
 
     @Override
@@ -124,11 +121,11 @@ public class GlBlending extends GlFeature<Blending> implements Blending {
 
     @Override
     public Equation getRGBEquation() {
-        return EquationCache.valueOf(GLX.glGetInteger(GLX.GL_BLEND_EQUATION_RGB));
+        return Cache.BlendingEquation.valueOf(GLX.glGetInteger(GLX.GL_BLEND_EQUATION_RGB));
     }
 
     @Override
     public Equation getAlphaEquation() {
-        return EquationCache.valueOf(GLX.glGetInteger(GLX.GL_BLEND_EQUATION_ALPHA));
+        return Cache.BlendingEquation.valueOf(GLX.glGetInteger(GLX.GL_BLEND_EQUATION_ALPHA));
     }
 }

@@ -41,7 +41,7 @@ public class C41Textures {
                     1, 2, 3  // second triangle
             });
 
-            texture.bind()
+            texture.bind(Texture.Type.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.LinearMipmapLinear)
@@ -54,7 +54,7 @@ public class C41Textures {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
 
-                texture.bind();
+                texture.bind(Texture.Type.T2D);
                 program.bind();
                 vao.drawElements(DrawMode.Triangles, vbo, ebo, 0);
 

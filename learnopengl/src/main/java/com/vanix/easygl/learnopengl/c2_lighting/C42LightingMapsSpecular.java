@@ -88,14 +88,14 @@ public class C42LightingMapsSpecular {
             lightCubeVAO.bind().attributes(vbo, 3, -3, -2);
 
 
-            diffuseMap.bind()
+            diffuseMap.bind(Texture.Type.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .magFilter(MagFilter.Linear)
                     .load("textures/container2.png")
                     .generateMipmap();
-            specularMap.bind()
+            specularMap.bind(Texture.Type.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.LinearMipmapLinear)
@@ -138,9 +138,9 @@ public class C42LightingMapsSpecular {
                         .set("model", new Matrix4f());
 
                 Texture.Unit.U0.bind();
-                diffuseMap.bind();
+                diffuseMap.bind(Texture.Type.T2D);
                 Texture.Unit.U1.bind();
-                specularMap.bind();
+                specularMap.bind(Texture.Type.T2D);
 
                 cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 

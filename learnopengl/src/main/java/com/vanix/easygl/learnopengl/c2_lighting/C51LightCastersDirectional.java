@@ -103,11 +103,11 @@ public class C51LightCastersDirectional {
             lightCubeVAO.bind().attributes(vbo, 3, -3, -2);
 
 
-            diffuseMap.bind()
+            diffuseMap.bind(Texture.Type.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/container2.png")
                     .generateMipmap();
-            specularMap.bind()
+            specularMap.bind(Texture.Type.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/container2_specular.png")
                     .generateMipmap();
@@ -146,8 +146,8 @@ public class C51LightCastersDirectional {
                         .setMatrix4("view", view.get(mat4f))
                         .set("model", new Matrix4f());
 
-                diffuseMap.bind(Texture.Unit.U0);
-                specularMap.bind(Texture.Unit.U1);
+                diffuseMap.bind(Texture.Type.T2D, Texture.Unit.U0);
+                specularMap.bind(Texture.Type.T2D, Texture.Unit.U1);
 
 //                cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 

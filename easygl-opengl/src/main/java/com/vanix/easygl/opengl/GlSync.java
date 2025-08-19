@@ -1,13 +1,11 @@
 package com.vanix.easygl.opengl;
 
-import com.vanix.easygl.commons.util.IntEnumCache;
 import com.vanix.easygl.core.AbstractHandle;
 import com.vanix.easygl.core.graphics.Sync;
 
 import java.util.concurrent.TimeUnit;
 
 public class GlSync extends AbstractHandle implements Sync {
-    private static final IntEnumCache<Sync.Result> RESULT_CACHE = new IntEnumCache<>(Sync.Result.class, 0xf);
 
     public GlSync() {
         this(GLX.glFenceSync(GLX.GL_SYNC_GPU_COMMANDS_COMPLETE, 0));
@@ -26,6 +24,6 @@ public class GlSync extends AbstractHandle implements Sync {
     @Override
     public Result awaitClient(int timeout, TimeUnit timeUnit, boolean flush) {
         int code = GLX.glClientWaitSync(handle, flush ? GLX.GL_SYNC_FLUSH_COMMANDS_BIT : 0, timeUnit.toNanos(timeout));
-        return RESULT_CACHE.valueOf(code);
+        return Cache.SyncResult.valueOf(code);
     }
 }

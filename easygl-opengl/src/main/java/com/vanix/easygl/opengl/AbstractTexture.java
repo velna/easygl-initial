@@ -1,19 +1,19 @@
 package com.vanix.easygl.opengl;
 
-import com.vanix.easygl.core.AbstractBindable;
+import com.vanix.easygl.core.AbstractMultiTargetBindable;
 import com.vanix.easygl.core.graphics.*;
 import org.lwjgl.system.MemoryUtil;
 
 import java.util.function.IntConsumer;
 
-public abstract class AbstractTexture<T extends Texture<T>> extends AbstractBindable<Texture.Type<T>, T> implements Texture<T> {
+public abstract class AbstractTexture<T extends Texture<T>> extends AbstractMultiTargetBindable<Texture.Type<T>, T> implements Texture<T> {
 
-    protected AbstractTexture(int handle, Type<T> type) {
-        super(handle, type, (IntConsumer) GLX::glDeleteTextures);
+    protected AbstractTexture(int handle) {
+        super(handle, (IntConsumer) GLX::glDeleteTextures);
     }
 
-    public AbstractTexture(Type<T> type) {
-        this(GLX.glGenTextures(), type);
+    public AbstractTexture() {
+        this(GLX.glGenTextures());
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.vanix.easygl.opengl;
 
-import com.vanix.easygl.commons.util.IntEnumCache;
 import com.vanix.easygl.core.graphics.*;
 import org.joml.Vector2f;
 import org.lwjgl.opengl.GL;
@@ -8,15 +7,21 @@ import org.lwjgl.opengl.GLCapabilities;
 
 public class GlGraphics implements Graphics {
     static final GLCapabilities CAPABILITIES = GL.createCapabilities();
-    private static final IntEnumCache<PolygonMode> PolygonModeCache = new IntEnumCache<>(PolygonMode.class, 0xf);
-
     private final DepthTest depthTest = new GlDepthTest(this);
     private final Blending blending = new GlBlending(this);
     private final StencilTest stencilTest = new GlStencilTest(this);
     private final ScissorTest scissorTest = new GlScissorTest(this);
     private final LogicalOperation logicalOperation = new GlLogicalOperation(this);
     private final DefaultFrameBuffer defaultFrameBuffer = new GlDefaultFrameBuffer();
-    private final Debug debug = new GlDebug(this);
+    private final Debug debug;
+
+    public GlGraphics() {
+        if (CAPABILITIES.OpenGL43) {
+            debug = new GlDebug(this);
+        } else {
+            debug = null;
+        }
+    }
 
     @Override
     public Graphics viewPort(int x, int y, int width, int height) {
@@ -195,7 +200,7 @@ public class GlGraphics implements Graphics {
         int[] values = new int[2];
         GLX.glGetIntegerv(GLX.GL_POLYGON_MODE, values);
         GLX.checkError();
-        return new PolygonMode[]{PolygonModeCache.valueOf(values[0]), PolygonModeCache.valueOf(values[1])};
+        return new PolygonMode[]{Cache.PolygonMode.valueOf(values[0]), Cache.PolygonMode.valueOf(values[1])};
     }
 
     @Override

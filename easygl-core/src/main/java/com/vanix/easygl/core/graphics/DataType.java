@@ -28,9 +28,6 @@ public enum DataType {
     UnsignedInt5999Rev("UNSIGNED_INT_5_9_9_9_REV", Integer.BYTES),
     Float("FLOAT", java.lang.Float.BYTES),
     HalfFloat("HALF_FLOAT", java.lang.Float.BYTES >> 1),
-    UnsignedFlot("2_BYTES", java.lang.Float.BYTES),
-    Bytes3("3_BYTES", 3),
-    Bytes4("4_BYTES", 4),
     Double("DOUBLE", java.lang.Double.BYTES),
     Float32UnsignedInt24_8Rev("FLOAT_32_UNSIGNED_INT_24_8_REV", Long.BYTES);
     private final int value;

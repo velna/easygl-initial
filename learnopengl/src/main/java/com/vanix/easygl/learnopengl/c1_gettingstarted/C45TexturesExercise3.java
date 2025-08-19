@@ -42,7 +42,7 @@ public class C45TexturesExercise3 {
                     1, 2, 3  // second triangle
             });
 
-            texture1.bind()
+            texture1.bind(Texture.Type.T2D)
                     .wrapS(Texture.Wrap.ClampToEdge)
                     .wrapT(Texture.Wrap.ClampToEdge)
                     .minFilter(MinFilter.Nearest)
@@ -51,7 +51,7 @@ public class C45TexturesExercise3 {
                 texture1.load(image).generateMipmap();
             }
 
-            texture2.bind()
+            texture2.bind(Texture.Type.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.Nearest)
@@ -69,9 +69,9 @@ public class C45TexturesExercise3 {
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 Texture.Unit.U0.bind();
-                texture1.bind();
+                texture1.bind(Texture.Type.T2D);
                 Texture.Unit.U1.bind();
-                texture2.bind();
+                texture2.bind(Texture.Type.T2D);
 
                 program.bind();
                 vao.drawElements(DrawMode.Triangles, vbo, ebo, 0);
