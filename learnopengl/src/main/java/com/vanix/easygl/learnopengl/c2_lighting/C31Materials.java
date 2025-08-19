@@ -106,8 +106,8 @@ public class C31Materials {
                 // light properties
                 float sin = Math.sin(time);
                 Vector3f lightColor = new Vector3f(sin * 2.0f, sin * 0.7f, sin * 1.3f);
-                Vector3f diffuseColor = lightColor.clone().mul(new Vector3f(0.5f)); // decrease the influence
-                Vector3f ambientColor = diffuseColor.clone().mul(new Vector3f(0.2f)); // low influence
+                Vector3f diffuseColor = lightColor.mul(new Vector3f(0.5f), new Vector3f()); // decrease the influence
+                Vector3f ambientColor = diffuseColor.mul(new Vector3f(0.2f), new Vector3f()); // low influence
 
                 lightingProgram.bind()
                         // light properties

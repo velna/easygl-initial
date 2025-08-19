@@ -2,8 +2,8 @@ package com.vanix.easygl.core;
 
 import com.vanix.easygl.commons.util.ExtendedIterable;
 import org.apache.commons.collections4.iterators.UnmodifiableIterator;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -79,7 +79,7 @@ public class HandleArray<T extends Handle> implements Closeable, ExtendedIterabl
         }
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Iterator<T> iterator() {
         return UnmodifiableIterator.unmodifiableIterator(list.iterator());

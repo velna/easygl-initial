@@ -16,6 +16,7 @@ public class GlGraphics implements Graphics {
     private final ScissorTest scissorTest = new GlScissorTest(this);
     private final LogicalOperation logicalOperation = new GlLogicalOperation(this);
     private final DefaultFrameBuffer defaultFrameBuffer = new GlDefaultFrameBuffer();
+    private final Debug debug = new GlDebug(this);
 
     @Override
     public Graphics viewPort(int x, int y, int width, int height) {
@@ -51,6 +52,11 @@ public class GlGraphics implements Graphics {
     @Override
     public DefaultFrameBuffer defaultFrameBuffer() {
         return defaultFrameBuffer;
+    }
+
+    @Override
+    public Debug debug() {
+        return debug;
     }
 
     @Override

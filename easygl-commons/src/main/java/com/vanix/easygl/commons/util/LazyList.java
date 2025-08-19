@@ -1,8 +1,8 @@
 package com.vanix.easygl.commons.util;
 
 import org.apache.commons.collections4.list.AbstractSerializableListDecorator;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.IntFunction;
 
@@ -82,7 +82,7 @@ public class LazyList<E> extends AbstractSerializableListDecorator<E> {
         return object;
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public List<E> subList(final int fromIndex, final int toIndex) {
         final List<E> sub = decorated().subList(fromIndex, toIndex);

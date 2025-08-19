@@ -29,6 +29,8 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
     ScissorTest scissorTest();
 
     LogicalOperation logicalOperation();
+
+    Debug debug();
     //endregion
 
     // region Multisampling

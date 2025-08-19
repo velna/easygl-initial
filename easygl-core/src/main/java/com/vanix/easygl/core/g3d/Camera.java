@@ -30,7 +30,7 @@ public class Camera {
     }
 
     private void updateView() {
-        view = new Matrix4f().lookAt(this.pos, this.pos.clone().add(front), this.up);
+        view = new Matrix4f().lookAt(this.pos, this.pos.add(front, new Vector3f()), this.up);
         //System.out.println(String.format("pos=%s, front=%s, up=%s, view=%s", pos, front, up, view));
     }
 
@@ -47,22 +47,22 @@ public class Camera {
         float offset = speed.get() * deltaTime;
         switch (dir) {
             case Forward:
-                this.pos.add(front.clone().mul(offset));
+                this.pos.add(front.mul(offset, new Vector3f()));
                 break;
             case Backward:
-                this.pos.sub(front.clone().mul(offset));
+                this.pos.sub(front.mul(offset, new Vector3f()));
                 break;
             case Left:
-                this.pos.sub(front.clone().cross(up).normalize().mul(offset));
+                this.pos.sub(front.cross(up, new Vector3f()).normalize().mul(offset));
                 break;
             case Right:
-                this.pos.add(front.clone().cross(up).normalize().mul(offset));
+                this.pos.add(front.cross(up, new Vector3f()).normalize().mul(offset));
                 break;
             case Up:
-                this.pos.add(up.clone().mul(offset));
+                this.pos.add(up.mul(offset, new Vector3f()));
                 break;
             case Down:
-                this.pos.sub(up.clone().mul(offset));
+                this.pos.sub(up.mul(offset, new Vector3f()));
                 break;
             default:
                 break;
