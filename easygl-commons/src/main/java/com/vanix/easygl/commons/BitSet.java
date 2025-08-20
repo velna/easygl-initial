@@ -1,35 +1,53 @@
 package com.vanix.easygl.commons;
 
-public class BitSet<T extends IntEnum> {
+import java.util.function.ToIntFunction;
+
+public class BitSet<T> {
     private int value;
+    private final ToIntFunction<T> maskMapper;
 
-    private BitSet(T intEnum) {
-        value = intEnum.value();
+    private BitSet(T e, ToIntFunction<T> maskMapper) {
+        this.maskMapper = maskMapper;
+        value = e == null ? 0 : maskMapper.applyAsInt(e);
     }
 
-    public BitSet<T> or(T e) {
-        value |= e.value();
+    public BitSet<T> add(T... array) {
+        for (var e : array) {
+            add(e);
+        }
         return this;
     }
 
-    public BitSet<T> or(T e1, T e2) {
-        value |= e1.value() | e2.value();
+    public BitSet<T> add(T e) {
+        value |= maskMapper.applyAsInt(e);
         return this;
     }
 
-    public BitSet<T> or(T e1, T e2, T e3) {
-        value |= e1.value() | e2.value() | e3.value();
+    public BitSet<T> add(T e1, T e2) {
+        value |= maskMapper.applyAsInt(e1) | maskMapper.applyAsInt(e2);
         return this;
     }
 
-    public BitSet<T> or(T e1, T e2, T e3, T e4) {
-        value |= e1.value() | e2.value() | e3.value() | e4.value();
+    public BitSet<T> add(T e1, T e2, T e3) {
+        value |= maskMapper.applyAsInt(e1) | maskMapper.applyAsInt(e2) | maskMapper.applyAsInt(e3);
         return this;
     }
 
-    public BitSet<T> or(T e1, T e2, T e3, T e4, T e5) {
-        value |= e1.value() | e2.value() | e3.value() | e4.value() | e5.value();
+    public BitSet<T> add(T e1, T e2, T e3, T e4) {
+        value |= maskMapper.applyAsInt(e1) | maskMapper.applyAsInt(e2) | maskMapper.applyAsInt(e3)
+                | maskMapper.applyAsInt(e4);
         return this;
+    }
+
+    public BitSet<T> add(T e1, T e2, T e3, T e4, T e5) {
+        value |= maskMapper.applyAsInt(e1) | maskMapper.applyAsInt(e2) | maskMapper.applyAsInt(e3)
+                | maskMapper.applyAsInt(e4) | maskMapper.applyAsInt(e5);
+        return this;
+    }
+
+    public boolean contains(T e) {
+        int v = maskMapper.applyAsInt(e);
+        return (value & v) == v;
     }
 
     public int value() {
@@ -37,6 +55,14 @@ public class BitSet<T extends IntEnum> {
     }
 
     public static <T extends IntEnum> BitSet<T> of(T intEnum) {
-        return new BitSet<>(intEnum);
+        return of(intEnum, IntEnum::value);
+    }
+
+    public static <T> BitSet<T> of(ToIntFunction<T> maskMapper) {
+        return new BitSet<>(null, maskMapper);
+    }
+
+    public static <T> BitSet<T> of(T e, ToIntFunction<T> maskMapper) {
+        return new BitSet<>(e, maskMapper);
     }
 }

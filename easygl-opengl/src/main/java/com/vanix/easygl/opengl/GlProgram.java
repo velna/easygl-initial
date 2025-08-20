@@ -2,10 +2,7 @@ package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
-import com.vanix.easygl.core.graphics.GraphicsException;
-import com.vanix.easygl.core.graphics.Program;
-import com.vanix.easygl.core.graphics.Shader;
-import com.vanix.easygl.core.graphics.Texture;
+import com.vanix.easygl.core.graphics.*;
 import org.eclipse.collections.api.factory.primitive.ObjectIntMaps;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
@@ -20,6 +17,7 @@ import java.nio.IntBuffer;
 public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Program> implements Program {
     private final MutableIntObjectMap<Shader> shaders = new IntObjectHashMap<>();
     private final MutableObjectIntMap<String> uniforms = ObjectIntMaps.mutable.of();
+    private ProgramInterfaces interfaces;
 
     protected GlProgram() {
         this(GLX.glCreateProgram());
@@ -552,5 +550,13 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
         unit.assertBinding();
         texture.assertBinding();
         return set(key, unit.ordinal());
+    }
+
+    @Override
+    public ProgramInterfaces interfaces() {
+        if (interfaces == null) {
+            interfaces = new GlProgramInterfaces(this);
+        }
+        return interfaces;
     }
 }
