@@ -4,9 +4,7 @@ import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.graphics.*;
 import org.eclipse.collections.api.factory.primitive.ObjectIntMaps;
-import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
-import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
@@ -15,7 +13,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Program> implements Program {
-    private final MutableIntObjectMap<Shader> shaders = new IntObjectHashMap<>();
     private final MutableObjectIntMap<String> uniforms = ObjectIntMaps.mutable.of();
     private ProgramInterfaces interfaces;
 
@@ -29,22 +26,15 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
 
     @Override
     public Program attach(Shader shader) {
-        shaders.getIfAbsentPut(shader.intHandle(), () -> {
-            GLX.glAttachShader(intHandle(), shader.intHandle());
-            GLX.checkError();
-            return shader;
-        });
+        GLX.glAttachShader(intHandle(), shader.intHandle());
+        GLX.checkError();
         return self();
     }
 
     @Override
     public Program detach(Shader shader) {
-        if (shaders.remove(shader.intHandle()) != null) {
-            GLX.glDetachShader(intHandle(), shader.intHandle());
-            GLX.checkError();
-        } else {
-            throw new IllegalStateException("Shader never attached.");
-        }
+        GLX.glDetachShader(intHandle(), shader.intHandle());
+        GLX.checkError();
         return self();
     }
 
@@ -101,8 +91,6 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     @Override
     public void close() {
         super.close();
-        shaders.forEach(Shader::close);
-        shaders.clear();
     }
 
     private int uniform(String key) {
@@ -558,5 +546,16 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
             interfaces = new GlProgramInterfaces(this);
         }
         return interfaces;
+    }
+
+    @Override
+    public int getUniformBlockIndex(String name) {
+        return GLX.glGetUniformBlockIndex(intHandle(), name);
+    }
+
+    @Override
+    public Program bindUniformBlock(int uniformBlockIndex, int bindingPoint) {
+        GLX.glUniformBlockBinding(intHandle(), uniformBlockIndex, bindingPoint);
+        return this;
     }
 }

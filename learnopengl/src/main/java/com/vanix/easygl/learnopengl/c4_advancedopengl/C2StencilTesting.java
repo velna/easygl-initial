@@ -6,7 +6,6 @@ import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
-import com.vanix.easygl.opengl.GLX;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -49,7 +48,7 @@ public class C2StencilTesting {
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/2.stencil_single_color.fs")
                     .link();
 
-            cubeVBO.bind(Buffer.Type.Array).realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            cubeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // texture Coords
                     -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
                     0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
@@ -96,7 +95,7 @@ public class C2StencilTesting {
 
             cubeVAO.bind().attributes(cubeVBO, 3, 2);
 
-            planeVBO.bind(Buffer.Type.Array).realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            planeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // texture Coords
                     // (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode).
                     // this will cause the floor texture to repeat)
@@ -110,11 +109,11 @@ public class C2StencilTesting {
             });
             planeVAO.bind().attributes(planeVBO, 3, 2);
 
-            cubeTexture.bind(Texture.Type.T2D)
+            cubeTexture.bind(Texture.Target.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/marble.jpg")
                     .generateMipmap();
-            floorTexture.bind(Texture.Type.T2D)
+            floorTexture.bind(Texture.Target.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/metal.png")
                     .generateMipmap();
@@ -147,7 +146,7 @@ public class C2StencilTesting {
 
                 //floor
                 planeVAO.bind();
-                floorTexture.bind(Texture.Type.T2D);
+                floorTexture.bind(Texture.Target.T2D);
                 program.setMatrix4("model", new Matrix4f().get(mat4f));
                 planeVAO.drawArray(DrawMode.Triangles, planeVBO);
 
@@ -158,7 +157,7 @@ public class C2StencilTesting {
 
                 // cubes
                 cubeVAO.bind();
-                cubeTexture.bind(Texture.Type.T2D, Texture.Unit.U0);
+                cubeTexture.bind(Texture.Target.T2D, Texture.Unit.U0);
                 program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
                 program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
@@ -175,7 +174,7 @@ public class C2StencilTesting {
                 float scale = 1.1f;
                 // cubes
                 cubeVAO.bind();
-                cubeTexture.bind(Texture.Type.T2D);
+                cubeTexture.bind(Texture.Target.T2D);
                 singleColorProgram.setMatrix4("model", new Matrix4f()
                         .translate(-1.0f, 0.0f, -1.0f)
                         .scale(scale)

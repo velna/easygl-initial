@@ -7,9 +7,9 @@ import com.vanix.easygl.core.meta.MetaSystem;
 
 import java.nio.*;
 
-public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer> {
+public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffer> {
 
-    enum Type implements BindTarget<Type, Buffer>, IntEnum {
+    enum Target implements BindTarget<Target, Buffer>, IntEnum {
         Array("ARRAY_BUFFER"),
         AtomicCounter("ATOMIC_COUNTER_BUFFER"),
         CopyRead("COPY_READ_BUFFER"),
@@ -27,9 +27,9 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer>
 
         final int value;
 
-        private final BindingState<Type, Buffer> state;
+        private final BindingState<Target, Buffer> state;
 
-        Type(String id) {
+        Target(String id) {
             this.value = MetaSystem.Graphics.queryInt(id);
             state = MetaHolder.Buffer.newBindingState(name());
         }
@@ -40,22 +40,22 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer>
         }
 
         @Override
-        public BindingState<Buffer.Type, Buffer> state() {
+        public BindingState<Target, Buffer> state() {
             return state;
         }
 
     }
 
     enum DataUsage implements IntEnum {
-        STREAM_DRAW("STREAM_DRAW"),
-        STREAM_READ("STREAM_READ"),
-        STREAM_COPY("STREAM_COPY"),
-        STATIC_DRAW("STATIC_DRAW"),
-        STATIC_READ("STATIC_READ"),
-        STATIC_COPY("STATIC_COPY"),
-        DYNAMIC_DRAW("DYNAMIC_DRAW"),
-        DYNAMIC_READ("DYNAMIC_READ"),
-        DYNAMIC_COPY("DYNAMIC_COPY");
+        StreamDraw("STREAM_DRAW"),
+        StreamRead("STREAM_READ"),
+        StreamCopy("STREAM_COPY"),
+        StaticDraw("STATIC_DRAW"),
+        StaticRead("STATIC_READ"),
+        StaticCopy("STATIC_COPY"),
+        DynamicDraw("DYNAMIC_DRAW"),
+        DynamicRead("DYNAMIC_READ"),
+        DynamicCopy("DYNAMIC_COPY");
 
         final int value;
 
@@ -302,9 +302,9 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Type, Buffer>
 
     long bytes();
 
-    Buffer bindRange(int index, long offset, long size);
+    Buffer bindRange(int bindingPoint, long offset, long size);
 
-    Buffer bindBase(int index);
+    Buffer bindBase(int bindingPoint);
 
     static Buffer of(DataType dataType) {
         return MetaHolder.Buffer.create(dataType);

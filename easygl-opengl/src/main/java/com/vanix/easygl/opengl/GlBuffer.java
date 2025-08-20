@@ -8,7 +8,7 @@ import com.vanix.easygl.core.graphics.*;
 import java.nio.*;
 import java.util.function.IntConsumer;
 
-public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Type, Buffer> implements Buffer {
+public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer> implements Buffer {
     private final DataType dataType;
     private long sizeInBytes;
 
@@ -485,17 +485,17 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Type, Buffer> i
     }
 
     @Override
-    public Buffer bindRange(int index, long offset, long size) {
+    public Buffer bindRange(int bindingPoint, long offset, long size) {
         assertBinding();
-        GLX.glBindBufferRange(target.value(), index, intHandle(), offset, size);
+        GLX.glBindBufferRange(target.value(), bindingPoint, intHandle(), offset, size);
         GLX.checkError();
         return this;
     }
 
     @Override
-    public Buffer bindBase(int index) {
+    public Buffer bindBase(int bindingPoint) {
         assertBinding();
-        GLX.glBindBufferBase(target.value(), index, intHandle());
+        GLX.glBindBufferBase(target.value(), bindingPoint, intHandle());
         GLX.checkError();
         return this;
     }

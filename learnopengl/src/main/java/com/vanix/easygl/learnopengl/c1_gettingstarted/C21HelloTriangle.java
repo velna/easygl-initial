@@ -35,8 +35,8 @@ public class C21HelloTriangle {
                             """)
                     .link();
 
-            vao.bind().attributes(vbo.bind(Buffer.Type.Array)
-                    .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            vao.bind().attributes(vbo.bind(Buffer.Target.Array)
+                    .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             -0.5f, -0.5f, 0.0f, // left
                             0.5f, -0.5f, 0.0f, // right
                             0.0f, 0.5f, 0.0f  // top

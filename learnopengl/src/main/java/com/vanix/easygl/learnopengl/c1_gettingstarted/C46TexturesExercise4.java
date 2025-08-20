@@ -33,20 +33,20 @@ public class C46TexturesExercise4 {
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/4.6.texture.fs")
                     .link();
 
-            vao.bind().attributes(vbo.bind(Buffer.Type.Array)
-                    .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            vao.bind().attributes(vbo.bind(Buffer.Target.Array)
+                    .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             // positions          // colors           // texture coords
                             0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
                             0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
                             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
                             -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
                     }), 3, 3, 2);
-            ebo.bind(Buffer.Type.ElementArray).realloc(Buffer.DataUsage.STATIC_DRAW, new int[]{
+            ebo.bind(Buffer.Target.ElementArray).realloc(Buffer.DataUsage.StaticDraw, new int[]{
                     0, 1, 3, // first triangle
                     1, 2, 3  // second triangle
             });
 
-            texture1.bind(Texture.Type.T2D)
+            texture1.bind(Texture.Target.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.Linear)
@@ -55,7 +55,7 @@ public class C46TexturesExercise4 {
                 texture1.load(image).generateMipmap();
             }
 
-            texture2.bind(Texture.Type.T2D)
+            texture2.bind(Texture.Target.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.Linear)
@@ -73,9 +73,9 @@ public class C46TexturesExercise4 {
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 Texture.Unit.U0.bind();
-                texture1.bind(Texture.Type.T2D);
+                texture1.bind(Texture.Target.T2D);
                 Texture.Unit.U1.bind();
-                texture2.bind(Texture.Type.T2D);
+                texture2.bind(Texture.Target.T2D);
 
                 program.bind().set("mixValue", mixValue);
                 vao.drawElements(DrawMode.Triangles, vbo, ebo, 0);

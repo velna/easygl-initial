@@ -54,8 +54,8 @@ public class C73CameraMouseZoom {
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/7.3.camera.fs")
                     .link();
 
-            vao.bind().attributes(vbo.bind(Buffer.Type.Array)
-                    .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            vao.bind().attributes(vbo.bind(Buffer.Target.Array)
+                    .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
                             0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
                             0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
@@ -111,7 +111,7 @@ public class C73CameraMouseZoom {
                     new Vector3f(1.5f, 0.2f, -1.5f),
                     new Vector3f(-1.3f, 1.0f, -1.5f)};
 
-            texture1.bind(Texture.Type.T2D)
+            texture1.bind(Texture.Target.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.Linear)
@@ -120,7 +120,7 @@ public class C73CameraMouseZoom {
                 texture1.load(image).generateMipmap();
             }
 
-            texture2.bind(Texture.Type.T2D)
+            texture2.bind(Texture.Target.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.Linear)
@@ -147,9 +147,9 @@ public class C73CameraMouseZoom {
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
 
                 Texture.Unit.U0.bind();
-                texture1.bind(Texture.Type.T2D);
+                texture1.bind(Texture.Target.T2D);
                 Texture.Unit.U1.bind();
-                texture2.bind(Texture.Type.T2D);
+                texture2.bind(Texture.Target.T2D);
 
                 program.bind()
                         .setMatrix4("projection", new Matrix4f()

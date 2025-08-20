@@ -219,6 +219,14 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
         return (T) new ProgramInterfaceImpl(programInterface, index, keys);
     }
 
+    int getUniformBlockIndex(String name);
+
+    Program bindUniformBlock(int uniformBlockIndex, int bindingPoint);
+
+    default Program bindUniformBlock(String name, int bindingPoint) {
+        return bindUniformBlock(getUniformBlockIndex(name), bindingPoint);
+    }
+
     static Program of() {
         return MetaHolder.Program.create();
     }

@@ -22,7 +22,7 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
     @Override
     public VertexArray attributes(Buffer buffer, int... layouts) {
         assertBinding();
-        buffer.bind(Buffer.Type.Array);
+        buffer.bind(Buffer.Target.Array);
         int pointer = 0;
         int stride = 0;
         for (int layout : layouts) {
@@ -45,14 +45,14 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
     @Override
     public void drawArray(DrawMode mode, Buffer vbo, int first) {
         bind();
-        GLX.glDrawArrays(mode.value(), first, (int) vbo.bind(Buffer.Type.Array).count());
+        GLX.glDrawArrays(mode.value(), first, (int) vbo.bind(Buffer.Target.Array).count());
         GLX.checkError();
     }
 
     @Override
     public void drawElements(DrawMode mode, Buffer vbo, Buffer ebo, int indices) {
         bind();
-        GLX.glDrawElements(mode.value(), (int) ebo.bind(Buffer.Type.ElementArray).count(), ebo.dataType().value(), indices);
+        GLX.glDrawElements(mode.value(), (int) ebo.bind(Buffer.Target.ElementArray).count(), ebo.dataType().value(), indices);
         GLX.checkError();
     }
 }

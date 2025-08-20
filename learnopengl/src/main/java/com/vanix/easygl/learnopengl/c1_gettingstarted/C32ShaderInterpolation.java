@@ -43,8 +43,8 @@ public class C32ShaderInterpolation {
                             .compile())
                     .link();
 
-            vao.bind().attributes(vbo.bind(Buffer.Type.Array)
-                    .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            vao.bind().attributes(vbo.bind(Buffer.Target.Array)
+                    .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             // positions         // colors
                             0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,  // bottom right
                             -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,  // bottom left

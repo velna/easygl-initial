@@ -40,7 +40,7 @@ public class C12DepthTestingView {
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/1.2.depth_testing.fs")
                     .link();
 
-            cubeVBO.bind(Buffer.Type.Array).realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            cubeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // texture Coords
                     -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
                     0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
@@ -87,7 +87,7 @@ public class C12DepthTestingView {
 
             cubeVAO.bind().attributes(cubeVBO, 3, 2);
 
-            planeVBO.bind(Buffer.Type.Array).realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            planeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
                     5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
                     -5.0f, -0.5f, 5.0f, 0.0f, 0.0f,
@@ -99,11 +99,11 @@ public class C12DepthTestingView {
             });
             planeVAO.bind().attributes(planeVBO, 3, 2);
 
-            cubeTexture.bind(Texture.Type.T2D)
+            cubeTexture.bind(Texture.Target.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/marble.jpg")
                     .generateMipmap();
-            floorTexture.bind(Texture.Type.T2D)
+            floorTexture.bind(Texture.Target.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/metal.png")
                     .generateMipmap();
@@ -127,13 +127,13 @@ public class C12DepthTestingView {
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f));
 
-                cubeTexture.bind(Texture.Type.T2D, Texture.Unit.U0);
+                cubeTexture.bind(Texture.Target.T2D, Texture.Unit.U0);
                 program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
                 program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
 
-                floorTexture.bind(Texture.Type.T2D, Texture.Unit.U0);
+                floorTexture.bind(Texture.Target.T2D, Texture.Unit.U0);
                 program.setMatrix4("model", new Matrix4f().get(mat4f));
                 planeVAO.bind().drawArray(DrawMode.Triangles, planeVBO);
 

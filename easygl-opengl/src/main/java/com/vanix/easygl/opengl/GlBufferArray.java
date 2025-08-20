@@ -14,7 +14,7 @@ public class GlBufferArray extends BufferArray {
 
     @Override
     public BufferArray bindBase(int first) {
-        Buffer.Type target = getFirst().target();
+        Buffer.Target target = getFirst().target();
         GLX.glBindBuffersBase(target.value(), first, handles);
         GLX.checkError();
         return this;
@@ -22,7 +22,7 @@ public class GlBufferArray extends BufferArray {
 
     @Override
     public BufferArray bindRange(int first, long[] offsets, long[] sizes) {
-        Buffer.Type target = getFirst().target();
+        Buffer.Target target = getFirst().target();
         try (MemoryStack stack = MemoryStack.stackGet()) {
             var offsetsPb = stack.mallocPointer(offsets.length).put(offsets);
             var sizesPb = stack.mallocPointer(sizes.length).put(sizes);

@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 @SystemName("Graphics")
 public class GlMetaService extends AbstractMetaService {
-    static final BindableMeta<Buffer.Type, Buffer> BufferMeta = new IntBindableMeta<>(
+    static final BindableMeta<Buffer.Target, Buffer> BufferMeta = new IntBindableMeta<>(
             args -> new GlBuffer((DataType) args[0]),
             GLX::glBindBuffer,
             GLX::glBindBuffer,
@@ -85,11 +85,11 @@ public class GlMetaService extends AbstractMetaService {
             null
     );
 
-    static final BindableMeta<Texture.Type<Texture2D>, Texture2D> Texture2DMeta = createTextureMeta(
+    static final BindableMeta<Texture.Target<Texture2D>, Texture2D> Texture2DMeta = createTextureMeta(
             args -> new GlTexture2D(),
             (handle, args) -> new GlTexture2D(handle));
 
-    static final BindableMeta<Texture.Type<TextureCube>, TextureCube> TextureCubeMeta = createTextureMeta(
+    static final BindableMeta<Texture.Target<TextureCube>, TextureCube> TextureCubeMeta = createTextureMeta(
             args -> new GlTextureCube(),
             (handle, args) -> new GlTextureCube(handle));
 
@@ -171,8 +171,8 @@ public class GlMetaService extends AbstractMetaService {
     }
 
     private static <T extends Texture<T>>
-    BindableMeta<Texture.Type<T>, T> createTextureMeta(Function<Object[], T> factory,
-                                                       BiFunction<Integer, Object[], T> init) {
+    BindableMeta<Texture.Target<T>, T> createTextureMeta(Function<Object[], T> factory,
+                                                         BiFunction<Integer, Object[], T> init) {
         return new IntBindableMeta<>(
                 factory,
                 GLX::glBindTexture,

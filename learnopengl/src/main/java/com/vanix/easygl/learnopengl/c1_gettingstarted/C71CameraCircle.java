@@ -35,8 +35,8 @@ public class C71CameraCircle {
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/7.1.camera.fs")
                     .link();
 
-            vao.bind().attributes(vbo.bind(Buffer.Type.Array)
-                    .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            vao.bind().attributes(vbo.bind(Buffer.Target.Array)
+                    .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
                             0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
                             0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
@@ -92,7 +92,7 @@ public class C71CameraCircle {
                     new Vector3f(1.5f, 0.2f, -1.5f),
                     new Vector3f(-1.3f, 1.0f, -1.5f)};
 
-            texture1.bind(Texture.Type.T2D)
+            texture1.bind(Texture.Target.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.Linear)
@@ -101,7 +101,7 @@ public class C71CameraCircle {
                 texture1.load(image).generateMipmap();
             }
 
-            texture2.bind(Texture.Type.T2D)
+            texture2.bind(Texture.Target.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.Linear)
@@ -125,9 +125,9 @@ public class C71CameraCircle {
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
 
                 Texture.Unit.U0.bind();
-                texture1.bind(Texture.Type.T2D);
+                texture1.bind(Texture.Target.T2D);
                 Texture.Unit.U1.bind();
-                texture2.bind(Texture.Type.T2D);
+                texture2.bind(Texture.Target.T2D);
 
                 float time = (System.currentTimeMillis() - start) / 1000.0f;
                 float radius = 10.0f;

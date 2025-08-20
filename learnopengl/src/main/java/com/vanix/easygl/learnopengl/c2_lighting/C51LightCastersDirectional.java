@@ -42,7 +42,7 @@ public class C51LightCastersDirectional {
                     .attachResource(Shader.Type.Fragment, "shaders/2_lighting/5.1.light_cube.fs")
                     .link();
 
-            vbo.bind(Buffer.Type.Array).realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            vbo.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // normals           // texture coords
                     -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
                     0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
@@ -103,11 +103,11 @@ public class C51LightCastersDirectional {
             lightCubeVAO.bind().attributes(vbo, 3, -3, -2);
 
 
-            diffuseMap.bind(Texture.Type.T2D)
+            diffuseMap.bind(Texture.Target.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/container2.png")
                     .generateMipmap();
-            specularMap.bind(Texture.Type.T2D)
+            specularMap.bind(Texture.Target.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/container2_specular.png")
                     .generateMipmap();
@@ -146,8 +146,8 @@ public class C51LightCastersDirectional {
                         .setMatrix4("view", view.get(mat4f))
                         .set("model", new Matrix4f());
 
-                diffuseMap.bind(Texture.Type.T2D, Texture.Unit.U0);
-                specularMap.bind(Texture.Type.T2D, Texture.Unit.U1);
+                diffuseMap.bind(Texture.Target.T2D, Texture.Unit.U0);
+                specularMap.bind(Texture.Target.T2D, Texture.Unit.U1);
 
 //                cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 

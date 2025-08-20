@@ -38,7 +38,7 @@ public class C22BasicLightingSpecular {
                     .attachResource(Shader.Type.Fragment, "shaders/2_lighting/2.2.light_cube.fs")
                     .link();
 
-            vbo.bind(Buffer.Type.Array).realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            vbo.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
                     0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
                     0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,

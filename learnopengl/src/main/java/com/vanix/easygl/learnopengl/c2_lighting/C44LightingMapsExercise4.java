@@ -41,7 +41,7 @@ public class C44LightingMapsExercise4 {
                     .attachResource(Shader.Type.Fragment, "shaders/2_lighting/4.4.light_cube.fs")
                     .link();
 
-            vbo.bind(Buffer.Type.Array).realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            vbo.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // normals           // texture coords
                     -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
                     0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
@@ -89,15 +89,15 @@ public class C44LightingMapsExercise4 {
             lightCubeVAO.bind().attributes(vbo, 3, -3, -2);
 
 
-            diffuseMap.bind(Texture.Type.T2D)
+            diffuseMap.bind(Texture.Target.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/container2.png")
                     .generateMipmap();
-            specularMap.bind(Texture.Type.T2D)
+            specularMap.bind(Texture.Target.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/container2_specular.png")
                     .generateMipmap();
-            emissionMap.bind(Texture.Type.T2D)
+            emissionMap.bind(Texture.Target.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/matrix.jpg")
                     .generateMipmap();
@@ -138,9 +138,9 @@ public class C44LightingMapsExercise4 {
                         .setMatrix4("view", view.get(mat4f))
                         .set("model", new Matrix4f());
 
-                diffuseMap.bind(Texture.Type.T2D, Texture.Unit.U0);
-                specularMap.bind(Texture.Type.T2D, Texture.Unit.U1);
-                emissionMap.bind(Texture.Type.T2D, Texture.Unit.U2);
+                diffuseMap.bind(Texture.Target.T2D, Texture.Unit.U0);
+                specularMap.bind(Texture.Target.T2D, Texture.Unit.U1);
+                emissionMap.bind(Texture.Target.T2D, Texture.Unit.U2);
 
                 cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 

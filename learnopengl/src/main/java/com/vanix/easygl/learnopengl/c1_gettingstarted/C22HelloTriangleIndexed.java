@@ -40,15 +40,15 @@ public class C22HelloTriangleIndexed {
                             .compile())
                     .link();
 
-            vao.bind().attributes(vbo.bind(Buffer.Type.Array)
-                    .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            vao.bind().attributes(vbo.bind(Buffer.Target.Array)
+                    .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             0.5f, 0.5f, 0.0f,  // top right
                             0.5f, -0.5f, 0.0f,  // bottom right
                             -0.5f, -0.5f, 0.0f,  // bottom left
                             -0.5f, 0.5f, 0.0f   // top left
                     }), 3);
-            ebo.bind(Buffer.Type.ElementArray)
-                    .realloc(Buffer.DataUsage.STATIC_DRAW, new int[]{
+            ebo.bind(Buffer.Target.ElementArray)
+                    .realloc(Buffer.DataUsage.StaticDraw, new int[]{
                             // note that we start from 0!
                             0, 1, 3,  // first Triangle
                             1, 2, 3   // second Triangle

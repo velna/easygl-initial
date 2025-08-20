@@ -28,20 +28,20 @@ public class C41Textures {
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/4.1.texture.fs")
                     .link();
 
-            vao.bind().attributes(vbo.bind(Buffer.Type.Array)
-                    .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            vao.bind().attributes(vbo.bind(Buffer.Target.Array)
+                    .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             // positions          // colors           // texture coords
                             0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
                             0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
                             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
                             -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
                     }), 3, 3, 2);
-            ebo.bind(Buffer.Type.ElementArray).realloc(Buffer.DataUsage.STATIC_DRAW, new int[]{
+            ebo.bind(Buffer.Target.ElementArray).realloc(Buffer.DataUsage.StaticDraw, new int[]{
                     0, 1, 3, // first triangle
                     1, 2, 3  // second triangle
             });
 
-            texture.bind(Texture.Type.T2D)
+            texture.bind(Texture.Target.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.LinearMipmapLinear)
@@ -54,7 +54,7 @@ public class C41Textures {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
 
-                texture.bind(Texture.Type.T2D);
+                texture.bind(Texture.Target.T2D);
                 program.bind();
                 vao.drawElements(DrawMode.Triangles, vbo, ebo, 0);
 

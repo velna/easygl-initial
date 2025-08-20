@@ -7,7 +7,7 @@ import com.vanix.easygl.core.meta.MetaSystem;
 import org.joml.Vector3i;
 import org.joml.primitives.AABBi;
 
-public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Texture.Type<T>, T>, Handle {
+public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Texture.Target<T>, T>, Handle {
 
     enum Unit implements Bindable<Unit, Unit>, BindTarget<Unit, Unit> {
         // @formatter:off
@@ -46,22 +46,22 @@ public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Textu
         }
     }
 
-    class Type<T extends Texture<T>> implements BindTarget<Type<T>, T>, Identified<String> {
+    class Target<T extends Texture<T>> implements BindTarget<Target<T>, T>, Identified<String> {
         //        public static final Type<?> T1D = new Type<>("TEXTURE_1D", GLC.GL_TEXTURE_1D);
-        public static final Type<Texture2D> T2D = new Type<>("TEXTURE_2D", MetaSystem.Graphics.queryInt("TEXTURE_2D"), MetaHolder.Texture2D);
+        public static final Target<Texture2D> T2D = new Target<>("TEXTURE_2D", MetaSystem.Graphics.queryInt("TEXTURE_2D"), MetaHolder.Texture2D);
         //        public static final Type<?> T3D = new Type<>("TEXTURE_3D", GLC.GL_TEXTURE_3D);
 //        public static final Type<?> T1DArray = new Type<>("TEXTURE_1D_ARRAY", GLC.GL_TEXTURE_1D_ARRAY);
 //        public static final Type<?> T2DArray = new Type<>("TEXTURE_2D_ARRAY", GLC.GL_TEXTURE_2D_ARRAY);
 //        public static final Type<?> Rectangle = new Type<>("TEXTURE_RECTANGLE", GLC.GL_TEXTURE_RECTANGLE);
-        public static final Type<TextureCube> CubeMap = new Type<>("TEXTURE_CUBE_MAP", MetaSystem.Graphics.queryInt("TEXTURE_CUBE_MAP"), MetaHolder.TextureCube);
+        public static final Target<TextureCube> CubeMap = new Target<>("TEXTURE_CUBE_MAP", MetaSystem.Graphics.queryInt("TEXTURE_CUBE_MAP"), MetaHolder.TextureCube);
 //        public static final Type<?> T2DMultisample = new Type<>("TEXTURE_2D_MULTISAMPLE", GLC.GL_TEXTURE_2D_MULTISAMPLE);
 //        public static final Type<?> T2DMultisampleArray = new Type<>("TEXTURE_2D_MULTISAMPLE_ARRAY", GLC.GL_TEXTURE_2D_MULTISAMPLE_ARRAY);
 
         private final int value;
         private final String id;
-        private final BindingState<Type<T>, T> state;
+        private final BindingState<Target<T>, T> state;
 
-        private Type(String id, int value, BindableMeta<Type<T>, T> meta) {
+        private Target(String id, int value, BindableMeta<Target<T>, T> meta) {
             this.id = id;
             this.value = value;
             this.state = meta.newBindingState(id);
@@ -78,7 +78,7 @@ public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Textu
         }
 
         @Override
-        public BindingState<Type<T>, T> state() {
+        public BindingState<Target<T>, T> state() {
             return state;
         }
     }
@@ -119,9 +119,9 @@ public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Textu
         }
     }
 
-    default T bind(Type<T> type, Texture.Unit unit) {
+    default T bind(Target<T> target, Texture.Unit unit) {
         unit.bind();
-        return this.bind(type);
+        return this.bind(target);
     }
 
     T allocate(int width, int height, PixelFormat format);

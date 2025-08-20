@@ -40,7 +40,7 @@ public class C42LightingMapsSpecular {
                     .attachResource(Shader.Type.Fragment, "shaders/2_lighting/4.2.light_cube.fs")
                     .link();
 
-            vbo.bind(Buffer.Type.Array).realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+            vbo.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // normals           // texture coords
                     -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
                     0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
@@ -88,14 +88,14 @@ public class C42LightingMapsSpecular {
             lightCubeVAO.bind().attributes(vbo, 3, -3, -2);
 
 
-            diffuseMap.bind(Texture.Type.T2D)
+            diffuseMap.bind(Texture.Target.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .magFilter(MagFilter.Linear)
                     .load("textures/container2.png")
                     .generateMipmap();
-            specularMap.bind(Texture.Type.T2D)
+            specularMap.bind(Texture.Target.T2D)
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.LinearMipmapLinear)
@@ -138,9 +138,9 @@ public class C42LightingMapsSpecular {
                         .set("model", new Matrix4f());
 
                 Texture.Unit.U0.bind();
-                diffuseMap.bind(Texture.Type.T2D);
+                diffuseMap.bind(Texture.Target.T2D);
                 Texture.Unit.U1.bind();
-                specularMap.bind(Texture.Type.T2D);
+                specularMap.bind(Texture.Target.T2D);
 
                 cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 

@@ -6,7 +6,7 @@ import org.lwjgl.system.MemoryUtil;
 
 import java.util.function.IntConsumer;
 
-public abstract class AbstractTexture<T extends Texture<T>> extends AbstractMultiTargetBindable<Texture.Type<T>, T> implements Texture<T> {
+public abstract class AbstractTexture<T extends Texture<T>> extends AbstractMultiTargetBindable<Texture.Target<T>, T> implements Texture<T> {
 
     protected AbstractTexture(int handle) {
         super(handle, (IntConsumer) GLX::glDeleteTextures);
