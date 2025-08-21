@@ -4,6 +4,7 @@ import com.vanix.easygl.commons.value.FloatValue;
 import com.vanix.easygl.commons.value.Value;
 import com.vanix.easygl.core.Direction;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 
 public class Camera {
@@ -11,7 +12,7 @@ public class Camera {
     private final Vector3f pos;
     private final Vector3f up;
     private final Vector3f front;
-    private Matrix4f view;
+    private final Matrix4f view = new Matrix4f();
     private final FloatValue fov = Value.limited(45.f, 1.0f, 45.0f);
 
     public Camera(float speed, Vector3f pos, Vector3f up, Vector3f front) {
@@ -30,8 +31,7 @@ public class Camera {
     }
 
     private void updateView() {
-        view = new Matrix4f().lookAt(this.pos, this.pos.add(front, new Vector3f()), this.up);
-        //System.out.println(String.format("pos=%s, front=%s, up=%s, view=%s", pos, front, up, view));
+        new Matrix4f().lookAt(this.pos, this.pos.add(front, new Vector3f()), this.up, view);
     }
 
     public Camera update(float pitch, float yaw) {
@@ -87,7 +87,7 @@ public class Camera {
         return pos;
     }
 
-    public Matrix4f view() {
+    public Matrix4fc view() {
         return view;
     }
 

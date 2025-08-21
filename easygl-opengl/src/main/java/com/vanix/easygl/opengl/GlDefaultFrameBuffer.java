@@ -1,5 +1,6 @@
 package com.vanix.easygl.opengl;
 
+import com.vanix.easygl.core.graphics.BaseFrameBuffer;
 import com.vanix.easygl.core.graphics.DefaultFrameBuffer;
 import com.vanix.easygl.core.graphics.FrameBuffer;
 
@@ -7,6 +8,7 @@ public class GlDefaultFrameBuffer extends GlBaseFrameBuffer<DefaultFrameBuffer> 
     public GlDefaultFrameBuffer() {
         super(0, h -> {
         });
+        target = BaseFrameBuffer.Target.frame();
     }
 
     @Override

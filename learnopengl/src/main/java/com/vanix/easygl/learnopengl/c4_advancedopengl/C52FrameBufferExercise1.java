@@ -14,7 +14,7 @@ import org.lwjgl.BufferUtils;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 
-public class C51FrameBuffer {
+public class C52FrameBufferExercise1 {
     public static void main(String[] args) throws IOException {
         WindowHints.ContextVersionMajor.set(3);
         WindowHints.ContextVersionMinor.set(3);
@@ -43,11 +43,11 @@ public class C51FrameBuffer {
 
             graphics.depthTest().enable();
 
-            program.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/5.1.framebuffers.vs")
-                    .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/5.1.framebuffers.fs")
+            program.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/5.2.framebuffers.vs")
+                    .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/5.2.framebuffers.fs")
                     .link();
-            screenProgram.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/5.1.framebuffers_screen.vs")
-                    .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/5.1.framebuffers_screen.fs")
+            screenProgram.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/5.2.framebuffers_screen.vs")
+                    .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/5.2.framebuffers_screen.fs")
                     .link();
 
             cubeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
@@ -112,13 +112,13 @@ public class C51FrameBuffer {
             quadVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
                     // positions   // texCoords
-                    -1.0f, 1.0f, 0.0f, 1.0f,
-                    -1.0f, -1.0f, 0.0f, 0.0f,
-                    1.0f, -1.0f, 1.0f, 0.0f,
+                    -0.3f, 1.0f, 0.0f, 1.0f,
+                    -0.3f, 0.7f, 0.0f, 0.0f,
+                    0.3f, 0.7f, 1.0f, 0.0f,
 
-                    -1.0f, 1.0f, 0.0f, 1.0f,
-                    1.0f, -1.0f, 1.0f, 0.0f,
-                    1.0f, 1.0f, 1.0f, 1.0f
+                    -0.3f, 1.0f, 0.0f, 1.0f,
+                    0.3f, 0.7f, 1.0f, 0.0f,
+                    0.3f, 1.0f, 1.0f, 1.0f
             });
             quadVAO.bind().attributes(quadVBO, 2, 2);
 
@@ -156,25 +156,30 @@ public class C51FrameBuffer {
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 100.0f);
                 var view = camera.update().view();
 
-                program.bind()
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f));
+                Runnable scene = () -> {
+                    program.bind()
+                            .setMatrix4("projection", projection.get(mat4f))
+                            .setMatrix4("view", view.get(mat4f));
 
-                cubeTexture.bind(Texture.Target.T2D, Texture.Unit.U0);
-                program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
-                program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
+                    cubeTexture.bind(Texture.Target.T2D, Texture.Unit.U0);
+                    program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
+                    cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
+                    program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
+                    cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
 
-                floorTexture.bind();
-                program.setMatrix4("model", new Matrix4f().get(mat4f));
-                planeVAO.bind().drawArray(DrawMode.Triangles, planeVBO);
-
-                graphics.depthTest().disable().then()
-                        .defaultFrameBuffer().bind()
+                    floorTexture.bind();
+                    program.setMatrix4("model", new Matrix4f().get(mat4f));
+                    planeVAO.bind().drawArray(DrawMode.Triangles, planeVBO);
+                };
+                camera.yaw().incr(180f);
+                scene.run();
+                graphics.defaultFrameBuffer().bind()
                         .setClearColor(0.0f, 0.0f, 1.0f, 1.0f)
-                        .clear(FrameInnerBuffer.Mask.Color);
+                        .clear(FrameInnerBuffer.Mask.ColorAndDepth);
+                camera.yaw().incr(-180f);
+                scene.run();
 
+                graphics.depthTest().disable();
                 screenProgram.bind();
                 textureColor.bind();
                 quadVAO.bind().drawArray(DrawMode.Triangles, quadVBO);

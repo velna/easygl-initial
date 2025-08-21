@@ -51,7 +51,7 @@ public abstract class GlBaseFrameBuffer<T extends BaseFrameBuffer<T>>
     }
 
     @Override
-    public T setClearColor(float red, float blue, float green, float alpha) {
+    public T setClearColor(float red, float green, float blue, float alpha) {
         GLX.glClearColor(red, blue, green, alpha);
         return self();
     }

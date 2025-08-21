@@ -9,7 +9,9 @@ final class FrameBufferTarget<T extends BaseFrameBuffer<T>> implements BaseFrame
     @SuppressWarnings("rawtypes")
     static final FrameBufferTarget Read = new FrameBufferTarget("READ_FRAMEBUFFER");
     @SuppressWarnings("rawtypes")
-    static final FrameBufferTarget Draw = new FrameBufferTarget("FRAMEBUFFER");
+    static final FrameBufferTarget Draw = new FrameBufferTarget("DRAW_FRAMEBUFFER");
+    @SuppressWarnings("rawtypes")
+    static final FrameBufferTarget Frame = new FrameBufferTarget("FRAMEBUFFER");
     private final int value;
     private final BindingState<BaseFrameBuffer.Target<T>, T> state;
 

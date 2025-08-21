@@ -37,6 +37,14 @@ public class ControllableCamera extends Camera {
     public ControllableCamera(Keyboard keyboard, Mouse mouse) {
         this.keyboard = keyboard;
         this.mouse = mouse;
+        yaw.addInterceptor((oldValue, setValue) -> {
+            update(pitch.get(), setValue);
+            return setValue;
+        });
+        pitch.addInterceptor((oldValue, setValue) -> {
+            update(setValue, yaw.get());
+            return setValue;
+        });
     }
 
     public ControllableCamera update() {
@@ -99,5 +107,13 @@ public class ControllableCamera extends Camera {
         } else if (!enable && mouse != null) {
             mouse.onScroll().unsubscribe(this::mouseOnScroll);
         }
+    }
+
+    public FloatValue yaw() {
+        return yaw;
+    }
+
+    public FloatValue pitch() {
+        return pitch;
     }
 }

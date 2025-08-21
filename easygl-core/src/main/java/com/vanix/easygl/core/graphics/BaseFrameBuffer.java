@@ -17,6 +17,10 @@ import java.nio.ShortBuffer;
 
 public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTargetBindable<BaseFrameBuffer.Target<T>, T> {
 
+    default T bindFrame() {
+        return bind(Target.frame());
+    }
+
     default T bindDraw() {
         return bind(Target.draw());
     }
@@ -132,7 +136,7 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
     //region Clearing the Buffers
     T clear(FrameInnerBuffer.Mask mask);
 
-    T setClearColor(float red, float blue, float green, float alpha);
+    T setClearColor(float red, float green, float blue, float alpha);
 
     default T setClearColor(Color color) {
         return setClearColor(color.red(), color.green(), color.blue(), color.alpha());
@@ -178,15 +182,18 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
     //endregion
 
 
+    @SuppressWarnings("unchecked")
     sealed interface Target<T extends BaseFrameBuffer<T>> extends BindTarget<Target<T>, T> permits FrameBufferTarget {
-        @SuppressWarnings("unchecked")
         static <T extends BaseFrameBuffer<T>> Target<T> read() {
             return FrameBufferTarget.Read;
         }
 
-        @SuppressWarnings("unchecked")
         static <T extends BaseFrameBuffer<T>> Target<T> draw() {
             return FrameBufferTarget.Draw;
+        }
+
+        static <T extends BaseFrameBuffer<T>> Target<T> frame() {
+            return FrameBufferTarget.Frame;
         }
     }
 
