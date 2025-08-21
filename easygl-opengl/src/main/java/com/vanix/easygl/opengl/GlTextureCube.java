@@ -11,9 +11,10 @@ public class GlTextureCube extends AbstractTexture<TextureCube> implements Textu
 
     protected GlTextureCube(int handle) {
         super(handle);
+        target = Target.CubeMap;
     }
 
-    public TextureCube load(Image[] images) {
+    public TextureCube load(Image... images) {
         if (null == images || images.length != 6) {
             throw new IllegalArgumentException("images must be size of 6.");
         }
