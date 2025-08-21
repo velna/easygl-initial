@@ -3,9 +3,11 @@ package com.vanix.easygl.core;
 import com.vanix.easygl.commons.Identified;
 import com.vanix.easygl.commons.util.IntBiConsumer;
 import com.vanix.easygl.commons.util.IntLongConsumer;
+import lombok.ToString;
 
 import java.util.Objects;
 
+@ToString(of = {"id", "handle"})
 public class BindingState<E extends BindTarget<E, T>, T extends Handle> implements Identified<String> {
 
     private final String id;

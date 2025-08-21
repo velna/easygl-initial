@@ -1,10 +1,12 @@
 package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.Color;
+import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.commons.Rectangle;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.MultiTargetBindable;
 import com.vanix.easygl.core.Support;
+import com.vanix.easygl.core.meta.MetaSystem;
 import org.joml.Vector4f;
 import org.joml.Vector4i;
 
@@ -15,6 +17,15 @@ import java.nio.ShortBuffer;
 
 public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTargetBindable<BaseFrameBuffer.Target<T>, T> {
 
+    default T bindDraw() {
+        return bind(Target.draw());
+    }
+
+    default T bindRead() {
+        return bind(Target.read());
+    }
+
+    @Support(since = Version.GL30)
     default T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture2D texture2D) {
         return attach(target, attachment, texture2D, 0);
     }
@@ -29,6 +40,26 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
     T detachRenderBuffer(Target<T> target, FrameInnerBuffer.Attachment attachment);
 
     @Support(since = Version.GL30)
+    default T attach(FrameInnerBuffer.Attachment attachment, Texture2D texture2D) {
+        return attach(target(), attachment, texture2D, 0);
+    }
+
+    @Support(since = Version.GL30)
+    default T attach(FrameInnerBuffer.Attachment attachment, Texture2D texture2D, int level) {
+        return attach(target(), attachment, texture2D, level);
+    }
+
+    @Support(since = Version.GL30)
+    default T attach(FrameInnerBuffer.Attachment attachment, RenderBuffer renderBuffer) {
+        return attach(target(), attachment, renderBuffer);
+    }
+
+    @Support(since = Version.GL30)
+    default T detachRenderBuffer(FrameInnerBuffer.Attachment attachment) {
+        return detachRenderBuffer(target(), attachment);
+    }
+
+    @Support(since = Version.GL30)
     T blit(int srcX0, int srcY0, int srcX1, int srcY1,
            int dstX0, int dstY0, int dstX1, int dstY1,
            FrameInnerBuffer.Mask buffers, MagFilter filter);
@@ -41,6 +72,10 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
     }
 
     T selectDrawBuffers(FrameInnerBuffer.MultiSelectableDrawBuffer... drawBuffers);
+
+    Status getStatus();
+
+    T checkStatus() throws GraphicsException;
 
     //region Reading and Copying Pixels
     T setReadBuffer(FrameInnerBuffer.ReadBuffer readBuffer);
@@ -155,4 +190,25 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
         }
     }
 
+    enum Status implements IntEnum {
+        Complete("FRAMEBUFFER_COMPLETE"),
+        Undefined("FRAMEBUFFER_UNDEFINED"),
+        IncompleteAttachment("FRAMEBUFFER_INCOMPLETE_ATTACHMENT"),
+        IncompleteMissingAttachment("FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT"),
+        IncompleteDrawBuffer("FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER"),
+        IncompleteReadBuffer("FRAMEBUFFER_INCOMPLETE_READ_BUFFER"),
+        Unsupported("FRAMEBUFFER_UNSUPPORTED"),
+        IncompleteMultisample("FRAMEBUFFER_INCOMPLETE_MULTISAMPLE"),
+        IncompleteLayerTargets("FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS");
+        private final int value;
+
+        Status(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
+        }
+
+        @Override
+        public int value() {
+            return value;
+        }
+    }
 }

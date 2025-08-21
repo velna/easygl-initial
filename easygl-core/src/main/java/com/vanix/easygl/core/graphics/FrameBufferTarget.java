@@ -2,12 +2,14 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.BindingState;
 import com.vanix.easygl.core.meta.MetaSystem;
+import lombok.ToString;
 
+@ToString
 final class FrameBufferTarget<T extends BaseFrameBuffer<T>> implements BaseFrameBuffer.Target<T> {
     @SuppressWarnings("rawtypes")
     static final FrameBufferTarget Read = new FrameBufferTarget("READ_FRAMEBUFFER");
     @SuppressWarnings("rawtypes")
-    static final FrameBufferTarget Draw = new FrameBufferTarget("DRAW_FRAMEBUFFER");
+    static final FrameBufferTarget Draw = new FrameBufferTarget("FRAMEBUFFER");
     private final int value;
     private final BindingState<BaseFrameBuffer.Target<T>, T> state;
 
@@ -26,4 +28,5 @@ final class FrameBufferTarget<T extends BaseFrameBuffer<T>> implements BaseFrame
     public BindingState<BaseFrameBuffer.Target<T>, T> state() {
         return state;
     }
+
 }

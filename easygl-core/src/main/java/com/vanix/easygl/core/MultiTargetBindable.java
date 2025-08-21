@@ -5,6 +5,18 @@ public interface MultiTargetBindable<E extends BindTarget<E, T>, T extends Multi
 
     void unbind(E target);
 
+    default T bind() {
+        var target = target();
+        if (target == null) {
+            throw new IllegalStateException("No target bound before.");
+        }
+        return bind(target);
+    }
+
+    default void unbind() {
+        unbind(target());
+    }
+
     E target();
 
     @SuppressWarnings("unchecked")

@@ -4,6 +4,7 @@ import com.vanix.easygl.commons.Identified;
 import com.vanix.easygl.core.*;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
+import lombok.ToString;
 import org.joml.Vector3i;
 import org.joml.primitives.AABBi;
 
@@ -46,6 +47,7 @@ public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Textu
         }
     }
 
+    @ToString
     class Target<T extends Texture<T>> implements BindTarget<Target<T>, T>, Identified<String> {
         //        public static final Type<?> T1D = new Type<>("TEXTURE_1D", GLC.GL_TEXTURE_1D);
         public static final Target<Texture2D> T2D = new Target<>("TEXTURE_2D", MetaSystem.Graphics.queryInt("TEXTURE_2D"), MetaHolder.Texture2D);

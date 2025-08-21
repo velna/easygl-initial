@@ -224,4 +224,18 @@ public abstract class GlBaseFrameBuffer<T extends BaseFrameBuffer<T>>
         GLX.glReadPixels(x, y, width, height, format.value(), dataType.value(), data);
         return self();
     }
+
+    @Override
+    public Status getStatus() {
+        return Cache.FrameBufferStatus.get(GLX.glCheckFramebufferStatus(target.value()));
+    }
+
+    @Override
+    public T checkStatus() throws GraphicsException {
+        int status = GLX.glCheckFramebufferStatus(target.value());
+        if (status != GLX.GL_FRAMEBUFFER_COMPLETE) {
+            throw new GraphicsException(Cache.FrameBufferStatus.get(status).name());
+        }
+        return self();
+    }
 }

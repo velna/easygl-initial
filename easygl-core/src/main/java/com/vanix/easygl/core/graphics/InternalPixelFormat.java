@@ -12,6 +12,7 @@ public sealed interface InternalPixelFormat permits
     enum BaseFormat implements InternalPixelFormat {
         DEPTH_COMPONENT("DEPTH_COMPONENT"),
         DEPTH_STENCIL("DEPTH_STENCIL"),
+        DEPTH24_STENCIL8("DEPTH24_STENCIL8"),
         RED("RED"),
         RG("RG"),
         RGB("RGB"),
