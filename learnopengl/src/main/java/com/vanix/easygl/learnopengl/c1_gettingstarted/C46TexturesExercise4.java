@@ -65,8 +65,8 @@ public class C46TexturesExercise4 {
             }
 
             program.bind()
-                    .set("texture1", 0)
-                    .set("texture2", 1);
+                    .setInt("texture1", 0)
+                    .setInt("texture2", 1);
 
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
@@ -77,7 +77,7 @@ public class C46TexturesExercise4 {
                 Texture.Unit.U1.bind();
                 texture2.bind(Texture.Target.T2D);
 
-                program.bind().set("mixValue", mixValue);
+                program.bind().setFloat("mixValue", mixValue);
                 vao.drawElements(DrawMode.Triangles, vbo, ebo, 0);
 
                 window.swapBuffers().pollEvents();

@@ -95,7 +95,7 @@ public class C41LightingMapsDiffuse {
                     .load("textures/container2.png")
                     .generateMipmap();
 
-            lightingProgram.bind().set("material.diffuse", 0);
+            lightingProgram.bind().setInt("material.diffuse", 0);
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             var lightPos = new Vector3f(1.2f, 1.0f, 2.0f);
@@ -117,17 +117,17 @@ public class C41LightingMapsDiffuse {
 
                 lightingProgram.bind()
                         // light properties
-                        .set("light.position", lightPos)
+                        .setVec3("light.position", lightPos)
                         .setVec3("light.ambient", 0.2f, 0.2f, 0.2f)
                         .setVec3("light.diffuse", 0.5f, 0.5f, 0.5f)
                         .setVec3("light.specular", 1.0f, 1.0f, 1.0f)
                         // material properties
                         .setVec3("material.specular", 0.5f, 0.5f, 0.5f)// specular lighting doesn't have full effect on this object's material
-                        .set("material.shininess", 64.0f)
-                        .set("viewPos", camera.position())
+                        .setFloat("material.shininess", 64.0f)
+                        .setVec3("viewPos", camera.position())
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))
-                        .set("model", new Matrix4f());
+                        .setMatrix4("model", new Matrix4f());
 
                 Texture.Unit.U0.bind();
                 diffuseMap.bind(Texture.Target.T2D);
@@ -137,7 +137,7 @@ public class C41LightingMapsDiffuse {
                 lightCubeProgram.bind()
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))
-                        .set("model", new Matrix4f().translate(lightPos).scale(0.2f));
+                        .setMatrix4("model", new Matrix4f().translate(lightPos).scale(0.2f));
                 lightCubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 
                 window.swapBuffers().pollEvents();

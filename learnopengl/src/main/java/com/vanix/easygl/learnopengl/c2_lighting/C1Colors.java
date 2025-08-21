@@ -103,14 +103,14 @@ public class C1Colors {
                         .setVec3("lightColor", 1.0f, 1.0f, 1.0f)
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))
-                        .set("model", new Matrix4f());
+                        .setMatrix4("model", new Matrix4f());
 
                 cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 
                 lightCubeProgram.bind()
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))
-                        .set("model", new Matrix4f().translate(lightPos).scale(0.2f));
+                        .setMatrix4("model", new Matrix4f().translate(lightPos).scale(0.2f));
                 lightCubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 
                 window.swapBuffers().pollEvents();

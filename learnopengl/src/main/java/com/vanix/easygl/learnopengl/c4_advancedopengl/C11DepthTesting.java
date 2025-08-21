@@ -109,7 +109,7 @@ public class C11DepthTesting {
                     .generateMipmap();
 
             program.bind()
-                    .set("texture1", 0);
+                    .setInt("texture1", 0);
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);

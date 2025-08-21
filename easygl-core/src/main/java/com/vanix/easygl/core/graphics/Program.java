@@ -68,7 +68,7 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
     @Support(since = Version.GL41)
     Program setSeparable(boolean separable);
 
-    Program set(String key, int value);
+    Program setInt(String key, int value);
 
     Program setVec1(String key, int[] value);
 
@@ -116,7 +116,7 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     Program setUnsignedVec4(String key, IntBuffer buffer);
 
-    Program set(String key, float value);
+    Program setFloat(String key, float value);
 
     Program setVec2(String key, float v1, float v2);
 
@@ -176,39 +176,39 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     Program setMatrix4x3(String key, FloatBuffer buffer);
 
-    default Program set(String key, Vector2f value) {
+    default Program setVec2(String key, Vector2f value) {
         return setVec2(key, value.x, value.y);
     }
 
-    default Program set(String key, Vector3f value) {
+    default Program setVec3(String key, Vector3f value) {
         return setVec3(key, value.x, value.y, value.z);
     }
 
-    default Program set(String key, Vector4f value) {
+    default Program setVec4(String key, Vector4f value) {
         return setVec4(key, value.x, value.y, value.z, value.w);
     }
 
-    default Program set(String key, Matrix2f value) {
+    default Program setMatrix2(String key, Matrix2f value) {
         return setMatrix2(key, value.get(new float[4]));
     }
 
-    default Program set(String key, Matrix3f value) {
+    default Program setMatrix3(String key, Matrix3f value) {
         return setMatrix3(key, value.get(new float[9]));
     }
 
-    default Program set(String key, Matrix4f value) {
+    default Program setMatrix4(String key, Matrix4f value) {
         return setMatrix4(key, value.get(new float[16]));
     }
 
-    default Program set(String key, Matrix3x2f value) {
+    default Program setMatrix3x2(String key, Matrix3x2f value) {
         return setMatrix3x2(key, value.get(new float[6]));
     }
 
-    default Program set(String key, Matrix4x3f value) {
+    default Program setMatrix4x3(String key, Matrix4x3f value) {
         return setMatrix4x3(key, value.get(new float[12]));
     }
 
-    Program set(String key, Texture.Unit unit, Texture<?> texture);
+    Program setTexture(String key, Texture.Unit unit, Texture<?> texture);
 
     boolean getAttribute(ProgramAttribute.Bool attribute);
 

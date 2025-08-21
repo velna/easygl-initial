@@ -111,8 +111,8 @@ public class C63CoordinateSystemsMultiple {
             }
 
             program.bind()
-                    .set("texture1", 0)
-                    .set("texture2", 1);
+                    .setInt("texture1", 0)
+                    .setInt("texture2", 1);
 
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
             while (!window.shouldClose()) {

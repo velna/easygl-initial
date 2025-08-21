@@ -105,7 +105,7 @@ public class C32MaterialsExercise1 {
 
                 lightingProgram.bind()
                         // light properties
-                        .set("light.position", lightPos)
+                        .setVec3("light.position", lightPos)
                         .setVec3("light.ambient", 1.0f, 1.0f, 1.0f) // note that all light colors are set at full intensity
                         .setVec3("light.diffuse", 1.0f, 1.0f, 1.0f)
                         .setVec3("light.specular", 1.0f, 1.0f, 1.0f)
@@ -113,18 +113,18 @@ public class C32MaterialsExercise1 {
                         .setVec3("material.ambient", 0.0f, 0.1f, 0.06f)
                         .setVec3("material.diffuse", 0.0f, 0.50980392f, 0.50980392f)
                         .setVec3("material.specular", 0.50196078f, 0.50196078f, 0.50196078f)
-                        .set("material.shininess", 32.0f)
-                        .set("viewPos", camera.position())
+                        .setFloat("material.shininess", 32.0f)
+                        .setVec3("viewPos", camera.position())
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))
-                        .set("model", new Matrix4f());
+                        .setMatrix4("model", new Matrix4f());
 
                 cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 
                 lightCubeProgram.bind()
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))
-                        .set("model", new Matrix4f().translate(lightPos).scale(0.2f));
+                        .setMatrix4("model", new Matrix4f().translate(lightPos).scale(0.2f));
                 lightCubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 
                 window.swapBuffers().pollEvents();

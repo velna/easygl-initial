@@ -63,8 +63,8 @@ public class C51Transformations {
             }
 
             program.bind()
-                    .set("texture1", 0)
-                    .set("texture2", 1);
+                    .setInt("texture1", 0)
+                    .setInt("texture2", 1);
 
             long start = System.currentTimeMillis();
             while (!window.shouldClose()) {
@@ -80,7 +80,7 @@ public class C51Transformations {
                 var transform = new Matrix4f()
                         .translate(new Vector3f(0.5f, -0.5f, 0.0f))
                         .rotate((System.currentTimeMillis() - start) / 1000.0f, new Vector3f(0.0f, 0.0f, 1.0f));
-                program.bind().set("transform", transform);
+                program.bind().setMatrix4("transform", transform);
                 vao.drawElements(DrawMode.Triangles, vbo, ebo, 0);
 
                 window.swapBuffers().pollEvents();

@@ -118,7 +118,7 @@ public class C2StencilTesting {
                     .load("textures/metal.png")
                     .generateMipmap();
 
-            program.bind().set("texture1", 0);
+            program.bind().setInt("texture1", 0);
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);

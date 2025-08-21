@@ -66,8 +66,8 @@ public class C61CoordinateSystems {
             }
 
             program.bind()
-                    .set("texture1", 0)
-                    .set("texture2", 1);
+                    .setInt("texture1", 0)
+                    .setInt("texture2", 1);
 
             long start = System.currentTimeMillis();
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);

@@ -14,7 +14,7 @@ import org.lwjgl.BufferUtils;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 
-public class C61CubemapsSkybox {
+public class C62CubemapsEnvironmentMapping {
     public static void main(String[] args) throws IOException {
         WindowHints.ContextVersionMajor.set(3);
         WindowHints.ContextVersionMinor.set(3);
@@ -29,7 +29,6 @@ public class C61CubemapsSkybox {
              var cubeVBO = Buffer.of(DataType.Float);
              var skyboxVAO = VertexArray.of();
              var skyboxVBO = Buffer.of(DataType.Float);
-             var cubeTexture = Texture.of2D();
              var cubemapTexture = Texture.ofCube()) {
 
             window
@@ -38,58 +37,58 @@ public class C61CubemapsSkybox {
 
             graphics.depthTest().enable();
 
-            program.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/6.1.cubemaps.vs")
-                    .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/6.1.cubemaps.fs")
+            program.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/6.2.cubemaps.vs")
+                    .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/6.2.cubemaps.fs")
                     .link();
-            skyboxProgram.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/6.1.skybox.vs")
-                    .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/6.1.skybox.fs")
+            skyboxProgram.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/6.2.skybox.vs")
+                    .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/6.2.skybox.fs")
                     .link();
 
             cubeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
-                    // positions          // texture Coords
-                    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-                    0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
-                    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-                    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+                    // positions          // normals
+                    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+                    0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+                    0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+                    0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+                    -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+                    -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
 
-                    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-                    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-                    0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-                    0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-                    -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
-                    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+                    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+                    0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+                    0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+                    0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+                    -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+                    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
 
-                    -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                    -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-                    -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+                    -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+                    -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+                    -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+                    -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+                    -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+                    -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
 
-                    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                    0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                    0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                    0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-                    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+                    0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+                    0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+                    0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+                    0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+                    0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+                    0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
 
-                    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                    0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
-                    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-                    0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-                    -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-                    -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+                    -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+                    0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+                    0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+                    0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+                    -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+                    -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
 
-                    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-                    0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                    0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                    -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
-                    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
+                    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+                    0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+                    0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+                    0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+                    -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+                    -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f
             });
-            cubeVAO.bind().attributes(cubeVBO, 3, 2);
+            cubeVAO.bind().attributes(cubeVBO, 3, 3);
 
             skyboxVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions
@@ -137,11 +136,6 @@ public class C61CubemapsSkybox {
             });
             skyboxVAO.bind().attributes(skyboxVBO, 3);
 
-            cubeTexture.bind()
-                    .minFilter(MinFilter.LinearMipmapLinear)
-                    .load("textures/container.jpg")
-                    .generateMipmap();
-
             cubemapTexture.bind()
                     .minFilter(MinFilter.Linear)
                     .magFilter(MagFilter.Linear)
@@ -149,14 +143,14 @@ public class C61CubemapsSkybox {
                     .wrapT(Texture.Wrap.ClampToEdge)
                     .wrapR(Texture.Wrap.ClampToEdge)
                     .load(
-                    "textures/skybox/right.jpg",
-                    "textures/skybox/left.jpg",
-                    "textures/skybox/top.jpg",
-                    "textures/skybox/bottom.jpg",
-                    "textures/skybox/front.jpg",
-                    "textures/skybox/back.jpg");
+                            "textures/skybox/right.jpg",
+                            "textures/skybox/left.jpg",
+                            "textures/skybox/top.jpg",
+                            "textures/skybox/bottom.jpg",
+                            "textures/skybox/front.jpg",
+                            "textures/skybox/back.jpg");
 
-            program.bind().setInt("texture1", 0);
+            program.bind().setInt("skybox", 0);
             skyboxProgram.bind().setInt("skybox", 0);
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
@@ -170,19 +164,19 @@ public class C61CubemapsSkybox {
                 var projection = new Matrix4f()
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 100.0f);
                 var view = camera.update().view();
+                cubemapTexture.bind();
 
                 program.bind()
                         .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f));
-                cubeTexture.bind();
-                program.setMatrix4("model", new Matrix4f().get(mat4f));
+                        .setMatrix4("view", view.get(mat4f))
+                        .setMatrix4("model", new Matrix4f().get(mat4f))
+                        .setVec3("cameraPos", camera.position());
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
 
                 graphics.depthTest().setFunction(CompareFunction.LessEqual);
                 skyboxProgram.bind()
                         .setMatrix4("view", new Matrix4f(view.get3x3(new Matrix3f())).get(mat4f))
                         .setMatrix4("projection", projection.get(mat4f));
-                cubemapTexture.bind();
                 skyboxVAO.bind().drawArray(DrawMode.Triangles, skyboxVBO);
                 graphics.depthTest().setFunction(CompareFunction.LessThan);
 

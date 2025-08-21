@@ -111,27 +111,27 @@ public class C31Materials {
 
                 lightingProgram.bind()
                         // light properties
-                        .set("light.position", lightPos)
-                        .set("light.ambient", ambientColor)
-                        .set("light.diffuse", diffuseColor)
+                        .setVec3("light.position", lightPos)
+                        .setVec3("light.ambient", ambientColor)
+                        .setVec3("light.diffuse", diffuseColor)
                         .setVec3("light.specular", 1.0f, 1.0f, 1.0f)
                         // material properties
                         .setVec3("material.ambient", 1.0f, 0.5f, 0.31f)
                         .setVec3("material.diffuse", 1.0f, 0.5f, 0.31f)
                         .setVec3("material.specular", 0.5f, 0.5f, 0.5f)// specular lighting doesn't have full effect on this object's material
-                        .set("material.shininess", 32.0f)
-                        .set("viewPos", camera.position())
+                        .setFloat("material.shininess", 32.0f)
+                        .setVec3("viewPos", camera.position())
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))
-                        .set("model", new Matrix4f());
+                        .setMatrix4("model", new Matrix4f());
 
                 cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 
                 lightCubeProgram.bind()
                         .setMatrix4("projection", projection.get(mat4f))
-                        .set("lightColor", lightColor)
+                        .setVec3("lightColor", lightColor)
                         .setMatrix4("view", view.get(mat4f))
-                        .set("model", new Matrix4f().translate(lightPos).scale(0.2f));
+                        .setMatrix4("model", new Matrix4f().translate(lightPos).scale(0.2f));
                 lightCubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 
                 window.swapBuffers().pollEvents();

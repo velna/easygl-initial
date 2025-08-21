@@ -140,7 +140,7 @@ public class C32BlendingSorted {
                     new Vector3f(-0.3f, 0.0f, -2.3f),
                     new Vector3f(0.5f, 0.0f, -0.6f));
 
-            program.bind().set("texture1", 0);
+            program.bind().setInt("texture1", 0);
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);

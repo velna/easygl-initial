@@ -131,8 +131,8 @@ public class C73CameraMouseZoom {
 
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
             program.bind()
-                    .set("texture1", 0)
-                    .set("texture2", 1);
+                    .setInt("texture1", 0)
+                    .setInt("texture2", 1);
 
             long start = System.currentTimeMillis();
 

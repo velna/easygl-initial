@@ -112,8 +112,8 @@ public class C71CameraCircle {
 
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
             program.bind()
-                    .set("texture1", 0)
-                    .set("texture2", 1)
+                    .setInt("texture1", 0)
+                    .setInt("texture2", 1)
                     .setMatrix4("projection", new Matrix4f()
                             .perspective(Math.toRadians(45.0f), window.getAspect(), 0.1f, 100.0f)
                             .get(mat4f));

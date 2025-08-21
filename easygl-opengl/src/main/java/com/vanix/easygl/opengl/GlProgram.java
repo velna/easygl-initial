@@ -102,7 +102,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, int value) {
+    public Program setInt(String key, int value) {
         assertBinding();
         GLX.glUniform1i(uniform(key), value);
         GLX.checkError();
@@ -294,7 +294,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, float value) {
+    public Program setFloat(String key, float value) {
         assertBinding();
         GLX.glUniform1f(uniform(key), value);
         GLX.checkError();
@@ -534,10 +534,10 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, Texture.Unit unit, Texture<?> texture) {
+    public Program setTexture(String key, Texture.Unit unit, Texture<?> texture) {
         unit.assertBinding();
         texture.assertBinding();
-        return set(key, unit.ordinal());
+        return setInt(key, unit.ordinal());
     }
 
     @Override

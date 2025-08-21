@@ -100,18 +100,18 @@ public class C22BasicLightingSpecular {
                 lightingProgram.bind()
                         .setVec3("objectColor", 1.0f, 0.5f, 0.31f)
                         .setVec3("lightColor", 1.0f, 1.0f, 1.0f)
-                        .set("lightPos", lightPos)
-                        .set("viewPos", camera.position())
+                        .setVec3("lightPos", lightPos)
+                        .setVec3("viewPos", camera.position())
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))
-                        .set("model", new Matrix4f());
+                        .setMatrix4("model", new Matrix4f());
 
                 cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 
                 lightCubeProgram.bind()
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))
-                        .set("model", new Matrix4f().translate(lightPos).scale(0.2f));
+                        .setMatrix4("model", new Matrix4f().translate(lightPos).scale(0.2f));
                 lightCubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 
                 window.swapBuffers().pollEvents();

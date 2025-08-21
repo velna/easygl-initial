@@ -131,8 +131,8 @@ public class C52FrameBufferExercise1 {
                     .load("textures/metal.png")
                     .generateMipmap();
 
-            program.bind().set("texture1", 0);
-            screenProgram.bind().set("screenTexture", 0);
+            program.bind().setInt("texture1", 0);
+            screenProgram.bind().setInt("screenTexture", 0);
 
             frameBuffer.bindDraw()
                     .attach(FrameInnerBuffer.Attachment.ofColor(0),

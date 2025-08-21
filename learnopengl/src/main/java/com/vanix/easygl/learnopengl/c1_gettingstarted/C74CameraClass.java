@@ -113,8 +113,8 @@ public class C74CameraClass {
 
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
             program.bind()
-                    .set("texture1", 0)
-                    .set("texture2", 1);
+                    .setInt("texture1", 0)
+                    .setInt("texture2", 1);
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             camera.setZoomOnMouseScroll(true);
