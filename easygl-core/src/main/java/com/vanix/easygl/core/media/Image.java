@@ -11,7 +11,15 @@ public interface Image extends Closeable {
     Meta<Image> Meta = MetaSystem.Media.of(Image.class);
 
     static Image load(String resourceFile) {
-        return Meta.create(resourceFile);
+        return load(resourceFile, false, false);
+    }
+
+    static Image load(String resourceFile, boolean flipVertically) {
+        return load(resourceFile, flipVertically, false);
+    }
+
+    static Image load(String resourceFile, boolean flipVertically, boolean unPremultiply) {
+        return Meta.create(resourceFile, flipVertically, unPremultiply);
     }
 
     PixelFormat format();

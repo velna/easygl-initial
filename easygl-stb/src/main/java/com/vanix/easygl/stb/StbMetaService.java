@@ -11,7 +11,7 @@ import org.lwjgl.stb.STBImageResize;
 @SystemName("Media")
 public class StbMetaService extends AbstractMetaService {
     public StbMetaService() {
-        register(Image.class, new DefaultMeta<>(args -> StbImage.load((String) args[0])));
+        register(Image.class, new DefaultMeta<>(args -> StbImage.load((String) args[0], (boolean)args[1], (boolean)args[2])));
     }
 
     @Override

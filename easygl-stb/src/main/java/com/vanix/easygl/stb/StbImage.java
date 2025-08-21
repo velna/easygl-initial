@@ -12,11 +12,10 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 
-import static org.lwjgl.stb.STBImage.stbi_load;
-import static org.lwjgl.stb.STBImage.stbi_set_flip_vertically_on_load;
+import static org.lwjgl.stb.STBImage.*;
 
 public class StbImage {
-    public static Image load(String resourceFile) {
+    public static Image load(String resourceFile, boolean flipVertically, boolean unPremultiply) {
         try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer tWidth = stack.mallocInt(1);
             IntBuffer tHeight = stack.mallocInt(1);
@@ -27,7 +26,8 @@ public class StbImage {
                     throw new GraphicsException("Can not find image: " + resourceFile);
                 }
                 String textureFile = new File(url.toURI()).getAbsolutePath();
-                stbi_set_flip_vertically_on_load(true);
+                stbi_set_flip_vertically_on_load(flipVertically);
+                stbi_set_unpremultiply_on_load(unPremultiply);
                 ByteBuffer data = stbi_load(stack.UTF8(textureFile), tWidth, tHeight, tChannels, 0);
                 if (null != data) {
                     return new SimpleImage(PixelFormat.ofChannels(tChannels.get()), tWidth.get(), tHeight.get(), data);
