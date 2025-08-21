@@ -210,6 +210,10 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     Program set(String key, Texture.Unit unit, Texture<?> texture);
 
+    boolean getAttribute(ProgramAttribute.Bool attribute);
+
+    int getAttribute(ProgramAttribute.Int attribute);
+
     @Support(since = Version.GL43)
     ProgramInterfaces interfaces();
 

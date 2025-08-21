@@ -558,4 +558,14 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
         GLX.glUniformBlockBinding(intHandle(), uniformBlockIndex, bindingPoint);
         return this;
     }
+
+    @Override
+    public boolean getAttribute(ProgramAttribute.Bool attribute) {
+        return GLX.glGetProgrami(intHandle(), attribute.value()) == GLX.GL_TRUE;
+    }
+
+    @Override
+    public int getAttribute(ProgramAttribute.Int attribute) {
+        return GLX.glGetProgrami(intHandle(), attribute.value());
+    }
 }
