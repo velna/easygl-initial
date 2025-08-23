@@ -19,7 +19,7 @@ public enum GlProgramInterfaceType implements IntEnum {
     ProgramOutput(GLX.GL_PROGRAM_OUTPUT, GlProgramOutputInterface.class, GlProgramOutputInterface::new),
     VertexSubroutine(GLX.GL_VERTEX_SUBROUTINE, GlVertexSubroutineInterface.class, GlVertexSubroutineInterface::new),
     TessControlSubroutine(GLX.GL_TESS_CONTROL_SUBROUTINE, GlTessControlSubroutineInterface.class, GlTessControlSubroutineInterface::new),
-    TessEvaluationSubroutine(GLX.GL_TESS_EVALUATION_SUBROUTINE, GlTessControlSubroutineInterface.class, GlTessControlSubroutineInterface::new),
+    TessEvaluationSubroutine(GLX.GL_TESS_EVALUATION_SUBROUTINE, GlTessEvaluationSubroutineInterface.class, GlTessEvaluationSubroutineInterface::new),
     GeometrySubroutine(GLX.GL_GEOMETRY_SUBROUTINE, GlGeometrySubroutineInterface.class, GlGeometrySubroutineInterface::new),
     FragmentSubroutine(GLX.GL_FRAGMENT_SUBROUTINE, GlFragmentSubroutineInterface.class, GlFragmentSubroutineInterface::new),
     ComputeSubroutine(GLX.GL_COMPUTE_SUBROUTINE, GlComputeSubroutineInterface.class, GlComputeSubroutineInterface::new),

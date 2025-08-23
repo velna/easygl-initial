@@ -53,180 +53,6 @@ public interface ProgramResource<T extends ProgramResource<T>> {
         }
     }
 
-    //region Real Resources
-    interface Uniform extends
-            Named<Uniform>,
-            Type<Uniform>,
-            ArraySize<Uniform>,
-            Offset<Uniform>,
-            BlockIndex<Uniform>,
-            ArrayStride<Uniform>,
-            MatrixStride<Uniform>,
-            IsRowMajor<Uniform>,
-            AtomicCounterBufferIndex<Uniform>,
-            ReferencedByTessEvaluationShader<Uniform>,
-            ReferencedByComputeShader<Uniform>,
-            ReferencedByVertexShader<Uniform>,
-            ReferencedByGeometryShader<Uniform>,
-            ReferencedByFragmentShader<Uniform>,
-            ReferencedByTessControlShader<Uniform>,
-            Location<Uniform> {
-    }
-
-    interface UniformBlock extends
-            Named<UniformBlock>,
-            BufferBinding<UniformBlock>,
-            BufferDataSize<UniformBlock>,
-            NumActiveVariables<UniformBlock>,
-            ActiveVariables<UniformBlock>,
-            ReferencedByTessEvaluationShader<UniformBlock>,
-            ReferencedByComputeShader<UniformBlock>,
-            ReferencedByVertexShader<UniformBlock>,
-            ReferencedByGeometryShader<UniformBlock>,
-            ReferencedByFragmentShader<UniformBlock>,
-            ReferencedByTessControlShader<UniformBlock> {
-    }
-
-    interface AtomicCounterBuffer extends
-            BufferBinding<AtomicCounterBuffer>,
-            BufferDataSize<AtomicCounterBuffer>,
-            NumActiveVariables<AtomicCounterBuffer>,
-            ActiveVariables<AtomicCounterBuffer> {
-
-    }
-
-    interface ProgramInput extends
-            Named<ProgramInput>,
-            Type<ProgramInput>,
-            ArraySize<ProgramInput>,
-            ReferencedByTessEvaluationShader<ProgramInput>,
-            ReferencedByComputeShader<ProgramInput>,
-            ReferencedByVertexShader<ProgramInput>,
-            ReferencedByGeometryShader<ProgramInput>,
-            ReferencedByFragmentShader<ProgramInput>,
-            ReferencedByTessControlShader<ProgramInput>,
-            Location<ProgramInput>,
-            IsPerPatch<ProgramInput>,
-            LocationComponent<ProgramInput> {
-
-    }
-
-    interface ProgramOutput extends
-            Named<ProgramOutput>,
-            Type<ProgramOutput>,
-            ArraySize<ProgramOutput>,
-            ReferencedByTessEvaluationShader<ProgramOutput>,
-            ReferencedByComputeShader<ProgramOutput>,
-            ReferencedByVertexShader<ProgramOutput>,
-            ReferencedByGeometryShader<ProgramOutput>,
-            ReferencedByFragmentShader<ProgramOutput>,
-            ReferencedByTessControlShader<ProgramOutput>,
-            Location<ProgramOutput>,
-            LocationIndex<ProgramOutput>,
-            IsPerPatch<ProgramOutput>,
-            LocationComponent<ProgramOutput> {
-
-    }
-
-    interface SubroutineUniform<T extends ProgramResource<T>> extends
-            Named<T>,
-            ArraySize<T>,
-            NumCompatibleSubroutines<T>,
-            CompatibleSubroutines<T>,
-            Location<T> {
-
-    }
-
-    interface TransformFeedbackVarying extends
-            Named<TransformFeedbackVarying>,
-            Type<TransformFeedbackVarying>,
-            ArraySize<TransformFeedbackVarying>,
-            Offset<TransformFeedbackVarying>,
-            TransformFeedbackBufferIndex<TransformFeedbackVarying> {
-
-    }
-
-    interface BufferVariable extends
-            Named<BufferVariable>,
-            Type<BufferVariable>,
-            ArraySize<BufferVariable>,
-            Offset<BufferVariable>,
-            BlockIndex<BufferVariable>,
-            ArrayStride<BufferVariable>,
-            MatrixStride<BufferVariable>,
-            IsRowMajor<BufferVariable>,
-            ReferencedByTessEvaluationShader<BufferVariable>,
-            ReferencedByComputeShader<BufferVariable>,
-            ReferencedByVertexShader<BufferVariable>,
-            ReferencedByGeometryShader<BufferVariable>,
-            ReferencedByFragmentShader<BufferVariable>,
-            ReferencedByTessControlShader<BufferVariable>,
-            TopLevelArraySize<BufferVariable>,
-            TopLevelArrayStride<BufferVariable> {
-
-    }
-
-    interface ShaderStorageBlock extends
-            Named<ShaderStorageBlock>,
-            BufferBinding<ShaderStorageBlock>,
-            BufferDataSize<ShaderStorageBlock>,
-            NumActiveVariables<ShaderStorageBlock>,
-            ActiveVariables<ShaderStorageBlock>,
-            ReferencedByTessEvaluationShader<ShaderStorageBlock>,
-            ReferencedByComputeShader<ShaderStorageBlock>,
-            ReferencedByVertexShader<ShaderStorageBlock>,
-            ReferencedByGeometryShader<ShaderStorageBlock>,
-            ReferencedByFragmentShader<ShaderStorageBlock>,
-            ReferencedByTessControlShader<ShaderStorageBlock> {
-
-    }
-
-    interface TransformFeedbackBuffer extends
-            BufferBinding<TransformFeedbackBuffer>,
-            NumActiveVariables<TransformFeedbackBuffer>,
-            ActiveVariables<TransformFeedbackBuffer>,
-            TransformFeedbackBufferIndex<TransformFeedbackBuffer>,
-            TransformFeedbackBufferStride<TransformFeedbackBuffer> {
-
-    }
-
-    interface VertexSubroutine extends Named<VertexSubroutine> {
-    }
-
-    interface TessControlSubroutine extends Named<TessControlSubroutine> {
-    }
-
-    interface TessEvaluationSubroutine extends Named<TessEvaluationSubroutine> {
-    }
-
-    interface GeometrySubroutine extends Named<GeometrySubroutine> {
-    }
-
-    interface FragmentSubroutine extends Named<FragmentSubroutine> {
-    }
-
-    interface ComputeSubroutine extends Named<ComputeSubroutine> {
-    }
-
-    interface VertexSubroutineUniform extends SubroutineUniform<VertexSubroutineUniform> {
-    }
-
-    interface TessControlSubroutineUniform extends SubroutineUniform<TessControlSubroutineUniform> {
-    }
-
-    interface TessEvaluationSubroutineUniform extends SubroutineUniform<TessEvaluationSubroutineUniform> {
-    }
-
-    interface GeometrySubroutineUniform extends SubroutineUniform<GeometrySubroutineUniform> {
-    }
-
-    interface FragmentSubroutineUniform extends SubroutineUniform<FragmentSubroutineUniform> {
-    }
-
-    interface ComputeSubroutineUniform extends SubroutineUniform<ComputeSubroutineUniform> {
-    }
-    //endregion
-
     //region Resource functions
     interface Named<T extends ProgramResource<T>> extends ProgramResource<T> {
         String getName();
@@ -349,4 +175,12 @@ public interface ProgramResource<T extends ProgramResource<T>> {
     }
     //endregion
 
+    interface SubroutineUniform<T extends ProgramResource<T>> extends
+            Named<T>,
+            ArraySize<T>,
+            NumCompatibleSubroutines<T>,
+            CompatibleSubroutines<T>,
+            Location<T> {
+
+    }
 }

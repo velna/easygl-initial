@@ -1,45 +1,47 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.core.graphics.program.*;
+
 public interface ProgramInterfaces {
-    ProgramInterface.Uniform uniform();
+    UniformInterface uniform();
 
-    ProgramInterface.UniformBlock uniformBlock();
+    UniformBlockInterface uniformBlock();
 
-    ProgramInterface.AtomicCounterBuffer atomicCounterBuffer();
+    AtomicCounterBufferInterface atomicCounterBuffer();
 
-    ProgramInterface.ProgramInput programInput();
+    ProgramInputInterface programInput();
 
-    ProgramInterface.ProgramOutput programOutput();
+    ProgramOutputInterface programOutput();
 
-    ProgramInterface.VertexSubroutine vertexSubroutine();
+    VertexSubroutineInterface vertexSubroutine();
 
-    ProgramInterface.TessControlSubroutine tessControlSubroutine();
+    TessControlSubroutineInterface tessControlSubroutine();
 
-    ProgramInterface.TessEvaluationSubroutine tessEvaluationSubroutine();
+    TessEvaluationSubroutineInterface tessEvaluationSubroutine();
 
-    ProgramInterface.GeometrySubroutine geometrySubroutine();
+    GeometrySubroutineInterface geometrySubroutine();
 
-    ProgramInterface.FragmentSubroutine fragmentSubroutine();
+    FragmentSubroutineInterface fragmentSubroutine();
 
-    ProgramInterface.ComputeSubroutine computeSubroutine();
+    ComputeSubroutineInterface computeSubroutine();
 
-    ProgramInterface.VertexSubroutineUniform vertexSubroutineUniform();
+    VertexSubroutineUniformInterface vertexSubroutineUniform();
 
-    ProgramInterface.TessControlSubroutineUniform tessControlSubroutineUniform();
+    TessControlSubroutineUniformInterface tessControlSubroutineUniform();
 
-    ProgramInterface.TessEvaluationSubroutineUniform tessEvaluationSubroutineUniform();
+    TessEvaluationSubroutineUniformInterface tessEvaluationSubroutineUniform();
 
-    ProgramInterface.GeometrySubroutineUniform geometrySubroutineUniform();
+    GeometrySubroutineUniformInterface geometrySubroutineUniform();
 
-    ProgramInterface.FragmentSubroutineUniform fragmentSubroutineUniform();
+    FragmentSubroutineUniformInterface fragmentSubroutineUniform();
 
-    ProgramInterface.ComputeSubroutineUniform computeSubroutineUniform();
+    ComputeSubroutineUniformInterface computeSubroutineUniform();
 
-    ProgramInterface.TransformFeedbackVarying transformFeedbackVarying();
+    TransformFeedbackVaryingInterface transformFeedbackVarying();
 
-    ProgramInterface.BufferVariable bufferVariable();
+    BufferVariableInterface bufferVariable();
 
-    ProgramInterface.ShaderStorageBlock shaderStorageBlock();
+    ShaderStorageBlockInterface shaderStorageBlock();
 
-    ProgramInterface.TransformFeedbackBuffer transformFeedbackBuffer();
+    TransformFeedbackBufferInterface transformFeedbackBuffer();
 }

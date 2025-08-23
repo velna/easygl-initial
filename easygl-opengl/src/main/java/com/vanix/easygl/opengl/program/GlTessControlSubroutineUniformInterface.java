@@ -1,17 +1,17 @@
 package com.vanix.easygl.opengl.program;
 
 import com.vanix.easygl.core.graphics.Program;
-import com.vanix.easygl.core.graphics.ProgramInterface;
-import com.vanix.easygl.core.graphics.ProgramResource;
+import com.vanix.easygl.core.graphics.program.TessControlSubroutineUniform;
+import com.vanix.easygl.core.graphics.program.TessControlSubroutineUniformInterface;
 import com.vanix.easygl.opengl.GlProgramInterfaceType;
 
-public class GlTessControlSubroutineUniformInterface extends BaseInterface<ProgramResource.TessControlSubroutineUniform> implements ProgramInterface.TessControlSubroutineUniform {
+public class GlTessControlSubroutineUniformInterface extends BaseInterface<TessControlSubroutineUniform> implements TessControlSubroutineUniformInterface {
     public GlTessControlSubroutineUniformInterface(Program program) {
         super(program, GlProgramInterfaceType.VertexSubroutineUniform);
     }
 
     @Override
-    protected ProgramResource.TessControlSubroutineUniform newResource(Program program, int index) {
+    protected TessControlSubroutineUniform newResource(Program program, int index) {
         return new GlTessControlSubroutineUniform(program, index);
     }
 }

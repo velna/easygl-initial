@@ -2,6 +2,7 @@ package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.program.*;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -21,107 +22,107 @@ public class GlProgramInterfaces implements ProgramInterfaces {
     }
 
     @Override
-    public ProgramInterface.Uniform uniform() {
+    public UniformInterface uniform() {
         return getInterface(GlProgramInterfaceType.Uniform);
     }
 
     @Override
-    public ProgramInterface.UniformBlock uniformBlock() {
+    public UniformBlockInterface uniformBlock() {
         return getInterface(GlProgramInterfaceType.UniformBlock);
     }
 
     @Override
-    public ProgramInterface.AtomicCounterBuffer atomicCounterBuffer() {
+    public AtomicCounterBufferInterface atomicCounterBuffer() {
         return getInterface(GlProgramInterfaceType.AtomicCounterBuffer);
     }
 
     @Override
-    public ProgramInterface.ProgramInput programInput() {
+    public ProgramInputInterface programInput() {
         return getInterface(GlProgramInterfaceType.ProgramInput);
     }
 
     @Override
-    public ProgramInterface.ProgramOutput programOutput() {
+    public ProgramOutputInterface programOutput() {
         return getInterface(GlProgramInterfaceType.ProgramOutput);
     }
 
     @Override
-    public ProgramInterface.VertexSubroutine vertexSubroutine() {
+    public VertexSubroutineInterface vertexSubroutine() {
         return getInterface(GlProgramInterfaceType.VertexSubroutine);
     }
 
     @Override
-    public ProgramInterface.TessControlSubroutine tessControlSubroutine() {
+    public TessControlSubroutineInterface tessControlSubroutine() {
         return getInterface(GlProgramInterfaceType.TessControlSubroutine);
     }
 
     @Override
-    public ProgramInterface.TessEvaluationSubroutine tessEvaluationSubroutine() {
+    public TessEvaluationSubroutineInterface tessEvaluationSubroutine() {
         return getInterface(GlProgramInterfaceType.TessEvaluationSubroutine);
     }
 
     @Override
-    public ProgramInterface.GeometrySubroutine geometrySubroutine() {
+    public GeometrySubroutineInterface geometrySubroutine() {
         return getInterface(GlProgramInterfaceType.GeometrySubroutine);
     }
 
     @Override
-    public ProgramInterface.FragmentSubroutine fragmentSubroutine() {
+    public FragmentSubroutineInterface fragmentSubroutine() {
         return getInterface(GlProgramInterfaceType.FragmentSubroutine);
     }
 
     @Override
-    public ProgramInterface.ComputeSubroutine computeSubroutine() {
+    public ComputeSubroutineInterface computeSubroutine() {
         return getInterface(GlProgramInterfaceType.ComputeSubroutine);
     }
 
     @Override
-    public ProgramInterface.VertexSubroutineUniform vertexSubroutineUniform() {
+    public VertexSubroutineUniformInterface vertexSubroutineUniform() {
         return getInterface(GlProgramInterfaceType.VertexSubroutineUniform);
     }
 
     @Override
-    public ProgramInterface.TessControlSubroutineUniform tessControlSubroutineUniform() {
+    public TessControlSubroutineUniformInterface tessControlSubroutineUniform() {
         return getInterface(GlProgramInterfaceType.TessControlSubroutineUniform);
     }
 
     @Override
-    public ProgramInterface.TessEvaluationSubroutineUniform tessEvaluationSubroutineUniform() {
+    public TessEvaluationSubroutineUniformInterface tessEvaluationSubroutineUniform() {
         return getInterface(GlProgramInterfaceType.TessEvaluationSubroutineUniform);
     }
 
     @Override
-    public ProgramInterface.GeometrySubroutineUniform geometrySubroutineUniform() {
+    public GeometrySubroutineUniformInterface geometrySubroutineUniform() {
         return getInterface(GlProgramInterfaceType.GeometrySubroutineUniform);
     }
 
     @Override
-    public ProgramInterface.FragmentSubroutineUniform fragmentSubroutineUniform() {
+    public FragmentSubroutineUniformInterface fragmentSubroutineUniform() {
         return getInterface(GlProgramInterfaceType.FragmentSubroutineUniform);
     }
 
     @Override
-    public ProgramInterface.ComputeSubroutineUniform computeSubroutineUniform() {
+    public ComputeSubroutineUniformInterface computeSubroutineUniform() {
         return getInterface(GlProgramInterfaceType.ComputeSubroutineUniform);
     }
 
     @Override
-    public ProgramInterface.TransformFeedbackVarying transformFeedbackVarying() {
+    public TransformFeedbackVaryingInterface transformFeedbackVarying() {
         return getInterface(GlProgramInterfaceType.TransformFeedbackVarying);
     }
 
     @Override
-    public ProgramInterface.BufferVariable bufferVariable() {
+    public BufferVariableInterface bufferVariable() {
         return getInterface(GlProgramInterfaceType.BufferVariable);
     }
 
     @Override
-    public ProgramInterface.ShaderStorageBlock shaderStorageBlock() {
+    public ShaderStorageBlockInterface shaderStorageBlock() {
         return getInterface(GlProgramInterfaceType.ShaderStorageBlock);
     }
 
     @Override
-    public ProgramInterface.TransformFeedbackBuffer transformFeedbackBuffer() {
+    public TransformFeedbackBufferInterface transformFeedbackBuffer() {
         return getInterface(GlProgramInterfaceType.TransformFeedbackBuffer);
     }
 }
