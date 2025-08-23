@@ -1,94 +1,127 @@
 package com.vanix.easygl.opengl;
 
-import com.vanix.easygl.core.graphics.Program;
-import com.vanix.easygl.core.graphics.ProgramInterface;
-import com.vanix.easygl.core.graphics.ProgramInterfaces;
+import com.vanix.easygl.core.Support;
+import com.vanix.easygl.core.graphics.*;
 
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 
-public class GlProgramInterfaces extends ProgramInterfaces {
-    public GlProgramInterfaces(Program program) {
-        super(program);
+@Support(since = Version.GL43)
+public class GlProgramInterfaces implements ProgramInterfaces {
+    protected final Program program;
+    private final Map<GlProgramInterfaceType, ProgramInterface<?>> interfaces = new EnumMap<>(GlProgramInterfaceType.class);
+
+    protected GlProgramInterfaces(Program program) {
+        this.program = program;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <R extends ProgramResource<R>, T extends ProgramInterface<R>> T getInterface(GlProgramInterfaceType type) {
+        return (T) interfaces.computeIfAbsent(type, t -> t.factory.apply(program));
     }
 
     @Override
-    protected int getActiveResources(ProgramInterface programInterface) {
-        return GLX.glGetProgramInterfacei(program.intHandle(), GLX.GL_ACTIVE_RESOURCES, programInterface.value());
+    public ProgramInterface.Uniform uniform() {
+        return getInterface(GlProgramInterfaceType.Uniform);
     }
 
     @Override
-    protected int getMaxNameLength(ProgramInterface programInterface) {
-        return GLX.glGetProgramInterfacei(program.intHandle(), GLX.GL_MAX_NAME_LENGTH, programInterface.value());
+    public ProgramInterface.UniformBlock uniformBlock() {
+        return getInterface(GlProgramInterfaceType.UniformBlock);
     }
 
     @Override
-    protected int getMaxNumActiveVariables(ProgramInterface programInterface) {
-        return GLX.glGetProgramInterfacei(program.intHandle(), GLX.GL_MAX_NUM_ACTIVE_VARIABLES, programInterface.value());
+    public ProgramInterface.AtomicCounterBuffer atomicCounterBuffer() {
+        return getInterface(GlProgramInterfaceType.AtomicCounterBuffer);
     }
 
     @Override
-    protected int getMaxNumCompatibleSubroutines(ProgramInterface programInterface) {
-        return GLX.glGetProgramInterfacei(program.intHandle(), GLX.GL_MAX_NUM_COMPATIBLE_SUBROUTINES, programInterface.value());
+    public ProgramInterface.ProgramInput programInput() {
+        return getInterface(GlProgramInterfaceType.ProgramInput);
     }
 
     @Override
-    protected String getResourceName(ProgramInterface programInterface, int index) {
-        return GLX.glGetProgramResourceName(program.intHandle(), programInterface.value(), index);
+    public ProgramInterface.ProgramOutput programOutput() {
+        return getInterface(GlProgramInterfaceType.ProgramOutput);
     }
 
     @Override
-    protected int getResourceLocation(ProgramInterface programInterface, String name) {
-        return GLX.glGetProgramResourceLocation(program.intHandle(), programInterface.value(), name);
+    public ProgramInterface.VertexSubroutine vertexSubroutine() {
+        return getInterface(GlProgramInterfaceType.VertexSubroutine);
     }
 
     @Override
-    protected int getResourceIndex(ProgramInterface programInterface, String name) {
-        return GLX.glGetProgramResourceIndex(program.intHandle(), programInterface.value(), name);
+    public ProgramInterface.TessControlSubroutine tessControlSubroutine() {
+        return getInterface(GlProgramInterfaceType.TessControlSubroutine);
     }
 
     @Override
-    protected int getResourceLocationIndex(ProgramInterface programInterface, String name) {
-        return GLX.glGetProgramResourceLocationIndex(program.intHandle(), programInterface.value(), name);
+    public ProgramInterface.TessEvaluationSubroutine tessEvaluationSubroutine() {
+        return getInterface(GlProgramInterfaceType.TessEvaluationSubroutine);
     }
 
     @Override
-    protected Map<Program.PropertyKey, Integer> preload(ProgramInterface programInterface, int index, List<Program.PropertyKey> propertyKeys) {
-        int[][] data = new int[2][propertyKeys.size()];
-        for (int i = 0; i < propertyKeys.size(); i++) {
-            data[0][i] = propertyKeys.get(i).value();
-        }
-        GLX.glGetProgramResourceiv(program.intHandle(), programInterface.value(), index, data[0], null, data[1]);
-        Map<Program.PropertyKey, Integer> map = new EnumMap<>(Program.PropertyKey.class);
-        for (int i = 0; i < data[1].length; i++) {
-            map.put(propertyKeys.get(i), data[1][i]);
-        }
-        return map;
+    public ProgramInterface.GeometrySubroutine geometrySubroutine() {
+        return getInterface(GlProgramInterfaceType.GeometrySubroutine);
     }
 
     @Override
-    protected int queryInt(ProgramInterface programInterface, Program.PropertyKey key, int index) {
-        int[][] data = new int[2][1];
-        data[0][0] = key.value();
-        GLX.glGetProgramResourceiv(program.intHandle(), programInterface.value(), index, data[0], null, data[1]);
-        return data[1][0];
+    public ProgramInterface.FragmentSubroutine fragmentSubroutine() {
+        return getInterface(GlProgramInterfaceType.FragmentSubroutine);
     }
 
     @Override
-    protected boolean queryBoolean(ProgramInterface programInterface, Program.PropertyKey key, int index) {
-        int[][] data = new int[2][1];
-        data[0][0] = key.value();
-        GLX.glGetProgramResourceiv(program.intHandle(), programInterface.value(), index, data[0], null, data[1]);
-        return data[1][0] == GLX.GL_TRUE;
+    public ProgramInterface.ComputeSubroutine computeSubroutine() {
+        return getInterface(GlProgramInterfaceType.ComputeSubroutine);
     }
 
     @Override
-    protected int[] queryIntArray(ProgramInterface programInterface, Program.PropertyKey key, int index) {
-        int activeResources = queryInt(programInterface, Program.PropertyKey.ActiveVariables, index);
-        int[] props = new int[]{key.value()};
-        int[] data = new int[activeResources];
-        GLX.glGetProgramResourceiv(program.intHandle(), programInterface.value(), index, props, null, data);
-        return data;
+    public ProgramInterface.VertexSubroutineUniform vertexSubroutineUniform() {
+        return getInterface(GlProgramInterfaceType.VertexSubroutineUniform);
+    }
+
+    @Override
+    public ProgramInterface.TessControlSubroutineUniform tessControlSubroutineUniform() {
+        return getInterface(GlProgramInterfaceType.TessControlSubroutineUniform);
+    }
+
+    @Override
+    public ProgramInterface.TessEvaluationSubroutineUniform tessEvaluationSubroutineUniform() {
+        return getInterface(GlProgramInterfaceType.TessEvaluationSubroutineUniform);
+    }
+
+    @Override
+    public ProgramInterface.GeometrySubroutineUniform geometrySubroutineUniform() {
+        return getInterface(GlProgramInterfaceType.GeometrySubroutineUniform);
+    }
+
+    @Override
+    public ProgramInterface.FragmentSubroutineUniform fragmentSubroutineUniform() {
+        return getInterface(GlProgramInterfaceType.FragmentSubroutineUniform);
+    }
+
+    @Override
+    public ProgramInterface.ComputeSubroutineUniform computeSubroutineUniform() {
+        return getInterface(GlProgramInterfaceType.ComputeSubroutineUniform);
+    }
+
+    @Override
+    public ProgramInterface.TransformFeedbackVarying transformFeedbackVarying() {
+        return getInterface(GlProgramInterfaceType.TransformFeedbackVarying);
+    }
+
+    @Override
+    public ProgramInterface.BufferVariable bufferVariable() {
+        return getInterface(GlProgramInterfaceType.BufferVariable);
+    }
+
+    @Override
+    public ProgramInterface.ShaderStorageBlock shaderStorageBlock() {
+        return getInterface(GlProgramInterfaceType.ShaderStorageBlock);
+    }
+
+    @Override
+    public ProgramInterface.TransformFeedbackBuffer transformFeedbackBuffer() {
+        return getInterface(GlProgramInterfaceType.TransformFeedbackBuffer);
     }
 }

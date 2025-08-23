@@ -1,10 +1,8 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
 import com.vanix.easygl.core.Support;
-import com.vanix.easygl.core.meta.MetaSystem;
 import org.joml.*;
 
 import java.io.IOException;
@@ -217,20 +215,6 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
     @Support(since = Version.GL43)
     ProgramInterfaces interfaces();
 
-    @Support(since = Version.GL43)
-    @SuppressWarnings("unchecked")
-    default <T extends ProgramInterface> T preload(T programInterface, int index, Program.PropertyKey... keys) {
-        return (T) new ProgramInterfaceImpl(programInterface, index, keys);
-    }
-
-    int getUniformBlockIndex(String name);
-
-    Program bindUniformBlock(int uniformBlockIndex, int bindingPoint);
-
-    default Program bindUniformBlock(String name, int bindingPoint) {
-        return bindUniformBlock(getUniformBlockIndex(name), bindingPoint);
-    }
-
     static Program of() {
         return MetaHolder.Program.create();
     }
@@ -238,47 +222,4 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
     record Binary(int format, ByteBuffer data) {
     }
 
-    @Support(since = Version.GL43)
-    enum PropertyKey implements IntEnum {
-        NameLength("NAME_LENGTH"),
-        Type("TYPE"),
-        ArraySize("ARRAY_SIZE"),
-        Offset("OFFSET"),
-        BlockIndex("BLOCK_INDEX"),
-        ArrayStride("ARRAY_STRIDE"),
-        MatrixStride("MATRIX_STRIDE"),
-        IsRowMajor("IS_ROW_MAJOR"),
-        AtomicCounterBufferIndex("ATOMIC_COUNTER_BUFFER_INDEX"),
-        TextureBuffer("TEXTURE_BUFFER"),
-        BufferBinding("BUFFER_BINDING"),
-        BufferDataSize("BUFFER_DATA_SIZE"),
-        NumActiveVariables("NUM_ACTIVE_VARIABLES"),
-        ActiveVariables("ACTIVE_VARIABLES"),//array/GL_NUM_ACTIVE_VARIABLES
-        ReferencedByVertexShader("REFERENCED_BY_VERTEX_SHADER"),
-        ReferencedByTessControlShader("REFERENCED_BY_TESS_CONTROL_SHADER"),
-        ReferencedByTessEvaluationShader("REFERENCED_BY_TESS_EVALUATION_SHADER"),
-        ReferencedByGeometryShader("REFERENCED_BY_GEOMETRY_SHADER"),
-        ReferencedByFragmentShader("REFERENCED_BY_FRAGMENT_SHADER"),
-        ReferencedByComputeShader("REFERENCED_BY_COMPUTE_SHADER"),
-        NumCompatibleSubroutines("NUM_COMPATIBLE_SUBROUTINES"),
-        CompatibleSubroutines("COMPATIBLE_SUBROUTINES"),
-        TopLevelArraySize("TOP_LEVEL_ARRAY_SIZE"),
-        TopLevelArrayStride("TOP_LEVEL_ARRAY_STRIDE"),
-        Location("LOCATION"),
-        LocationIndex("LOCATION_INDEX"),
-        IsPerPatch("IS_PER_PATCH"),
-        LocationComponent("LOCATION_COMPONENT"),
-        TransformFeedbackBufferIndex("TRANSFORM_FEEDBACK_BUFFER_INDEX"),
-        TransformFeedbackBufferStride("TRANSFORM_FEEDBACK_BUFFER_STRIDE");
-        private final int value;
-
-        PropertyKey(String id) {
-            this.value = MetaSystem.Graphics.queryInt(id);
-        }
-
-        @Override
-        public int value() {
-            return value;
-        }
-    }
 }

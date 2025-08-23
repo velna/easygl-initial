@@ -50,6 +50,10 @@ public class BitSet<T> {
         return (value & v) == v;
     }
 
+    public void clear(){
+        value = 0;
+    }
+
     public int value() {
         return value;
     }

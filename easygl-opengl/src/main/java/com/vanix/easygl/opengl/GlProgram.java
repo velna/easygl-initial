@@ -14,7 +14,7 @@ import java.nio.IntBuffer;
 
 public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Program> implements Program {
     private final MutableObjectIntMap<String> uniforms = ObjectIntMaps.mutable.of();
-    private ProgramInterfaces interfaces;
+    private GlProgramInterfaces interfaces;
 
     protected GlProgram() {
         this(GLX.glCreateProgram());
@@ -541,22 +541,11 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public ProgramInterfaces interfaces() {
+    public GlProgramInterfaces interfaces() {
         if (interfaces == null) {
             interfaces = new GlProgramInterfaces(this);
         }
         return interfaces;
-    }
-
-    @Override
-    public int getUniformBlockIndex(String name) {
-        return GLX.glGetUniformBlockIndex(intHandle(), name);
-    }
-
-    @Override
-    public Program bindUniformBlock(int uniformBlockIndex, int bindingPoint) {
-        GLX.glUniformBlockBinding(intHandle(), uniformBlockIndex, bindingPoint);
-        return this;
     }
 
     @Override
