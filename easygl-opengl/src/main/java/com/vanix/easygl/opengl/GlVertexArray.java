@@ -11,6 +11,8 @@ import java.util.function.IntConsumer;
 
 public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArray>, VertexArray> implements VertexArray {
 
+    private int stride;
+
     GlVertexArray() {
         this(GLX.glGenVertexArrays());
     }
@@ -39,13 +41,14 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
                 GLX.checkError();
             }
         }
+        this.stride = stride;
         return this;
     }
 
     @Override
     public void drawArray(DrawMode mode, Buffer vbo, int first) {
         bind();
-        GLX.glDrawArrays(mode.value(), first, (int) vbo.count());
+        GLX.glDrawArrays(mode.value(), first, (int) vbo.count() / stride);
         GLX.checkError();
     }
 
