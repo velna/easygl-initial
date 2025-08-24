@@ -25,7 +25,6 @@ public abstract class BaseResource<T extends ProgramResource<T>> implements
         ProgramResource.BufferDataSize<T>,
         ProgramResource.NumActiveVariables<T>,
         ProgramResource.ActiveVariables<T>,
-        ProgramResource.SubroutineUniform<T>,
         ProgramResource.ReferencedByVertexShader<T>,
         ProgramResource.ReferencedByTessControlShader<T>,
         ProgramResource.ReferencedByGeometryShader<T>,
@@ -43,7 +42,7 @@ public abstract class BaseResource<T extends ProgramResource<T>> implements
         ProgramResource.TransformFeedbackBufferIndex<T>,
         ProgramResource.TransformFeedbackBufferStride<T> {
     protected final Program program;
-    private final GlProgramInterfaceType interfaceType;
+    protected final GlProgramInterfaceType interfaceType;
     protected final int index;
     private String name;
     private BitSet<PropertyKey> properties;
@@ -109,6 +108,11 @@ public abstract class BaseResource<T extends ProgramResource<T>> implements
     @Override
     public Program program() {
         return program;
+    }
+
+    @Override
+    public int index() {
+        return index;
     }
 
     @Override

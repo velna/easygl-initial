@@ -2,6 +2,7 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.BitSet;
 import com.vanix.easygl.commons.IntEnum;
+import com.vanix.easygl.commons.util.SerializableFunction;
 import com.vanix.easygl.core.*;
 import com.vanix.easygl.core.meta.MetaSystem;
 
@@ -107,6 +108,9 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
     }
 
     //region Set buffer data
+    //region Set buffer data
+    Buffer realloc(DataUsage usage, int size);
+
     Buffer realloc(DataUsage usage, DoubleBuffer data);
 
     Buffer realloc(DataUsage usage, FloatBuffer data);
@@ -183,23 +187,23 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
     //endregion
 
     //region Set sub data
-    Buffer setSubData(int offset, DoubleBuffer data);
+    Buffer setSubData(long offset, DoubleBuffer data);
 
-    Buffer setSubData(int offset, FloatBuffer data);
+    Buffer setSubData(long offset, FloatBuffer data);
 
-    Buffer setSubData(int offset, IntBuffer data);
+    Buffer setSubData(long offset, IntBuffer data);
 
-    Buffer setSubData(int offset, ShortBuffer data);
+    Buffer setSubData(long offset, ShortBuffer data);
 
-    Buffer setSubData(int offset, ByteBuffer data);
+    Buffer setSubData(long offset, ByteBuffer data);
 
-    Buffer setSubData(int offset, double[] data);
+    Buffer setSubData(long offset, double[] data);
 
-    Buffer setSubData(int offset, float[] data);
+    Buffer setSubData(long offset, float[] data);
 
-    Buffer setSubData(int offset, int[] data);
+    Buffer setSubData(long offset, int[] data);
 
-    Buffer setSubData(int offset, short[] data);
+    Buffer setSubData(long offset, short[] data);
     //endregion
 
     //region Clear data
@@ -302,9 +306,9 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
 
     long bytes();
 
-    Buffer bindRange(int bindingPoint, long offset, long size);
+    BindingPoint bindAt(int bindingPoint, long offset, long size);
 
-    Buffer bindBase(int bindingPoint);
+    BindingPoint bindAt(int bindingPoint);
 
     static Buffer of(DataType dataType) {
         return MetaHolder.Buffer.create(dataType);
@@ -314,4 +318,33 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
         return (BufferArray) MetaHolder.Buffer.createArray(n, dataType);
     }
 
+    interface BindingPoint extends IntEnum {
+        Target target();
+
+        Buffer buffer();
+
+        long offset();
+
+        long size();
+
+        <T, B extends ProgramResource.BufferBinding<B> & ProgramResource.BufferDataSize<B>> Mapping<T> createMapping(T bean, B bufferBinding);
+    }
+
+    interface Mapping<T> extends Closeable {
+        T getBean();
+
+        Buffer.BindingPoint getBindingPoint();
+
+        void flush();
+
+        void flush(SerializableFunction<T, ?> fieldGetter);
+
+        void flush(SerializableFunction<T, ?>... fieldGetters);
+
+        void load();
+
+        void load(SerializableFunction<T, ?> fieldGetter);
+
+        void load(SerializableFunction<T, ?>... fieldGetters);
+    }
 }

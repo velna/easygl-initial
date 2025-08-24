@@ -3,6 +3,7 @@ package com.vanix.easygl.core.graphics;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
 import com.vanix.easygl.core.Support;
+import com.vanix.easygl.core.graphics.program.UniformBlock;
 import org.joml.*;
 
 import java.io.IOException;
@@ -214,6 +215,9 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     @Support(since = Version.GL43)
     ProgramInterfaces interfaces();
+
+    @Support(since = Version.GL31)
+    UniformBlock getUniformBlock(String name);
 
     static Program of() {
         return MetaHolder.Program.create();

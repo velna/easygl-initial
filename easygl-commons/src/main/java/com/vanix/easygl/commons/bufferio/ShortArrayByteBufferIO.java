@@ -1,0 +1,24 @@
+package com.vanix.easygl.commons.bufferio;
+
+import javax.annotation.Nonnull;
+import java.nio.ByteBuffer;
+import java.util.function.Consumer;
+
+public class ShortArrayByteBufferIO implements ByteBufferIO<short[]> {
+    @Override
+    public void write(@Nonnull short[] object, ByteBuffer buffer) {
+        buffer.asShortBuffer().put(object);
+    }
+
+    @Override
+    public void read(short[] object, ByteBuffer buffer, Consumer<short[]> setter) {
+        var shortBuffer = buffer.asShortBuffer();
+        if (object == null) {
+            object = new short[shortBuffer.remaining()];
+            shortBuffer.get(object);
+            setter.accept(object);
+        } else {
+            shortBuffer.get(object);
+        }
+    }
+}

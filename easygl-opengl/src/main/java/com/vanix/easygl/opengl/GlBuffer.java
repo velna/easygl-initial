@@ -1,11 +1,24 @@
 package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.commons.BitSet;
+import com.vanix.easygl.commons.SimpleIntEnum;
+import com.vanix.easygl.commons.bufferio.ByteBufferIO;
+import com.vanix.easygl.commons.util.LambdaUtils;
+import com.vanix.easygl.commons.util.SerializableFunction;
 import com.vanix.easygl.core.AbstractMultiTargetBindable;
 import com.vanix.easygl.core.graphics.Buffer;
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.program.UniformBlock;
+import lombok.EqualsAndHashCode;
+import org.apache.commons.beanutils2.PropertyUtils;
+import org.lwjgl.system.MemoryUtil;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.function.IntConsumer;
 
 public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer> implements Buffer {
@@ -32,9 +45,16 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
 
     private <T> Buffer realloc(ReallocFunction<T> reallocFn, DataUsage usage, T data, int dataBytes) {
         assertBinding();
-        reallocFn.accept(target().value(), data, usage.value());
+        reallocFn.accept(target.value(), data, usage.value());
         GLX.checkError();
         sizeInBytes = dataBytes;
+        return this;
+    }
+
+    @Override
+    public Buffer realloc(DataUsage usage, int size) {
+        GLX.glBufferData(target.value(), size, usage.value());
+        sizeInBytes = size;
         return this;
     }
 
@@ -87,7 +107,7 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
         void accept(int target, long offset, T data);
     }
 
-    private <T> Buffer setSubData(SubDataFunction<T> subDataFunction, int offset, T data, int dataBytes) {
+    private <T> Buffer setSubData(SubDataFunction<T> subDataFunction, long offset, T data, int dataBytes) {
         assertBinding();
         subDataFunction.accept(target().value(), offset, data);
         GLX.checkError();
@@ -95,48 +115,48 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
     }
 
     @Override
-    public Buffer setSubData(int offset, DoubleBuffer data) {
-        return setSubData(GLX::glBufferSubData, DataType.Double.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, DoubleBuffer data) {
+        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
     }
 
     @Override
-    public Buffer setSubData(int offset, FloatBuffer data) {
-        return setSubData(GLX::glBufferSubData, DataType.Float.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, FloatBuffer data) {
+        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
     }
 
     @Override
-    public Buffer setSubData(int offset, IntBuffer data) {
-        return setSubData(GLX::glBufferSubData, DataType.Int.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, IntBuffer data) {
+        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
     }
 
     @Override
-    public Buffer setSubData(int offset, ShortBuffer data) {
-        return setSubData(GLX::glBufferSubData, DataType.Short.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, ShortBuffer data) {
+        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
     }
 
     @Override
-    public Buffer setSubData(int offset, ByteBuffer data) {
-        return setSubData(GLX::glBufferSubData, DataType.Byte.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, ByteBuffer data) {
+        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
     }
 
     @Override
-    public Buffer setSubData(int offset, double[] data) {
-        return setSubData(GLX::glBufferSubData, DataType.Double.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, double[] data) {
+        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
     }
 
     @Override
-    public Buffer setSubData(int offset, float[] data) {
-        return setSubData(GLX::glBufferSubData, DataType.Float.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, float[] data) {
+        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
     }
 
     @Override
-    public Buffer setSubData(int offset, int[] data) {
-        return setSubData(GLX::glBufferSubData, DataType.Int.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, int[] data) {
+        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
     }
 
     @Override
-    public Buffer setSubData(int offset, short[] data) {
-        return setSubData(GLX::glBufferSubData, DataType.Short.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, short[] data) {
+        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
     }
 
     private interface StorageFunction<T> {
@@ -485,18 +505,227 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
     }
 
     @Override
-    public Buffer bindRange(int bindingPoint, long offset, long size) {
+    public BindingPoint bindAt(int bindingPoint, long offset, long size) {
         assertBinding();
         GLX.glBindBufferRange(target.value(), bindingPoint, intHandle(), offset, size);
         GLX.checkError();
-        return this;
+        return new GlBindingPoint(bindingPoint, this, target, offset, size);
     }
 
     @Override
-    public Buffer bindBase(int bindingPoint) {
+    public BindingPoint bindAt(int bindingPoint) {
         assertBinding();
         GLX.glBindBufferBase(target.value(), bindingPoint, intHandle());
         GLX.checkError();
-        return this;
+        return new GlBindingPoint(bindingPoint, this, target, 0, bytes());
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    static class GlBindingPoint extends SimpleIntEnum implements BindingPoint {
+        private final Buffer buffer;
+        private final Target target;
+        private final long offset;
+        private final long size;
+
+        public GlBindingPoint(int value, Buffer buffer, Target target, long offset, long size) {
+            super(value);
+            this.buffer = buffer;
+            this.target = target;
+            this.offset = offset;
+            this.size = size;
+        }
+
+        @Override
+        public <T, B extends ProgramResource.BufferBinding<B> & ProgramResource.BufferDataSize<B>> Mapping<T> createMapping(T bean, B bufferBinding) {
+            return new GlMapping<>(this, bean, bufferBinding);
+        }
+
+        @Override
+        public Target target() {
+            return target;
+        }
+
+        @Override
+        public Buffer buffer() {
+            return buffer;
+        }
+
+        @Override
+        public long offset() {
+            return offset;
+        }
+
+        @Override
+        public long size() {
+            return size;
+        }
+
+        @Override
+        public String toString() {
+            return "BindingPoint{" +
+                    "target=" + target + ", value=" + value() +
+                    '}';
+        }
+    }
+
+    static class GlMapping<T> implements Mapping<T> {
+
+        private final Buffer.BindingPoint bindingPoint;
+        private final T bean;
+        private final ByteBuffer storage;
+        private final Map<String, BindingMeta> metaMap = new HashMap<>();
+
+        public <B extends ProgramResource.BufferBinding<B> & ProgramResource.BufferDataSize<B>> GlMapping(Buffer.BindingPoint bindingPoint, T bean, B bufferBinding) {
+            this.bindingPoint = bindingPoint;
+            this.bean = bean;
+            storage = MemoryUtil.memCalloc(bufferBinding.getBufferDataSize());
+            if (bufferBinding instanceof UniformBlock uniformBlock) {
+                initUniformBlock(uniformBlock);
+            } else {
+                throw new UnsupportedOperationException();
+            }
+        }
+
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        private void initUniformBlock(UniformBlock uniformBlock) {
+            int programHandle = uniformBlock.program().intHandle();
+            int n = GLX.glGetActiveUniformBlocki(programHandle, uniformBlock.index(), GLX.GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS);
+            GLX.checkError();
+            int[] uniformIndices = new int[n];
+            GLX.glGetActiveUniformBlockiv(programHandle, uniformBlock.index(), GLX.GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, uniformIndices);
+            GLX.checkError();
+            int[] uniformOffsets = new int[n];
+            GLX.glGetActiveUniformsiv(programHandle, uniformIndices, GLX.GL_UNIFORM_OFFSET, uniformOffsets);
+            GLX.checkError();
+            for (int i = 0; i < uniformIndices.length; i++) {
+                var uniformName = GLX.glGetActiveUniformName(programHandle, uniformIndices[i]);
+                GLX.checkError();
+                try {
+                    var descriptor = PropertyUtils.getPropertyDescriptor(bean, uniformName);
+                    if (descriptor == null) {
+                        throw new NoSuchElementException("Can not find uniform " + uniformName + " in class: " + bean.getClass());
+                    }
+                    int dataSize = i < uniformIndices.length - 1 ? uniformOffsets[i + 1] - uniformOffsets[i] : storage.capacity() - uniformOffsets[i];
+                    metaMap.put(uniformName,
+                            new BindingMeta(uniformOffsets[i], dataSize, new PropertyIO(bean, descriptor),
+                                    ByteBufferIO.of((Class) descriptor.getPropertyType())));
+                } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                    throw new NoSuchElementException("Can not find uniform " + uniformName + " in class: " + bean.getClass(), e);
+                }
+            }
+        }
+
+        @Override
+        public T getBean() {
+            return bean;
+        }
+
+        @Override
+        public Buffer.BindingPoint getBindingPoint() {
+            return bindingPoint;
+        }
+
+        @Override
+        public void flush() {
+            metaMap.forEach(this::flush);
+            bindingPoint.buffer().setSubData(bindingPoint.offset(), storage.clear());
+        }
+
+        private void flush(String name, BindingMeta meta) {
+            meta.write(storage);
+        }
+
+        @Override
+        public void flush(SerializableFunction<T, ?> fieldGetter) {
+            String name = LambdaUtils.resolvePropertyName(fieldGetter);
+            var meta = metaMap.get(name);
+            if (meta == null) {
+                throw new IllegalArgumentException("Not a valid uniform name: " + name);
+            }
+            flush(name, meta);
+            bindingPoint.buffer().setSubData(bindingPoint.offset() + meta.offset, meta.set(storage));
+        }
+
+        @Override
+        public void flush(SerializableFunction<T, ?>[] fieldGetters) {
+            for (var fieldGetter : fieldGetters) {
+                flush(fieldGetter);
+            }
+        }
+
+        private void load(String name, BindingMeta meta) {
+            meta.read(storage);
+        }
+
+        @Override
+        public void load() {
+            bindingPoint.buffer().getSubData(bindingPoint.offset(), storage.clear());
+            metaMap.forEach(this::load);
+        }
+
+        @Override
+        public void load(SerializableFunction<T, ?> fieldGetter) {
+            String name = LambdaUtils.resolvePropertyName(fieldGetter);
+            var meta = metaMap.get(name);
+            if (meta == null) {
+                throw new IllegalArgumentException("Not a valid uniform name: " + name);
+            }
+            bindingPoint.buffer().getSubData(bindingPoint.offset() + meta.offset, meta.set(storage));
+            load(name, meta);
+        }
+
+        @Override
+        public void load(SerializableFunction<T, ?>[] fieldGetters) {
+            for (var fieldGetter : fieldGetters) {
+                load(fieldGetter);
+            }
+        }
+
+        @Override
+        public void close() {
+            MemoryUtil.memFree(storage);
+        }
+    }
+
+    record PropertyIO(Object bean, PropertyDescriptor propertyDescriptor) {
+
+        Object getProperty() {
+            try {
+                return propertyDescriptor.getReadMethod().invoke(bean);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        void setProperty(Object value) {
+            try {
+                propertyDescriptor.getWriteMethod().invoke(bean, value);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    record BindingMeta(int offset, int dataSize,
+                       PropertyIO propertyIO,
+                       ByteBufferIO<Object> bufferIO) {
+
+        void write(ByteBuffer storage) {
+            Object value = propertyIO.getProperty();
+            if (value != null) {
+                bufferIO.write(value, set(storage));
+            }
+        }
+
+        ByteBuffer set(ByteBuffer storage) {
+            storage.clear().position(offset).limit(offset + dataSize);
+            return storage;
+        }
+
+        void read(ByteBuffer storage) {
+            Object value = propertyIO.getProperty();
+            bufferIO.read(value, set(storage), propertyIO::setProperty);
+        }
+
     }
 }

@@ -1,7 +1,9 @@
 package com.vanix.easygl.opengl.program;
 
+import com.vanix.easygl.core.graphics.Buffer;
 import com.vanix.easygl.core.graphics.Program;
 import com.vanix.easygl.core.graphics.program.ShaderStorageBlock;
+import com.vanix.easygl.opengl.GLX;
 import com.vanix.easygl.opengl.GlProgramInterfaceType;
 
 public class GlShaderStorageBlock extends BaseResource<ShaderStorageBlock> implements ShaderStorageBlock {
@@ -9,4 +11,9 @@ public class GlShaderStorageBlock extends BaseResource<ShaderStorageBlock> imple
         super(program, GlProgramInterfaceType.ShaderStorageBlock, index);
     }
 
+    @Override
+    public ShaderStorageBlock bind(Buffer.BindingPoint bindingPoint) {
+        GLX.glShaderStorageBlockBinding(program.intHandle(), index, bindingPoint.value());
+        return this;
+    }
 }

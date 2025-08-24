@@ -1,5 +1,6 @@
 package com.vanix.easygl.core.graphics.program;
 
+import com.vanix.easygl.core.graphics.Buffer;
 import com.vanix.easygl.core.graphics.ProgramResource;
 
 public interface UniformBlock extends
@@ -14,4 +15,5 @@ public interface UniformBlock extends
         ProgramResource.ReferencedByGeometryShader<UniformBlock>,
         ProgramResource.ReferencedByFragmentShader<UniformBlock>,
         ProgramResource.ReferencedByTessControlShader<UniformBlock> {
+    UniformBlock bind(Buffer.BindingPoint bindingPoint);
 }

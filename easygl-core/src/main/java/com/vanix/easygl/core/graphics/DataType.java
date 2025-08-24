@@ -2,7 +2,7 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.meta.MetaSystem;
 
-import java.nio.Buffer;
+import java.nio.*;
 
 public enum DataType {
     Byte("BYTE", java.lang.Byte.BYTES),
@@ -70,8 +70,24 @@ public enum DataType {
         return Double.bytesOfCount(data.length);
     }
 
-    public static int bytesOf(Buffer data) {
+    public static int bytesOf(ByteBuffer data) {
+        return data.remaining();
+    }
+
+    public static int bytesOf(ShortBuffer data) {
         return Short.bytesOfCount(data.remaining());
+    }
+
+    public static int bytesOf(IntBuffer data) {
+        return Int.bytesOfCount(data.remaining());
+    }
+
+    public static int bytesOf(FloatBuffer data) {
+        return Float.bytesOfCount(data.remaining());
+    }
+
+    public static int bytesOf(DoubleBuffer data) {
+        return Double.bytesOfCount(data.remaining());
     }
 
 }

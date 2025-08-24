@@ -4,14 +4,17 @@ import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
 
+@Support(since = Version.GL43)
 public interface ProgramResource<T extends ProgramResource<T>> {
 
     Program program();
 
+    int index();
+
     T preLoad(PropertyKey... keys);
 
-    @Support(since = Version.GL43)
     enum PropertyKey implements IntEnum {
+        Named("NAME_LENGTH"),
         Type("TYPE"),
         ArraySize("ARRAY_SIZE"),
         Offset("OFFSET"),
@@ -52,6 +55,7 @@ public interface ProgramResource<T extends ProgramResource<T>> {
             return value;
         }
     }
+
 
     //region Resource functions
     interface Named<T extends ProgramResource<T>> extends ProgramResource<T> {
@@ -175,12 +179,4 @@ public interface ProgramResource<T extends ProgramResource<T>> {
     }
     //endregion
 
-    interface SubroutineUniform<T extends ProgramResource<T>> extends
-            Named<T>,
-            ArraySize<T>,
-            NumCompatibleSubroutines<T>,
-            CompatibleSubroutines<T>,
-            Location<T> {
-
-    }
 }

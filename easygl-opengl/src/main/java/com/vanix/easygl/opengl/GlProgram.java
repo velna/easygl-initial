@@ -3,6 +3,8 @@ package com.vanix.easygl.opengl;
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.program.UniformBlock;
+import com.vanix.easygl.opengl.program.Gl31UniformBlock;
 import org.eclipse.collections.api.factory.primitive.ObjectIntMaps;
 import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
 import org.lwjgl.opengl.GL20;
@@ -11,6 +13,7 @@ import org.lwjgl.system.MemoryStack;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.NoSuchElementException;
 
 public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Program> implements Program {
     private final MutableObjectIntMap<String> uniforms = ObjectIntMaps.mutable.of();
@@ -546,6 +549,15 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
             interfaces = new GlProgramInterfaces(this);
         }
         return interfaces;
+    }
+
+    @Override
+    public UniformBlock getUniformBlock(String name) {
+        int index = GLX.glGetUniformBlockIndex(intHandle(), name);
+        if (index == GLX.GL_INVALID_INDEX) {
+            throw new NoSuchElementException("No uniform block of name find: " + name);
+        }
+        return new Gl31UniformBlock(this, index, name);
     }
 
     @Override

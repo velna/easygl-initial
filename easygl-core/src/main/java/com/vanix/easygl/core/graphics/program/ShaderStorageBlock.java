@@ -1,5 +1,6 @@
 package com.vanix.easygl.core.graphics.program;
 
+import com.vanix.easygl.core.graphics.Buffer;
 import com.vanix.easygl.core.graphics.ProgramResource;
 
 public interface ShaderStorageBlock extends
@@ -14,5 +15,5 @@ public interface ShaderStorageBlock extends
         ProgramResource.ReferencedByGeometryShader<ShaderStorageBlock>,
         ProgramResource.ReferencedByFragmentShader<ShaderStorageBlock>,
         ProgramResource.ReferencedByTessControlShader<ShaderStorageBlock> {
-
+    ShaderStorageBlock bind(Buffer.BindingPoint bindingPoint);
 }
