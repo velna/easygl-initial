@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 public class DoubleBufferIO implements BufferIO<Double> {
     @Override
-    public int sizeOf(Class<Double> type) {
+    public int sizeOfOneUnit() {
         return Double.BYTES;
     }
 

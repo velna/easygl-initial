@@ -5,6 +5,10 @@ import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
 public class DoubleArrayBufferIO implements BufferIO<double[]> {
+    @Override
+    public int sizeOfOneUnit() {
+        return Double.BYTES;
+    }
 
     @Override
     public void write(@Nonnull double[] object, ByteBuffer buffer) {

@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 public class IntBufferIO implements BufferIO<Integer> {
     @Override
-    public int sizeOf(Class<Integer> type) {
+    public int sizeOfOneUnit() {
         return Integer.BYTES;
     }
 

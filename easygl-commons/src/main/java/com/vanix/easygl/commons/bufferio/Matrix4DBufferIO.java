@@ -10,7 +10,7 @@ public class Matrix4DBufferIO implements BufferIO<Matrix4d> {
     private static final int BYTES = Double.BYTES << 4;
 
     @Override
-    public int sizeOf(Class<Matrix4d> type) {
+    public int sizeOfOneUnit() {
         return BYTES;
     }
 

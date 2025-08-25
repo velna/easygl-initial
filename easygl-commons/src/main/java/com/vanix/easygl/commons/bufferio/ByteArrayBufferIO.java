@@ -6,6 +6,11 @@ import java.util.function.Consumer;
 
 public class ByteArrayBufferIO implements BufferIO<byte[]> {
     @Override
+    public int sizeOfOneUnit() {
+        return Byte.BYTES;
+    }
+
+    @Override
     public void write(@Nonnull byte[] object, ByteBuffer buffer) {
         buffer.put(object);
     }

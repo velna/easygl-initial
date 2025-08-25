@@ -10,7 +10,7 @@ public class Matrix4FBufferIO implements BufferIO<Matrix4f> {
     private static final int BYTES = Float.BYTES << 4;
 
     @Override
-    public int sizeOf(Class<Matrix4f> type) {
+    public int sizeOfOneUnit() {
         return BYTES;
     }
 

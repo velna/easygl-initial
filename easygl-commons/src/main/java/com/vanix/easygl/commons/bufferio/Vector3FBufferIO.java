@@ -10,7 +10,7 @@ public class Vector3FBufferIO implements BufferIO<Vector3f> {
     private static final int BYTES = Float.BYTES * 3;
 
     @Override
-    public int sizeOf(Class<Vector3f> type) {
+    public int sizeOfOneUnit() {
         return BYTES;
     }
 

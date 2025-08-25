@@ -10,7 +10,7 @@ public class Vector3DBufferIO implements BufferIO<Vector3d> {
     private static final int BYTES = Double.BYTES * 3;
 
     @Override
-    public int sizeOf(Class<Vector3d> type) {
+    public int sizeOfOneUnit() {
         return BYTES;
     }
 

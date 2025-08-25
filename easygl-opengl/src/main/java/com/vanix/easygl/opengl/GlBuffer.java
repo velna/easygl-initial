@@ -589,7 +589,7 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
         public GlMapping(Buffer buffer, T bean, long offset) {
             this.bean = bean;
             this.bufferIO = (StructBufferIO<T>) BufferIO.of((Class<T>) bean.getClass());
-            storage = MemoryUtil.memCalloc(bufferIO.sizeOf((Class<T>) bean.getClass()));
+            storage = MemoryUtil.memCalloc(bufferIO.sizeOfOneUnit());
             this.bindingPoint = new GlBindingPoint(-1, buffer, offset, storage.capacity());
         }
 

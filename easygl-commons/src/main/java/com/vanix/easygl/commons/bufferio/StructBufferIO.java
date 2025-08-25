@@ -44,13 +44,17 @@ public class StructBufferIO<T> implements BufferIO<T> {
             var paramType = (Class<Object>) param.getType();
             var bufferIo = BufferIO.of(paramType);
             var bufferField = param.getAnnotation(BufferField.class);
-            int dataSize = bufferField != null && bufferField.size() > 0 ? bufferField.size() : bufferIo.sizeOf(paramType);
+            if (bufferField != null && bufferField.count() <= 0) {
+                throw new BufferIOException("Invalid BufferField.count " + bufferField.count() + " of class " + defaultConstructor.getDeclaringClass());
+            }
+            int count = bufferField == null ? 1 : bufferField.count();
+            int dataSize = count * bufferIo.sizeOfOneUnit();
             String fieldName = bufferField != null && !bufferField.name().isEmpty() ? bufferField.name() : param.getName();
             var descriptor = findDescriptor(descriptors, fieldName, paramType);
             if (descriptor == null) {
                 throw new BufferIOException("Can not find property of constructor param " + param + " for class " + structConstructor.getDeclaringClass());
             }
-            metaMap.put(fieldName, new StructBufferIO.BindingMeta(size, dataSize, new StructBufferIO.PropertyIO(descriptor), bufferIo));
+            metaMap.put(fieldName, new StructBufferIO.BindingMeta(size, dataSize, count, new StructBufferIO.PropertyIO(descriptor), bufferIo));
             size += dataSize;
         }
         this.size = size;
@@ -72,7 +76,7 @@ public class StructBufferIO<T> implements BufferIO<T> {
     }
 
     @Override
-    public int sizeOf(Class<T> type) {
+    public int sizeOfOneUnit() {
         return size;
     }
 
@@ -112,11 +116,12 @@ public class StructBufferIO<T> implements BufferIO<T> {
 
     public static class Builder<T> {
         private final StructBufferIO<T> origin;
-        private int size;
-        private Map<String, BindingMeta> metaMap = new LinkedHashMap<>();
+        private final int size;
+        private final Map<String, BindingMeta> metaMap = new LinkedHashMap<>();
 
-        public Builder(StructBufferIO<T> origin) {
+        public Builder(StructBufferIO<T> origin, int size) {
             this.origin = origin;
+            this.size = size;
         }
 
         public Builder<T> withField(String name, int offset, int dataSize) {
@@ -128,12 +133,11 @@ public class StructBufferIO<T> implements BufferIO<T> {
                 throw new BufferIOException(String.format("Incompatible data size of field %s within type %s: origin=%d, expect=%d",
                         name, origin.defaultConstructor.getDeclaringClass(), meta.dataSize, dataSize));
             }
-            if (offset < size) {
-                throw new BufferIOException(String.format("Offset %d is smaller than current data size %d of field %s within type %s.",
-                        offset, size, name, origin.defaultConstructor.getDeclaringClass()));
+            if (offset + dataSize > size) {
+                throw new BufferIOException(String.format("Offset %d with data size %d is larger than current data size %d of field %s within type %s.",
+                        offset, dataSize, size, name, origin.defaultConstructor.getDeclaringClass()));
             }
-            metaMap.put(name, new BindingMeta(offset, dataSize, meta.propertyIO, meta.bufferIO));
-            size = offset + dataSize;
+            metaMap.put(name, new BindingMeta(offset, dataSize, meta.count, meta.propertyIO, meta.bufferIO));
             return this;
         }
 
@@ -162,12 +166,16 @@ public class StructBufferIO<T> implements BufferIO<T> {
         }
     }
 
-    private record BindingMeta(int offset, int dataSize,
+    private record BindingMeta(int offset, int dataSize, int count,
                                PropertyIO propertyIO,
                                BufferIO<Object> bufferIO) implements FieldBufferIO<Object> {
+        @Override
+        public int sizeOfOneUnit() {
+            return dataSize;
+        }
 
         @Override
-        public void write(Object bean, ByteBuffer storage) {
+        public void write(@Nonnull Object bean, ByteBuffer storage) {
             Object value = propertyIO.getProperty(bean);
             if (value != null) {
                 bufferIO.write(value, set(storage));

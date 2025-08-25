@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 public class ShortBufferIO implements BufferIO<Short> {
     @Override
-    public int sizeOf(Class<Short> type) {
+    public int sizeOfOneUnit() {
         return Short.BYTES;
     }
 

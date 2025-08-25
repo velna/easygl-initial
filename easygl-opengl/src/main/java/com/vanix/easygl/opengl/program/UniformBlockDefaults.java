@@ -27,13 +27,14 @@ public interface UniformBlockDefaults extends UniformBlock {
         GLX.checkError();
         int[] uniformOffsets = new int[n];
         GLX.glGetActiveUniformsiv(programHandle, uniformIndices, GLX.GL_UNIFORM_OFFSET, uniformOffsets);
+        int[] uniformDataSizes = new int[n];
+        GLX.glGetActiveUniformsiv(programHandle, uniformIndices, GLX.GL_UNIFORM_SIZE, uniformDataSizes);
         GLX.checkError();
-        var structBufferIoBuilder = new StructBufferIO.Builder<>((StructBufferIO<T>) BufferIO.of(bean.getClass()));
+        var structBufferIoBuilder = new StructBufferIO.Builder<>((StructBufferIO<T>) BufferIO.of(bean.getClass()), getBufferDataSize());
         for (int i = 0; i < uniformIndices.length; i++) {
             var uniformName = GLX.glGetActiveUniformName(programHandle, uniformIndices[i]);
             GLX.checkError();
-            int dataSize = i < uniformIndices.length - 1 ? uniformOffsets[i + 1] - uniformOffsets[i] : storage.capacity() - uniformOffsets[i];
-            structBufferIoBuilder.withField(uniformName, uniformOffsets[i], dataSize);
+            structBufferIoBuilder.withField(uniformName, uniformOffsets[i], uniformDataSizes[i]);
         }
         return structBufferIoBuilder.build();
     }

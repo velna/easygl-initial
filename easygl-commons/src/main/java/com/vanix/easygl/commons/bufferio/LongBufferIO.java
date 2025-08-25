@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 public class LongBufferIO implements BufferIO<Long> {
     @Override
-    public int sizeOf(Class<Long> type) {
+    public int sizeOfOneUnit() {
         return Long.BYTES;
     }
 

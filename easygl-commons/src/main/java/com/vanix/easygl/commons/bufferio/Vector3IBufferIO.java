@@ -10,7 +10,7 @@ public class Vector3IBufferIO implements BufferIO<Vector3i> {
     private static final int BYTES = Integer.BYTES * 3;
 
     @Override
-    public int sizeOf(Class<Vector3i> type) {
+    public int sizeOfOneUnit() {
         return BYTES;
     }
 

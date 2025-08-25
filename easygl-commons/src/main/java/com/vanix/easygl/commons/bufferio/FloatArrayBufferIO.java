@@ -6,6 +6,11 @@ import java.util.function.Consumer;
 
 public class FloatArrayBufferIO implements BufferIO<float[]> {
     @Override
+    public int sizeOfOneUnit() {
+        return Float.BYTES;
+    }
+
+    @Override
     public void write(@Nonnull float[] object, ByteBuffer buffer) {
         buffer.asFloatBuffer().put(object);
     }

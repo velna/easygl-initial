@@ -6,6 +6,11 @@ import java.util.function.Consumer;
 
 public class LongArrayBufferIO implements BufferIO<long[]> {
     @Override
+    public int sizeOfOneUnit() {
+        return Long.BYTES;
+    }
+
+    @Override
     public void write(@Nonnull long[] object, ByteBuffer buffer) {
         buffer.asLongBuffer().put(object);
     }

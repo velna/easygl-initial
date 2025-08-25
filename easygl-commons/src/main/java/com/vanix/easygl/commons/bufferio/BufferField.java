@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 public @interface BufferField {
     String name() default "";
 
-    int size() default -1;
+    int count() default 1;
 }

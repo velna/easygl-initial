@@ -6,6 +6,11 @@ import java.util.function.Consumer;
 
 public class ShortArrayBufferIO implements BufferIO<short[]> {
     @Override
+    public int sizeOfOneUnit() {
+        return Short.BYTES;
+    }
+
+    @Override
     public void write(@Nonnull short[] object, ByteBuffer buffer) {
         buffer.asShortBuffer().put(object);
     }
