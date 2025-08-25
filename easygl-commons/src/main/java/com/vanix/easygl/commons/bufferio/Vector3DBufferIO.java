@@ -6,7 +6,14 @@ import javax.annotation.Nonnull;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
-public class Vector3dByteBufferIO implements ByteBufferIO<Vector3d> {
+public class Vector3DBufferIO implements BufferIO<Vector3d> {
+    private static final int BYTES = Double.BYTES * 3;
+
+    @Override
+    public int sizeOf(Class<Vector3d> type) {
+        return BYTES;
+    }
+
     @Override
     public void write(@Nonnull Vector3d object, ByteBuffer buffer) {
         object.get(buffer);

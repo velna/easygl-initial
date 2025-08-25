@@ -6,7 +6,14 @@ import javax.annotation.Nonnull;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
-public class Matrix4dByteBufferIO implements ByteBufferIO<Matrix4d> {
+public class Matrix4DBufferIO implements BufferIO<Matrix4d> {
+    private static final int BYTES = Double.BYTES << 4;
+
+    @Override
+    public int sizeOf(Class<Matrix4d> type) {
+        return BYTES;
+    }
+
     @Override
     public void write(@Nonnull Matrix4d object, ByteBuffer buffer) {
         object.get(buffer);

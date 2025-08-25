@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
-public class LongArrayByteBufferIO implements ByteBufferIO<long[]> {
+public class LongArrayBufferIO implements BufferIO<long[]> {
     @Override
     public void write(@Nonnull long[] object, ByteBuffer buffer) {
         buffer.asLongBuffer().put(object);

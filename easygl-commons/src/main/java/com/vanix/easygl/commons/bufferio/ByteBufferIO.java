@@ -4,12 +4,19 @@ import javax.annotation.Nonnull;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
-public interface ByteBufferIO<T> {
-    void write(@Nonnull T object, ByteBuffer buffer);
+public class ByteBufferIO implements BufferIO<Byte> {
+    @Override
+    public int sizeOf(Class<Byte> type) {
+        return Byte.BYTES;
+    }
 
-    void read(T object, ByteBuffer buffer, Consumer<T> setter);
+    @Override
+    public void write(@Nonnull Byte object, ByteBuffer buffer) {
+        buffer.put(object);
+    }
 
-    static <T> ByteBufferIO<T> of(Class<T> type) {
-        return ByteBufferIORegistry.get(type);
+    @Override
+    public void read(Byte object, ByteBuffer buffer, Consumer<Byte> setter) {
+        setter.accept(buffer.get());
     }
 }

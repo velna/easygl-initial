@@ -310,6 +310,8 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
 
     BindingPoint bindAt(int bindingPoint);
 
+    <T> Mapping<T> createMapping(T bean, long offset);
+
     static Buffer of(DataType dataType) {
         return MetaHolder.Buffer.create(dataType);
     }

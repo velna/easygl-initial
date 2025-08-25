@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
-public class ByteArrayByteBufferIO implements ByteBufferIO<byte[]> {
+public class ByteArrayBufferIO implements BufferIO<byte[]> {
     @Override
     public void write(@Nonnull byte[] object, ByteBuffer buffer) {
         buffer.put(object);

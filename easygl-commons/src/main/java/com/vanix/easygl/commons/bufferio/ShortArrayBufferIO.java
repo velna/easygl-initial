@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
-public class ShortArrayByteBufferIO implements ByteBufferIO<short[]> {
+public class ShortArrayBufferIO implements BufferIO<short[]> {
     @Override
     public void write(@Nonnull short[] object, ByteBuffer buffer) {
         buffer.asShortBuffer().put(object);

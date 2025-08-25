@@ -1,0 +1,40 @@
+package com.vanix.easygl.opengl.program;
+
+import com.vanix.easygl.commons.bufferio.BufferIO;
+import com.vanix.easygl.commons.bufferio.StructBufferIO;
+import com.vanix.easygl.core.graphics.Buffer;
+import com.vanix.easygl.core.graphics.program.UniformBlock;
+import com.vanix.easygl.opengl.GLX;
+
+import java.nio.ByteBuffer;
+
+public interface UniformBlockDefaults extends UniformBlock {
+
+    @Override
+    default UniformBlock bind(Buffer.BindingPoint bindingPoint) {
+        GLX.glUniformBlockBinding(program().intHandle(), index(), bindingPoint.value());
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    default <T> StructBufferIO<T> createBufferIO(T bean, ByteBuffer storage) {
+        int programHandle = program().intHandle();
+        int n = GLX.glGetActiveUniformBlocki(programHandle, index(), GLX.GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS);
+        GLX.checkError();
+        int[] uniformIndices = new int[n];
+        GLX.glGetActiveUniformBlockiv(programHandle, index(), GLX.GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, uniformIndices);
+        GLX.checkError();
+        int[] uniformOffsets = new int[n];
+        GLX.glGetActiveUniformsiv(programHandle, uniformIndices, GLX.GL_UNIFORM_OFFSET, uniformOffsets);
+        GLX.checkError();
+        var structBufferIoBuilder = new StructBufferIO.Builder<>((StructBufferIO<T>) BufferIO.of(bean.getClass()));
+        for (int i = 0; i < uniformIndices.length; i++) {
+            var uniformName = GLX.glGetActiveUniformName(programHandle, uniformIndices[i]);
+            GLX.checkError();
+            int dataSize = i < uniformIndices.length - 1 ? uniformOffsets[i + 1] - uniformOffsets[i] : storage.capacity() - uniformOffsets[i];
+            structBufferIoBuilder.withField(uniformName, uniformOffsets[i], dataSize);
+        }
+        return structBufferIoBuilder.build();
+    }
+}

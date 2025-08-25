@@ -5,7 +5,7 @@ import com.vanix.easygl.core.graphics.Program;
 import com.vanix.easygl.core.graphics.program.UniformBlock;
 import com.vanix.easygl.opengl.GLX;
 
-public class Gl31UniformBlock extends BaseGl31Resource implements UniformBlock {
+public class Gl31UniformBlock extends BaseGl31Resource implements UniformBlockDefaults {
 
     public Gl31UniformBlock(Program program, int index, String name) {
         super(program, index, name);
@@ -68,9 +68,4 @@ public class Gl31UniformBlock extends BaseGl31Resource implements UniformBlock {
         return GLX.glGetActiveUniformBlocki(program.intHandle(), index, GLX.GL_UNIFORM_BLOCK_REFERENCED_BY_COMPUTE_SHADER) == GLX.GL_TRUE;
     }
 
-    @Override
-    public UniformBlock bind(Buffer.BindingPoint bindingPoint) {
-        GLX.glUniformBlockBinding(program.intHandle(), index, bindingPoint.value());
-        return this;
-    }
 }

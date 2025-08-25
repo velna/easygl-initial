@@ -4,7 +4,12 @@ import javax.annotation.Nonnull;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
-public class LongByteBufferIO implements ByteBufferIO<Long> {
+public class LongBufferIO implements BufferIO<Long> {
+    @Override
+    public int sizeOf(Class<Long> type) {
+        return Long.BYTES;
+    }
+
     @Override
     public void write(@Nonnull Long object, ByteBuffer buffer) {
         buffer.putLong(object);

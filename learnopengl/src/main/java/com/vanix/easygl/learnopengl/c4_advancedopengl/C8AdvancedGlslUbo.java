@@ -1,5 +1,6 @@
 package com.vanix.easygl.learnopengl.c4_advancedopengl;
 
+import com.vanix.easygl.commons.bufferio.BufferStruct;
 import com.vanix.easygl.core.g3d.ControllableCamera;
 import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.input.Keyboard;
@@ -146,5 +147,14 @@ public class C8AdvancedGlslUbo {
     public static class Matrices {
         private Matrix4f projection;
         private Matrix4f view;
+
+        public Matrices() {
+        }
+
+        @BufferStruct
+        public Matrices(Matrix4f projection, Matrix4f view) {
+            this.projection = projection;
+            this.view = view;
+        }
     }
 }

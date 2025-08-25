@@ -6,7 +6,14 @@ import javax.annotation.Nonnull;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
-public class Vector3fByteBufferIO implements ByteBufferIO<Vector3f> {
+public class Vector3FBufferIO implements BufferIO<Vector3f> {
+    private static final int BYTES = Float.BYTES * 3;
+
+    @Override
+    public int sizeOf(Class<Vector3f> type) {
+        return BYTES;
+    }
+
     @Override
     public void write(@Nonnull Vector3f object, ByteBuffer buffer) {
         object.get(buffer);

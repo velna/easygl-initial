@@ -1,7 +1,10 @@
 package com.vanix.easygl.core.graphics.program;
 
+import com.vanix.easygl.commons.bufferio.StructBufferIO;
 import com.vanix.easygl.core.graphics.Buffer;
 import com.vanix.easygl.core.graphics.ProgramResource;
+
+import java.nio.ByteBuffer;
 
 public interface UniformBlock extends
         ProgramResource.Named<UniformBlock>,
@@ -16,4 +19,6 @@ public interface UniformBlock extends
         ProgramResource.ReferencedByFragmentShader<UniformBlock>,
         ProgramResource.ReferencedByTessControlShader<UniformBlock> {
     UniformBlock bind(Buffer.BindingPoint bindingPoint);
+
+    <T> StructBufferIO<T> createBufferIO(T bean, ByteBuffer storage);
 }
