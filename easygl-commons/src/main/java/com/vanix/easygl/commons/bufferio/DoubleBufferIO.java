@@ -1,6 +1,7 @@
 package com.vanix.easygl.commons.bufferio;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
@@ -16,7 +17,7 @@ public class DoubleBufferIO implements BufferIO<Double> {
     }
 
     @Override
-    public void read(Double object, ByteBuffer buffer, Consumer<Double> setter) {
+    public void read(@Nullable Double object, ByteBuffer buffer, Consumer<Double> setter) {
         setter.accept(buffer.getDouble());
     }
 }

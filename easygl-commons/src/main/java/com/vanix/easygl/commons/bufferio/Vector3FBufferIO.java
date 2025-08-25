@@ -3,6 +3,7 @@ package com.vanix.easygl.commons.bufferio;
 import org.joml.Vector3f;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
@@ -20,7 +21,7 @@ public class Vector3FBufferIO implements BufferIO<Vector3f> {
     }
 
     @Override
-    public void read(Vector3f object, ByteBuffer buffer, Consumer<Vector3f> setter) {
+    public void read(@Nullable Vector3f object, ByteBuffer buffer, Consumer<Vector3f> setter) {
         if (object == null) {
             object = new Vector3f(buffer);
             setter.accept(object);

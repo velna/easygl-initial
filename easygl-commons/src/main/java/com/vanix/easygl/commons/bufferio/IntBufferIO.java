@@ -1,6 +1,7 @@
 package com.vanix.easygl.commons.bufferio;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
@@ -16,7 +17,7 @@ public class IntBufferIO implements BufferIO<Integer> {
     }
 
     @Override
-    public void read(Integer object, ByteBuffer buffer, Consumer<Integer> setter) {
+    public void read(@Nullable Integer object, ByteBuffer buffer, Consumer<Integer> setter) {
         setter.accept(buffer.getInt());
     }
 }

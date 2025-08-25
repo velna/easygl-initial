@@ -1,6 +1,7 @@
 package com.vanix.easygl.commons.bufferio;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
@@ -16,7 +17,7 @@ public class FloatArrayBufferIO implements BufferIO<float[]> {
     }
 
     @Override
-    public void read(float[] object, ByteBuffer buffer, Consumer<float[]> setter) {
+    public void read(@Nullable float[] object, ByteBuffer buffer, Consumer<float[]> setter) {
         var floatBuffer = buffer.asFloatBuffer();
         if (object == null) {
             object = new float[floatBuffer.remaining()];

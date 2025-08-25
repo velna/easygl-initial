@@ -1,6 +1,7 @@
 package com.vanix.easygl.commons.bufferio;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
@@ -31,7 +32,7 @@ public class ArrayBufferIO<T> implements BufferIO<T[]> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void read(T[] object, ByteBuffer buffer, Consumer<T[]> setter) {
+    public void read(@Nullable T[] object, ByteBuffer buffer, Consumer<T[]> setter) {
         T[] array;
         if (object == null) {
             array = (T[]) Array.newInstance(componentType, count);

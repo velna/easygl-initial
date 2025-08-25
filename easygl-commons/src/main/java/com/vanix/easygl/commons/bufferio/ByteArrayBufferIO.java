@@ -1,6 +1,7 @@
 package com.vanix.easygl.commons.bufferio;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
@@ -16,7 +17,7 @@ public class ByteArrayBufferIO implements BufferIO<byte[]> {
     }
 
     @Override
-    public void read(byte[] object, ByteBuffer buffer, Consumer<byte[]> setter) {
+    public void read(@Nullable byte[] object, ByteBuffer buffer, Consumer<byte[]> setter) {
         if (object == null) {
             object = new byte[buffer.remaining()];
             buffer.get(object);

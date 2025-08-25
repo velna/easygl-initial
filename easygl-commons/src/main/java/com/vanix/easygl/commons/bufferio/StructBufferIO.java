@@ -3,6 +3,7 @@ package com.vanix.easygl.commons.bufferio;
 import org.apache.commons.beanutils2.PropertyUtils;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -88,7 +89,7 @@ public class StructBufferIO<T> implements BufferIO<T> {
     }
 
     @Override
-    public void read(T object, ByteBuffer buffer, Consumer<T> setter) {
+    public void read(@Nullable T object, ByteBuffer buffer, Consumer<T> setter) {
         boolean setFlag = false;
         if (object == null) {
             try {
@@ -188,7 +189,7 @@ public class StructBufferIO<T> implements BufferIO<T> {
         }
 
         @Override
-        public void read(Object bean, ByteBuffer storage, Consumer<Object> setter) {
+        public void read(@Nullable Object bean, ByteBuffer storage, Consumer<Object> setter) {
             Object value = propertyIO.getProperty(bean);
             bufferIO.read(value, set(storage), v -> propertyIO.setProperty(bean, v));
         }

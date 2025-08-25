@@ -1,6 +1,7 @@
 package com.vanix.easygl.commons.bufferio;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class ListBufferIO<T> implements BufferIO<List<T>> {
     }
 
     @Override
-    public void read(List<T> object, ByteBuffer buffer, Consumer<List<T>> setter) {
+    public void read(@Nullable List<T> object, ByteBuffer buffer, Consumer<List<T>> setter) {
         List<T> list;
         if (object == null) {
             list = new ArrayList<>(count);

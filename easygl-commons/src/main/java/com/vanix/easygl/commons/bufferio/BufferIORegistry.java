@@ -1,5 +1,6 @@
 package com.vanix.easygl.commons.bufferio;
 
+import com.vanix.easygl.commons.collection.eclipse.*;
 import com.vanix.easygl.commons.util.TypeReference;
 import org.joml.*;
 
@@ -9,10 +10,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.IntFunction;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class BufferIORegistry {
     private static final Map<Object, BufferIO<?>> REGISTRY = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, IntFunction<BufferIO>> COLLECTION_TYPES = new ConcurrentHashMap<>();
 
     static {
         register(byte.class, new ByteBufferIO());
@@ -32,6 +35,13 @@ public class BufferIORegistry {
         register(Vector3d.class, new Vector3DBufferIO());
         register(Matrix4f.class, new Matrix4FBufferIO());
         register(Matrix4d.class, new Matrix4DBufferIO());
+
+        registerCollection(ByteBufferArrayList.class, count -> new BufferListBufferIO(count, Byte.BYTES, c -> new ByteBufferArrayList(c, (byte) 0)));
+        registerCollection(ShortBufferArrayList.class, count -> new BufferListBufferIO(count, Short.BYTES, c -> new ShortBufferArrayList(c, (short) 0)));
+        registerCollection(IntBufferArrayList.class, count -> new BufferListBufferIO(count, Integer.BYTES, c -> new IntBufferArrayList(c, 0)));
+        registerCollection(FloatBufferArrayList.class, count -> new BufferListBufferIO(count, Float.BYTES, c -> new FloatBufferArrayList(c, 0f)));
+        registerCollection(LongBufferArrayList.class, count -> new BufferListBufferIO(count, Long.BYTES, c -> new LongBufferArrayList(c, 0L)));
+        registerCollection(DoubleBufferArrayList.class, count -> new BufferListBufferIO(count, Double.BYTES, c -> new DoubleBufferArrayList(c, 0d)));
     }
 
     public static <T> void register(Class<T> type, BufferIO<T> bufferIO) {
@@ -39,6 +49,13 @@ public class BufferIORegistry {
             throw new IllegalArgumentException("Duplicated type: " + type);
         }
         REGISTRY.put(type, bufferIO);
+    }
+
+    public static <T> void registerCollection(Class<T> type, IntFunction<BufferIO> factory) {
+        if (COLLECTION_TYPES.containsKey(type)) {
+            throw new IllegalArgumentException("Duplicated type: " + type);
+        }
+        COLLECTION_TYPES.put(type, factory);
     }
 
     static <T> BufferIO<T> get(Class<T> type, int... lengths) {
@@ -93,8 +110,11 @@ public class BufferIORegistry {
 
     private static BufferIO get(Class type, int i, int[] lengths) {
         BufferIO bufferIO;
+        IntFunction<BufferIO> factory;
         if (type.isArray()) {
             bufferIO = get(type.getComponentType(), i + 1, lengths);
+        } else if ((factory = COLLECTION_TYPES.get(type)) != null) {
+            bufferIO = factory.apply(lengths[i++]);
         } else {
             bufferIO = get(type);
         }
@@ -116,5 +136,8 @@ public class BufferIORegistry {
 
     record RegistryKey(Type type, int[] lengths) {
 
+    }
+
+    public record CollectionFactory(IntFunction<BufferIO> factory, int sizeOfUnit) {
     }
 }

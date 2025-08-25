@@ -1,6 +1,7 @@
 package com.vanix.easygl.commons.bufferio;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
@@ -16,7 +17,7 @@ public class ShortArrayBufferIO implements BufferIO<short[]> {
     }
 
     @Override
-    public void read(short[] object, ByteBuffer buffer, Consumer<short[]> setter) {
+    public void read(@Nullable short[] object, ByteBuffer buffer, Consumer<short[]> setter) {
         var shortBuffer = buffer.asShortBuffer();
         if (object == null) {
             object = new short[shortBuffer.remaining()];

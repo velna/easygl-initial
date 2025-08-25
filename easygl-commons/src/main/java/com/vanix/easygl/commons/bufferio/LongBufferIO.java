@@ -1,6 +1,7 @@
 package com.vanix.easygl.commons.bufferio;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
@@ -16,7 +17,7 @@ public class LongBufferIO implements BufferIO<Long> {
     }
 
     @Override
-    public void read(Long object, ByteBuffer buffer, Consumer<Long> setter) {
+    public void read(@Nullable Long object, ByteBuffer buffer, Consumer<Long> setter) {
         setter.accept(buffer.getLong());
     }
 }
