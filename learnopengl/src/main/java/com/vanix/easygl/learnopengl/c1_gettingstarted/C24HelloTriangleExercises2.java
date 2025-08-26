@@ -44,7 +44,7 @@ public class C24HelloTriangleExercises2 {
                             -0.9f, -0.45f, 0.0f,  // left
                             -0.0f, -0.45f, 0.0f,  // right
                             -0.45f, 0.45f, 0.0f
-                    }), 3);
+                    }), 3f);
 
             vaos.getLast().bind().attributes(vbos.getLast().bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
@@ -52,7 +52,7 @@ public class C24HelloTriangleExercises2 {
                             0.0f, -0.45f, 0.0f,  // left
                             0.9f, -0.45f, 0.0f,  // right
                             0.45f, 0.45f, 0.0f   // top
-                    }), 3);
+                    }), 3f);
 
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)

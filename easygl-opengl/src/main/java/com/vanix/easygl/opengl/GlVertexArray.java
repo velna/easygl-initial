@@ -22,24 +22,38 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
     }
 
     @Override
-    public VertexArray attributes(Buffer buffer, int... layouts) {
+    public VertexArray attributes(Number... layouts) {
         assertBinding();
-        buffer.bind(Buffer.Target.Array);
         int pointer = 0;
         int stride = 0;
-        for (int layout : layouts) {
-            stride += Math.abs(layout);
+        for (var layout : layouts) {
+            stride += Math.abs(layout.intValue());
         }
-        DataType dataType = buffer.dataType();
         for (int i = 0; i < layouts.length; i++) {
-            int layout = layouts[i];
-            if (layout > 0) {
+            var layout = layouts[i];
+            int realSize = layout.intValue() & 0x7;
+            realSize = layout.intValue() > 0 ? realSize : -realSize;
+            boolean signed = Math.abs(layout.intValue()) > 0xf;
+            DataType dataType = switch (layout) {
+                case Byte b -> signed ? DataType.Byte : DataType.UnsignedByte;
+                case Short b -> signed ? DataType.Short : DataType.UnsignedShort;
+                case Integer b -> signed ? DataType.Int : DataType.UnsignedInt;
+                case Float b -> signed ? DataType.HalfFloat : DataType.Float;
+                case Double b -> DataType.Double;
+                default -> throw new IllegalArgumentException("Invalid layout size: " + layout);
+            };
+            if (realSize > 0) {
                 GLX.glEnableVertexAttribArray(i);
                 GLX.checkError();
-                GLX.glVertexAttribPointer(i, layout, dataType.value(), false, stride * dataType.bytes(), pointer);
-                pointer += layout * dataType.bytes();
+                boolean normalized = false;
+                if (realSize == 5) {
+                    realSize = GLX.GL_BGRA;
+                    normalized = true;
+                }
+                GLX.glVertexAttribPointer(i, realSize, dataType.value(), normalized, stride * dataType.bytes(), pointer);
                 GLX.checkError();
             }
+            pointer += Math.abs(realSize) * dataType.bytes();
         }
         this.stride = stride;
         return this;

@@ -36,7 +36,7 @@ public class C44TexturesExercise2 {
                             0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   2.0f, 0.0f, // bottom right
                             -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
                             -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 2.0f  // top left
-                    }), 3, 3, 2);
+                    }), 3f, 3f, 2f);
             ebo.bind(Buffer.Target.ElementArray).realloc(Buffer.DataUsage.StaticDraw, new int[]{
                     0, 1, 3, // first triangle
                     1, 2, 3  // second triangle

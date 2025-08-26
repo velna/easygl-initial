@@ -85,8 +85,8 @@ public class C44LightingMapsExercise4 {
                     -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
             });
-            cubeVAO.bind().attributes(vbo, 3, 3, 2);
-            lightCubeVAO.bind().attributes(vbo, 3, -3, -2);
+            cubeVAO.bind().attributes(vbo, 3f, 3f, 2f);
+            lightCubeVAO.bind().attributes(vbo, 3f, -3f, -2f);
 
 
             diffuseMap.bind(Texture.Target.T2D)

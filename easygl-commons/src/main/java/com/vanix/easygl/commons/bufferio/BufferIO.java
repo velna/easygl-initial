@@ -14,11 +14,15 @@ public interface BufferIO<T> {
 
     void read(@Nullable T object, ByteBuffer buffer, Consumer<T> setter);
 
-    static <T> BufferIO<T> of(Class<T> type, int... lengths) {
-        return BufferIORegistry.get(type, lengths);
+    static <T> BufferIO<T> of(T object) {
+        return BufferIORegistry.get(object);
     }
 
-    static <T> BufferIO<T> of(TypeReference<T> typeReference, int... lengths) {
-        return BufferIORegistry.get(typeReference, lengths);
+    static <T> BufferIO<T> ofType(Class<T> type, int... lengths) {
+        return BufferIORegistry.getByType(type, lengths);
+    }
+
+    static <T> BufferIO<T> ofType(TypeReference<T> typeReference, int... lengths) {
+        return BufferIORegistry.getByType(typeReference, lengths);
     }
 }

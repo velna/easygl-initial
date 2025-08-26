@@ -82,8 +82,8 @@ public class C1Colors {
                     -0.5f, 0.5f, 0.5f,
                     -0.5f, 0.5f, -0.5f,
             });
-            cubeVAO.bind().attributes(vbo, 3);
-            lightCubeVAO.bind().attributes(vbo, 3);
+            cubeVAO.bind().attributes(vbo, 3f);
+            lightCubeVAO.bind().attributes(vbo, 3f);
 
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());

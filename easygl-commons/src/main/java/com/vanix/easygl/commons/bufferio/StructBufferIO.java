@@ -43,7 +43,7 @@ public class StructBufferIO<T> implements BufferIO<T> {
         var descriptors = PropertyUtils.getPropertyDescriptors(structConstructor.getDeclaringClass());
         for (var param : structConstructor.getParameters()) {
             var paramType = (Class<Object>) param.getType();
-            var bufferIo = BufferIO.of(paramType);
+            var bufferIo = BufferIO.ofType(paramType);
             var bufferField = param.getAnnotation(BufferField.class);
             if (bufferField != null && bufferField.count() <= 0) {
                 throw new BufferIOException("Invalid BufferField.count " + bufferField.count() + " of class " + defaultConstructor.getDeclaringClass());

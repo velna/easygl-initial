@@ -34,7 +34,7 @@
         <lwjgl.version>3.3.6</lwjgl.version>
         <joml.version>1.10.8</joml.version>
         <joml-primitives.version>1.10.0</joml-primitives.version>
-        <eclipse.collections.version>11.1.0</eclipse.collections.version>
+        <eclipse.collections.version>13.0.0</eclipse.collections.version>
     </properties>
     <dependencyManagement>
         <dependencies>

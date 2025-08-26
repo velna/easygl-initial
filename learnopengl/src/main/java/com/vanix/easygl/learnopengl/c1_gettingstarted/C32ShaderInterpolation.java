@@ -49,7 +49,7 @@ public class C32ShaderInterpolation {
                             0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,  // bottom right
                             -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,  // bottom left
                             0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f   // top
-                    }), 3, 3);
+                    }), 3f, 3f);
 
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)

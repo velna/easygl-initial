@@ -572,7 +572,7 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
         private final Buffer.BindingPoint bindingPoint;
         private final T bean;
         private final ByteBuffer storage;
-        private final StructBufferIO<T> bufferIO;
+        private final BufferIO<T> bufferIO;
 
         public <B extends ProgramResource.BufferBinding<B> & ProgramResource.BufferDataSize<B>> GlMapping(Buffer.BindingPoint bindingPoint, T bean, B bufferBinding) {
             this.bindingPoint = bindingPoint;
@@ -585,10 +585,9 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
             }
         }
 
-        @SuppressWarnings("unchecked")
         public GlMapping(Buffer buffer, T bean, long offset) {
             this.bean = bean;
-            this.bufferIO = (StructBufferIO<T>) BufferIO.of((Class<T>) bean.getClass());
+            this.bufferIO = BufferIO.of(bean);
             storage = MemoryUtil.memCalloc(bufferIO.sizeOfOneUnit());
             this.bindingPoint = new GlBindingPoint(-1, buffer, offset, storage.capacity());
         }
@@ -596,6 +595,11 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
         @Override
         public T getBean() {
             return bean;
+        }
+
+        @Override
+        public int size() {
+            return storage.capacity();
         }
 
         @Override
@@ -611,13 +615,17 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
 
         @Override
         public void flush(SerializableFunction<T, ?> fieldGetter) {
-            String name = LambdaUtils.resolvePropertyName(fieldGetter);
-            var fieldBufferIO = bufferIO.getFieldBufferIO(name);
-            fieldBufferIO.write(bean, storage);
-            int dataOffset = fieldBufferIO.getOffset();
-            int dataSize = fieldBufferIO.getDataSize();
-            bindingPoint.buffer().setSubData(bindingPoint.offset() + dataOffset,
-                    storage.clear().position(dataOffset).limit(dataOffset + dataSize));
+            if (bufferIO instanceof StructBufferIO<T> structBufferIO) {
+                String name = LambdaUtils.resolvePropertyName(fieldGetter);
+                var fieldBufferIO = structBufferIO.getFieldBufferIO(name);
+                fieldBufferIO.write(bean, storage);
+                int dataOffset = fieldBufferIO.getOffset();
+                int dataSize = fieldBufferIO.getDataSize();
+                bindingPoint.buffer().setSubData(bindingPoint.offset() + dataOffset,
+                        storage.clear().position(dataOffset).limit(dataOffset + dataSize));
+            } else {
+                throw new UnsupportedOperationException("Not a plain pojo: " + bean.getClass());
+            }
         }
 
         @Override
@@ -635,13 +643,17 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
 
         @Override
         public void load(SerializableFunction<T, ?> fieldGetter) {
-            String name = LambdaUtils.resolvePropertyName(fieldGetter);
-            var fieldBufferIO = bufferIO.getFieldBufferIO(name);
-            int dataOffset = fieldBufferIO.getOffset();
-            int dataSize = fieldBufferIO.getDataSize();
-            bindingPoint.buffer().getSubData(bindingPoint.offset() + dataOffset,
-                    storage.clear().position(dataOffset).limit(dataOffset + dataSize));
-            fieldBufferIO.read(bean, storage, null);
+            if (bufferIO instanceof StructBufferIO<T> structBufferIO) {
+                String name = LambdaUtils.resolvePropertyName(fieldGetter);
+                var fieldBufferIO = structBufferIO.getFieldBufferIO(name);
+                int dataOffset = fieldBufferIO.getOffset();
+                int dataSize = fieldBufferIO.getDataSize();
+                bindingPoint.buffer().getSubData(bindingPoint.offset() + dataOffset,
+                        storage.clear().position(dataOffset).limit(dataOffset + dataSize));
+                fieldBufferIO.read(bean, storage, null);
+            } else {
+                throw new UnsupportedOperationException("Not a plain pojo: " + bean.getClass());
+            }
         }
 
         @Override

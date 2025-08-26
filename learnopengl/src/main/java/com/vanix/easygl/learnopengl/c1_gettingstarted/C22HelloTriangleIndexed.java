@@ -46,7 +46,7 @@ public class C22HelloTriangleIndexed {
                             0.5f, -0.5f, 0.0f,  // bottom right
                             -0.5f, -0.5f, 0.0f,  // bottom left
                             -0.5f, 0.5f, 0.0f   // top left
-                    }), 3);
+                    }), 3f);
             ebo.bind(Buffer.Target.ElementArray)
                     .realloc(Buffer.DataUsage.StaticDraw, new int[]{
                             // note that we start from 0!

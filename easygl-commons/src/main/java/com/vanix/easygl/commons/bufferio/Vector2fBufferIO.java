@@ -1,14 +1,14 @@
 package com.vanix.easygl.commons.bufferio;
 
-import org.joml.Vector3d;
+import org.joml.Vector2f;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
-public class Vector3DBufferIO implements BufferIO<Vector3d> {
-    private static final int BYTES = Double.BYTES * 3;
+public class Vector2fBufferIO implements BufferIO<Vector2f> {
+    private static final int BYTES = Float.BYTES * 2;
 
     @Override
     public int sizeOfOneUnit() {
@@ -16,14 +16,14 @@ public class Vector3DBufferIO implements BufferIO<Vector3d> {
     }
 
     @Override
-    public void write(@Nonnull Vector3d object, ByteBuffer buffer) {
+    public void write(@Nonnull Vector2f object, ByteBuffer buffer) {
         object.get(buffer);
     }
 
     @Override
-    public void read(@Nullable Vector3d object, ByteBuffer buffer, Consumer<Vector3d> setter) {
+    public void read(@Nullable Vector2f object, ByteBuffer buffer, Consumer<Vector2f> setter) {
         if (object == null) {
-            object = new Vector3d(buffer);
+            object = new Vector2f(buffer);
             setter.accept(object);
         } else {
             object.set(buffer);

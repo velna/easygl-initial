@@ -16,7 +16,6 @@ public interface UniformBlockDefaults extends UniformBlock {
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     default <T> StructBufferIO<T> createBufferIO(T bean, ByteBuffer storage) {
         int programHandle = program().intHandle();
@@ -30,7 +29,7 @@ public interface UniformBlockDefaults extends UniformBlock {
         int[] uniformDataSizes = new int[n];
         GLX.glGetActiveUniformsiv(programHandle, uniformIndices, GLX.GL_UNIFORM_SIZE, uniformDataSizes);
         GLX.checkError();
-        var structBufferIoBuilder = new StructBufferIO.Builder<>((StructBufferIO<T>) BufferIO.of(bean.getClass()), getBufferDataSize());
+        var structBufferIoBuilder = new StructBufferIO.Builder<>((StructBufferIO<T>) BufferIO.of(bean), getBufferDataSize());
         for (int i = 0; i < uniformIndices.length; i++) {
             var uniformName = GLX.glGetActiveUniformName(programHandle, uniformIndices[i]);
             GLX.checkError();

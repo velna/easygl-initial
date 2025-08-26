@@ -335,6 +335,8 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
     interface Mapping<T> extends Closeable {
         T getBean();
 
+        int size();
+
         Buffer.BindingPoint getBindingPoint();
 
         void flush();

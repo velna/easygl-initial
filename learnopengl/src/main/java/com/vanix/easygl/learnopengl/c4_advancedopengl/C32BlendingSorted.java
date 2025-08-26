@@ -91,7 +91,7 @@ public class C32BlendingSorted {
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
             });
 
-            cubeVAO.bind().attributes(cubeVBO, 3, 2);
+            cubeVAO.bind().attributes(cubeVBO, 3f, 2f);
 
             planeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // texture Coords
@@ -103,7 +103,7 @@ public class C32BlendingSorted {
                     -5.0f, -0.5f, -5.0f,  0.0f, 2.0f,
                     5.0f, -0.5f, -5.0f,  2.0f, 2.0f
             });
-            planeVAO.bind().attributes(planeVBO, 3, 2);
+            planeVAO.bind().attributes(planeVBO, 3f, 2f);
 
 
             transparentVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
@@ -116,7 +116,7 @@ public class C32BlendingSorted {
                     1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
                     1.0f, 0.5f, 0.0f, 1.0f, 0.0f
             });
-            transparentVAO.bind().attributes(transparentVBO, 3, 2);
+            transparentVAO.bind().attributes(transparentVBO, 3f, 2f);
 
             cubeTexture.bind(Texture.Target.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)

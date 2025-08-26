@@ -78,7 +78,7 @@ public class C62CoordinateSystemsDepth {
                             0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
                             -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
                             -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
-                    }), 3, 2);
+                    }), 3f, 2f);
 
             texture1.bind(Texture.Target.T2D)
                     .wrapS(Texture.Wrap.Repeat)

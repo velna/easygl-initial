@@ -88,7 +88,7 @@ public class C62CubemapsEnvironmentMapping {
                     -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f
             });
-            cubeVAO.bind().attributes(cubeVBO, 3, 3);
+            cubeVAO.bind().attributes(cubeVBO, 3f, 3f);
 
             skyboxVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions
@@ -134,7 +134,7 @@ public class C62CubemapsEnvironmentMapping {
                     -1.0f, -1.0f, 1.0f,
                     1.0f, -1.0f, 1.0f
             });
-            skyboxVAO.bind().attributes(skyboxVBO, 3);
+            skyboxVAO.bind().attributes(skyboxVBO, 3f);
 
             cubemapTexture.bind()
                     .minFilter(MinFilter.Linear)

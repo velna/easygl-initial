@@ -82,8 +82,8 @@ public class C21BasicLightingDiffuse {
                     -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f
             });
-            cubeVAO.bind().attributes(vbo, 3, 3);
-            lightCubeVAO.bind().attributes(vbo, 3, -3);
+            cubeVAO.bind().attributes(vbo, 3f, 3f);
+            lightCubeVAO.bind().attributes(vbo, 3f, -3f);
 
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());

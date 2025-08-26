@@ -79,7 +79,7 @@ public class C74CameraClass {
                             0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
                             -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
                             -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
-                    }), 3, 2);
+                    }), 3f, 2f);
 
             var cubePositions = new Vector3f[]{
                     new Vector3f(0.0f, 0.0f, 0.0f),
