@@ -5,14 +5,12 @@ import org.joml.Matrix4d;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
-import java.util.function.Consumer;
 
-public class Matrix4dBufferIO implements BufferIO<Matrix4d> {
+public class Matrix4dBufferIO extends AbstractBufferIO<Matrix4d> {
     private static final int BYTES = Double.BYTES << 4;
 
-    @Override
-    public int size() {
-        return BYTES;
+    public Matrix4dBufferIO() {
+        super(BYTES);
     }
 
     @Override
@@ -21,13 +19,13 @@ public class Matrix4dBufferIO implements BufferIO<Matrix4d> {
     }
 
     @Override
-    public void read(@Nullable Matrix4d object, ByteBuffer buffer, Consumer<Matrix4d> setter) {
+    protected Matrix4d read(@Nullable Matrix4d object, ByteBuffer buffer) {
         if (object == null) {
             object = new Matrix4d(buffer.asDoubleBuffer());
-            setter.accept(object);
         } else {
             object.set(buffer);
         }
         buffer.position(buffer.position() + BYTES);
+        return object;
     }
 }

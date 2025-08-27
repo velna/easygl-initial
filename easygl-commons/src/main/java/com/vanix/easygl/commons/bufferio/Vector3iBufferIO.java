@@ -5,14 +5,12 @@ import org.joml.Vector3i;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
-import java.util.function.Consumer;
 
-public class Vector3iBufferIO implements BufferIO<Vector3i> {
+public class Vector3iBufferIO extends AbstractBufferIO<Vector3i> {
     private static final int BYTES = Integer.BYTES * 3;
 
-    @Override
-    public int size() {
-        return BYTES;
+    public Vector3iBufferIO() {
+        super(BYTES);
     }
 
     @Override
@@ -21,13 +19,13 @@ public class Vector3iBufferIO implements BufferIO<Vector3i> {
     }
 
     @Override
-    public void read(@Nullable Vector3i object, ByteBuffer buffer, Consumer<Vector3i> setter) {
+    public Vector3i read(@Nullable Vector3i object, ByteBuffer buffer) {
         if (object == null) {
             object = new Vector3i(buffer);
-            setter.accept(object);
         } else {
             object.set(buffer);
         }
         buffer.position(buffer.position() + BYTES);
+        return object;
     }
 }

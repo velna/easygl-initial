@@ -1,5 +1,8 @@
 package com.vanix.easygl.commons.bufferio;
 
+import com.vanix.easygl.commons.util.LambdaUtils;
+import com.vanix.easygl.commons.util.SerializableBiConsumer;
+import com.vanix.easygl.commons.util.SerializableFunction;
 import org.apache.commons.beanutils2.PropertyUtils;
 
 import javax.annotation.Nonnull;
@@ -14,7 +17,7 @@ import java.util.function.Consumer;
 
 public class StructBufferIO<T> implements BufferIO<T> {
     private final Constructor<T> defaultConstructor;
-    private final Map<String, BindingMeta> metaMap;
+    private final Map<String, BindingMeta<?>> metaMap;
     private final int size;
 
     @SuppressWarnings("unchecked")
@@ -44,14 +47,11 @@ public class StructBufferIO<T> implements BufferIO<T> {
         for (var param : structConstructor.getParameters()) {
             var paramType = (Class<Object>) param.getType();
             var bufferField = param.getAnnotation(BufferField.class);
-            int count;
             BufferIO<Object> bufferIo;
             if (bufferField == null || bufferField.count() <= 0) {
-                count = 1;
                 bufferIo = BufferIO.ofType(paramType);
             } else {
-                count = bufferField.count();
-                bufferIo = BufferIO.ofType(paramType, count);
+                bufferIo = BufferIO.ofType(paramType, bufferField.count());
             }
             int dataSize = bufferIo.size();
             String fieldName = bufferField != null && !bufferField.name().isEmpty() ? bufferField.name() : param.getName();
@@ -59,13 +59,13 @@ public class StructBufferIO<T> implements BufferIO<T> {
             if (descriptor == null) {
                 throw new BufferIOException("Can not find property of constructor param " + param + " for class " + structConstructor.getDeclaringClass());
             }
-            metaMap.put(fieldName, new StructBufferIO.BindingMeta(size, dataSize, count, new StructBufferIO.PropertyIO(descriptor), bufferIo));
+            metaMap.put(fieldName, new StructBufferIO.BindingMeta<>(size, new StructBufferIO.PropertyIO(descriptor), bufferIo));
             size += dataSize;
         }
         this.size = size;
     }
 
-    private StructBufferIO(Constructor<T> defaultConstructor, Map<String, BindingMeta> metaMap, int size) {
+    private StructBufferIO(Constructor<T> defaultConstructor, Map<String, BindingMeta<?>> metaMap, int size) {
         this.defaultConstructor = defaultConstructor;
         this.metaMap = metaMap;
         this.size = size;
@@ -85,15 +85,28 @@ public class StructBufferIO<T> implements BufferIO<T> {
         return size;
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
     public void write(@Nonnull T object, ByteBuffer buffer) {
-        for (var meta : metaMap.values()) {
-            meta.write(object, buffer);
+        for (BindingMeta meta : metaMap.values()) {
+            var value = meta.propertyIO.getProperty(object);
+            if (value != null) {
+                meta.bufferIO.write(value, buffer);
+            } else {
+                buffer.position(buffer.position() + meta.bufferIO.size());
+            }
         }
     }
 
+    public <F> void writeField(@Nullable T object, ByteBuffer buffer, SerializableFunction<T, F> fieldGetter) {
+        String name = LambdaUtils.resolvePropertyName(fieldGetter);
+        BindingMeta<F> meta = getBindingMeta(name);
+        meta.bufferIO.write(fieldGetter.apply(object), buffer);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public void read(@Nullable T object, ByteBuffer buffer, Consumer<T> setter) {
+    public T read(@Nullable T object, ByteBuffer buffer, @Nullable Consumer<T> setter) {
         boolean setFlag = false;
         if (object == null) {
             try {
@@ -103,26 +116,46 @@ public class StructBufferIO<T> implements BufferIO<T> {
                 throw new BufferIOException("Error invoke default construct: ", e);
             }
         }
-        for (var meta : metaMap.values()) {
-            meta.read(object, buffer, null);
+        for (BindingMeta meta : metaMap.values()) {
+            Object value = meta.propertyIO.getProperty(object);
+            meta.bufferIO.read(value, buffer, v -> meta.propertyIO.setProperty(value, v));
         }
-        if (setFlag) {
+        if (setFlag && setter != null) {
             setter.accept(object);
         }
+        return object;
     }
 
-    public FieldBufferIO<Object> getFieldBufferIO(String fieldName) {
+    @SuppressWarnings("unchecked")
+    public <F> F readField(@Nullable T object, ByteBuffer buffer, SerializableBiConsumer<T, F> fieldSetter) {
+        String name = LambdaUtils.resolvePropertyName(fieldSetter);
+        BindingMeta<F> meta = getBindingMeta(name);
+        var originValue = meta.propertyIO.getProperty(object);
+        F value = meta.bufferIO.read((F) originValue, buffer, null);
+        if (originValue != value) {
+            fieldSetter.accept(object, value);
+        }
+        return value;
+    }
+
+    public <F> FieldBufferIO<F> getFieldBufferIO(SerializableFunction<T, F> fieldGetter) {
+        String name = LambdaUtils.resolvePropertyName(fieldGetter);
+        return getBindingMeta(name);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <F> BindingMeta<F> getBindingMeta(String fieldName) {
         var meta = metaMap.get(fieldName);
         if (meta == null) {
             throw new BufferIOException("Can not find field of field " + fieldName + " within type " + defaultConstructor.getDeclaringClass());
         }
-        return meta;
+        return (BindingMeta<F>) meta;
     }
 
     public static class Builder<T> {
         private final StructBufferIO<T> origin;
         private final int size;
-        private final Map<String, BindingMeta> metaMap = new LinkedHashMap<>();
+        private final Map<String, BindingMeta<?>> metaMap = new LinkedHashMap<>();
 
         public Builder(StructBufferIO<T> origin, int size) {
             this.origin = origin;
@@ -130,19 +163,16 @@ public class StructBufferIO<T> implements BufferIO<T> {
         }
 
         public Builder<T> withField(String name, int offset, int dataSize) {
-            var meta = origin.metaMap.get(name);
-            if (meta == null) {
-                throw new BufferIOException("Can not find field of field " + name + " within type " + origin.defaultConstructor.getDeclaringClass());
-            }
-            if (dataSize < meta.dataSize) {
+            var meta = origin.getBindingMeta(name);
+            if (dataSize < meta.bufferIO.size()) {
                 throw new BufferIOException(String.format("Incompatible data size of field %s within type %s: origin=%d, expect=%d",
-                        name, origin.defaultConstructor.getDeclaringClass(), meta.dataSize, dataSize));
+                        name, origin.defaultConstructor.getDeclaringClass(), meta.bufferIO.size(), dataSize));
             }
             if (offset + dataSize > size) {
                 throw new BufferIOException(String.format("Offset %d with data size %d is larger than current data size %d of field %s within type %s.",
                         offset, dataSize, size, name, origin.defaultConstructor.getDeclaringClass()));
             }
-            metaMap.put(name, new BindingMeta(offset, dataSize, meta.count, meta.propertyIO, meta.bufferIO));
+            metaMap.put(name, new BindingMeta<>(offset, meta.propertyIO, meta.bufferIO));
             return this;
         }
 
@@ -151,8 +181,7 @@ public class StructBufferIO<T> implements BufferIO<T> {
         }
     }
 
-
-    record PropertyIO(PropertyDescriptor propertyDescriptor) {
+    private record PropertyIO(PropertyDescriptor propertyDescriptor) {
 
         Object getProperty(Object bean) {
             try {
@@ -171,28 +200,20 @@ public class StructBufferIO<T> implements BufferIO<T> {
         }
     }
 
-    private record BindingMeta(int offset, int dataSize, int count,
-                               PropertyIO propertyIO,
-                               BufferIO<Object> bufferIO) implements FieldBufferIO<Object> {
+    private record BindingMeta<T>(int offset, PropertyIO propertyIO, BufferIO<T> bufferIO) implements FieldBufferIO<T> {
         @Override
         public int size() {
-            return dataSize;
+            return bufferIO.size();
         }
 
         @Override
-        public void write(@Nonnull Object bean, ByteBuffer storage) {
-            Object value = propertyIO.getProperty(bean);
-            if (value != null) {
-                bufferIO.write(value, storage);
-            } else {
-                storage.position(storage.position() + bufferIO.size());
-            }
+        public void write(@Nonnull T object, ByteBuffer buffer) {
+            bufferIO.write(object, buffer);
         }
 
         @Override
-        public void read(@Nullable Object bean, ByteBuffer storage, Consumer<Object> setter) {
-            Object value = propertyIO.getProperty(bean);
-            bufferIO.read(value, storage, v -> propertyIO.setProperty(bean, v));
+        public T read(@Nullable T object, ByteBuffer buffer, @Nullable Consumer<T> setter) {
+            return bufferIO.read(object, buffer, setter);
         }
 
         @Override
@@ -203,11 +224,6 @@ public class StructBufferIO<T> implements BufferIO<T> {
         @Override
         public int getOffset() {
             return offset;
-        }
-
-        @Override
-        public int getDataSize() {
-            return dataSize;
         }
     }
 }

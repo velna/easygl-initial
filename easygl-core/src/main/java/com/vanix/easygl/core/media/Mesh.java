@@ -21,25 +21,32 @@ public class Mesh implements Closeable {
     private final VertexArray vao;
     private final Buffer vbo;
     private final Buffer ebo;
-    private final Buffer.Mapping<List<Vertex>> vboMapping;
-    private final Buffer.Mapping<IntList> eboMapping;
+//    private final Buffer.Mapping<List<Vertex>> vboMapping;
+//    private final Buffer.Mapping<IntList> eboMapping;
 
     public Mesh(List<Vertex> vertices, IntList indices, Map<Model.TextureType, List<TextureInfo>> textures) {
         this.textures = textures;
         vao = VertexArray.of();
 
-        vbo = Buffer.of(DataType.Float).bind(Buffer.Target.Array);
-        vboMapping = vbo.createMapping(new TypeReferenceBean<>(vertices) {
-        }, 0);
-        vbo.realloc(Buffer.DataUsage.StaticDraw, vboMapping.size());
-        vboMapping.flush();
-        vboMapping.close();
+        vbo = Buffer.of(DataType.Float).bind(Buffer.Target.Array)
+                .realloc(Buffer.DataUsage.StaticDraw, new TypeReferenceBean<>(vertices) {
+                });
 
-        ebo = Buffer.of(DataType.UnsignedInt).bind(Buffer.Target.ElementArray);
-        eboMapping = ebo.createMapping(indices, 0);
-        ebo.realloc(Buffer.DataUsage.StaticDraw, eboMapping.size());
-        eboMapping.flush();
-        eboMapping.close();
+        ebo = Buffer.of(DataType.UnsignedInt).bind(Buffer.Target.ElementArray)
+                .realloc(Buffer.DataUsage.StaticDraw, indices);
+
+//        vbo = Buffer.of(DataType.Float).bind(Buffer.Target.Array);
+//        vboMapping = vbo.createMapping(new TypeReferenceBean<>(vertices) {
+//        }, 0);
+//        vbo.realloc(Buffer.DataUsage.StaticDraw, vboMapping.size());
+//        vboMapping.flush();
+//        vboMapping.close();
+//
+//        ebo = Buffer.of(DataType.UnsignedInt).bind(Buffer.Target.ElementArray);
+//        eboMapping = ebo.createMapping(indices, 0);
+//        ebo.realloc(Buffer.DataUsage.StaticDraw, eboMapping.size());
+//        eboMapping.flush();
+//        eboMapping.close();
 
         vao.bind().attributes(3f, 3f, 2f, 3f, 3f, 14, 4f);
     }

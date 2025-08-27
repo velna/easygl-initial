@@ -4,7 +4,6 @@ import com.vanix.easygl.commons.BitSet;
 import com.vanix.easygl.commons.SimpleIntEnum;
 import com.vanix.easygl.commons.bufferio.BufferIO;
 import com.vanix.easygl.commons.bufferio.StructBufferIO;
-import com.vanix.easygl.commons.util.LambdaUtils;
 import com.vanix.easygl.commons.util.SerializableFunction;
 import com.vanix.easygl.commons.util.TypeReferenceBean;
 import com.vanix.easygl.core.AbstractMultiTargetBindable;
@@ -99,11 +98,20 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
         return realloc(GLX::glBufferData, usage, data, DataType.bytesOf(data));
     }
 
+    @Override
+    public <T> Buffer realloc(DataUsage usage, T bean, BufferIO<T> bufferIO) {
+        var buffer = MemoryUtil.memAlloc(bufferIO.size());
+        bufferIO.write(bean, buffer);
+        realloc(GLX::glBufferData, usage, buffer.clear(), bufferIO.size());
+        MemoryUtil.memFree(buffer);
+        return this;
+    }
+
     private interface SubDataFunction<T> {
         void accept(int target, long offset, T data);
     }
 
-    private <T> Buffer setSubData(SubDataFunction<T> subDataFunction, long offset, T data, int dataBytes) {
+    private <T> Buffer setSubData(SubDataFunction<T> subDataFunction, long offset, T data) {
         assertBinding();
         subDataFunction.accept(target().value(), offset, data);
         GLX.checkError();
@@ -112,47 +120,54 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
 
     @Override
     public Buffer setSubData(long offset, DoubleBuffer data) {
-        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
+        return setSubData(GLX::glBufferSubData, offset, data);
     }
 
     @Override
     public Buffer setSubData(long offset, FloatBuffer data) {
-        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
+        return setSubData(GLX::glBufferSubData, offset, data);
     }
 
     @Override
     public Buffer setSubData(long offset, IntBuffer data) {
-        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
+        return setSubData(GLX::glBufferSubData, offset, data);
     }
 
     @Override
     public Buffer setSubData(long offset, ShortBuffer data) {
-        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
+        return setSubData(GLX::glBufferSubData, offset, data);
     }
 
     @Override
     public Buffer setSubData(long offset, ByteBuffer data) {
-        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
+        return setSubData(GLX::glBufferSubData, offset, data);
     }
 
     @Override
     public Buffer setSubData(long offset, double[] data) {
-        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
+        return setSubData(GLX::glBufferSubData, offset, data);
     }
 
     @Override
     public Buffer setSubData(long offset, float[] data) {
-        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
+        return setSubData(GLX::glBufferSubData, offset, data);
     }
 
     @Override
     public Buffer setSubData(long offset, int[] data) {
-        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
+        return setSubData(GLX::glBufferSubData, offset, data);
     }
 
     @Override
     public Buffer setSubData(long offset, short[] data) {
-        return setSubData(GLX::glBufferSubData, offset, data, DataType.bytesOf(data));
+        return setSubData(GLX::glBufferSubData, offset, data);
+    }
+
+    @Override
+    public <T> Buffer setSubData(long offset, T bean, BufferIO<T> bufferIO) {
+        bufferIO.write(bean, mapRange(offset, bufferIO.size(), MapAccessBits.Write));
+        unmap();
+        return this;
     }
 
     private interface StorageFunction<T> {
@@ -488,6 +503,13 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
     }
 
     @Override
+    public <T> T getSubData(long offset, T bean, BufferIO<T> bufferIO) {
+        T object = bufferIO.read(bean, mapRange(offset, bufferIO.size(), MapAccessBits.Read), null);
+        unmap();
+        return object;
+    }
+
+    @Override
     public Buffer copySubData(long readOffset, Buffer dstBuffer, long writeOffset, long size) {
         assertBinding();
         GLX.glCopyBufferSubData(target.value(), dstBuffer.target().value(), readOffset, writeOffset, size);
@@ -597,7 +619,7 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
         }
 
         public GlMapping(Buffer buffer, T bean, long offset) {
-            this(buffer, bean, BufferIO.of(bean), offset);
+            this(buffer, bean, BufferIO.ofBean(bean), offset);
         }
 
         private GlMapping(Buffer buffer, T bean, BufferIO<T> bufferIO, long offset) {
@@ -634,24 +656,16 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
         }
 
         @Override
-        public void flush(SerializableFunction<T, ?> fieldGetter) {
+        public <F> void flush(SerializableFunction<T, F> fieldGetter) {
             if (bufferIO instanceof StructBufferIO<T> structBufferIO) {
-                String name = LambdaUtils.resolvePropertyName(fieldGetter);
-                var fieldBufferIO = structBufferIO.getFieldBufferIO(name);
-                fieldBufferIO.write(bean, storage);
+                var fieldBufferIO = structBufferIO.getFieldBufferIO(fieldGetter);
+                fieldBufferIO.write(fieldGetter.apply(bean), storage);
                 int dataOffset = fieldBufferIO.getOffset();
-                int dataSize = fieldBufferIO.getDataSize();
+                int dataSize = fieldBufferIO.size();
                 bindingPoint.buffer().setSubData(bindingPoint.offset() + dataOffset,
                         storage.clear().position(dataOffset).limit(dataOffset + dataSize));
             } else {
                 throw new UnsupportedOperationException("Not a plain pojo: " + bean.getClass());
-            }
-        }
-
-        @Override
-        public void flush(SerializableFunction<T, ?>[] fieldGetters) {
-            for (var fieldGetter : fieldGetters) {
-                flush(fieldGetter);
             }
         }
 
@@ -662,24 +676,16 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
         }
 
         @Override
-        public void load(SerializableFunction<T, ?> fieldGetter) {
+        public <F> void load(SerializableFunction<T, F> fieldGetter) {
             if (bufferIO instanceof StructBufferIO<T> structBufferIO) {
-                String name = LambdaUtils.resolvePropertyName(fieldGetter);
-                var fieldBufferIO = structBufferIO.getFieldBufferIO(name);
+                var fieldBufferIO = structBufferIO.getFieldBufferIO(fieldGetter);
                 int dataOffset = fieldBufferIO.getOffset();
-                int dataSize = fieldBufferIO.getDataSize();
+                int dataSize = fieldBufferIO.size();
                 bindingPoint.buffer().getSubData(bindingPoint.offset() + dataOffset,
                         storage.clear().position(dataOffset).limit(dataOffset + dataSize));
-                fieldBufferIO.read(bean, storage, null);
+                fieldBufferIO.read(fieldGetter.apply(bean), storage, null);
             } else {
                 throw new UnsupportedOperationException("Not a plain pojo: " + bean.getClass());
-            }
-        }
-
-        @Override
-        public void load(SerializableFunction<T, ?>[] fieldGetters) {
-            for (var fieldGetter : fieldGetters) {
-                load(fieldGetter);
             }
         }
 

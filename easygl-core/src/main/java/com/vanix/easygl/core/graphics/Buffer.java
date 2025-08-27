@@ -2,6 +2,7 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.BitSet;
 import com.vanix.easygl.commons.IntEnum;
+import com.vanix.easygl.commons.bufferio.BufferIO;
 import com.vanix.easygl.commons.util.SerializableFunction;
 import com.vanix.easygl.commons.util.TypeReferenceBean;
 import com.vanix.easygl.core.*;
@@ -130,6 +131,16 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
     Buffer realloc(DataUsage usage, int[] data);
 
     Buffer realloc(DataUsage usage, short[] data);
+
+    <T> Buffer realloc(DataUsage usage, T bean, BufferIO<T> bufferIO);
+
+    default <T> Buffer realloc(DataUsage usage, T bean) {
+        return realloc(usage, bean, BufferIO.ofBean(bean));
+    }
+
+    default <T> Buffer realloc(DataUsage usage, TypeReferenceBean<T> typeReferenceBean) {
+        return realloc(usage, typeReferenceBean.getBean(), BufferIO.ofType(typeReferenceBean));
+    }
     //endregion
 
     //region Data storage
@@ -206,6 +217,8 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
     Buffer setSubData(long offset, int[] data);
 
     Buffer setSubData(long offset, short[] data);
+
+    <T> Buffer setSubData(long offset, T bean, BufferIO<T> bufferIO);
     //endregion
 
     //region Clear data
@@ -302,6 +315,16 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
     Buffer getSubData(long offset, DoubleBuffer data);
 
     Buffer getSubData(long offset, ByteBuffer data);
+
+    <T> T getSubData(long offset, T bean, BufferIO<T> bufferIO);
+
+    default <T> T getSubData(long offset, T bean) {
+        return getSubData(offset, bean, BufferIO.ofBean(bean));
+    }
+
+    default <T> T getSubData(long offset, TypeReferenceBean<T> typeReferenceBean) {
+        return getSubData(offset, typeReferenceBean.getBean(), BufferIO.ofType(typeReferenceBean));
+    }
     //endregion
 
     Buffer copySubData(long readOffset, Buffer dstBuffer, long writeOffset, long size);
@@ -346,15 +369,11 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
 
         void flush();
 
-        void flush(SerializableFunction<T, ?> fieldGetter);
-
-        void flush(SerializableFunction<T, ?>... fieldGetters);
+        <F> void flush(SerializableFunction<T, F> fieldGetter);
 
         void load();
 
-        void load(SerializableFunction<T, ?> fieldGetter);
-
-        void load(SerializableFunction<T, ?>... fieldGetters);
+        <F> void load(SerializableFunction<T, F> fieldGetter);
 
         ByteBuffer storage();
     }

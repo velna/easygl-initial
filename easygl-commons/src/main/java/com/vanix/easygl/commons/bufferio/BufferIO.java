@@ -16,7 +16,7 @@ public interface BufferIO<T> {
     int size();
 
     /**
-     * Write object into buffer, position of buffer must be set properly.
+     * Write object into buffer's current position, position of buffer must be set properly.
      *
      * @param object object to write
      * @param buffer target buffer
@@ -24,15 +24,16 @@ public interface BufferIO<T> {
     void write(@Nonnull T object, ByteBuffer buffer);
 
     /**
-     * Read object from buffer, position of buffer must be set properly.
+     * Read object from current position of buffer, position of buffer must be set properly.
      *
      * @param object target object, maybe null
      * @param buffer source buffer
      * @param setter if object param is null, call setter to inject
+     * @return result object
      */
-    void read(@Nullable T object, ByteBuffer buffer, Consumer<T> setter);
+    T read(@Nullable T object, ByteBuffer buffer, @Nullable Consumer<T> setter);
 
-    static <T> BufferIO<T> of(T object) {
+    static <T> BufferIO<T> ofBean(T object) {
         return BufferIORegistry.get(object);
     }
 

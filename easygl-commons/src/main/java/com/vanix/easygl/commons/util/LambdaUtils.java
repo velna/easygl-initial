@@ -13,13 +13,17 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class LambdaUtils {
-    private static final Map<SerializableFunction<?, ?>, String> SERIALIZABLE_FUNCTION_CACHE = new ConcurrentHashMap<>();
+    private static final Map<Serializable, String> SERIALIZABLE_FUNCTION_CACHE = new ConcurrentHashMap<>();
 
     public static <T> String resolvePropertyName(SerializableFunction<T, ?> function) {
         return SERIALIZABLE_FUNCTION_CACHE.computeIfAbsent(function, LambdaUtils::doResolveMethodName);
     }
 
-    private static <T> String doResolveMethodName(SerializableFunction<T, ?> function) {
+    public static <T> String resolvePropertyName(SerializableBiConsumer<T, ?> biConsumer) {
+        return SERIALIZABLE_FUNCTION_CACHE.computeIfAbsent(biConsumer, LambdaUtils::doResolveMethodName);
+    }
+
+    private static <T> String doResolveMethodName(Serializable function) {
         String methodName;
         if (function instanceof Proxy proxy) {
             MethodHandle methodHandle = MethodHandleProxies.wrapperInstanceTarget(function);

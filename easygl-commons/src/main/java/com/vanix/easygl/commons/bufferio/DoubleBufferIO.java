@@ -3,12 +3,10 @@ package com.vanix.easygl.commons.bufferio;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
-import java.util.function.Consumer;
 
-public class DoubleBufferIO implements BufferIO<Double> {
-    @Override
-    public int size() {
-        return Double.BYTES;
+public class DoubleBufferIO extends AbstractBufferIO<Double> {
+    public DoubleBufferIO() {
+        super(Double.BYTES);
     }
 
     @Override
@@ -17,7 +15,7 @@ public class DoubleBufferIO implements BufferIO<Double> {
     }
 
     @Override
-    public void read(@Nullable Double object, ByteBuffer buffer, Consumer<Double> setter) {
-        setter.accept(buffer.getDouble());
+    protected Double read(@Nullable Double object, ByteBuffer buffer) {
+        return buffer.getDouble();
     }
 }
