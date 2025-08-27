@@ -31,11 +31,11 @@ public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, V
 
     void drawArray(DrawMode mode, Buffer vbo, int first);
 
-    default void drawElements(DrawMode mode, Buffer vbo, Buffer ebo) {
-        drawElements(mode, vbo, ebo, 0);
+    default void drawElements(DrawMode mode, Buffer ebo) {
+        drawElements(mode, ebo, 0);
     }
 
-    void drawElements(DrawMode mode, Buffer vbo, Buffer ebo, int indices);
+    void drawElements(DrawMode mode, Buffer ebo, int indices);
 
     static VertexArray of() {
         return MetaHolder.VertexArray.create();

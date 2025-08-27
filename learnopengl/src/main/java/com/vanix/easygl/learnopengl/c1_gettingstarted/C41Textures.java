@@ -56,7 +56,7 @@ public class C41Textures {
 
                 texture.bind(Texture.Target.T2D);
                 program.bind();
-                vao.drawElements(DrawMode.Triangles, vbo, ebo, 0);
+                vao.drawElements(DrawMode.Triangles, ebo, 0);
 
                 window.swapBuffers().pollEvents();
             }

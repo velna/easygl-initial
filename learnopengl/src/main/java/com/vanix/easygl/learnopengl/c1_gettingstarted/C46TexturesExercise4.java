@@ -78,7 +78,7 @@ public class C46TexturesExercise4 {
                 texture2.bind(Texture.Target.T2D);
 
                 program.bind().setFloat("mixValue", mixValue);
-                vao.drawElements(DrawMode.Triangles, vbo, ebo, 0);
+                vao.drawElements(DrawMode.Triangles, ebo, 0);
 
                 window.swapBuffers().pollEvents();
             }

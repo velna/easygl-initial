@@ -7,7 +7,6 @@ import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.media.Model;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
-import com.vanix.easygl.opengl.GLX;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -39,7 +38,6 @@ public class ModelLoading {
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
             var meshes = model.getMeshes();
 
-            int round = 0;
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
@@ -62,12 +60,7 @@ public class ModelLoading {
                         mesh.getTextures(Model.TextureType.Diffuse).getFirst().getTexture().bind(Texture.Target.T2D, Texture.Unit.U0);
                         program.setInt("texture_diffuse1", 0);
                     }
-                    GLX.checkError();
                     mesh.draw();
-                }
-                round++;
-                if (round % 100 == 0) {
-                    System.out.format("round: %d%n", round);
                 }
 
                 window.swapBuffers().pollEvents();

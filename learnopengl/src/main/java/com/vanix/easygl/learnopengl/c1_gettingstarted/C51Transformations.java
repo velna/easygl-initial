@@ -81,7 +81,7 @@ public class C51Transformations {
                         .translate(new Vector3f(0.5f, -0.5f, 0.0f))
                         .rotate((System.currentTimeMillis() - start) / 1000.0f, new Vector3f(0.0f, 0.0f, 1.0f));
                 program.bind().setMatrix4("transform", transform);
-                vao.drawElements(DrawMode.Triangles, vbo, ebo, 0);
+                vao.drawElements(DrawMode.Triangles, ebo, 0);
 
                 window.swapBuffers().pollEvents();
             }

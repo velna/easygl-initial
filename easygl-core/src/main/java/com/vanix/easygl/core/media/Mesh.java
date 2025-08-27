@@ -17,37 +17,35 @@ import java.util.List;
 import java.util.Map;
 
 public class Mesh implements Closeable {
-    private final List<Vertex> vertices;
-    private final IntList indices;
     private final Map<Model.TextureType, List<TextureInfo>> textures;
     private final VertexArray vao;
     private final Buffer vbo;
     private final Buffer ebo;
+    private final Buffer.Mapping<List<Vertex>> vboMapping;
+    private final Buffer.Mapping<IntList> eboMapping;
 
     public Mesh(List<Vertex> vertices, IntList indices, Map<Model.TextureType, List<TextureInfo>> textures) {
-        this.vertices = vertices;
-        this.indices = indices;
         this.textures = textures;
         vao = VertexArray.of();
 
         vbo = Buffer.of(DataType.Float).bind(Buffer.Target.Array);
-        var vboMapping = vbo.createMapping(new TypeReferenceBean<>(vertices) {
+        vboMapping = vbo.createMapping(new TypeReferenceBean<>(vertices) {
         }, 0);
         vbo.realloc(Buffer.DataUsage.StaticDraw, vboMapping.size());
         vboMapping.flush();
+        vboMapping.close();
 
         ebo = Buffer.of(DataType.UnsignedInt).bind(Buffer.Target.ElementArray);
-        var eboMapping = ebo.createMapping(this.indices, 0);
+        eboMapping = ebo.createMapping(indices, 0);
         ebo.realloc(Buffer.DataUsage.StaticDraw, eboMapping.size());
         eboMapping.flush();
+        eboMapping.close();
 
         vao.bind().attributes(3f, 3f, 2f, 3f, 3f, 14, 4f);
-        vboMapping.close();
-        eboMapping.close();
     }
 
     public void draw() {
-        vao.bind().drawElements(DrawMode.Triangles, vbo, ebo);
+        vao.bind().drawElements(DrawMode.Triangles, ebo.bind());
         vao.unbind();
     }
 

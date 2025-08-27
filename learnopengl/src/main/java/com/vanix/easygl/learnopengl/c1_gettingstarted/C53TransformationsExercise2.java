@@ -84,12 +84,12 @@ public class C53TransformationsExercise2 {
                 program.bind().setMatrix4("transform", new Matrix4f()
                         .translate(new Vector3f(0.5f, -0.5f, 0.0f))
                         .rotate(time, new Vector3f(0.0f, 0.0f, 1.0f)).get(mat4f));
-                vao.drawElements(DrawMode.Triangles, vbo, ebo, 0);
+                vao.drawElements(DrawMode.Triangles, ebo, 0);
 
                 program.bind().setMatrix4("transform", new Matrix4f()
                         .translate(new Vector3f(-0.5f, 0.5f, 0.0f))
                         .scale((float) Math.sin(time)).get(mat4f));
-                vao.drawElements(DrawMode.Triangles, vbo, ebo, 0);
+                vao.drawElements(DrawMode.Triangles, ebo, 0);
 
                 window.swapBuffers().pollEvents();
             }

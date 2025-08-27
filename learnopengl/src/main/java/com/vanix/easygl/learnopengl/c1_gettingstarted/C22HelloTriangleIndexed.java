@@ -59,7 +59,7 @@ public class C22HelloTriangleIndexed {
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 program.bind();
-                vao.drawElements(DrawMode.Triangles, vbo, ebo);
+                vao.drawElements(DrawMode.Triangles, ebo);
 
                 window.swapBuffers().pollEvents();
             }

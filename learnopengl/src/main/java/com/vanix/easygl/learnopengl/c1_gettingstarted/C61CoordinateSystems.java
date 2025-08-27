@@ -90,7 +90,7 @@ public class C61CoordinateSystems {
                         .setMatrix4("projection", new Matrix4f()
                                 .perspective(Math.toRadians(45.0f), window.getAspect(), 0.1f, 100.0f)
                                 .get(mat4f));
-                vao.drawElements(DrawMode.Triangles, vbo, ebo, 0);
+                vao.drawElements(DrawMode.Triangles, ebo, 0);
 
                 window.swapBuffers().pollEvents();
             }
