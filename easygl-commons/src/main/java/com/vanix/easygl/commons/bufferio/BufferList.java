@@ -7,5 +7,5 @@ public interface BufferList {
 
     int saveInto(ByteBuffer buffer);
 
-    void loadFrom(ByteBuffer buffer);
+    void loadFrom(ByteBuffer buffer, int count);
 }

@@ -1,51 +1,46 @@
 package com.vanix.easygl.commons.bufferio;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
-public class ListBufferIO<T> implements BufferIO<List<T>> {
+public class ListBufferIO<T> extends AbstractMultiElementBufferIO<List<T>> {
 
     private final BufferIO<T> componentBufferIO;
-    private final int count;
 
     public ListBufferIO(BufferIO<T> componentBufferIO, int count) {
+        super(count, componentBufferIO.size());
         this.componentBufferIO = componentBufferIO;
-        this.count = count;
     }
 
     @Override
-    public int sizeOfOneUnit() {
-        return componentBufferIO.sizeOfOneUnit();
+    protected int countOf(List<T> object) {
+        return object.size();
     }
 
     @Override
-    public void write(@Nonnull List<T> object, ByteBuffer buffer) {
+    protected List<T> create(int count) {
+        var list = new ArrayList<T>(count);
+        for (int i = 0; i < count; i++) {
+            list.add(null);
+        }
+        return list;
+    }
+
+    @Override
+    protected void doWrite(@Nonnull List<T> object, ByteBuffer buffer) {
         for (var obj : object) {
             componentBufferIO.write(obj, buffer);
         }
     }
 
     @Override
-    public void read(@Nullable List<T> object, ByteBuffer buffer, Consumer<List<T>> setter) {
-        List<T> list;
-        if (object == null) {
-            list = new ArrayList<>(count);
-            for (int i = 0; i < count; i++) {
-                list.add(null);
-            }
-        } else {
-            list = object;
-        }
+    protected void doRead(@Nonnull List<T> object, ByteBuffer buffer) {
         for (int i = 0; i < count; i++) {
             int index = i;
-            componentBufferIO.read(list.get(i), buffer, v -> list.set(index, v));
-        }
-        if (list != object) {
-            setter.accept(list);
+            componentBufferIO.read(object.get(i), buffer, v -> object.set(index, v));
         }
     }
+
 }

@@ -3,28 +3,32 @@ package com.vanix.easygl.commons.bufferio;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
-import java.util.function.Consumer;
 
-public class ShortArrayBufferIO implements BufferIO<short[]> {
-    @Override
-    public int sizeOfOneUnit() {
-        return Short.BYTES;
+public class ShortArrayBufferIO extends AbstractMultiElementBufferIO<short[]> {
+    public ShortArrayBufferIO(int count) {
+        super(count, Short.BYTES);
     }
 
     @Override
-    public void write(@Nonnull short[] object, ByteBuffer buffer) {
+    protected int countOf(short[] object) {
+        return object.length;
+    }
+
+    @Override
+    protected short[] create(int count) {
+        return new short[count];
+    }
+
+    @Override
+    protected void doWrite(@Nonnull short[] object, ByteBuffer buffer) {
         buffer.asShortBuffer().put(object);
+        buffer.position(buffer.position() + size);
     }
 
     @Override
-    public void read(@Nullable short[] object, ByteBuffer buffer, Consumer<short[]> setter) {
-        var shortBuffer = buffer.asShortBuffer();
-        if (object == null) {
-            object = new short[shortBuffer.remaining()];
-            shortBuffer.get(object);
-            setter.accept(object);
-        } else {
-            shortBuffer.get(object);
-        }
+    protected void doRead(@Nullable short[] object, ByteBuffer buffer) {
+        buffer.asShortBuffer().get(object);
+        buffer.position(buffer.position() + size);
     }
+
 }

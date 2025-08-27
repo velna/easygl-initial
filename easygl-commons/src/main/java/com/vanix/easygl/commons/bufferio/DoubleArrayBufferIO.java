@@ -1,30 +1,33 @@
 package com.vanix.easygl.commons.bufferio;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
-import java.util.function.Consumer;
 
-public class DoubleArrayBufferIO implements BufferIO<double[]> {
-    @Override
-    public int sizeOfOneUnit() {
-        return Double.BYTES;
+public class DoubleArrayBufferIO extends AbstractMultiElementBufferIO<double[]> {
+    public DoubleArrayBufferIO(int count) {
+        super(count, Double.BYTES);
     }
 
     @Override
-    public void write(@Nonnull double[] object, ByteBuffer buffer) {
+    protected int countOf(double[] object) {
+        return object.length;
+    }
+
+    @Override
+    protected double[] create(int count) {
+        return new double[count];
+    }
+
+    @Override
+    protected void doWrite(@Nonnull double[] object, ByteBuffer buffer) {
         buffer.asDoubleBuffer().put(object);
+        buffer.position(buffer.position() + size);
     }
 
     @Override
-    public void read(@Nullable double[] object, ByteBuffer buffer, Consumer<double[]> setter) {
-        var doubleBuffer = buffer.asDoubleBuffer();
-        if (object == null) {
-            object = new double[doubleBuffer.remaining()];
-            doubleBuffer.get(object);
-            setter.accept(object);
-        } else {
-            doubleBuffer.get(object);
-        }
+    protected void doRead(@Nonnull double[] object, ByteBuffer buffer) {
+        buffer.asDoubleBuffer().get(object);
+        buffer.position(buffer.position() + size);
     }
+
 }

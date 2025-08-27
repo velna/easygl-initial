@@ -34,14 +34,16 @@ public class ByteBufferArrayList extends ByteArrayList implements BufferList {
         }
         int n = Math.min(size, remaining);
         buffer.put(items, 0, n);
+        buffer.position(buffer.position() + n * Byte.BYTES);
         return n;
     }
 
     @Override
-    public void loadFrom(ByteBuffer buffer) {
-        int newSize = Math.max(this.size, buffer.remaining());
+    public void loadFrom(ByteBuffer buffer, int count) {
+        int newSize = Math.max(this.size, count);
         this.ensureCapacity(newSize);
-        buffer.get(items, 0, buffer.remaining());
+        buffer.get(items, 0, count);
+        buffer.position(buffer.position() + count * Byte.BYTES);
         this.size = newSize;
     }
 }

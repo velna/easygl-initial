@@ -3,6 +3,7 @@ package com.vanix.easygl.core.graphics;
 import com.vanix.easygl.commons.BitSet;
 import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.commons.util.SerializableFunction;
+import com.vanix.easygl.commons.util.TypeReferenceBean;
 import com.vanix.easygl.core.*;
 import com.vanix.easygl.core.meta.MetaSystem;
 
@@ -101,6 +102,7 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
         }
     }
 
+    @Deprecated
     DataType dataType();
 
     default long count() {
@@ -312,6 +314,8 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
 
     <T> Mapping<T> createMapping(T bean, long offset);
 
+    <T> Mapping<T> createMapping(TypeReferenceBean<T> typeReferenceBean, long offset);
+
     static Buffer of(DataType dataType) {
         return MetaHolder.Buffer.create(dataType);
     }
@@ -329,7 +333,8 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
 
         long size();
 
-        <T, B extends ProgramResource.BufferBinding<B> & ProgramResource.BufferDataSize<B>> Mapping<T> createMapping(T bean, B bufferBinding);
+        <T, B extends ProgramResource.BufferBinding<B> & ProgramResource.BufferDataSize<B>>
+        Mapping<T> createMapping(T bean, B bufferBinding);
     }
 
     interface Mapping<T> extends Closeable {
@@ -350,5 +355,7 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
         void load(SerializableFunction<T, ?> fieldGetter);
 
         void load(SerializableFunction<T, ?>... fieldGetters);
+
+        ByteBuffer storage();
     }
 }

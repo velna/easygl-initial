@@ -28,20 +28,23 @@ public class ShortBufferArrayList extends ShortArrayList implements BufferList {
 
     @Override
     public int saveInto(ByteBuffer buffer) {
-        int remaining = buffer.remaining();
+        var localBuffer = buffer.asShortBuffer();
+        int remaining = localBuffer.remaining();
         if (size == 0 || remaining == 0) {
             return 0;
         }
         int n = Math.min(size, remaining);
-        buffer.asShortBuffer().put(items, 0, n);
+        localBuffer.put(items, 0, n);
+        buffer.position(buffer.position() + n * Short.BYTES);
         return n;
     }
 
     @Override
-    public void loadFrom(ByteBuffer buffer) {
-        int newSize = Math.max(this.size, buffer.remaining());
+    public void loadFrom(ByteBuffer buffer, int count) {
+        int newSize = Math.max(this.size, count);
         this.ensureCapacity(newSize);
-        buffer.asShortBuffer().get(items, 0, buffer.remaining());
+        buffer.asShortBuffer().get(items, 0, count);
+        buffer.position(buffer.position() + count * Short.BYTES);
         this.size = newSize;
     }
 }

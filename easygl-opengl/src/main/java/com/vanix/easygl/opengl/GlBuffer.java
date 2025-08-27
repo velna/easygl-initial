@@ -6,6 +6,7 @@ import com.vanix.easygl.commons.bufferio.BufferIO;
 import com.vanix.easygl.commons.bufferio.StructBufferIO;
 import com.vanix.easygl.commons.util.LambdaUtils;
 import com.vanix.easygl.commons.util.SerializableFunction;
+import com.vanix.easygl.commons.util.TypeReferenceBean;
 import com.vanix.easygl.core.AbstractMultiTargetBindable;
 import com.vanix.easygl.core.graphics.Buffer;
 import com.vanix.easygl.core.graphics.*;
@@ -516,6 +517,11 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
     }
 
     @Override
+    public <T> Mapping<T> createMapping(TypeReferenceBean<T> typeReferenceBean, long offset) {
+        return new GlMapping<>(this, typeReferenceBean, offset);
+    }
+
+    @Override
     public <T> Mapping<T> createMapping(T bean, long offset) {
         return new GlMapping<>(this, bean, offset);
     }
@@ -574,7 +580,8 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
         private final ByteBuffer storage;
         private final BufferIO<T> bufferIO;
 
-        public <B extends ProgramResource.BufferBinding<B> & ProgramResource.BufferDataSize<B>> GlMapping(Buffer.BindingPoint bindingPoint, T bean, B bufferBinding) {
+        public <B extends ProgramResource.BufferBinding<B> & ProgramResource.BufferDataSize<B>> GlMapping(
+                Buffer.BindingPoint bindingPoint, T bean, B bufferBinding) {
             this.bindingPoint = bindingPoint;
             this.bean = bean;
             storage = MemoryUtil.memCalloc(bufferBinding.getBufferDataSize());
@@ -585,10 +592,18 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
             }
         }
 
+        public GlMapping(Buffer buffer, TypeReferenceBean<T> typeReferenceBean, long offset) {
+            this(buffer, typeReferenceBean.getBean(), BufferIO.ofType(typeReferenceBean), offset);
+        }
+
         public GlMapping(Buffer buffer, T bean, long offset) {
+            this(buffer, bean, BufferIO.of(bean), offset);
+        }
+
+        private GlMapping(Buffer buffer, T bean, BufferIO<T> bufferIO, long offset) {
             this.bean = bean;
-            this.bufferIO = BufferIO.of(bean);
-            storage = MemoryUtil.memCalloc(bufferIO.sizeOfOneUnit());
+            this.bufferIO = bufferIO;
+            storage = MemoryUtil.memCalloc(bufferIO.size());
             this.bindingPoint = new GlBindingPoint(-1, buffer, offset, storage.capacity());
         }
 
@@ -603,13 +618,18 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
         }
 
         @Override
+        public ByteBuffer storage() {
+            return storage;
+        }
+
+        @Override
         public Buffer.BindingPoint getBindingPoint() {
             return bindingPoint.value() == -1 ? null : bindingPoint;
         }
 
         @Override
         public void flush() {
-            bufferIO.write(bean, storage);
+            bufferIO.write(bean, storage.clear());
             bindingPoint.buffer().setSubData(bindingPoint.offset(), storage.clear());
         }
 

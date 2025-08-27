@@ -11,13 +11,13 @@ public class Matrix4dBufferIO implements BufferIO<Matrix4d> {
     private static final int BYTES = Double.BYTES << 4;
 
     @Override
-    public int sizeOfOneUnit() {
+    public int size() {
         return BYTES;
     }
 
     @Override
     public void write(@Nonnull Matrix4d object, ByteBuffer buffer) {
-        object.get(buffer);
+        object.get(buffer).position(buffer.position() + BYTES);
     }
 
     @Override
@@ -28,5 +28,6 @@ public class Matrix4dBufferIO implements BufferIO<Matrix4d> {
         } else {
             object.set(buffer);
         }
+        buffer.position(buffer.position() + BYTES);
     }
 }

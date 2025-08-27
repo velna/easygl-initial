@@ -2,12 +2,12 @@ package com.vanix.easygl.commons.bufferio;
 
 import com.vanix.easygl.commons.collection.eclipse.*;
 import com.vanix.easygl.commons.util.TypeReference;
+import com.vanix.easygl.commons.util.TypeReferenceBean;
 import org.joml.*;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,12 +25,6 @@ public class BufferIORegistry {
         register(float.class, new FloatBufferIO());
         register(long.class, new LongBufferIO());
         register(double.class, new DoubleBufferIO());
-        register(byte[].class, new ByteArrayBufferIO());
-        register(short[].class, new ShortArrayBufferIO());
-        register(int[].class, new IntArrayBufferIO());
-        register(float[].class, new FloatArrayBufferIO());
-        register(long[].class, new LongArrayBufferIO());
-        register(double[].class, new DoubleArrayBufferIO());
         register(Vector2f.class, new Vector2fBufferIO());
         register(Vector3i.class, new Vector3iBufferIO());
         register(Vector3f.class, new Vector3fBufferIO());
@@ -38,6 +32,12 @@ public class BufferIORegistry {
         register(Matrix4f.class, new Matrix4fBufferIO());
         register(Matrix4d.class, new Matrix4dBufferIO());
 
+        registerCollection(byte[].class, ByteArrayBufferIO::new);
+        registerCollection(short[].class, ShortArrayBufferIO::new);
+        registerCollection(int[].class, IntArrayBufferIO::new);
+        registerCollection(float[].class, FloatArrayBufferIO::new);
+        registerCollection(long[].class, LongArrayBufferIO::new);
+        registerCollection(double[].class, DoubleArrayBufferIO::new);
         registerCollection(ByteBufferArrayList.class, count -> new BufferListBufferIO(count, Byte.BYTES, c -> new ByteBufferArrayList(c, (byte) 0)));
         registerCollection(ShortBufferArrayList.class, count -> new BufferListBufferIO(count, Short.BYTES, c -> new ShortBufferArrayList(c, (short) 0)));
         registerCollection(IntBufferArrayList.class, count -> new BufferListBufferIO(count, Integer.BYTES, c -> new IntBufferArrayList(c, 0)));
@@ -64,8 +64,6 @@ public class BufferIORegistry {
         Class<T> type = (Class<T>) bean.getClass();
         if (type.isArray()) {
             return getByType(type, Array.getLength(bean));
-        } else if (bean instanceof List<?> list) {
-            return getByType(type, list.size());
         } else if (bean instanceof BufferList bufferList) {
             return getByType(type, bufferList.size());
         } else {
@@ -73,46 +71,47 @@ public class BufferIORegistry {
         }
     }
 
-    static <T> BufferIO<T> getByType(Class<T> type, int... lengths) {
-        if (lengths == null || lengths.length == 0) {
-            return (BufferIO<T>) REGISTRY.computeIfAbsent(type, BufferIORegistry::createStruct);
-        } else {
-            return (BufferIO<T>) REGISTRY.computeIfAbsent(new RegistryKey(type, lengths), BufferIORegistry::createClass);
-        }
-    }
-
     static <T> BufferIO<T> getByType(TypeReference<T> typeReference, int... lengths) {
-        var type = typeReference.getType();
-        return (BufferIO<T>) REGISTRY.computeIfAbsent(new RegistryKey(type, lengths), BufferIORegistry::createReference);
+        if (lengths.length == 0 && typeReference instanceof TypeReferenceBean<T> typeReferenceBean) {
+            if (typeReferenceBean.getBean() instanceof List list) {
+                return getByType(typeReferenceBean.getType(), list.size());
+            }
+        }
+        return getByType(typeReference.getType(), lengths);
     }
 
-    private static <T> BufferIO<T> createStruct(Object key) {
-        return new StructBufferIO<>((Class<T>) key);
-    }
-
-    private static <T> BufferIO<T> createClass(Object keyObject) {
-        RegistryKey key = (RegistryKey) keyObject;
-        return getByType((Class) key.type, 0, key.lengths);
-    }
-
-    private static <T> BufferIO<T> createReference(Object keyObject) {
-        RegistryKey key = (RegistryKey) keyObject;
-        if (key.type instanceof Class<?> clazz) {
-            return getByType((Class<T>) clazz, key.lengths);
+    static <T> BufferIO<T> getByType(Type type, int... lengths) {
+        if (lengths == null || lengths.length == 0) {
+            var bufferIO = REGISTRY.get(type);
+            if (bufferIO == null) {
+                bufferIO = createByType(type, 0);
+                REGISTRY.put(type, bufferIO);
+            }
+            return (BufferIO<T>) bufferIO;
         } else {
-            return getRawType(key.type, 0, key.lengths);
+            var key = new RegistryKey(type, lengths);
+            var bufferIO = REGISTRY.get(key);
+            if (bufferIO == null) {
+                bufferIO = createByType(key.type, 0, key.lengths);
+                REGISTRY.put(key, bufferIO);
+            }
+            return (BufferIO<T>) bufferIO;
         }
     }
 
-    private static <T> BufferIO<T> getRawType(Type type, int i, int[] lengths) {
+    private static <T> BufferIO<T> createByType(Type type, int i, int... lengths) {
         BufferIO bufferIO = null;
-        if (type instanceof ParameterizedType parameterizedType) {
+        if (type instanceof Class<?> clazz) {
+            bufferIO = createByClass(clazz, i, lengths);
+        } else if (type instanceof ParameterizedType parameterizedType) {
             if (parameterizedType.getRawType().equals(List.class)) {
                 var paramType = parameterizedType.getActualTypeArguments()[0];
                 if (paramType instanceof ParameterizedType innerParamType) {
-                    bufferIO = getRawType(innerParamType, i + 1, lengths);
+                    bufferIO = createByType(innerParamType, i + 1, lengths);
                 } else if (paramType instanceof Class<?> clazz) {
-                    bufferIO = getByType(clazz, i + 1, lengths);
+                    bufferIO = createByClass(clazz, i + 1, lengths);
+                } else {
+                    throw new BufferIOException("Unsupported List parameter type: " + paramType);
                 }
                 bufferIO = new ListBufferIO(bufferIO, lengths[i]);
             }
@@ -123,15 +122,18 @@ public class BufferIORegistry {
         return bufferIO;
     }
 
-    private static BufferIO getByType(Class type, int i, int[] lengths) {
+    private static BufferIO createByClass(Class type, int i, int[] lengths) {
         BufferIO bufferIO;
         IntFunction<BufferIO> factory;
-        if (type.isArray()) {
-            bufferIO = getByType(type.getComponentType(), i + 1, lengths);
-        } else if ((factory = COLLECTION_TYPES.get(type)) != null) {
+        if ((factory = COLLECTION_TYPES.get(type)) != null) {
             bufferIO = factory.apply(lengths[i++]);
+        } else if (type.isArray()) {
+            bufferIO = createByClass(type.getComponentType(), i + 1, lengths);
         } else {
-            bufferIO = getByType(type);
+            bufferIO = REGISTRY.get(type);
+            if (bufferIO == null) {
+                bufferIO = new StructBufferIO(type);
+            }
         }
         if (i == lengths.length) {
             return bufferIO;
@@ -142,14 +144,7 @@ public class BufferIORegistry {
         }
     }
 
-    private static <T> BufferIO<T> create(Class<T> type) {
-        if (type.isArray() || Collection.class.isAssignableFrom(type)) {
-            throw new BufferIOException("Can not create array/Collection type BufferIO without length/size info: " + type);
-        }
-        return new StructBufferIO<>(type);
-    }
-
-    record RegistryKey(Type type, int[] lengths) {
+    record RegistryKey(Type type, int... lengths) {
 
     }
 

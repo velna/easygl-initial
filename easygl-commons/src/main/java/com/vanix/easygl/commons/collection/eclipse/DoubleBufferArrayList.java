@@ -28,20 +28,23 @@ public class DoubleBufferArrayList extends DoubleArrayList implements BufferList
 
     @Override
     public int saveInto(ByteBuffer buffer) {
-        int remaining = buffer.remaining();
+        var localBuffer = buffer.asDoubleBuffer();
+        int remaining = localBuffer.remaining();
         if (size == 0 || remaining == 0) {
             return 0;
         }
         int n = Math.min(size, remaining);
-        buffer.asDoubleBuffer().put(items, 0, n);
+        localBuffer.put(items, 0, n);
+        buffer.position(buffer.position() + n * Double.BYTES);
         return n;
     }
 
     @Override
-    public void loadFrom(ByteBuffer buffer) {
-        int newSize = Math.max(this.size, buffer.remaining());
+    public void loadFrom(ByteBuffer buffer, int count) {
+        int newSize = Math.max(this.size, count);
         this.ensureCapacity(newSize);
-        buffer.asDoubleBuffer().get(items, 0, buffer.remaining());
+        buffer.asDoubleBuffer().get(items, 0, count);
+        buffer.position(buffer.position() + count * Double.BYTES);
         this.size = newSize;
     }
 }

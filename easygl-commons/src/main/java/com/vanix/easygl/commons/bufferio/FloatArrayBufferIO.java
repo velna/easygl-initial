@@ -1,30 +1,33 @@
 package com.vanix.easygl.commons.bufferio;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
-import java.util.function.Consumer;
 
-public class FloatArrayBufferIO implements BufferIO<float[]> {
-    @Override
-    public int sizeOfOneUnit() {
-        return Float.BYTES;
+public class FloatArrayBufferIO extends AbstractMultiElementBufferIO<float[]> {
+    public FloatArrayBufferIO(int count) {
+        super(count, Float.BYTES);
     }
 
     @Override
-    public void write(@Nonnull float[] object, ByteBuffer buffer) {
+    protected int countOf(float[] object) {
+        return object.length;
+    }
+
+    @Override
+    protected float[] create(int count) {
+        return new float[count];
+    }
+
+    @Override
+    protected void doWrite(@Nonnull float[] object, ByteBuffer buffer) {
         buffer.asFloatBuffer().put(object);
+        buffer.position(buffer.position() + size);
     }
 
     @Override
-    public void read(@Nullable float[] object, ByteBuffer buffer, Consumer<float[]> setter) {
-        var floatBuffer = buffer.asFloatBuffer();
-        if (object == null) {
-            object = new float[floatBuffer.remaining()];
-            floatBuffer.get(object);
-            setter.accept(object);
-        } else {
-            floatBuffer.get(object);
-        }
+    protected void doRead(@Nonnull float[] object, ByteBuffer buffer) {
+        buffer.asFloatBuffer().get(object);
+        buffer.position(buffer.position() + size);
     }
+
 }

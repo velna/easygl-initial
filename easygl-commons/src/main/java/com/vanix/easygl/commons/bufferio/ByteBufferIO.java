@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 public class ByteBufferIO implements BufferIO<Byte> {
     @Override
-    public int sizeOfOneUnit() {
+    public int size() {
         return Byte.BYTES;
     }
 

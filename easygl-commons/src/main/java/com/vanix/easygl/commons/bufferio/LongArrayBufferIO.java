@@ -1,30 +1,33 @@
 package com.vanix.easygl.commons.bufferio;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
-import java.util.function.Consumer;
 
-public class LongArrayBufferIO implements BufferIO<long[]> {
-    @Override
-    public int sizeOfOneUnit() {
-        return Long.BYTES;
+public class LongArrayBufferIO extends AbstractMultiElementBufferIO<long[]> {
+    public LongArrayBufferIO(int count) {
+        super(count, Long.BYTES);
     }
 
     @Override
-    public void write(@Nonnull long[] object, ByteBuffer buffer) {
+    protected int countOf(long[] object) {
+        return object.length;
+    }
+
+    @Override
+    protected long[] create(int count) {
+        return new long[count];
+    }
+
+    @Override
+    protected void doWrite(@Nonnull long[] object, ByteBuffer buffer) {
         buffer.asLongBuffer().put(object);
+        buffer.position(buffer.position() + size);
     }
 
     @Override
-    public void read(@Nullable long[] object, ByteBuffer buffer, Consumer<long[]> setter) {
-        var longBuffer = buffer.asLongBuffer();
-        if (object == null) {
-            object = new long[longBuffer.remaining()];
-            longBuffer.get(object);
-            setter.accept(object);
-        } else {
-            longBuffer.get(object);
-        }
+    protected void doRead(@Nonnull long[] object, ByteBuffer buffer) {
+        buffer.asLongBuffer().get(object);
+        buffer.position(buffer.position() + size);
     }
+
 }

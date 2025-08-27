@@ -4,10 +4,14 @@ import com.vanix.easygl.core.media.Image;
 
 public interface Texture2D extends Texture<Texture2D> {
 
-    default Texture2D load(String imageResource) {
-        try (var image = Image.load(imageResource)) {
+    default Texture2D load(String imageResource, boolean flipVertically) {
+        try (var image = Image.load(imageResource, flipVertically)) {
             return load(image);
         }
+    }
+
+    default Texture2D load(String imageResource) {
+        return load(imageResource, false);
     }
 
     default Texture2D load(Image image) {

@@ -11,13 +11,13 @@ public class Vector3fBufferIO implements BufferIO<Vector3f> {
     private static final int BYTES = Float.BYTES * 3;
 
     @Override
-    public int sizeOfOneUnit() {
+    public int size() {
         return BYTES;
     }
 
     @Override
     public void write(@Nonnull Vector3f object, ByteBuffer buffer) {
-        object.get(buffer);
+        object.get(buffer).position(buffer.position() + BYTES);
     }
 
     @Override
@@ -28,5 +28,6 @@ public class Vector3fBufferIO implements BufferIO<Vector3f> {
         } else {
             object.set(buffer);
         }
+        buffer.position(buffer.position() + BYTES);
     }
 }

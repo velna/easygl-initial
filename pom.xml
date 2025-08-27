@@ -12,7 +12,7 @@
         <module>learnopengl</module>
         <module>easygl-opengl</module>
         <module>easygl-glfw</module>
-        <module>easygl-stb</module>
+        <module>easygl-media</module>
     </modules>
     <properties>
         <project.encoding>UTF-8</project.encoding>
@@ -35,9 +35,16 @@
         <joml.version>1.10.8</joml.version>
         <joml-primitives.version>1.10.0</joml-primitives.version>
         <eclipse.collections.version>13.0.0</eclipse.collections.version>
+        <jspecify.version>1.0.0</jspecify.version>
     </properties>
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.jspecify</groupId>
+                <artifactId>jspecify</artifactId>
+                <version>${jspecify.version}</version>
+                <scope>provided</scope>
+            </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
@@ -127,7 +134,7 @@
             </dependency>
             <dependency>
                 <groupId>com.vanix.easygl</groupId>
-                <artifactId>easygl-stb</artifactId>
+                <artifactId>easygl-media</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

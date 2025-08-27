@@ -8,10 +8,28 @@ import java.nio.ByteBuffer;
 import java.util.function.Consumer;
 
 public interface BufferIO<T> {
-    int sizeOfOneUnit();
+    /**
+     * Get size in bytes of type T.
+     *
+     * @return size in bytes of type T
+     */
+    int size();
 
+    /**
+     * Write object into buffer, position of buffer must be set properly.
+     *
+     * @param object object to write
+     * @param buffer target buffer
+     */
     void write(@Nonnull T object, ByteBuffer buffer);
 
+    /**
+     * Read object from buffer, position of buffer must be set properly.
+     *
+     * @param object target object, maybe null
+     * @param buffer source buffer
+     * @param setter if object param is null, call setter to inject
+     */
     void read(@Nullable T object, ByteBuffer buffer, Consumer<T> setter);
 
     static <T> BufferIO<T> of(T object) {

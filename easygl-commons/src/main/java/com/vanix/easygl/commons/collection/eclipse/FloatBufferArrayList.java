@@ -28,20 +28,23 @@ public class FloatBufferArrayList extends FloatArrayList implements BufferList {
 
     @Override
     public int saveInto(ByteBuffer buffer) {
-        int remaining = buffer.remaining();
+        var localBuffer = buffer.asFloatBuffer();
+        int remaining = localBuffer.remaining();
         if (size == 0 || remaining == 0) {
             return 0;
         }
         int n = Math.min(size, remaining);
-        buffer.asFloatBuffer().put(items, 0, n);
+        localBuffer.put(items, 0, n);
+        buffer.position(buffer.position() + n * Float.BYTES);
         return n;
     }
 
     @Override
-    public void loadFrom(ByteBuffer buffer) {
-        int newSize = Math.max(this.size, buffer.remaining());
+    public void loadFrom(ByteBuffer buffer, int count) {
+        int newSize = Math.max(this.size, count);
         this.ensureCapacity(newSize);
-        buffer.asFloatBuffer().get(items, 0, buffer.remaining());
+        buffer.asFloatBuffer().get(items, 0, count);
+        buffer.position(buffer.position() + count * Float.BYTES);
         this.size = newSize;
     }
 }

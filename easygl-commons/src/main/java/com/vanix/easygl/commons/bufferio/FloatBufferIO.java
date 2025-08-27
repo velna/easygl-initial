@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 public class FloatBufferIO implements BufferIO<Float> {
     @Override
-    public int sizeOfOneUnit() {
+    public int size() {
         return Float.BYTES;
     }
 

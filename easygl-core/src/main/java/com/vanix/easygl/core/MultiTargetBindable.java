@@ -3,7 +3,7 @@ package com.vanix.easygl.core;
 public interface MultiTargetBindable<E extends BindTarget<E, T>, T extends MultiTargetBindable<E, T>> extends Handle {
     T bind(E target);
 
-    void unbind(E target);
+    T unbind(E target);
 
     default T bind() {
         var target = target();
@@ -13,8 +13,8 @@ public interface MultiTargetBindable<E extends BindTarget<E, T>, T extends Multi
         return bind(target);
     }
 
-    default void unbind() {
-        unbind(target());
+    default T unbind() {
+        return unbind(target());
     }
 
     E target();

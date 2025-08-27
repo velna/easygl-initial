@@ -43,13 +43,17 @@ public class StructBufferIO<T> implements BufferIO<T> {
         var descriptors = PropertyUtils.getPropertyDescriptors(structConstructor.getDeclaringClass());
         for (var param : structConstructor.getParameters()) {
             var paramType = (Class<Object>) param.getType();
-            var bufferIo = BufferIO.ofType(paramType);
             var bufferField = param.getAnnotation(BufferField.class);
-            if (bufferField != null && bufferField.count() <= 0) {
-                throw new BufferIOException("Invalid BufferField.count " + bufferField.count() + " of class " + defaultConstructor.getDeclaringClass());
+            int count;
+            BufferIO<Object> bufferIo;
+            if (bufferField == null || bufferField.count() <= 0) {
+                count = 1;
+                bufferIo = BufferIO.ofType(paramType);
+            } else {
+                count = bufferField.count();
+                bufferIo = BufferIO.ofType(paramType, count);
             }
-            int count = bufferField == null ? 1 : bufferField.count();
-            int dataSize = count * bufferIo.sizeOfOneUnit();
+            int dataSize = bufferIo.size();
             String fieldName = bufferField != null && !bufferField.name().isEmpty() ? bufferField.name() : param.getName();
             var descriptor = findDescriptor(descriptors, fieldName, paramType);
             if (descriptor == null) {
@@ -77,7 +81,7 @@ public class StructBufferIO<T> implements BufferIO<T> {
     }
 
     @Override
-    public int sizeOfOneUnit() {
+    public int size() {
         return size;
     }
 
@@ -171,7 +175,7 @@ public class StructBufferIO<T> implements BufferIO<T> {
                                PropertyIO propertyIO,
                                BufferIO<Object> bufferIO) implements FieldBufferIO<Object> {
         @Override
-        public int sizeOfOneUnit() {
+        public int size() {
             return dataSize;
         }
 
@@ -179,19 +183,16 @@ public class StructBufferIO<T> implements BufferIO<T> {
         public void write(@Nonnull Object bean, ByteBuffer storage) {
             Object value = propertyIO.getProperty(bean);
             if (value != null) {
-                bufferIO.write(value, set(storage));
+                bufferIO.write(value, storage);
+            } else {
+                storage.position(storage.position() + bufferIO.size());
             }
-        }
-
-        ByteBuffer set(ByteBuffer storage) {
-            storage.clear().position(offset).limit(offset + dataSize);
-            return storage;
         }
 
         @Override
         public void read(@Nullable Object bean, ByteBuffer storage, Consumer<Object> setter) {
             Object value = propertyIO.getProperty(bean);
-            bufferIO.read(value, set(storage), v -> propertyIO.setProperty(bean, v));
+            bufferIO.read(value, storage, v -> propertyIO.setProperty(bean, v));
         }
 
         @Override

@@ -1,23 +1,31 @@
-package com.vanix.easygl.stb;
+package com.vanix.easygl.media;
 
 import com.vanix.easygl.core.media.Image;
+import com.vanix.easygl.core.media.Model;
 import com.vanix.easygl.core.meta.AbstractMetaService;
 import com.vanix.easygl.core.meta.DefaultMeta;
 import com.vanix.easygl.core.meta.ErrorCode;
 import com.vanix.easygl.core.meta.SystemName;
+import com.vanix.easygl.media.assimp.AiModel;
+import com.vanix.easygl.media.stb.StbImage;
+import org.lwjgl.assimp.Assimp;
 import org.lwjgl.stb.STBImage;
 import org.lwjgl.stb.STBImageResize;
 
+import java.util.function.Function;
+
 @SystemName("Media")
-public class StbMetaService extends AbstractMetaService {
-    public StbMetaService() {
-        register(Image.class, new DefaultMeta<>(args -> StbImage.load((String) args[0], (boolean)args[1], (boolean)args[2])));
+public class MediaMetaService extends AbstractMetaService {
+    public MediaMetaService() {
+        register(Image.class, new DefaultMeta<>(args -> StbImage.load((String) args[0], (boolean) args[1], (boolean) args[2])));
+        register(Model.class, (Function<Object[], Model>) args -> new AiModel((String) args[0], (boolean) args[1]));
     }
 
     @Override
     public int queryInt(String id) {
         return queryStaticIntField(STBImage.class, "STBI_", id)
                 .or(() -> queryStaticIntField(STBImageResize.class, "STBIR_", id))
+                .or(() -> queryStaticIntField(Assimp.class, "ai", id))
                 .orElseThrow();
     }
 

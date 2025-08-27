@@ -1,30 +1,33 @@
 package com.vanix.easygl.commons.bufferio;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.nio.ByteBuffer;
-import java.util.function.Consumer;
 
-public class IntArrayBufferIO implements BufferIO<int[]> {
-    @Override
-    public int sizeOfOneUnit() {
-        return Integer.BYTES;
+public class IntArrayBufferIO extends AbstractMultiElementBufferIO<int[]> {
+    public IntArrayBufferIO(int count) {
+        super(count, Integer.BYTES);
     }
 
     @Override
-    public void write(@Nonnull int[] object, ByteBuffer buffer) {
+    protected int countOf(int[] object) {
+        return object.length;
+    }
+
+    @Override
+    protected int[] create(int count) {
+        return new int[count];
+    }
+
+    @Override
+    protected void doWrite(@Nonnull int[] object, ByteBuffer buffer) {
         buffer.asIntBuffer().put(object);
+        buffer.position(buffer.position() + size);
     }
 
     @Override
-    public void read(@Nullable int[] object, ByteBuffer buffer, Consumer<int[]> setter) {
-        var intBuffer = buffer.asIntBuffer();
-        if (object == null) {
-            object = new int[intBuffer.remaining()];
-            intBuffer.get(object);
-            setter.accept(object);
-        } else {
-            intBuffer.get(object);
-        }
+    protected void doRead(@Nonnull int[] object, ByteBuffer buffer) {
+        buffer.asIntBuffer().get(object);
+        buffer.position(buffer.position() + size);
     }
+
 }

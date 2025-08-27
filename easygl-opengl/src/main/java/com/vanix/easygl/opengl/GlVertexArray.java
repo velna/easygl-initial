@@ -26,15 +26,17 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
         assertBinding();
         int pointer = 0;
         int stride = 0;
-        for (var layout : layouts) {
-            stride += Math.abs(layout.intValue());
-        }
+        int strideBytes = 0;
+        DataType[] dataTypes = new DataType[layouts.length];
         for (int i = 0; i < layouts.length; i++) {
             var layout = layouts[i];
-            int realSize = layout.intValue() & 0x7;
-            realSize = layout.intValue() > 0 ? realSize : -realSize;
-            boolean signed = Math.abs(layout.intValue()) > 0xf;
-            DataType dataType = switch (layout) {
+            var realSize = Math.abs(layout.intValue() % 10);
+            if (realSize >= 5) {
+                realSize = 4;
+            }
+            stride += realSize;
+            boolean signed = Math.abs(layout.intValue()) > 10;
+            dataTypes[i] = switch (layout) {
                 case Byte b -> signed ? DataType.Byte : DataType.UnsignedByte;
                 case Short b -> signed ? DataType.Short : DataType.UnsignedShort;
                 case Integer b -> signed ? DataType.Int : DataType.UnsignedInt;
@@ -42,6 +44,14 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
                 case Double b -> DataType.Double;
                 default -> throw new IllegalArgumentException("Invalid layout size: " + layout);
             };
+            strideBytes += realSize * dataTypes[i].bytes();
+        }
+
+        for (int i = 0; i < layouts.length; i++) {
+            var layout = layouts[i];
+            int realSize = layout.intValue() % 10;
+            realSize = layout.intValue() > 0 ? realSize : -realSize;
+            DataType dataType = dataTypes[i];
             if (realSize > 0) {
                 GLX.glEnableVertexAttribArray(i);
                 GLX.checkError();
@@ -50,7 +60,11 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
                     realSize = GLX.GL_BGRA;
                     normalized = true;
                 }
-                GLX.glVertexAttribPointer(i, realSize, dataType.value(), normalized, stride * dataType.bytes(), pointer);
+                if (dataType == DataType.Double) {
+                    GLX.glVertexAttribLPointer(i, realSize, dataType.value(), strideBytes, pointer);
+                } else {
+                    GLX.glVertexAttribPointer(i, realSize, dataType.value(), normalized, strideBytes, pointer);
+                }
                 GLX.checkError();
             }
             pointer += Math.abs(realSize) * dataType.bytes();
