@@ -274,15 +274,17 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
     //endregion
 
     //region Data mapping
+    @Support(since = Version.GL30)
     ByteBuffer mapRange(long offset, long size, MapAccessBits access);
 
     ByteBuffer mapRange(long offset, long size, BitSet<MapAccessBits> access);
 
+    @Support(since = Version.GL30)
+    Buffer flushMappedRange(long offset, long size);
+
     ByteBuffer map(MapAccessBits access);
 
     ByteBuffer map(BitSet<MapAccessBits> access);
-
-    Buffer flushMappedRange(long offset, long size);
 
     boolean unmap();
     //endregion
