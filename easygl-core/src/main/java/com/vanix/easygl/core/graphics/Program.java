@@ -213,6 +213,8 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     int getAttribute(ProgramAttribute.Int attribute);
 
+    boolean containsUniform(String name);
+
     @Support(since = Version.GL43)
     ProgramInterfaces interfaces();
 

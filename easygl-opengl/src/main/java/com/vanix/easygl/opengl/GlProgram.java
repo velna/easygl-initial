@@ -97,11 +97,15 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     private int uniform(String key) {
-        int ret = uniforms.getIfAbsentPutWithKey(key, k -> GLX.glGetUniformLocation(intHandle(), k));
+        int ret = uniforms.getIfAbsentPutWithKey(key, this::getUniformLocation);
         if (ret < 0) {
             throw new GraphicsException("Can not find uniform for name " + key);
         }
         return ret;
+    }
+
+    private int getUniformLocation(String key) {
+        return GLX.glGetUniformLocation(intHandle(), key);
     }
 
     @Override
@@ -549,6 +553,11 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
             interfaces = new GlProgramInterfaces(this);
         }
         return interfaces;
+    }
+
+    @Override
+    public boolean containsUniform(String name) {
+        return uniforms.getIfAbsentPutWithKey(name, this::getUniformLocation) >= 0;
     }
 
     @Override
