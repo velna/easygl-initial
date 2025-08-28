@@ -21,20 +21,23 @@ import org.lwjgl.system.NativeResource;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.LockSupport;
 import java.util.function.BiFunction;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Window> implements Window {
-    private final ListenerSupport<WindowResizeListener> resizeListeners;
-    private final ListenerSupport<WindowRefreshListener> refreshListeners;
-    private final ListenerSupport<WindowPositionListener> positionListeners;
-    private final ListenerSupport<WindowCloseListener> closeListeners;
-    private final ListenerSupport<WindowContentScaleListener> contentScaleListeners;
-    private final ListenerSupport<WindowFocusListener> focusListeners;
-    private final ListenerSupport<WindowIconifyListener> iconifyListeners;
-    private final ListenerSupport<WindowMaximizeListener> maximizeListeners;
-    private final List<Runnable> closeRunnableList = new ArrayList<>();
+    private ListenerSupport<WindowResizeListener> resizeListeners;
+    private ListenerSupport<WindowRefreshListener> refreshListeners;
+    private ListenerSupport<WindowPositionListener> positionListeners;
+    private ListenerSupport<WindowCloseListener> closeListeners;
+    private ListenerSupport<WindowContentScaleListener> contentScaleListeners;
+    private ListenerSupport<WindowFocusListener> focusListeners;
+    private ListenerSupport<WindowIconifyListener> iconifyListeners;
+    private ListenerSupport<WindowMaximizeListener> maximizeListeners;
+    private ListenerSupport<WindowFpsListener> fpsUpdateListeners;
+    private Thread fpsUpdateThread;
+    private List<Runnable> closeRunnableList;
     private InputController inputController;
     private int x;
     private int y;
@@ -44,6 +47,7 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
     private int frameBufferHeight;
     private String title;
     private WindowAttributes attributes;
+    private long swapCount;
 
     protected GlWindow(int width, int height, String title) {
         super(GLFW.glfwCreateWindow(width, height, title, MemoryUtil.NULL, MemoryUtil.NULL),
@@ -52,14 +56,6 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
         this.width = width;
         this.height = height;
         this.title = title;
-        resizeListeners = autoListenerSupport(1, GLFW::glfwSetFramebufferSizeCallback, this::fireWindowResized);
-        positionListeners = autoListenerSupport(1, GLFW::glfwSetWindowPosCallback, this::fireWindowPosition);
-        refreshListeners = newListenerSupport(1, GLFW::glfwSetWindowRefreshCallback, this::fireWindowRefresh);
-        closeListeners = newListenerSupport(1, GLFW::glfwSetWindowCloseCallback, this::fireWindowClose);
-        contentScaleListeners = newListenerSupport(1, GLFW::glfwSetWindowContentScaleCallback, this::fireWindowContentScale);
-        focusListeners = newListenerSupport(1, GLFW::glfwSetWindowFocusCallback, this::fireWindowFocus);
-        iconifyListeners = newListenerSupport(1, GLFW::glfwSetWindowIconifyCallback, this::fireWindowIconify);
-        maximizeListeners = newListenerSupport(1, GLFW::glfwSetWindowMaximizeCallback, this::fireWindowMaximize);
         fireWindowResized(handle(), width, height);
     }
 
@@ -72,6 +68,9 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
 
     <T extends EventListener, C> ListenerSupport<T> autoListenerSupport(int maxKeys, BiFunction<Long, C, NativeResource> setter, C callback) {
         setCallback(setter, callback);
+        if (closeRunnableList == null) {
+            closeRunnableList = new ArrayList<>();
+        }
         closeRunnableList.add(() -> setCallback(setter, null));
         return new ListenerSupport<>(maxKeys);
     }
@@ -93,7 +92,9 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
             frameBufferHeight = bHeight.get();
         }
         var event = new WindowResizeEvent(this, width, height);
-        resizeListeners.forEach(0, l -> l.windowOnResize(event));
+        if (resizeListeners != null) {
+            resizeListeners.forEach(0, l -> l.windowOnResize(event));
+        }
     }
 
     private void fireWindowPosition(long window, int x, int y) {
@@ -136,6 +137,7 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
     @Override
     public Window swapBuffers() {
         GLFW.glfwSwapBuffers(handle());
+        swapCount++;
         return this;
     }
 
@@ -165,17 +167,93 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
 
     @Override
     public ListenerOperation<WindowResizeListener> onResize() {
+        if (resizeListeners == null) {
+            resizeListeners = autoListenerSupport(1, GLFW::glfwSetFramebufferSizeCallback, this::fireWindowResized);
+        }
         return resizeListeners.listen();
     }
 
     @Override
     public ListenerOperation<WindowRefreshListener> onRefresh() {
+        if (refreshListeners == null) {
+            refreshListeners = newListenerSupport(1, GLFW::glfwSetWindowRefreshCallback, this::fireWindowRefresh);
+        }
         return refreshListeners.listen();
     }
 
     @Override
     public ListenerOperation<WindowPositionListener> onPosition() {
+        if (positionListeners == null) {
+            positionListeners = autoListenerSupport(1, GLFW::glfwSetWindowPosCallback, this::fireWindowPosition);
+        }
         return positionListeners.listen();
+    }
+
+    @Override
+    public ListenerOperation<WindowCloseListener> onClose() {
+        if (closeListeners == null) {
+            closeListeners = newListenerSupport(1, GLFW::glfwSetWindowCloseCallback, this::fireWindowClose);
+        }
+        return closeListeners.listen();
+    }
+
+    @Override
+    public ListenerOperation<WindowContentScaleListener> onContentScale() {
+        if (contentScaleListeners == null) {
+            contentScaleListeners = newListenerSupport(1, GLFW::glfwSetWindowContentScaleCallback, this::fireWindowContentScale);
+        }
+        return contentScaleListeners.listen();
+    }
+
+    @Override
+    public ListenerOperation<WindowFocusListener> onFocus() {
+        if (focusListeners == null) {
+            focusListeners = newListenerSupport(1, GLFW::glfwSetWindowFocusCallback, this::fireWindowFocus);
+        }
+        return focusListeners.listen();
+    }
+
+    @Override
+    public ListenerOperation<WindowIconifyListener> onIconify() {
+        if (iconifyListeners == null) {
+            iconifyListeners = newListenerSupport(1, GLFW::glfwSetWindowIconifyCallback, this::fireWindowIconify);
+        }
+        return iconifyListeners.listen();
+    }
+
+    @Override
+    public ListenerOperation<WindowMaximizeListener> onMaximize() {
+        if (maximizeListeners == null) {
+            maximizeListeners = newListenerSupport(1, GLFW::glfwSetWindowMaximizeCallback, this::fireWindowMaximize);
+        }
+        return maximizeListeners.listen();
+    }
+
+    @Override
+    public ListenerOperation<WindowFpsListener> onFpsUpdate() {
+        if (fpsUpdateListeners == null) {
+            fpsUpdateListeners = new ListenerSupport<>(1, this::createFpsUpdateThread, () -> fpsUpdateThread.interrupt());
+        }
+        return fpsUpdateListeners.listen();
+    }
+
+    private void createFpsUpdateThread() {
+        fpsUpdateThread = new Thread(() -> {
+            long start;
+            long c;
+            while (true) {
+                start = System.currentTimeMillis();
+                c = swapCount;
+                LockSupport.parkNanos(1_000_000_000L);
+                if (Thread.currentThread().isInterrupted()) {
+                    break;
+                }
+                var event = new WindowFpsEvent(this, (swapCount - c) / ((System.currentTimeMillis() - start) / 1000.f));
+                fpsUpdateListeners.forEach(0, l -> l.windowOnFpsUpdate(event));
+            }
+        }, "FPS-Update#" + handle);
+        fpsUpdateThread.setDaemon(true);
+        fpsUpdateThread.start();
     }
 
     @Override
@@ -252,7 +330,9 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
     @Override
     public void close() {
         super.close();
-        closeRunnableList.forEach(Runnable::run);
+        if (closeRunnableList != null) {
+            closeRunnableList.forEach(Runnable::run);
+        }
     }
 
     @Override

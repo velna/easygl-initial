@@ -8,9 +8,7 @@ import com.vanix.easygl.core.Bindable;
 import com.vanix.easygl.core.input.InputController;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
-import com.vanix.easygl.core.window.event.WindowPositionListener;
-import com.vanix.easygl.core.window.event.WindowRefreshListener;
-import com.vanix.easygl.core.window.event.WindowResizeListener;
+import com.vanix.easygl.core.window.event.*;
 import org.joml.Vector2f;
 
 public interface Window extends Bindable<BindTarget.Default<Window>, Window>, Dimensional, Positional {
@@ -32,6 +30,18 @@ public interface Window extends Bindable<BindTarget.Default<Window>, Window>, Di
     ListenerOperation<WindowRefreshListener> onRefresh();
 
     ListenerOperation<WindowPositionListener> onPosition();
+
+    ListenerOperation<WindowCloseListener> onClose();
+
+    ListenerOperation<WindowContentScaleListener> onContentScale();
+
+    ListenerOperation<WindowFocusListener> onFocus();
+
+    ListenerOperation<WindowIconifyListener> onIconify();
+
+    ListenerOperation<WindowMaximizeListener> onMaximize();
+
+    ListenerOperation<WindowFpsListener> onFpsUpdate();
 
     Window swapBuffers();
 

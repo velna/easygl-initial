@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Program> implements Program {
     private final MutableObjectIntMap<String> uniforms = ObjectIntMaps.mutable.of();
@@ -558,6 +559,18 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     @Override
     public boolean containsUniform(String name) {
         return uniforms.getIfAbsentPutWithKey(name, this::getUniformLocation) >= 0;
+    }
+
+    @Override
+    public Set<String> uniformNames() {
+        int uniformCount = getAttribute(ProgramAttribute.ActiveUniforms);
+        if (uniforms.size() < uniformCount) {
+            for (int i = 0; i < uniformCount; i++) {
+                var name = GLX.glGetActiveUniformName(intHandle(), i);
+                uniforms.put(name, i);
+            }
+        }
+        return uniforms.keySet();
     }
 
     @Override

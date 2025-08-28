@@ -11,6 +11,8 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.List;
+import java.util.Set;
 
 public interface Program extends Bindable<BindTarget.Default<Program>, Program> {
 
@@ -214,6 +216,8 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
     int getAttribute(ProgramAttribute.Int attribute);
 
     boolean containsUniform(String name);
+
+    Set<String> uniformNames();
 
     @Support(since = Version.GL43)
     ProgramInterfaces interfaces();
