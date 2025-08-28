@@ -39,6 +39,8 @@ public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, V
     @Deprecated
     void drawArray(DrawMode mode, Buffer vbo, int first);
 
+    void drawArrayInstanced(DrawMode mode, int first, int count, int instanceCount);
+
     default void drawElements(DrawMode mode, Buffer ebo) {
         drawElements(mode, ebo, 0);
     }
