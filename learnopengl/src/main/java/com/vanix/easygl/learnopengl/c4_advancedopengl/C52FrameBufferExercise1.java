@@ -95,7 +95,7 @@ public class C52FrameBufferExercise1 {
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
             });
 
-            cubeVAO.bind().attributes(cubeVBO, 3f, 2f);
+            cubeVAO.bind().enableAttributes(cubeVBO, 3f, 2f);
 
             planeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
@@ -107,7 +107,7 @@ public class C52FrameBufferExercise1 {
                     -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
                     5.0f, -0.5f, -5.0f, 2.0f, 2.0f
             });
-            planeVAO.bind().attributes(planeVBO, 3f, 2f);
+            planeVAO.bind().enableAttributes(planeVBO, 3f, 2f);
 
             quadVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
@@ -120,7 +120,7 @@ public class C52FrameBufferExercise1 {
                     0.3f, 0.7f, 1.0f, 0.0f,
                     0.3f, 1.0f, 1.0f, 1.0f
             });
-            quadVAO.bind().attributes(quadVBO, 2f, 2f);
+            quadVAO.bind().enableAttributes(quadVBO, 2f, 2f);
 
             cubeTexture.bind(Texture.Target.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)

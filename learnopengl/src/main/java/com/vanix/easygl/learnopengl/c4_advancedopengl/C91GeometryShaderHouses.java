@@ -38,7 +38,7 @@ public class C91GeometryShaderHouses {
                     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // bottom-right
                     -0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // bottom-left
             });
-            vao.bind().attributes(vbo, 2f, 3f);
+            vao.bind().enableAttributes(vbo, 2f, 3f);
 
             while (!window.shouldClose()) {
                 graphics.depthTest().enable().then()

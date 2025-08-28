@@ -20,6 +20,7 @@ class Cache {
     static final IntEnumCache<Debug.Severity> DebugSeverity = new IntEnumCache<>(Debug.Severity.class, 0xf);
     static final IntObjectMap<FrameInnerBuffer.ReadBuffer> FrameReadBuffer = intObjectMapOf(FrameInnerBuffer.ReadBuffer.class);
     static final IntObjectMap<BaseFrameBuffer.Status> FrameBufferStatus = intObjectMapOf(BaseFrameBuffer.Status.class);
+    static final IntObjectMap<DataType> DataType = intObjectMapOf(DataType.class);
     private static <T extends IntEnum> IntObjectMap<T> intObjectMapOf(Class<T> type) {
         T[] array = IntEnum.values(type);
         MutableIntObjectMap<T> map = IntObjectMaps.mutable.of();

@@ -134,7 +134,6 @@ public class GlMetaService extends AbstractMetaService {
         register(Query.TimerQuery.class, TimerQueryMeta);
         register(Pipeline.class, PipelineMeta);
         register(ShaderArray.class, (Function<Object[], ShaderArray>) args -> new GlShaderArray((List<Shader>) args[0]));
-        register(VertexAttribute.class, (Function<Object[], VertexAttribute>) args -> GlVertexAttribute.of((int) args[0]));
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.vanix.easygl.core.graphics;
 import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.Feature;
 import com.vanix.easygl.core.Support;
-import com.vanix.easygl.core.meta.MetaSystem;
 import org.joml.*;
 
 import java.nio.*;
@@ -276,7 +275,41 @@ public interface VertexAttribute extends Feature<VertexAttribute, VertexAttribut
     VertexAttribute setPackedFloat4(int v);
     // endregion
 
-    static VertexAttribute of(int index) {
-        return MetaSystem.Graphics.of(VertexAttribute.class, index);
-    }
+    // region Get parameters
+    Buffer getBindingBuffer();
+
+    int getSize();
+
+    int getStride();
+
+    DataType getDataType();
+
+    boolean isNormalized();
+
+    boolean isInteger();
+
+    boolean isLong();
+
+    int getDivisor();
+
+    int getBindingPoint();
+
+    int getOffset();
+
+    Vector4f getFloat();
+
+    Vector4d getFloatAsDouble();
+
+    Vector4i getFloatAsInt();
+
+    @Support(since = Version.GL30)
+    Vector4i getInt();
+
+    @Support(since = Version.GL30)
+    Vector4i getUnsignedInt();
+
+    @Support(since = Version.GL41)
+    Vector4d getDouble();
+    // endregion
+
 }

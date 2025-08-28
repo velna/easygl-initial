@@ -81,8 +81,8 @@ public class C31Materials {
                     -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f
             });
-            cubeVAO.bind().attributes(vbo, 3f, 3f);
-            lightCubeVAO.bind().attributes(vbo, 3f, -3f);
+            cubeVAO.bind().enableAttributes(vbo, 3f, 3f);
+            lightCubeVAO.bind().enableAttributes(vbo, 3f, -3f);
 
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());

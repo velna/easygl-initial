@@ -42,7 +42,7 @@ public class C72CameraKeyboardDt {
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/7.2.camera.fs")
                     .link();
 
-            vao.bind().attributes(vbo.bind(Buffer.Target.Array)
+            vao.bind().enableAttributes(vbo.bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
                             0.5f, -0.5f, -0.5f, 1.0f, 0.0f,

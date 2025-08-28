@@ -1,10 +1,11 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 import java.nio.*;
 
-public enum DataType {
+public enum DataType implements IntEnum {
     Byte("BYTE", java.lang.Byte.BYTES),
     UnsignedByte("UNSIGNED_BYTE", java.lang.Byte.BYTES),
     UnsignedByte332("UNSIGNED_BYTE_3_3_2", java.lang.Byte.BYTES),
@@ -38,6 +39,7 @@ public enum DataType {
         this.bytes = bytes;
     }
 
+    @Override
     public int value() {
         return value;
     }

@@ -11,22 +11,36 @@ import com.vanix.easygl.core.graphics.Buffer;
 import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.graphics.program.UniformBlock;
 import lombok.EqualsAndHashCode;
+import org.eclipse.collections.api.factory.primitive.IntObjectMaps;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.*;
 import java.util.function.IntConsumer;
 
 public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer> implements Buffer {
+    private static final MutableIntObjectMap<Buffer> BUFFERS = IntObjectMaps.mutable.of();
     private final DataType dataType;
     private long sizeInBytes;
 
     protected GlBuffer(int handle, DataType dataType) {
         super(handle, (IntConsumer) GLX::glDeleteBuffers);
         this.dataType = dataType;
+        BUFFERS.put(handle, this);
     }
 
     protected GlBuffer(DataType dataType) {
         this(GLX.glGenBuffers(), dataType);
+    }
+
+    static Buffer get(int handle) {
+        return BUFFERS.get(handle);
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        BUFFERS.remove(intHandle());
     }
 
     @Override
@@ -518,7 +532,7 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
     }
 
     @Override
-    public long bytes() {
+    public long size() {
         return sizeInBytes;
     }
 
@@ -535,7 +549,7 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
         assertBinding();
         GLX.glBindBufferBase(target.value(), bindingPoint, intHandle());
         GLX.checkError();
-        return new GlBindingPoint(bindingPoint, this, 0, bytes());
+        return new GlBindingPoint(bindingPoint, this, 0, size());
     }
 
     @Override

@@ -29,7 +29,7 @@ public class C45TexturesExercise3 {
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/4.6.texture.fs")
                     .link();
 
-            vao.bind().attributes(vbo.bind(Buffer.Target.Array)
+            vao.bind().enableAttributes(vbo.bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             // positions          // colors           // texture coords (note that we changed them to 'zoom in' on our texture image)
                             0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   0.55f, 0.55f, // top right

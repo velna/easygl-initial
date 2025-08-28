@@ -38,7 +38,7 @@ public class C24HelloTriangleExercises2 {
                             .compile())
                     .link();
 
-            vaos.getFirst().bind().attributes(vbos.getFirst().bind(Buffer.Target.Array)
+            vaos.getFirst().bind().enableAttributes(vbos.getFirst().bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             // first triangle
                             -0.9f, -0.45f, 0.0f,  // left
@@ -46,7 +46,7 @@ public class C24HelloTriangleExercises2 {
                             -0.45f, 0.45f, 0.0f
                     }), 3f);
 
-            vaos.getLast().bind().attributes(vbos.getLast().bind(Buffer.Target.Array)
+            vaos.getLast().bind().enableAttributes(vbos.getLast().bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             // second triangle
                             0.0f, -0.45f, 0.0f,  // left

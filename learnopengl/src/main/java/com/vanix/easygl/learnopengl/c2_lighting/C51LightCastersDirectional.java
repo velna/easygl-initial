@@ -99,8 +99,8 @@ public class C51LightCastersDirectional {
                     new Vector3f(1.5f, 0.2f, -1.5f),
                     new Vector3f(-1.3f, 1.0f, -1.5f)};
 
-            cubeVAO.bind().attributes(vbo, 3f, 3f, 2f);
-            lightCubeVAO.bind().attributes(vbo, 3f, -3f, -2f);
+            cubeVAO.bind().enableAttributes(vbo, 3f, 3f, 2f);
+            lightCubeVAO.bind().enableAttributes(vbo, 3f, -3f, -2f);
 
 
             diffuseMap.bind(Texture.Target.T2D)

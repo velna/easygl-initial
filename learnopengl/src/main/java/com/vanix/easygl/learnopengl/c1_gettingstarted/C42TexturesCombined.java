@@ -29,7 +29,7 @@ public class C42TexturesCombined {
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/4.2.texture.fs")
                     .link();
 
-            vao.bind().attributes(vbo.bind(Buffer.Target.Array)
+            vao.bind().enableAttributes(vbo.bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             // positions          // colors           // texture coords
                             0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right

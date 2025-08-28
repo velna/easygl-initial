@@ -50,7 +50,7 @@ public class KeyPress implements Renderer<ClientApp, RenderContext>, KeyboardLis
                         """).compile())
                 .link()
                 .bind();
-        vao = VertexArray.of().bind().attributes(vbo, 2f);
+        vao = VertexArray.of().bind().enableAttributes(vbo, 2f);
     }
 
     @Override

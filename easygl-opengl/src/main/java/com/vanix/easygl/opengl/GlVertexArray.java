@@ -2,14 +2,13 @@ package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
-import com.vanix.easygl.core.graphics.Buffer;
-import com.vanix.easygl.core.graphics.DataType;
-import com.vanix.easygl.core.graphics.DrawMode;
-import com.vanix.easygl.core.graphics.VertexArray;
+import com.vanix.easygl.core.graphics.*;
 
 import java.util.function.IntConsumer;
 
 public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArray>, VertexArray> implements VertexArray {
+
+    private final VertexAttribute[] attributes = new VertexAttribute[GLX.glGetInteger(GLX.GL_MAX_VERTEX_ATTRIBS)];
 
     private int stride;
 
@@ -22,7 +21,7 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
     }
 
     @Override
-    public VertexArray attributes(Number... layouts) {
+    public VertexArray enableAttributes(Number... layouts) {
         assertBinding();
         int pointer = 0;
         int stride = 0;
@@ -53,19 +52,7 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
             realSize = layout.intValue() > 0 ? realSize : -realSize;
             DataType dataType = dataTypes[i];
             if (realSize > 0) {
-                GLX.glEnableVertexAttribArray(i);
-                GLX.checkError();
-                boolean normalized = false;
-                if (realSize == 5) {
-                    realSize = GLX.GL_BGRA;
-                    normalized = true;
-                }
-                if (dataType == DataType.Double) {
-                    GLX.glVertexAttribLPointer(i, realSize, dataType.value(), strideBytes, pointer);
-                } else {
-                    GLX.glVertexAttribPointer(i, realSize, dataType.value(), normalized, strideBytes, pointer);
-                }
-                GLX.checkError();
+                attribute(i).enable().setPointer(realSize, dataType, realSize == 5, strideBytes, pointer);
             }
             pointer += Math.abs(realSize) * dataType.bytes();
         }
@@ -74,22 +61,43 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
     }
 
     @Override
+    public VertexAttribute attribute(int index) {
+        if (index < 0 || index > attributes.length) {
+            throw new IllegalArgumentException("Vertex attribute index must be range from 0 to " + attributes.length);
+        }
+        var ret = attributes[index];
+        if (ret == null) {
+            ret = new GlVertexAttribute(index, this);
+            attributes[index] = ret;
+        }
+        return ret;
+    }
+
+    @Override
     public VertexArray bind(int bindingPoint, Buffer buffer, long offset, int stride) {
+        assertBinding();
         GLX.glBindVertexBuffer(bindingPoint, buffer.intHandle(), offset, stride);
         GLX.checkError();
         return this;
     }
 
     @Override
+    public void drawArray(DrawMode mode, int first, int count) {
+        assertBinding();
+        GLX.glDrawArrays(mode.value(), first, count);
+        GLX.checkError();
+    }
+
+    @Override
     public void drawArray(DrawMode mode, Buffer vbo, int first) {
-        bind();
-        GLX.glDrawArrays(mode.value(), first, (int) vbo.count() / stride);
+        assertBinding();
+        GLX.glDrawArrays(mode.value(), first, (int) vbo.size() / stride);
         GLX.checkError();
     }
 
     @Override
     public void drawElements(DrawMode mode, Buffer ebo, int indices) {
-        bind();
+        assertBinding();
         GLX.glDrawElements(mode.value(), (int) ebo.count(), ebo.dataType().value(), indices);
         GLX.checkError();
     }

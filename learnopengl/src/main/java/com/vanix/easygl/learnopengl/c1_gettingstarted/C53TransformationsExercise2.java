@@ -33,7 +33,7 @@ public class C53TransformationsExercise2 {
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/5.3.transform.fs")
                     .link();
 
-            vao.bind().attributes(vbo.bind(Buffer.Target.Array)
+            vao.bind().enableAttributes(vbo.bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             // positions          // texture coords
                             0.5f, 0.5f, 0.0f, 1.0f, 1.0f, // top right

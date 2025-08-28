@@ -40,7 +40,7 @@ public class C31ShaderUniform {
                             .compile())
                     .link();
 
-            vao.bind().attributes(vbo.bind(Buffer.Target.Array)
+            vao.bind().enableAttributes(vbo.bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             0.5f, -0.5f, 0.0f,  // bottom right
                             -0.5f, -0.5f, 0.0f,  // bottom left

@@ -103,11 +103,10 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
         }
     }
 
-    @Deprecated
     DataType dataType();
 
     default long count() {
-        return bytes() / dataType().bytes();
+        return size() / dataType().bytes();
     }
 
     //region Set buffer data
@@ -331,7 +330,7 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
 
     Buffer copySubData(long readOffset, Buffer dstBuffer, long writeOffset, long size);
 
-    long bytes();
+    long size();
 
     BindingPoint bindAt(int bindingPoint, long offset, long size);
 

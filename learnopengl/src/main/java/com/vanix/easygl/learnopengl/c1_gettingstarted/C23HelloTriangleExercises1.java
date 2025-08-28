@@ -39,7 +39,7 @@ public class C23HelloTriangleExercises1 {
                             .compile())
                     .link();
 
-            vao.bind().attributes(vbo.bind(Buffer.Target.Array)
+            vao.bind().enableAttributes(vbo.bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             // first triangle
                             -0.9f, -0.45f, 0.0f,  // left

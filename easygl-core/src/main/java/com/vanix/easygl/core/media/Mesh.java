@@ -32,7 +32,7 @@ public class Mesh implements Closeable {
         ebo = Buffer.of(DataType.UnsignedInt).bind(Buffer.Target.ElementArray)
                 .realloc(Buffer.DataUsage.StaticDraw, indices);
 
-        vao.bind().attributes(3f, 3f, 2f, 3f, 3f, 14, 4f);
+        vao.bind().enableAttributes(3f, 3f, 2f, 3f, 3f, 14, 4f);
     }
 
     public void draw() {

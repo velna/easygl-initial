@@ -6,10 +6,9 @@ import com.vanix.easygl.core.*;
 public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, VertexArray>, Handle {
     BindTarget.Default<VertexArray> Target = new BindTarget.Default<>("VertexArray", MetaHolder.VertexArray);
 
-    @Deprecated
-    default VertexArray attributes(Buffer buffer, Number... layouts) {
+    default VertexArray enableAttributes(Buffer buffer, Number... layouts) {
         buffer.bind(Buffer.Target.Array);
-        return attributes(layouts);
+        return enableAttributes(layouts);
     }
 
     /**
@@ -21,17 +20,23 @@ public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, V
      * normalized默认为false，BGRA为true。
      *
      * @param layouts layouts
-     * @return this
+     * @return stride size of layouts
      */
-    VertexArray attributes(Number... layouts);
+    VertexArray enableAttributes(Number... layouts);
+
+    VertexAttribute attribute(int index);
 
     @Support(since = Version.GL43)
     VertexArray bind(int bindingPoint, Buffer buffer, long offset, int stride);
 
+    void drawArray(DrawMode mode, int first, int count);
+
+    @Deprecated
     default void drawArray(DrawMode mode, Buffer vbo) {
         drawArray(mode, vbo, 0);
     }
 
+    @Deprecated
     void drawArray(DrawMode mode, Buffer vbo, int first);
 
     default void drawElements(DrawMode mode, Buffer ebo) {
