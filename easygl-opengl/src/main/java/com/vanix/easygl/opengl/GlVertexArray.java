@@ -74,6 +74,13 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
     }
 
     @Override
+    public VertexArray bind(int bindingPoint, Buffer buffer, long offset, int stride) {
+        GLX.glBindVertexBuffer(bindingPoint, buffer.intHandle(), offset, stride);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
     public void drawArray(DrawMode mode, Buffer vbo, int first) {
         bind();
         GLX.glDrawArrays(mode.value(), first, (int) vbo.count() / stride);

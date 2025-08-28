@@ -25,6 +25,9 @@ public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, V
      */
     VertexArray attributes(Number... layouts);
 
+    @Support(since = Version.GL43)
+    VertexArray bind(int bindingPoint, Buffer buffer, long offset, int stride);
+
     default void drawArray(DrawMode mode, Buffer vbo) {
         drawArray(mode, vbo, 0);
     }

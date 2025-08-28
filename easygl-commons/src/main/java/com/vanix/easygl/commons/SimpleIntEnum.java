@@ -7,7 +7,7 @@ import lombok.ToString;
 @ToString
 public class SimpleIntEnum implements IntEnum {
 
-    private final int value;
+    protected final int value;
 
     public SimpleIntEnum(int value) {
         this.value = value;
