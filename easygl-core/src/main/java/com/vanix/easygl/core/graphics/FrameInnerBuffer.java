@@ -1,7 +1,7 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.commons.SimpleIndexedIntEnum;
 import com.vanix.easygl.commons.IntEnum;
+import com.vanix.easygl.commons.SimpleIndexedIntEnum;
 import com.vanix.easygl.commons.util.IndexedEnumCache;
 import com.vanix.easygl.core.meta.MetaSystem;
 
@@ -49,6 +49,14 @@ public abstract class FrameInnerBuffer {
         }
     }
 
+    public sealed interface ColorBuffer extends IntEnum permits Constants, ColorAttachmentImpl {
+        ColorBuffer None = Constants.None;
+
+        static ColorBuffer ofColor(int i) {
+            return ColorAttachmentImpl.of(i);
+        }
+    }
+
 
     public static final class DrawBuffer extends SimpleIndexedIntEnum {
         public static final int MAX = MetaSystem.Graphics.queryInt("GET.GL_MAX_DRAW_BUFFERS");
@@ -92,7 +100,7 @@ public abstract class FrameInnerBuffer {
     }
 
     static final class ColorAttachmentImpl extends SimpleIndexedIntEnum implements
-            ColorAttachment, ReadBuffer, FrameBuffer.DrawBuffer, MultiSelectableDrawBuffer {
+            ColorAttachment, ReadBuffer, ColorBuffer, MultiSelectableDrawBuffer {
         private static final IndexedEnumCache<ColorAttachmentImpl> cache = new IndexedEnumCache<>(MAX_COLOR_ATTACHMENTS, ColorAttachmentImpl::new);
 
         private ColorAttachmentImpl(int index) {
@@ -110,7 +118,7 @@ public abstract class FrameInnerBuffer {
             MultiSelectableDrawBuffer,
             DefaultFrameBuffer.DrawBuffer,
             DefaultFrameBuffer.Invalidatable,
-            FrameBuffer.DrawBuffer {
+            ColorBuffer {
         None("NONE"),
         FrontLeft("FRONT_LEFT"),
         FrontRight("FRONT_RIGHT"),

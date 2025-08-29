@@ -14,8 +14,8 @@ public class GlFrameBuffer extends GlBaseFrameBuffer<FrameBuffer> implements Fra
     }
 
     @Override
-    public FrameBuffer selectDrawBuffer(FrameBuffer.DrawBuffer drawBuffer) {
-        GLX.glDrawBuffer(drawBuffer.value());
+    public FrameBuffer selectDrawBuffer(FrameInnerBuffer.ColorBuffer colorBuffer) {
+        GLX.glDrawBuffer(colorBuffer.value());
         return this;
     }
 
