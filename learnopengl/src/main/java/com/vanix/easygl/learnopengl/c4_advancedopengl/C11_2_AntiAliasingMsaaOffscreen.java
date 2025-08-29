@@ -111,7 +111,7 @@ public class C11_2_AntiAliasingMsaaOffscreen {
             textureColorBufferMultiSampled.bind()
                     .establish(4, InternalPixelFormat.BaseFormat.RGB, window.frameBufferWidth(), window.frameBufferHeight())
                     .unbind();
-            frameBuffer.bind(BaseFrameBuffer.Target.frame())
+            frameBuffer.bindFrame()
                     .attach(FrameInnerBuffer.Attachment.ofColor(0), textureColorBufferMultiSampled)
                     .attach(FrameInnerBuffer.Attachment.DepthStencil, renderBuffer)
                     .checkStatus()
@@ -121,7 +121,7 @@ public class C11_2_AntiAliasingMsaaOffscreen {
                     .allocate(window.frameBufferWidth(), window.frameBufferHeight(), PixelFormat.RGB)
                     .minFilter(MinFilter.Linear)
                     .magFilter(MagFilter.Linear);
-            intermediateFBO.bind(BaseFrameBuffer.Target.frame())
+            intermediateFBO.bindFrame()
                     .attach(FrameInnerBuffer.Attachment.ofColor(0), screenTexture)
                     .checkStatus()
                     .unbind();
@@ -134,7 +134,7 @@ public class C11_2_AntiAliasingMsaaOffscreen {
                 graphics.defaultFrameBuffer()
                         .setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
-                frameBuffer.bind(BaseFrameBuffer.Target.frame())
+                frameBuffer.bindFrame()
                         .setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
                 graphics.depthTest().enable();
@@ -148,8 +148,8 @@ public class C11_2_AntiAliasingMsaaOffscreen {
                         .setMatrix4("model", new Matrix4f().get(mat4f));
                 cubeVao.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
 
-                frameBuffer.bind(BaseFrameBuffer.Target.read());
-                intermediateFBO.bind(BaseFrameBuffer.Target.draw())
+                frameBuffer.bindRead();
+                intermediateFBO.bindDraw()
                         .blit(0, 0, window.frameBufferWidth(), window.frameBufferHeight(), FrameInnerBuffer.Mask.Color, MagFilter.Nearest)
                         .unbind();
                 graphics.defaultFrameBuffer()

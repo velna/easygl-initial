@@ -1,5 +1,6 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.commons.Color;
 import com.vanix.easygl.core.*;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
@@ -163,6 +164,12 @@ public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Textu
     T wrapR(Wrap wrap);
 
     T generateMipmap();
+
+    T borderColor(float red, float green, float blue, float alpha);
+
+    default T borderColor(Color color) {
+        return borderColor(color.red(), color.green(), color.blue(), color.alpha());
+    }
 
     //region CopyImageSubData
     @Support(since = Version.GL43)

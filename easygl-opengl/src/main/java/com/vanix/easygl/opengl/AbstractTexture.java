@@ -169,6 +169,14 @@ public abstract class AbstractTexture<T extends Texture<T>> extends AbstractMult
     }
 
     @Override
+    public T borderColor(float red, float green, float blue, float alpha) {
+        assertBinding();
+        GLX.glTexParameterfv(target().value(), GLX.GL_TEXTURE_BORDER_COLOR, new float[]{red, green, blue, alpha});
+        GLX.checkError();
+        return self();
+    }
+
+    @Override
     public T copyImageSubData(int srcMipMapLevel, int srcX, int srcY, int srcZ, int width, int height, int depth,
                               RenderBuffer dst, int dstX, int dstY, int dstZ) {
         GLX.glCopyImageSubData(intHandle(), target.value(), srcMipMapLevel, srcX, srcY, srcZ,

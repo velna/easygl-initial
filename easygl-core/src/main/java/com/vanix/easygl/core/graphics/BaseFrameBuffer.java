@@ -113,7 +113,7 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
     T checkStatus() throws GraphicsException;
 
     //region Reading and Copying Pixels
-    T setReadBuffer(FrameInnerBuffer.ReadBuffer readBuffer);
+    T selectReadBuffer(FrameInnerBuffer.ReadBuffer readBuffer);
 
     FrameInnerBuffer.ReadBuffer getReadBuffer();
 

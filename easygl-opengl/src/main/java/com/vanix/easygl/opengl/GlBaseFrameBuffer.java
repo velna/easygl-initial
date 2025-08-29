@@ -176,7 +176,7 @@ public abstract class GlBaseFrameBuffer<T extends BaseFrameBuffer<T>>
     }
 
     @Override
-    public T setReadBuffer(FrameInnerBuffer.ReadBuffer readBuffer) {
+    public T selectReadBuffer(FrameInnerBuffer.ReadBuffer readBuffer) {
         GLX.glReadBuffer(readBuffer.value());
         return self();
     }
