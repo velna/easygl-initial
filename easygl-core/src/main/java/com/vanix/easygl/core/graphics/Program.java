@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.List;
 import java.util.Set;
 
 public interface Program extends Bindable<BindTarget.Default<Program>, Program> {
@@ -68,6 +67,10 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     @Support(since = Version.GL41)
     Program setSeparable(boolean separable);
+
+    default Program setBoolean(String key, boolean value) {
+        return setInt(key, value ? 1 : 0);
+    }
 
     Program setInt(String key, int value);
 
