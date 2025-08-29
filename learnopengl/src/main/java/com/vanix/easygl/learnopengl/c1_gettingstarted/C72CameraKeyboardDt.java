@@ -1,8 +1,8 @@
 package com.vanix.easygl.learnopengl.c1_gettingstarted;
 
 import com.vanix.easygl.core.graphics.*;
-import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.input.Keyboard;
+import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
 import org.joml.Math;
@@ -41,8 +41,7 @@ public class C72CameraKeyboardDt {
             program.attachResource(Shader.Type.Vertex, "shaders/1_getting_started/7.2.camera.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/7.2.camera.fs")
                     .link();
-
-            vao.bind().enableAttributes(vbo.bind(Buffer.Target.Array)
+            vbo.bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
                             0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
@@ -85,7 +84,8 @@ public class C72CameraKeyboardDt {
                             0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
                             -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
                             -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
-                    }), 3f, 2f);
+                    });
+            var triangleCount = vao.bind().enableAttributes(3f, 2f).countOfStride();
 
             var cubePositions = new Vector3f[]{
                     new Vector3f(0.0f, 0.0f, 0.0f),
@@ -151,7 +151,7 @@ public class C72CameraKeyboardDt {
                             .translate(cubePositions[i])
                             .rotate(Math.toRadians(20.0f * i), new Vector3f(1.0f, 0.3f, 0.5f))
                             .get(mat4f));
-                    vao.drawArray(DrawMode.Triangles, vbo);
+                    vao.drawArray(DrawMode.Triangles, triangleCount);
                 }
 
                 window.swapBuffers().pollEvents();

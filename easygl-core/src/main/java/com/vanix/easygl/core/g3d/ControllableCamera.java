@@ -29,8 +29,8 @@ public class ControllableCamera extends Camera {
     private float lastFrame;
     private double x;
     private double y;
-    private final FloatValue yaw = Value.of(-90.0f);
-    private final FloatValue pitch = Value.limited(0.0f, -89.0f, 89.0f);
+    private final FloatValue yaw = Value.of(-120.0f);
+    private final FloatValue pitch = Value.limited(-20f, -89.0f, 89.0f);
     private final Keyboard keyboard;
     private final Mouse mouse;
 

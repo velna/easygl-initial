@@ -34,20 +34,20 @@ public class C21HelloTriangle {
                             }
                             """)
                     .link();
-
-            vao.bind().enableAttributes(vbo.bind(Buffer.Target.Array)
+            vbo.bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             -0.5f, -0.5f, 0.0f, // left
                             0.5f, -0.5f, 0.0f, // right
                             0.0f, 0.5f, 0.0f  // top
-                    }), 3f);
+                    });
+            var triangleCount = vao.bind().enableAttributes(3f).countOfStride();
 
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 program.bind();
-                vao.drawArray(DrawMode.Triangles, vbo);
+                vao.drawArray(DrawMode.Triangles, triangleCount);
 
                 window.swapBuffers().pollEvents();
             }

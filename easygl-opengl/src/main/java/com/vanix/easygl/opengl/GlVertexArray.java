@@ -2,7 +2,10 @@ package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
-import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.Buffer;
+import com.vanix.easygl.core.graphics.DrawMode;
+import com.vanix.easygl.core.graphics.VertexArray;
+import com.vanix.easygl.core.graphics.VertexAttribute;
 
 import java.util.function.IntConsumer;
 
@@ -10,54 +13,12 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
 
     private final VertexAttribute[] attributes = new VertexAttribute[GLX.glGetInteger(GLX.GL_MAX_VERTEX_ATTRIBS)];
 
-    private int stride;
-
     GlVertexArray() {
         this(GLX.glGenVertexArrays());
     }
 
     GlVertexArray(int handle) {
         super(handle, Target, (IntConsumer) GLX::glDeleteVertexArrays);
-    }
-
-    @Override
-    public VertexArray enableAttributes(Number... layouts) {
-        assertBinding();
-        int pointer = 0;
-        int stride = 0;
-        int strideBytes = 0;
-        DataType[] dataTypes = new DataType[layouts.length];
-        for (int i = 0; i < layouts.length; i++) {
-            var layout = layouts[i];
-            var realSize = Math.abs(layout.intValue() % 10);
-            if (realSize >= 5) {
-                realSize = 4;
-            }
-            stride += realSize;
-            boolean signed = Math.abs(layout.intValue()) > 10;
-            dataTypes[i] = switch (layout) {
-                case Byte b -> signed ? DataType.Byte : DataType.UnsignedByte;
-                case Short b -> signed ? DataType.Short : DataType.UnsignedShort;
-                case Integer b -> signed ? DataType.Int : DataType.UnsignedInt;
-                case Float b -> signed ? DataType.HalfFloat : DataType.Float;
-                case Double b -> DataType.Double;
-                default -> throw new IllegalArgumentException("Invalid layout size: " + layout);
-            };
-            strideBytes += realSize * dataTypes[i].bytes();
-        }
-
-        for (int i = 0; i < layouts.length; i++) {
-            var layout = layouts[i];
-            int realSize = layout.intValue() % 10;
-            realSize = layout.intValue() > 0 ? realSize : -realSize;
-            DataType dataType = dataTypes[i];
-            if (realSize > 0) {
-                attribute(i).enable().setPointer(realSize, dataType, realSize == 5, strideBytes, pointer);
-            }
-            pointer += Math.abs(realSize) * dataType.bytes();
-        }
-        this.stride = stride;
-        return this;
     }
 
     @Override
@@ -89,13 +50,6 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
     }
 
     @Override
-    public void drawArray(DrawMode mode, Buffer vbo, int first) {
-        assertBinding();
-        GLX.glDrawArrays(mode.value(), first, (int) vbo.size() / stride);
-        GLX.checkError();
-    }
-
-    @Override
     public void drawArrayInstanced(DrawMode mode, int first, int count, int instanceCount) {
         assertBinding();
         GLX.glDrawArraysInstanced(mode.value(), first, count, instanceCount);
@@ -105,7 +59,7 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
     @Override
     public void drawElements(DrawMode mode, Buffer ebo, int indices) {
         assertBinding();
-        GLX.glDrawElements(mode.value(), (int) ebo.count(), ebo.dataType().value(), indices);
+        GLX.glDrawElements(mode.value(), ebo.count(), ebo.dataType().value(), indices);
         GLX.checkError();
     }
 }

@@ -39,14 +39,14 @@ public class C22HelloTriangleIndexed {
                                     """)
                             .compile())
                     .link();
-
-            vao.bind().enableAttributes(vbo.bind(Buffer.Target.Array)
+            vbo.bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             0.5f, 0.5f, 0.0f,  // top right
                             0.5f, -0.5f, 0.0f,  // bottom right
                             -0.5f, -0.5f, 0.0f,  // bottom left
                             -0.5f, 0.5f, 0.0f   // top left
-                    }), 3f);
+                    });
+            vao.bind().enableAttributes(3f);
             ebo.bind(Buffer.Target.ElementArray)
                     .realloc(Buffer.DataUsage.StaticDraw, new int[]{
                             // note that we start from 0!

@@ -39,13 +39,13 @@ public class C31ShaderUniform {
                                     """)
                             .compile())
                     .link();
-
-            vao.bind().enableAttributes(vbo.bind(Buffer.Target.Array)
+            vbo.bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             0.5f, -0.5f, 0.0f,  // bottom right
                             -0.5f, -0.5f, 0.0f,  // bottom left
                             0.0f, 0.5f, 0.0f   // top
-                    }), 3f);
+                    });
+            vao.bind().enableAttributes(3f);
 
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
@@ -54,7 +54,7 @@ public class C31ShaderUniform {
                 program.bind();
                 float greenValue = (float) (Math.sin(System.currentTimeMillis() / 1000.0) / 2.0 + 0.5);
                 program.setVec4("ourColor", 0.0f, greenValue, 0.0f, 1.0f);
-                vao.drawArray(DrawMode.Triangles, vbo);
+                vao.drawArray(DrawMode.Triangles, 3);
 
                 window.swapBuffers().pollEvents();
             }

@@ -36,6 +36,7 @@ public class C92GeometryShaderExploding {
                     .link();
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
+            camera.position().add(10, 15, 15);
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
             var meshes = model.getMeshes();
 

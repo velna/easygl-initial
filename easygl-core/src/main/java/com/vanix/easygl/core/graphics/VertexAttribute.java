@@ -7,8 +7,28 @@ import org.joml.*;
 
 import java.nio.*;
 
-public interface VertexAttribute extends Feature<VertexAttribute, VertexAttribute>, IntEnum {
+public interface VertexAttribute extends Feature<VertexAttribute, VertexArray>, IntEnum {
+
+    /**
+     * 目前支持Byte, UnsignedByte, Short, UnsignedShort, Int, UnsignedInt, Float, HalfFloat, Double。<br>
+     * 不同的类型传入对应的Java类型Byte、Short、Integer、Float、Double。<br>
+     * layouts值大于0的，属性会被启动，小于0的不会被启用。<br>
+     * layouts绝对值小于10的，为Unsigned类型，大于10的为Signed类型。 <br>
+     * layouts绝对值为5时代表BGRA。<br>
+     * normalized默认为false，BGRA为true。
+     *
+     * @param layouts layouts
+     * @return last attribute object, not this!
+     */
+    VertexAttribute enableAttributes(Number... layouts);
+
+    VertexAttribute nextAttribute();
+
     VertexAttribute setPointer(int size, DataType dataType, boolean normalized, int stride, int offset);
+
+    default int countOfStride() {
+        return (int) (getBindingBuffer().size() / getStride());
+    }
 
     @Support(since = Version.GL43)
     VertexAttribute setFormat(int size, DataType dataType, boolean normalized, int offset);

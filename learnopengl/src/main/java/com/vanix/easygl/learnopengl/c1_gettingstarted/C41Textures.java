@@ -27,15 +27,15 @@ public class C41Textures {
             program.attachResource(Shader.Type.Vertex, "shaders/1_getting_started/4.1.texture.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/4.1.texture.fs")
                     .link();
-
-            vao.bind().enableAttributes(vbo.bind(Buffer.Target.Array)
+            vbo.bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             // positions          // colors           // texture coords
                             0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
                             0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
                             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
                             -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
-                    }), 3f, 3f, 2f);
+                    });
+            vao.bind().enableAttributes(3f, 3f, 2f);
             ebo.bind(Buffer.Target.ElementArray).realloc(Buffer.DataUsage.StaticDraw, new int[]{
                     0, 1, 3, // first triangle
                     1, 2, 3  // second triangle

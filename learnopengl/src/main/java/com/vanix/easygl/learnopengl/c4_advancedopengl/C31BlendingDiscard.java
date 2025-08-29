@@ -90,7 +90,7 @@ public class C31BlendingDiscard {
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
             });
 
-            cubeVAO.bind().enableAttributes(cubeVBO, 3f, 2f);
+            var cubeTriangleCount = cubeVAO.bind().enableAttributes(3f, 2f).countOfStride();
 
             planeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // texture Coords
@@ -102,7 +102,7 @@ public class C31BlendingDiscard {
                     -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
                     5.0f, -0.5f, -5.0f, 2.0f, 2.0f
             });
-            planeVAO.bind().enableAttributes(planeVBO, 3f, 2f);
+            var planeTriangleCount = planeVAO.bind().enableAttributes(3f, 2f).countOfStride();
 
 
             transparentVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
@@ -115,7 +115,7 @@ public class C31BlendingDiscard {
                     1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
                     1.0f, 0.5f, 0.0f, 1.0f, 0.0f
             });
-            transparentVAO.bind().enableAttributes(transparentVBO, 3f, 2f);
+            var transparentTriangleCount = transparentVAO.bind().enableAttributes(3f, 2f).countOfStride();
 
             cubeTexture.bind(Texture.Target.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
@@ -160,21 +160,21 @@ public class C31BlendingDiscard {
                 cubeVAO.bind();
                 cubeTexture.bind(Texture.Target.T2D);
                 program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
+                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
                 program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
+                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
 
                 //floor
                 floorTexture.bind(Texture.Target.T2D);
                 program.setMatrix4("model", new Matrix4f().get(mat4f));
-                planeVAO.bind().drawArray(DrawMode.Triangles, planeVBO);
+                planeVAO.bind().drawArray(DrawMode.Triangles, planeTriangleCount);
 
                 //
                 transparentVAO.bind();
                 transparentTexture.bind(Texture.Target.T2D);
                 for (var vec : vegetation) {
                     program.setMatrix4("model", new Matrix4f().translate(vec).get(mat4f));
-                    transparentVAO.drawArray(DrawMode.Triangles, transparentVBO);
+                    transparentVAO.bind().drawArray(DrawMode.Triangles, transparentTriangleCount);
                 }
 
                 window.swapBuffers().pollEvents();

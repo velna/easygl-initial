@@ -89,7 +89,7 @@ public class C61CubemapsSkybox {
                     -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
             });
-            cubeVAO.bind().enableAttributes(cubeVBO, 3f, 2f);
+            var cubeTriangleCount = cubeVAO.bind().enableAttributes(3f, 2f).countOfStride();
 
             skyboxVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions
@@ -135,7 +135,7 @@ public class C61CubemapsSkybox {
                     -1.0f, -1.0f, 1.0f,
                     1.0f, -1.0f, 1.0f
             });
-            skyboxVAO.bind().enableAttributes(skyboxVBO, 3f);
+            var skyBoxTriangleCount = skyboxVAO.bind().enableAttributes(3f).countOfStride();
 
             cubeTexture.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)
@@ -149,12 +149,12 @@ public class C61CubemapsSkybox {
                     .wrapT(Texture.Wrap.ClampToEdge)
                     .wrapR(Texture.Wrap.ClampToEdge)
                     .load(
-                    "textures/skybox/right.jpg",
-                    "textures/skybox/left.jpg",
-                    "textures/skybox/top.jpg",
-                    "textures/skybox/bottom.jpg",
-                    "textures/skybox/front.jpg",
-                    "textures/skybox/back.jpg");
+                            "textures/skybox/right.jpg",
+                            "textures/skybox/left.jpg",
+                            "textures/skybox/top.jpg",
+                            "textures/skybox/bottom.jpg",
+                            "textures/skybox/front.jpg",
+                            "textures/skybox/back.jpg");
 
             program.bind().setInt("texture1", 0);
             skyboxProgram.bind().setInt("skybox", 0);
@@ -176,14 +176,14 @@ public class C61CubemapsSkybox {
                         .setMatrix4("view", view.get(mat4f));
                 cubeTexture.bind();
                 program.setMatrix4("model", new Matrix4f().get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
+                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
 
                 graphics.depthTest().setFunction(CompareFunction.LessEqual);
                 skyboxProgram.bind()
                         .setMatrix4("view", new Matrix4f(view.get3x3(new Matrix3f())).get(mat4f))
                         .setMatrix4("projection", projection.get(mat4f));
                 cubemapTexture.bind();
-                skyboxVAO.bind().drawArray(DrawMode.Triangles, skyboxVBO);
+                skyboxVAO.bind().drawArray(DrawMode.Triangles, skyBoxTriangleCount);
                 graphics.depthTest().setFunction(CompareFunction.LessThan);
 
                 window.swapBuffers().pollEvents();

@@ -93,7 +93,7 @@ public class C2StencilTesting {
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
             });
 
-            cubeVAO.bind().enableAttributes(cubeVBO, 3f, 2f);
+            var cubeTriangleCount = cubeVAO.bind().enableAttributes(3f, 2f).countOfStride();
 
             planeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // texture Coords
@@ -107,7 +107,7 @@ public class C2StencilTesting {
                     -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
                     5.0f, -0.5f, -5.0f, 2.0f, 2.0f
             });
-            planeVAO.bind().enableAttributes(planeVBO, 3f, 2f);
+            var planeTriangleCount = planeVAO.bind().enableAttributes(3f, 2f).countOfStride();
 
             cubeTexture.bind(Texture.Target.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
@@ -148,7 +148,7 @@ public class C2StencilTesting {
                 planeVAO.bind();
                 floorTexture.bind(Texture.Target.T2D);
                 program.setMatrix4("model", new Matrix4f().get(mat4f));
-                planeVAO.drawArray(DrawMode.Triangles, planeVBO);
+                planeVAO.drawArray(DrawMode.Triangles, planeTriangleCount);
 
                 // 1st. render pass, draw objects as normal, writing to the stencil buffer
                 // --------------------------------------------------------------------
@@ -159,9 +159,9 @@ public class C2StencilTesting {
                 cubeVAO.bind();
                 cubeTexture.bind(Texture.Target.T2D, Texture.Unit.U0);
                 program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
+                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
                 program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
+                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
 
                 // 2nd. render pass: now draw slightly scaled versions of the objects, this time disabling stencil writing.
                 // Because the stencil buffer is now filled with several 1s.
@@ -179,12 +179,12 @@ public class C2StencilTesting {
                         .translate(-1.0f, 0.0f, -1.0f)
                         .scale(scale)
                         .get(mat4f));
-                cubeVAO.drawArray(DrawMode.Triangles, cubeVBO);
+                cubeVAO.drawArray(DrawMode.Triangles, cubeTriangleCount);
                 singleColorProgram.setMatrix4("model", new Matrix4f()
                         .translate(2.0f, 0.0f, 0.0f)
                         .scale(scale)
                         .get(mat4f));
-                cubeVAO.drawArray(DrawMode.Triangles, cubeVBO);
+                cubeVAO.drawArray(DrawMode.Triangles, cubeTriangleCount);
 
                 frameBuffer.setStencilMask(0xff);
                 stencilTest.setFunction(CompareFunction.Always, 0, 0xff);

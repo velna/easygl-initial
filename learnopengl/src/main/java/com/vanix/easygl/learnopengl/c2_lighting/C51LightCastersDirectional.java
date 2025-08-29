@@ -99,8 +99,8 @@ public class C51LightCastersDirectional {
                     new Vector3f(1.5f, 0.2f, -1.5f),
                     new Vector3f(-1.3f, 1.0f, -1.5f)};
 
-            cubeVAO.bind().enableAttributes(vbo, 3f, 3f, 2f);
-            lightCubeVAO.bind().enableAttributes(vbo, 3f, -3f, -2f);
+            var cubeAttr = cubeVAO.bind().enableAttributes(3f, 3f, 2f);
+            var lightAttr = lightCubeVAO.bind().enableAttributes(3f, -3f, -2f);
 
 
             diffuseMap.bind(Texture.Target.T2D)
@@ -157,14 +157,14 @@ public class C51LightCastersDirectional {
                                     .rotate(Math.toRadians(20.0f * i), new Vector3f(1.0f, 0.3f, 0.5f))
                                     .get(mat4f))
                             .setVec3("light.direction", lightPos);
-                    cubeVAO.drawArray(DrawMode.Triangles, vbo);
+                    cubeVAO.bind().drawArray(DrawMode.Triangles, cubeAttr.countOfStride());
                 }
 
                 lightCubeProgram.bind()
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))
                         .setMatrix4("model", new Matrix4f().translate(lightPos).scale(0.2f));
-                lightCubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
+                lightCubeVAO.bind().drawArray(DrawMode.Triangles, lightAttr.countOfStride());
 
                 window.swapBuffers().pollEvents();
             }

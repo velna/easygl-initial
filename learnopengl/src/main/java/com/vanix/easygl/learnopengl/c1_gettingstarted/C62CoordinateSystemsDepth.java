@@ -1,8 +1,8 @@
 package com.vanix.easygl.learnopengl.c1_gettingstarted;
 
 import com.vanix.easygl.core.graphics.*;
-import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.input.Keyboard;
+import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
 import org.joml.Math;
@@ -34,8 +34,7 @@ public class C62CoordinateSystemsDepth {
             program.attachResource(Shader.Type.Vertex, "shaders/1_getting_started/6.2.coordinate_systems.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/6.2.coordinate_systems.fs")
                     .link();
-
-            vao.bind().enableAttributes(vbo.bind(Buffer.Target.Array)
+            vbo.bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
                             0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
@@ -78,7 +77,8 @@ public class C62CoordinateSystemsDepth {
                             0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
                             -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
                             -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
-                    }), 3f, 2f);
+                    });
+            var triangleCount = vao.bind().enableAttributes(3f, 2f).countOfStride();
 
             texture1.bind(Texture.Target.T2D)
                     .wrapS(Texture.Wrap.Repeat)
@@ -125,7 +125,7 @@ public class C62CoordinateSystemsDepth {
                         .setMatrix4("projection", new Matrix4f()
                                 .perspective(Math.toRadians(45.0f), window.getAspect(), 0.1f, 100.0f)
                                 .get(mat4f));
-                vao.drawArray(DrawMode.Triangles, vbo);
+                vao.drawArray(DrawMode.Triangles, triangleCount);
 
                 window.swapBuffers().pollEvents();
             }

@@ -14,6 +14,8 @@ import java.nio.*;
 
 public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute {
     private final VertexArray vao;
+    private Buffer bindingBuffer;
+    private int stride = -1;
 
     protected GlVertexAttribute(int value, VertexArray vao) {
         super(value);
@@ -21,8 +23,8 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
     }
 
     @Override
-    public VertexAttribute then() {
-        return this;
+    public VertexArray then() {
+        return vao;
     }
 
     @Override
@@ -45,6 +47,50 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
     }
 
     @Override
+    public VertexAttribute enableAttributes(Number... layouts) {
+        vao.assertBinding();
+        int pointer = 0;
+        int strideBytes = 0;
+        DataType[] dataTypes = new DataType[layouts.length];
+        for (int i = 0; i < layouts.length; i++) {
+            var layout = layouts[i];
+            var realSize = Math.abs(layout.intValue() % 10);
+            if (realSize >= 5) {
+                realSize = 4;
+            }
+            boolean signed = Math.abs(layout.intValue()) > 10;
+            dataTypes[i] = switch (layout) {
+                case Byte b -> signed ? DataType.Byte : DataType.UnsignedByte;
+                case Short b -> signed ? DataType.Short : DataType.UnsignedShort;
+                case Integer b -> signed ? DataType.Int : DataType.UnsignedInt;
+                case Float b -> signed ? DataType.HalfFloat : DataType.Float;
+                case Double b -> DataType.Double;
+                default -> throw new IllegalArgumentException("Invalid layout size: " + layout);
+            };
+            strideBytes += realSize * dataTypes[i].bytes();
+        }
+
+        VertexAttribute attribute = this;
+        for (int i = 0; i < layouts.length; i++) {
+            attribute = vao.attribute(this.value + i);
+            var layout = layouts[i];
+            int realSize = layout.intValue() % 10;
+            realSize = layout.intValue() > 0 ? realSize : -realSize;
+            DataType dataType = dataTypes[i];
+            if (realSize > 0) {
+                attribute.enable().setPointer(realSize, dataType, realSize == 5, strideBytes, pointer);
+            }
+            pointer += Math.abs(realSize) * dataType.bytes();
+        }
+        return attribute;
+    }
+
+    @Override
+    public VertexAttribute nextAttribute() {
+        return vao.attribute(value + 1);
+    }
+
+    @Override
     public VertexAttribute setPointer(int size, DataType dataType, boolean normalized, int stride, int offset) {
         vao.assertBinding();
         size = size == 5 ? GLX.GL_BGRA : size;
@@ -53,6 +99,8 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
         } else {
             GLX.glVertexAttribPointer(value, size, dataType.value(), normalized, stride, offset);
         }
+        GLX.checkError();
+        this.stride = stride;
         return this;
     }
 
@@ -648,9 +696,12 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
 
     @Override
     public Buffer getBindingBuffer() {
-        vao.assertBinding();
-        int buffer = GLX.glGetVertexAttribi(value, GLX.GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING);
-        return buffer == 0 ? null : GlBuffer.get(buffer);
+        if (bindingBuffer == null) {
+            vao.assertBinding();
+            int buffer = GLX.glGetVertexAttribi(value, GLX.GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING);
+            bindingBuffer = buffer == 0 ? null : GlBuffer.get(buffer);
+        }
+        return bindingBuffer;
     }
 
     @Override
@@ -661,8 +712,11 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
 
     @Override
     public int getStride() {
-        vao.assertBinding();
-        return GLX.glGetVertexAttribi(value, GLX.GL_VERTEX_ATTRIB_ARRAY_STRIDE);
+        if (stride < 0) {
+            vao.assertBinding();
+            stride = GLX.glGetVertexAttribi(value, GLX.GL_VERTEX_ATTRIB_ARRAY_STRIDE);
+        }
+        return stride;
     }
 
     @Override

@@ -95,7 +95,7 @@ public class C8AdvancedGlslUbo {
                     -0.5f, 0.5f, 0.5f,
                     -0.5f, 0.5f, -0.5f,
             });
-            cubeVAO.bind().enableAttributes(cubeVBO, 3f);
+            cubeVAO.bind().enableAttributes(3f);
 
             var matricesUniformBlock = programRed.getUniformBlock("Matrices");
             var bindingPoint = ubo.bind(Buffer.Target.Uniform)
@@ -123,19 +123,19 @@ public class C8AdvancedGlslUbo {
 
                 programRed.bind()
                         .setMatrix4("model", new Matrix4f().translate(-0.75f, 0.75f, 0.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
+                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO.count() / 3);
 
                 programGreen.bind()
                         .setMatrix4("model", new Matrix4f().translate(0.75f, 0.75f, 0.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
+                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO.count() / 3);
 
                 programBlue.bind()
                         .setMatrix4("model", new Matrix4f().translate(-0.75f, -0.75f, 0.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
+                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO.count() / 3);
 
                 programYellow.bind()
                         .setMatrix4("model", new Matrix4f().translate(0.75f, -0.75f, 0.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
+                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO.count() / 3);
 
                 window.swapBuffers().pollEvents();
             }

@@ -38,7 +38,7 @@ public class C91GeometryShaderHouses {
                     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // bottom-right
                     -0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // bottom-left
             });
-            vao.bind().enableAttributes(vbo, 2f, 3f);
+            var triangleCount = vao.bind().enableAttributes(2f, 3f).countOfStride();
 
             while (!window.shouldClose()) {
                 graphics.depthTest().enable().then()
@@ -46,7 +46,7 @@ public class C91GeometryShaderHouses {
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
 
                 program.bind();
-                vao.bind().drawArray(DrawMode.Points, vbo);
+                vao.bind().drawArray(DrawMode.Points, triangleCount);
 
                 window.swapBuffers().pollEvents();
             }

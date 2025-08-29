@@ -95,7 +95,7 @@ public class C52FrameBufferExercise1 {
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
             });
 
-            cubeVAO.bind().enableAttributes(cubeVBO, 3f, 2f);
+            var cubeTriangleCount = cubeVAO.bind().enableAttributes(3f, 2f).countOfStride();
 
             planeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
@@ -107,7 +107,7 @@ public class C52FrameBufferExercise1 {
                     -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
                     5.0f, -0.5f, -5.0f, 2.0f, 2.0f
             });
-            planeVAO.bind().enableAttributes(planeVBO, 3f, 2f);
+            var planeTriangleCount = planeVAO.bind().enableAttributes(3f, 2f).countOfStride();
 
             quadVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
@@ -120,7 +120,7 @@ public class C52FrameBufferExercise1 {
                     0.3f, 0.7f, 1.0f, 0.0f,
                     0.3f, 1.0f, 1.0f, 1.0f
             });
-            quadVAO.bind().enableAttributes(quadVBO, 2f, 2f);
+            var quadTriangleCount = quadVAO.bind().enableAttributes(2f, 2f).countOfStride();
 
             cubeTexture.bind(Texture.Target.T2D)
                     .minFilter(MinFilter.LinearMipmapLinear)
@@ -163,13 +163,13 @@ public class C52FrameBufferExercise1 {
 
                     cubeTexture.bind(Texture.Target.T2D, Texture.Unit.U0);
                     program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
-                    cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
+                    cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
                     program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
-                    cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
+                    cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
 
                     floorTexture.bind();
                     program.setMatrix4("model", new Matrix4f().get(mat4f));
-                    planeVAO.bind().drawArray(DrawMode.Triangles, planeVBO);
+                    planeVAO.bind().drawArray(DrawMode.Triangles, planeTriangleCount);
                 };
                 camera.yaw().incr(180f);
                 scene.run();
@@ -182,7 +182,7 @@ public class C52FrameBufferExercise1 {
                 graphics.depthTest().disable();
                 screenProgram.bind();
                 textureColor.bind();
-                quadVAO.bind().drawArray(DrawMode.Triangles, quadVBO);
+                quadVAO.bind().drawArray(DrawMode.Triangles, quadTriangleCount);
 
                 window.swapBuffers().pollEvents();
             }

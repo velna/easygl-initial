@@ -81,8 +81,8 @@ public class C32MaterialsExercise1 {
                     -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f
             });
-            cubeVAO.bind().enableAttributes(vbo, 3f, 3f);
-            lightCubeVAO.bind().enableAttributes(vbo, 3f, -3f);
+            var cubeTriangleCount = cubeVAO.bind().enableAttributes(3f, 3f).countOfStride();
+            var lightTriangleCount = lightCubeVAO.bind().enableAttributes(3f, -3f).countOfStride();
 
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
@@ -119,13 +119,13 @@ public class C32MaterialsExercise1 {
                         .setMatrix4("view", view.get(mat4f))
                         .setMatrix4("model", new Matrix4f());
 
-                cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
+                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
 
                 lightCubeProgram.bind()
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))
                         .setMatrix4("model", new Matrix4f().translate(lightPos).scale(0.2f));
-                lightCubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
+                lightCubeVAO.bind().drawArray(DrawMode.Triangles, lightTriangleCount);
 
                 window.swapBuffers().pollEvents();
             }

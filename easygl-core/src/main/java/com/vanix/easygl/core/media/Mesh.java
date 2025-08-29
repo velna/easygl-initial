@@ -7,6 +7,7 @@ import com.vanix.easygl.core.Closeable;
 import com.vanix.easygl.core.graphics.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.eclipse.collections.api.list.primitive.IntList;
 import org.joml.Vector2f;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 public class Mesh implements Closeable {
     private final Map<Model.TextureType, List<TextureInfo>> textures;
+    @Getter
     private final VertexArray vao;
     private final Buffer vbo;
     private final Buffer ebo;

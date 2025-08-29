@@ -37,29 +37,30 @@ public class C24HelloTriangleExercises2 {
                                     """)
                             .compile())
                     .link();
-
-            vaos.getFirst().bind().enableAttributes(vbos.getFirst().bind(Buffer.Target.Array)
+            vbos.getFirst().bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             // first triangle
                             -0.9f, -0.45f, 0.0f,  // left
                             -0.0f, -0.45f, 0.0f,  // right
                             -0.45f, 0.45f, 0.0f
-                    }), 3f);
+                    });
+            vaos.getFirst().bind().enableAttributes(3f);
 
-            vaos.getLast().bind().enableAttributes(vbos.getLast().bind(Buffer.Target.Array)
+            vbos.getLast().bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             // second triangle
                             0.0f, -0.45f, 0.0f,  // left
                             0.9f, -0.45f, 0.0f,  // right
                             0.45f, 0.45f, 0.0f   // top
-                    }), 3f);
+                    });
+            vaos.getLast().bind().enableAttributes(3f);
 
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 program.bind();
-                vaos.forEach((vao, i) -> vao.drawArray(DrawMode.Triangles, vbos.get(i)));
+                vaos.forEach((vao, i) -> vao.bind().drawArray(DrawMode.Triangles, 3));
                 window.swapBuffers().pollEvents();
             }
         }

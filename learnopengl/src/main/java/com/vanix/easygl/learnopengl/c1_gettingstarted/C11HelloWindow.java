@@ -12,7 +12,7 @@ public class C11HelloWindow {
         WindowHints.OpenGlProfile.Core.set();
 
         try (var window = Window.of(800, 600, "LearnOpenGL");
-             var graphics = Graphics.of()) {
+             var graphics = Graphics.of(window)) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
             graphics.viewPort(0, 0, window.frameBufferWidth(), window.frameBufferHeight());

@@ -1,8 +1,8 @@
 package com.vanix.easygl.learnopengl.c1_gettingstarted;
 
 import com.vanix.easygl.core.graphics.*;
-import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.input.Keyboard;
+import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
 
@@ -28,15 +28,15 @@ public class C45TexturesExercise3 {
             program.attachResource(Shader.Type.Vertex, "shaders/1_getting_started/4.6.texture.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/4.6.texture.fs")
                     .link();
-
-            vao.bind().enableAttributes(vbo.bind(Buffer.Target.Array)
+            vbo.bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             // positions          // colors           // texture coords (note that we changed them to 'zoom in' on our texture image)
-                            0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   0.55f, 0.55f, // top right
-                            0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   0.55f, 0.45f, // bottom right
-                            -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.45f, 0.45f, // bottom left
-                            -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.45f, 0.55f  // top left
-                    }), 3f, 3f, 2f);
+                            0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.55f, 0.55f, // top right
+                            0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.55f, 0.45f, // bottom right
+                            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.45f, 0.45f, // bottom left
+                            -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.45f, 0.55f  // top left
+                    });
+            vao.bind().enableAttributes(3f, 3f, 2f);
             ebo.bind(Buffer.Target.ElementArray).realloc(Buffer.DataUsage.StaticDraw, new int[]{
                     0, 1, 3, // first triangle
                     1, 2, 3  // second triangle

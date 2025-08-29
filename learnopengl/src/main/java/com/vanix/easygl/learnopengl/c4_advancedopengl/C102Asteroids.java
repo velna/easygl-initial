@@ -72,7 +72,7 @@ public class C102Asteroids {
             }
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
-            camera.position().set(0, 0, 55);
+            camera.position().set(15, 15, 60);
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
             var rockMeshes = rock.getMeshes();
             var planetMeshes = planet.getMeshes();

@@ -1,8 +1,8 @@
 package com.vanix.easygl.learnopengl.c1_gettingstarted;
 
 import com.vanix.easygl.core.graphics.*;
-import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.input.Keyboard;
+import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
 import org.joml.Matrix4f;
@@ -32,15 +32,15 @@ public class C53TransformationsExercise2 {
             program.attachResource(Shader.Type.Vertex, "shaders/1_getting_started/5.3.transform.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/1_getting_started/5.3.transform.fs")
                     .link();
-
-            vao.bind().enableAttributes(vbo.bind(Buffer.Target.Array)
+            vbo.bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             // positions          // texture coords
                             0.5f, 0.5f, 0.0f, 1.0f, 1.0f, // top right
                             0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
                             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
                             -0.5f, 0.5f, 0.0f, 0.0f, 1.0f  // top left
-                    }), 3f, 2f);
+                    });
+            vao.bind().enableAttributes(3f, 2f);
             ebo.bind(Buffer.Target.ElementArray).realloc(Buffer.DataUsage.StaticDraw, new int[]{
                     0, 1, 3, // first triangle
                     1, 2, 3  // second triangle

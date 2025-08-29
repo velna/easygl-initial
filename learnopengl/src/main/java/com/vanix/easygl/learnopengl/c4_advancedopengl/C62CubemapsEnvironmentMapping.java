@@ -88,7 +88,7 @@ public class C62CubemapsEnvironmentMapping {
                     -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f
             });
-            cubeVAO.bind().enableAttributes(cubeVBO, 3f, 3f);
+            var cubeTriangleCount = cubeVAO.bind().enableAttributes(3f, 3f).countOfStride();
 
             skyboxVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions
@@ -134,7 +134,7 @@ public class C62CubemapsEnvironmentMapping {
                     -1.0f, -1.0f, 1.0f,
                     1.0f, -1.0f, 1.0f
             });
-            skyboxVAO.bind().enableAttributes(skyboxVBO, 3f);
+            var skyBoxTriangleCount = skyboxVAO.bind().enableAttributes(3f).countOfStride();
 
             cubemapTexture.bind()
                     .minFilter(MinFilter.Linear)
@@ -171,13 +171,13 @@ public class C62CubemapsEnvironmentMapping {
                         .setMatrix4("view", view.get(mat4f))
                         .setMatrix4("model", new Matrix4f().get(mat4f))
                         .setVec3("cameraPos", camera.position());
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO);
+                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
 
                 graphics.depthTest().setFunction(CompareFunction.LessEqual);
                 skyboxProgram.bind()
                         .setMatrix4("view", new Matrix4f(view.get3x3(new Matrix3f())).get(mat4f))
                         .setMatrix4("projection", projection.get(mat4f));
-                skyboxVAO.bind().drawArray(DrawMode.Triangles, skyboxVBO);
+                skyboxVAO.bind().drawArray(DrawMode.Triangles, skyBoxTriangleCount);
                 graphics.depthTest().setFunction(CompareFunction.LessThan);
 
                 window.swapBuffers().pollEvents();

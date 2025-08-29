@@ -105,8 +105,8 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
 
     DataType dataType();
 
-    default long count() {
-        return size() / dataType().bytes();
+    default int count() {
+        return (int) (size() / dataType().bytes());
     }
 
     //region Set buffer data

@@ -156,21 +156,18 @@ public class StructBufferIO<T> implements BufferIO<T> {
         private final StructBufferIO<T> origin;
         private final int size;
         private final Map<String, BindingMeta<?>> metaMap = new LinkedHashMap<>();
+        private int offset = -1;
 
         public Builder(StructBufferIO<T> origin, int size) {
             this.origin = origin;
             this.size = size;
         }
 
-        public Builder<T> withField(String name, int offset, int dataSize) {
+        public Builder<T> withField(String name, int offset) {
             var meta = origin.getBindingMeta(name);
-            if (dataSize < meta.bufferIO.size()) {
-                throw new BufferIOException(String.format("Incompatible data size of field %s within type %s: origin=%d, expect=%d",
-                        name, origin.defaultConstructor.getDeclaringClass(), meta.bufferIO.size(), dataSize));
-            }
-            if (offset + dataSize > size) {
-                throw new BufferIOException(String.format("Offset %d with data size %d is larger than current data size %d of field %s within type %s.",
-                        offset, dataSize, size, name, origin.defaultConstructor.getDeclaringClass()));
+            if (offset <= this.offset) {
+                throw new BufferIOException(String.format("Invalid data offset of field %s within type %s: current=%d, new=%d",
+                        name, origin.defaultConstructor.getDeclaringClass(), this.offset, offset));
             }
             metaMap.put(name, new BindingMeta<>(offset, meta.propertyIO, meta.bufferIO));
             return this;

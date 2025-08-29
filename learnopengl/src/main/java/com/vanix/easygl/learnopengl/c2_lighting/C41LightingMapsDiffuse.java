@@ -1,8 +1,8 @@
 package com.vanix.easygl.learnopengl.c2_lighting;
 
+import com.vanix.easygl.core.g3d.ControllableCamera;
 import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.input.Keyboard;
-import com.vanix.easygl.core.g3d.ControllableCamera;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
 import org.joml.Math;
@@ -83,9 +83,8 @@ public class C41LightingMapsDiffuse {
                     -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
             });
-            cubeVAO.bind().enableAttributes(vbo, 3f, 3f, 2f);
-            lightCubeVAO.bind().enableAttributes(vbo, 3f, -3f, -2f);
-
+            var cubeAttr = cubeVAO.bind().enableAttributes(3f, 3f, 2f);
+            var lightAttr = lightCubeVAO.bind().enableAttributes(3f, -3f, -2f);
 
             diffuseMap.bind(Texture.Target.T2D)
                     .wrapS(Texture.Wrap.Repeat)
@@ -102,6 +101,7 @@ public class C41LightingMapsDiffuse {
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
 
             long start = System.currentTimeMillis();
+
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
@@ -132,13 +132,13 @@ public class C41LightingMapsDiffuse {
                 Texture.Unit.U0.bind();
                 diffuseMap.bind(Texture.Target.T2D);
 
-                cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
+                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeAttr.countOfStride());
 
                 lightCubeProgram.bind()
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))
                         .setMatrix4("model", new Matrix4f().translate(lightPos).scale(0.2f));
-                lightCubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
+                lightCubeVAO.bind().drawArray(DrawMode.Triangles, lightAttr.countOfStride());
 
                 window.swapBuffers().pollEvents();
             }
