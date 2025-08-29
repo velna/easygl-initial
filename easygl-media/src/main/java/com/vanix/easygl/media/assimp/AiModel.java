@@ -146,12 +146,12 @@ public class AiModel implements Model {
 
     @Override
     public List<Mesh.TextureInfo> getTextures(TextureType textureType) {
-        return Collections.unmodifiableList(textures.get(textureType));
+        return textures.getOrDefault(textureType, Collections.emptyList());
     }
 
     @Override
     public List<Mesh> getMeshes() {
-        return Collections.unmodifiableList(meshes);
+        return meshes;
     }
 
     @Override

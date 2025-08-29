@@ -43,7 +43,7 @@ public class C101InstancingQuads {
                     0.05f, -0.05f, 0.0f, 1.0f, 0.0f,
                     0.05f, 0.05f, 0.0f, 1.0f, 1.0f
             });
-            quadVao.bind().enableAttributes(2f, 3f);
+            var vertexAttr = quadVao.bind().enableAttributes(2f, 3f);
 
             var translations = new Vector2f[100];
             var index = 0;
@@ -54,10 +54,7 @@ public class C101InstancingQuads {
                 }
             }
             instanceVbo.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, translations);
-            quadVao.attribute(2)
-                    .enable()
-                    .setPointer(2, DataType.Float, false, 2 * Float.BYTES, 0)
-                    .setDivisor(1);
+            vertexAttr.nextAttribute().enableAttributes(2f).setDivisor(1);
 
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)

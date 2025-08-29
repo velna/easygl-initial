@@ -22,6 +22,7 @@ public class Mesh implements Closeable {
     @Getter
     private final VertexArray vao;
     private final Buffer vbo;
+    @Getter
     private final Buffer ebo;
 
     public Mesh(List<Vertex> vertices, IntList indices, Map<Model.TextureType, List<TextureInfo>> textures) {
