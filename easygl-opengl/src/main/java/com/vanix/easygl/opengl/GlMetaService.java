@@ -93,6 +93,10 @@ public class GlMetaService extends AbstractMetaService {
             args -> new GlTextureCube(),
             (handle, args) -> new GlTextureCube(handle));
 
+    static final BindableMeta<Texture.Target<TextureMultiSample>, TextureMultiSample> TextureMultiSampleMeta = createTextureMeta(
+            args -> new GlTextureMultiSample(),
+            (handle, args) -> new GlTextureMultiSample(handle));
+
     static final Meta<Sync> SyncMeta = new DefaultMeta<>(args -> new GlSync());
 
     static final HandleMeta<Query.SampleQuery> SampleQueryMeta = new IntHandleMeta<>(
@@ -127,6 +131,7 @@ public class GlMetaService extends AbstractMetaService {
         register(Texture.Unit.class, TextureUnitMeta);
         register(Texture2D.class, Texture2DMeta);
         register(TextureCube.class, TextureCubeMeta);
+        register(TextureMultiSample.class, TextureMultiSampleMeta);
         register(Shader.class, ShaderMeta);
         register(Sync.class, SyncMeta);
         register(Query.SampleQuery.class, SampleQueryMeta);

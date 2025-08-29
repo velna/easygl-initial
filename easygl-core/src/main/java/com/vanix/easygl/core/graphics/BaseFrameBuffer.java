@@ -38,6 +38,12 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
     T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture2D texture2D, int level);
 
     @Support(since = Version.GL30)
+    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureMultiSample textureMultiSample);
+
+    @Support(since = Version.GL30)
+    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureCube textureCube, TextureCube.Face face, int level);
+
+    @Support(since = Version.GL30)
     T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, RenderBuffer renderBuffer);
 
     @Support(since = Version.GL30)
@@ -51,6 +57,21 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
     @Support(since = Version.GL30)
     default T attach(FrameInnerBuffer.Attachment attachment, Texture2D texture2D, int level) {
         return attach(target(), attachment, texture2D, level);
+    }
+
+    @Support(since = Version.GL30)
+    default T attach(FrameInnerBuffer.Attachment attachment, TextureMultiSample textureMultiSample) {
+        return attach(target(), attachment, textureMultiSample);
+    }
+
+    @Support(since = Version.GL30)
+    default T attach(FrameInnerBuffer.Attachment attachment, TextureCube textureCube, TextureCube.Face face) {
+        return attach(target(), attachment, textureCube, face, 0);
+    }
+
+    @Support(since = Version.GL30)
+    default T attach(FrameInnerBuffer.Attachment attachment, TextureCube textureCube, TextureCube.Face face, int level) {
+        return attach(target(), attachment, textureCube, face, level);
     }
 
     @Support(since = Version.GL30)
@@ -68,11 +89,21 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
            int dstX0, int dstY0, int dstX1, int dstY1,
            FrameInnerBuffer.Mask buffers, MagFilter filter);
 
+    default T blit(int x0, int y0, int x1, int y1,
+                   FrameInnerBuffer.Mask buffers, MagFilter filter) {
+        return blit(x0, y0, x1, y1, x0, y0, x1, y1, buffers, filter);
+    }
+
     @Support(since = Version.GL30)
     default T blit(Rectangle src, Rectangle dst, FrameInnerBuffer.Mask buffers, MagFilter filter) {
         return blit(src.getX(), src.getY(), src.getX() + src.getWidth(), src.getY() + src.getHeight(),
                 dst.getX(), dst.getY(), dst.getX() + dst.getWidth(), dst.getY() + dst.getHeight(),
                 buffers, filter);
+    }
+
+    @Support(since = Version.GL30)
+    default T blit(Rectangle rect, FrameInnerBuffer.Mask buffers, MagFilter filter) {
+        return blit(rect, rect, buffers, filter);
     }
 
     T selectDrawBuffers(FrameInnerBuffer.MultiSelectableDrawBuffer... drawBuffers);

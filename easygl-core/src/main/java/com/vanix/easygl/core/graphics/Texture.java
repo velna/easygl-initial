@@ -1,6 +1,5 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.commons.Identified;
 import com.vanix.easygl.core.*;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
@@ -48,30 +47,23 @@ public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Textu
     }
 
     @ToString
-    class Target<T extends Texture<T>> implements BindTarget<Target<T>, T>, Identified<String> {
+    class Target<T extends Texture<T>> implements BindTarget<Target<T>, T> {
         //        public static final Type<?> T1D = new Type<>("TEXTURE_1D", GLC.GL_TEXTURE_1D);
-        public static final Target<Texture2D> T2D = new Target<>("TEXTURE_2D", MetaSystem.Graphics.queryInt("TEXTURE_2D"), MetaHolder.Texture2D);
+        public static final Target<Texture2D> T2D = new Target<>("TEXTURE_2D", MetaHolder.Texture2D);
         //        public static final Type<?> T3D = new Type<>("TEXTURE_3D", GLC.GL_TEXTURE_3D);
 //        public static final Type<?> T1DArray = new Type<>("TEXTURE_1D_ARRAY", GLC.GL_TEXTURE_1D_ARRAY);
 //        public static final Type<?> T2DArray = new Type<>("TEXTURE_2D_ARRAY", GLC.GL_TEXTURE_2D_ARRAY);
 //        public static final Type<?> Rectangle = new Type<>("TEXTURE_RECTANGLE", GLC.GL_TEXTURE_RECTANGLE);
-        public static final Target<TextureCube> CubeMap = new Target<>("TEXTURE_CUBE_MAP", MetaSystem.Graphics.queryInt("TEXTURE_CUBE_MAP"), MetaHolder.TextureCube);
-//        public static final Type<?> T2DMultisample = new Type<>("TEXTURE_2D_MULTISAMPLE", GLC.GL_TEXTURE_2D_MULTISAMPLE);
+        public static final Target<TextureCube> CubeMap = new Target<>("TEXTURE_CUBE_MAP", MetaHolder.TextureCube);
+        public static final Target<TextureMultiSample> T2DMultiSample = new Target<>("TEXTURE_2D_MULTISAMPLE", MetaHolder.TextureMultiSample);
 //        public static final Type<?> T2DMultisampleArray = new Type<>("TEXTURE_2D_MULTISAMPLE_ARRAY", GLC.GL_TEXTURE_2D_MULTISAMPLE_ARRAY);
 
         private final int value;
-        private final String id;
         private final BindingState<Target<T>, T> state;
 
-        private Target(String id, int value, BindableMeta<Target<T>, T> meta) {
-            this.id = id;
-            this.value = value;
+        private Target(String id, BindableMeta<Target<T>, T> meta) {
+            this.value = MetaSystem.Graphics.queryInt(id);
             this.state = meta.newBindingState(id);
-        }
-
-        @Override
-        public String id() {
-            return id;
         }
 
         @Override
@@ -212,5 +204,9 @@ public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Textu
 
     static TextureCube ofCube() {
         return MetaHolder.TextureCube.create();
+    }
+
+    static TextureMultiSample ofMultiSample() {
+        return MetaHolder.TextureMultiSample.create();
     }
 }

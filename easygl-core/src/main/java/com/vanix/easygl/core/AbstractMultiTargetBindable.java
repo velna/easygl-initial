@@ -30,7 +30,6 @@ public class AbstractMultiTargetBindable<E extends BindTarget<E, T>, T extends M
     @Override
     public T unbind(E target) {
         target.state().unbind(target);
-        this.target = null;
         return (T) this;
     }
 
