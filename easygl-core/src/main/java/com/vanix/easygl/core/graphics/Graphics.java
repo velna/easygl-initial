@@ -6,6 +6,7 @@ import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.window.Window;
 import org.joml.Vector2f;
 
+import java.nio.FloatBuffer;
 import java.util.ServiceLoader;
 
 public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, Graphics> {
@@ -77,6 +78,18 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
     default Vector2f getPolygonOffset() {
         return new Vector2f(getPolygonOffsetFactor(), getPolygonOffsetUnits());
     }
+    // endregion
+
+    // region Path Parameters
+    Graphics setPathVertices(int count);
+
+    Graphics setPathDefaultOuterLevel(float[] values);
+
+    Graphics setPathDefaultOuterLevel(FloatBuffer value);
+
+    Graphics setPathDefaultInnerLevel(float[] values);
+
+    Graphics setPathDefaultInnerLevel(FloatBuffer value);
     // endregion
 
     static Graphics of() {

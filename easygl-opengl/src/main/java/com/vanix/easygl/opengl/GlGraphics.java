@@ -5,6 +5,8 @@ import org.joml.Vector2f;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
 
+import java.nio.FloatBuffer;
+
 public class GlGraphics implements Graphics {
     static final GLCapabilities CAPABILITIES = GL.createCapabilities();
     private final DepthTest depthTest = new GlDepthTest(this);
@@ -238,5 +240,35 @@ public class GlGraphics implements Graphics {
     @Override
     public void close() {
 
+    }
+
+    @Override
+    public Graphics setPathVertices(int count) {
+        GLX.glPatchParameteri(GLX.GL_PATCH_VERTICES, count);
+        return this;
+    }
+
+    @Override
+    public Graphics setPathDefaultOuterLevel(float[] values) {
+        GLX.glPatchParameterfv(GLX.GL_PATCH_DEFAULT_OUTER_LEVEL, values);
+        return this;
+    }
+
+    @Override
+    public Graphics setPathDefaultOuterLevel(FloatBuffer value) {
+        GLX.glPatchParameterfv(GLX.GL_PATCH_DEFAULT_OUTER_LEVEL, value);
+        return this;
+    }
+
+    @Override
+    public Graphics setPathDefaultInnerLevel(float[] values) {
+        GLX.glPatchParameterfv(GLX.GL_PATCH_DEFAULT_INNER_LEVEL, values);
+        return this;
+    }
+
+    @Override
+    public Graphics setPathDefaultInnerLevel(FloatBuffer value) {
+        GLX.glPatchParameterfv(GLX.GL_PATCH_DEFAULT_INNER_LEVEL, value);
+        return this;
     }
 }

@@ -21,6 +21,8 @@ public interface Sync extends Handle {
     @Support(since = Version.GL32)
     Result awaitClient(int timeout, TimeUnit timeUnit, boolean flush);
 
+    boolean isSignaled();
+
     enum Result implements IntEnum {
         ALREADY_SIGNALED("ALREADY_SIGNALED"),
         TIMEOUT_EXPIRED("TIMEOUT_EXPIRED"),

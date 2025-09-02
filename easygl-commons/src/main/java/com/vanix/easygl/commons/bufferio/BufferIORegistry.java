@@ -133,6 +133,7 @@ public class BufferIORegistry {
             bufferIO = REGISTRY.get(type);
             if (bufferIO == null) {
                 bufferIO = new StructBufferIO(type);
+                REGISTRY.put(type, bufferIO);
             }
         }
         if (i == lengths.length) {

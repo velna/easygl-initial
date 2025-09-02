@@ -26,4 +26,9 @@ public class GlSync extends AbstractHandle implements Sync {
         int code = GLX.glClientWaitSync(handle, flush ? GLX.GL_SYNC_FLUSH_COMMANDS_BIT : 0, timeUnit.toNanos(timeout));
         return Cache.SyncResult.valueOf(code);
     }
+
+    @Override
+    public boolean isSignaled() {
+        return GLX.glGetSynci(handle, GLX.GL_SYNC_STATUS, null) == GLX.GL_SIGNALED;
+    }
 }
