@@ -28,23 +28,4 @@ public abstract class AbstractBindable<E extends BindTarget<E, T>, T extends Bin
         return target;
     }
 
-    protected int targetValue() {
-        return target.value();
-    }
-
-    @Override
-    public void assertBinding() throws IllegalStateException {
-        target.state().assertBinding(handle());
-    }
-
-    @Override
-    public T bind() {
-        return target.bind(self());
-    }
-
-    @Override
-    public T unbind() {
-        return target.unbind(self());
-    }
-
 }

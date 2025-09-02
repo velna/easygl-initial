@@ -4,8 +4,8 @@ import com.vanix.easygl.core.input.InputController;
 import com.vanix.easygl.core.input.InputDevice;
 import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.Mouse;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class GlInputController implements InputController {
         devices = List.of(mouse, keyboard);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public Iterator<InputDevice<?>> iterator() {
         return devices.iterator();

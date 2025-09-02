@@ -12,4 +12,8 @@ public class SimpleRectangle extends SimpleDimension implements Rectangle {
         this.x = x;
         this.y = y;
     }
+
+    public SimpleRectangle(int[] rect) {
+        this(rect[0], rect[1], rect[2], rect[3]);
+    }
 }

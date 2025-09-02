@@ -4,21 +4,22 @@ import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.meta.*;
 
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
 @SystemName("Graphics")
 public class GlMetaService extends AbstractMetaService {
-
-    static final BindableMeta<Buffer.Type, Buffer> BufferMeta = new IntBindableMeta<>(
-            args -> new GlBuffer((Buffer.Type) args[0], (DataType) args[1]),
+    static final BindableMeta<Buffer.Target, Buffer> BufferMeta = new IntBindableMeta<>(
+            args -> new GlBuffer((DataType) args[0]),
             GLX::glBindBuffer,
             GLX::glBindBuffer,
             0,
             GLX::glDeleteBuffers,
-            (handle, args) -> new GlBuffer(handle, (Buffer.Type) args[0], (DataType) args[1]),
+            (handle, args) -> new GlBuffer(handle, (DataType) args[0]),
             GLX::glGenBuffers,
-            GLX::glDeleteBuffers);
+            GLX::glDeleteBuffers,
+            GlBufferArray::new);
 
     static final BindableMeta<BindTarget.Default<VertexArray>, VertexArray> VertexArrayMeta = new IntBindableMeta<>(
             args -> new GlVertexArray(),
@@ -30,7 +31,7 @@ public class GlMetaService extends AbstractMetaService {
             GLX::glGenVertexArrays,
             GLX::glDeleteVertexArrays);
 
-    static final BindableMeta<FrameBuffer.Target, FrameBuffer> FrameBufferMeta = new IntBindableMeta<>(
+    static final BindableMeta<BaseFrameBuffer.Target<FrameBuffer>, FrameBuffer> FrameBufferMeta = new IntBindableMeta<>(
             args -> new GlFrameBuffer(),
             GLX::glBindFramebuffer,
             GLX::glBindFramebuffer,
@@ -55,6 +56,16 @@ public class GlMetaService extends AbstractMetaService {
             GLX::glDeleteProgram,
             (handle, args) -> new GlProgram(handle));
 
+    static final BindableMeta<BindTarget.Default<Pipeline>, Pipeline> PipelineMeta = new IntBindableMeta<>(
+            args -> new GlPipeline(),
+            (target, handle) -> GLX.glBindProgramPipeline(handle),
+            (target, handle) -> GLX.glBindProgramPipeline(handle),
+            0,
+            GLX::glDeleteProgramPipelines,
+            (handle, args) -> new GlPipeline(handle),
+            GLX::glGenProgramPipelines,
+            GLX::glDeleteProgramPipelines);
+
     static final BindableMeta<BindTarget.Default<RenderBuffer>, RenderBuffer> RenderBufferMeta = new IntBindableMeta<>(
             args -> new GlRenderBuffer(),
             GLX::glBindRenderbuffer,
@@ -74,16 +85,45 @@ public class GlMetaService extends AbstractMetaService {
             null
     );
 
-    static final BindableMeta<Texture.Type<Texture2D>, Texture2D> Texture2DMeta = createTextureMeta(
+    static final BindableMeta<Texture.Target<Texture2D>, Texture2D> Texture2DMeta = createTextureMeta(
             args -> new GlTexture2D(),
             (handle, args) -> new GlTexture2D(handle));
 
-    static final BindableMeta<Texture.Type<TextureCube>, TextureCube> TextureCubeMeta = createTextureMeta(
+    static final BindableMeta<Texture.Target<TextureCube>, TextureCube> TextureCubeMeta = createTextureMeta(
             args -> new GlTextureCube(),
             (handle, args) -> new GlTextureCube(handle));
 
+    static final BindableMeta<Texture.Target<TextureMultiSample>, TextureMultiSample> TextureMultiSampleMeta = createTextureMeta(
+            args -> new GlTextureMultiSample(),
+            (handle, args) -> new GlTextureMultiSample(handle));
+
+    static final Meta<Sync> SyncMeta = new DefaultMeta<>(args -> new GlSync());
+
+    static final HandleMeta<Query.SampleQuery> SampleQueryMeta = new IntHandleMeta<>(
+            args -> new GlQuery.GlSampleQuery((Query.SampleType) args[0]),
+            GLX::glDeleteQueries,
+            (handle, args) -> new GlQuery.GlSampleQuery(handle, (Query.SampleType) args[0]),
+            GLX::glGenQueries,
+            GLX::glDeleteQueries);
+
+    static final HandleMeta<Query.IndexQuery> IndexQueryMeta = new IntHandleMeta<>(
+            args -> new GlQuery.GlIndexQuery((Query.IndexType) args[0]),
+            GLX::glDeleteQueries,
+            (handle, args) -> new GlQuery.GlIndexQuery(handle, (Query.IndexType) args[0]),
+            GLX::glGenQueries,
+            GLX::glDeleteQueries);
+
+    static final HandleMeta<Query.TimerQuery> TimerQueryMeta = new IntHandleMeta<>(
+            args -> new GlQuery.GlTimerQuery(),
+            GLX::glDeleteQueries,
+            (handle, args) -> new GlQuery.GlTimerQuery(handle),
+            GLX::glGenQueries,
+            GLX::glDeleteQueries);
+
+    @SuppressWarnings("unchecked")
     public GlMetaService() {
         register(Buffer.class, BufferMeta);
+        register(BaseFrameBuffer.class, FrameBufferMeta);
         register(FrameBuffer.class, FrameBufferMeta);
         register(VertexArray.class, VertexArrayMeta);
         register(RenderBuffer.class, RenderBufferMeta);
@@ -91,16 +131,24 @@ public class GlMetaService extends AbstractMetaService {
         register(Texture.Unit.class, TextureUnitMeta);
         register(Texture2D.class, Texture2DMeta);
         register(TextureCube.class, TextureCubeMeta);
+        register(TextureMultiSample.class, TextureMultiSampleMeta);
         register(Shader.class, ShaderMeta);
+        register(Sync.class, SyncMeta);
+        register(Query.SampleQuery.class, SampleQueryMeta);
+        register(Query.IndexQuery.class, IndexQueryMeta);
+        register(Query.TimerQuery.class, TimerQueryMeta);
+        register(Pipeline.class, PipelineMeta);
+        register(ShaderArray.class, (Function<Object[], ShaderArray>) args -> new GlShaderArray((List<Shader>) args[0]));
     }
 
     @Override
     public int queryInt(String id) {
         if (id.startsWith("GET.")) {
-            id = id.substring(4);
-            return GLX.glGetInteger(queryStaticIntField(GLX.class, "GL_", id).orElseThrow());
+            String mid = id.substring(4);
+            return GLX.glGetInteger(queryStaticIntField(GLX.class, "GL_", mid).orElseThrow(() -> new IllegalArgumentException(mid)));
+        } else {
+            return queryStaticIntField(GLX.class, "GL_", id).orElseThrow(() -> new IllegalArgumentException(id));
         }
-        return queryStaticIntField(GLX.class, "GL_", id).orElseThrow();
     }
 
     @Override
@@ -128,8 +176,8 @@ public class GlMetaService extends AbstractMetaService {
     }
 
     private static <T extends Texture<T>>
-    BindableMeta<Texture.Type<T>, T> createTextureMeta(Function<Object[], T> factory,
-                                                       BiFunction<Integer, Object[], T> init) {
+    BindableMeta<Texture.Target<T>, T> createTextureMeta(Function<Object[], T> factory,
+                                                         BiFunction<Integer, Object[], T> init) {
         return new IntBindableMeta<>(
                 factory,
                 GLX::glBindTexture,

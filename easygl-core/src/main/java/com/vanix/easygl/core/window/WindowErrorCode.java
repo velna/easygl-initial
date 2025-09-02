@@ -38,7 +38,7 @@ public enum WindowErrorCode implements ErrorCode {
 
     @Override
     public boolean isError() {
-        return this == NoError;
+        return this != NoError;
     }
 
     @Override

@@ -1,35 +1,40 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.commons.BitSet;
+import com.vanix.easygl.commons.IntEnum;
+import com.vanix.easygl.commons.bufferio.BufferIO;
+import com.vanix.easygl.commons.util.SerializableFunction;
+import com.vanix.easygl.commons.util.TypeReferenceBean;
 import com.vanix.easygl.core.*;
-import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 import java.nio.*;
-import java.util.function.Consumer;
 
-public interface Buffer extends Handle, Bindable<Buffer.Type, Buffer> {
+public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffer> {
 
-    BindableMeta<Type, Buffer> Meta = MetaSystem.Graphics.of(Buffer.class);
-
-    enum Type implements BindTarget<Type, Buffer> {
-        //        Array(EasyGL.queryInt("ARRAY_BUFFER),
+    enum Target implements BindTarget<Target, Buffer>, IntEnum {
         Array("ARRAY_BUFFER"),
+        AtomicCounter("ATOMIC_COUNTER_BUFFER"),
         CopyRead("COPY_READ_BUFFER"),
         CopyWrite("COPY_WRITE_BUFFER"),
+        DispatchIndirect("DISPATCH_INDIRECT_BUFFER"),
+        DrawIndirect("DRAW_INDIRECT_BUFFER"),
         ElementArray("ELEMENT_ARRAY_BUFFER"),
         PixelPack("PIXEL_PACK_BUFFER"),
         PixelUnpack("PIXEL_UNPACK_BUFFER"),
+        Query("QUERY_BUFFER"),
+        ShaderStorage("SHADER_STORAGE_BUFFER"),
         Texture("TEXTURE_BUFFER"),
         TransformFeedback("TRANSFORM_FEEDBACK_BUFFER"),
         Uniform("UNIFORM_BUFFER");
 
         final int value;
 
-        private final BindingState<Type, Buffer> state;
+        private final BindingState<Target, Buffer> state;
 
-        Type(String id) {
+        Target(String id) {
             this.value = MetaSystem.Graphics.queryInt(id);
-            state = Meta.newBindingState(name());
+            state = MetaHolder.Buffer.newBindingState(name());
         }
 
         @Override
@@ -38,64 +43,75 @@ public interface Buffer extends Handle, Bindable<Buffer.Type, Buffer> {
         }
 
         @Override
-        public BindingState<Buffer.Type, Buffer> state() {
+        public BindingState<Target, Buffer> state() {
             return state;
         }
 
     }
 
-    enum DataUsage {
-        STREAM_DRAW("STREAM_DRAW"),
-        STREAM_READ("STREAM_READ"),
-        STREAM_COPY("STREAM_COPY"),
-        STATIC_DRAW("STATIC_DRAW"),
-        STATIC_READ("STATIC_READ"),
-        STATIC_COPY("STATIC_COPY"),
-        DYNAMIC_DRAW("DYNAMIC_DRAW"),
-        DYNAMIC_READ("DYNAMIC_READ"),
-        DYNAMIC_COPY("DYNAMIC_COPY");
+    enum DataUsage implements IntEnum {
+        StreamDraw("STREAM_DRAW"),
+        StreamRead("STREAM_READ"),
+        StreamCopy("STREAM_COPY"),
+        StaticDraw("STATIC_DRAW"),
+        StaticRead("STATIC_READ"),
+        StaticCopy("STATIC_COPY"),
+        DynamicDraw("DYNAMIC_DRAW"),
+        DynamicRead("DYNAMIC_READ"),
+        DynamicCopy("DYNAMIC_COPY");
 
         final int value;
 
-        private DataUsage(String id) {
+        DataUsage(String id) {
             this.value = MetaSystem.Graphics.queryInt(id);
         }
 
+        @Override
         public int value() {
             return value;
         }
     }
 
-    enum StorageFlags {
-        MapRead("MAP_READ_BIT"),
-        MapWrite("MAP_WRITE_BIT");
+    enum StorageBits implements IntEnum {
+        Dynamic("DYNAMIC_STORAGE_BIT"),
+        Client("CLIENT_STORAGE_BIT"),
+        Read("MAP_READ_BIT"),
+        Write("MAP_WRITE_BIT"),
+        @Support(since = Version.GL44)
+        PersistentRead("MAP_PERSISTENT_BIT", Read),
+        @Support(since = Version.GL44)
+        PersistentWrite("MAP_PERSISTENT_BIT", Write),
+        @Support(since = Version.GL44)
+        Coherent("MAP_COHERENT_BIT", "MAP_PERSISTENT_BIT");
         private final int value;
 
-        StorageFlags(String id) {
+        StorageBits(String id, StorageBits ma2) {
+            this.value = MetaSystem.Graphics.queryInt(id) | ma2.value;
+        }
+
+        StorageBits(String id1, String id2) {
+            this.value = MetaSystem.Graphics.queryInt(id1) | MetaSystem.Graphics.queryInt(id2);
+        }
+
+        StorageBits(String id) {
             this.value = MetaSystem.Graphics.queryInt(id);
         }
 
+        @Override
         public int value() {
             return value;
-        }
-
-        public static int value(StorageFlags... flags) {
-            if (null == flags || flags.length == 0) {
-                return 0;
-            }
-            int ret = 0;
-            for (var flag : flags) {
-                ret |= flag.value;
-            }
-            return ret;
         }
     }
 
     DataType dataType();
 
     default int count() {
-        return bytes() / dataType().bytes();
+        return (int) (size() / dataType().bytes());
     }
+
+    //region Set buffer data
+    //region Set buffer data
+    Buffer realloc(DataUsage usage, int size);
 
     Buffer realloc(DataUsage usage, DoubleBuffer data);
 
@@ -115,70 +131,251 @@ public interface Buffer extends Handle, Bindable<Buffer.Type, Buffer> {
 
     Buffer realloc(DataUsage usage, short[] data);
 
-    Buffer storage(DoubleBuffer data, StorageFlags... flags);
+    <T> Buffer realloc(DataUsage usage, T bean, BufferIO<T> bufferIO);
 
-    Buffer storage(FloatBuffer data, StorageFlags... flags);
-
-    Buffer storage(IntBuffer data, StorageFlags... flags);
-
-    Buffer storage(ShortBuffer data, StorageFlags... flags);
-
-    Buffer storage(ByteBuffer data, StorageFlags... flags);
-
-    Buffer storage(double[] data, StorageFlags... flags);
-
-    Buffer storage(float[] data, StorageFlags... flags);
-
-    Buffer storage(int[] data, StorageFlags... flags);
-
-    Buffer storage(short[] data, StorageFlags... flags);
-
-    Buffer set(int offset, DoubleBuffer data);
-
-    Buffer set(int offset, FloatBuffer data);
-
-    Buffer set(int offset, IntBuffer data);
-
-    Buffer set(int offset, ShortBuffer data);
-
-    Buffer set(int offset, ByteBuffer data);
-
-    Buffer set(int offset, double[] data);
-
-    Buffer set(int offset, float[] data);
-
-    Buffer set(int offset, int[] data);
-
-    Buffer set(int offset, short[] data);
-
-    default Buffer accept(Consumer<Buffer> consumer) {
-        consumer.accept(this);
-        return this;
+    default <T> Buffer realloc(DataUsage usage, T bean) {
+        return realloc(usage, bean, BufferIO.ofBean(bean));
     }
 
-    int bytes();
+    default <T> Buffer realloc(DataUsage usage, TypeReferenceBean<T> typeReferenceBean) {
+        return realloc(usage, typeReferenceBean.getBean(), BufferIO.ofType(typeReferenceBean));
+    }
+    //endregion
 
-    static Buffer of(Type type, DataType dataType) {
-        return Meta.create(type, dataType);
+    //region Data storage
+    @Support(since = Version.GL44)
+    Buffer storage(DoubleBuffer data, StorageBits flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(FloatBuffer data, StorageBits flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(IntBuffer data, StorageBits flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(ShortBuffer data, StorageBits flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(ByteBuffer data, StorageBits flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(double[] data, StorageBits flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(float[] data, StorageBits flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(int[] data, StorageBits flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(short[] data, StorageBits flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(DoubleBuffer data, BitSet<StorageBits> flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(FloatBuffer data, BitSet<StorageBits> flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(IntBuffer data, BitSet<StorageBits> flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(ShortBuffer data, BitSet<StorageBits> flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(ByteBuffer data, BitSet<StorageBits> flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(double[] data, BitSet<StorageBits> flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(float[] data, BitSet<StorageBits> flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(int[] data, BitSet<StorageBits> flags);
+
+    @Support(since = Version.GL44)
+    Buffer storage(short[] data, BitSet<StorageBits> flags);
+    //endregion
+
+    //region Set sub data
+    Buffer setSubData(long offset, DoubleBuffer data);
+
+    Buffer setSubData(long offset, FloatBuffer data);
+
+    Buffer setSubData(long offset, IntBuffer data);
+
+    Buffer setSubData(long offset, ShortBuffer data);
+
+    Buffer setSubData(long offset, ByteBuffer data);
+
+    Buffer setSubData(long offset, double[] data);
+
+    Buffer setSubData(long offset, float[] data);
+
+    Buffer setSubData(long offset, int[] data);
+
+    Buffer setSubData(long offset, short[] data);
+
+    <T> Buffer setSubData(long offset, T bean, BufferIO<T> bufferIO);
+    //endregion
+
+    //region Clear data
+    @Support(since = Version.GL40)
+    Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type);
+
+    @Support(since = Version.GL40)
+    Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, ByteBuffer data);
+
+    @Support(since = Version.GL40)
+    Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, short[] data);
+
+    @Support(since = Version.GL40)
+    Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, ShortBuffer data);
+
+    @Support(since = Version.GL40)
+    Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, int[] data);
+
+    @Support(since = Version.GL40)
+    Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, IntBuffer data);
+
+    @Support(since = Version.GL40)
+    Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, float[] data);
+
+    @Support(since = Version.GL40)
+    Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, FloatBuffer data);
+    //endregion
+
+    //region Clear sub data
+    @Support(since = Version.GL40)
+    Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type);
+
+    @Support(since = Version.GL40)
+    Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, ByteBuffer data);
+
+    @Support(since = Version.GL40)
+    Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, short[] data);
+
+    @Support(since = Version.GL40)
+    Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, ShortBuffer data);
+
+    @Support(since = Version.GL40)
+    Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, int[] data);
+
+    @Support(since = Version.GL40)
+    Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, IntBuffer data);
+
+    @Support(since = Version.GL40)
+    Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, float[] data);
+
+    @Support(since = Version.GL40)
+    Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, FloatBuffer data);
+    //endregion
+
+    //region Data mapping
+    @Support(since = Version.GL30)
+    ByteBuffer mapRange(long offset, long size, MapAccessBits access);
+
+    ByteBuffer mapRange(long offset, long size, BitSet<MapAccessBits> access);
+
+    @Support(since = Version.GL30)
+    Buffer flushMappedRange(long offset, long size);
+
+    ByteBuffer map(MapAccessBits access);
+
+    ByteBuffer map(BitSet<MapAccessBits> access);
+
+    boolean unmap();
+    //endregion
+
+    @Support(since = Version.GL40)
+    Buffer invalidateSubData(long offset, long size);
+
+    @Support(since = Version.GL40)
+    Buffer invalidateData();
+
+    //region Get buffer data
+    Buffer getSubData(long offset, short[] data);
+
+    Buffer getSubData(long offset, ShortBuffer data);
+
+    Buffer getSubData(long offset, int[] data);
+
+    Buffer getSubData(long offset, IntBuffer data);
+
+    Buffer getSubData(long offset, float[] data);
+
+    Buffer getSubData(long offset, FloatBuffer data);
+
+    Buffer getSubData(long offset, long[] data);
+
+    Buffer getSubData(long offset, LongBuffer data);
+
+    Buffer getSubData(long offset, double[] data);
+
+    Buffer getSubData(long offset, DoubleBuffer data);
+
+    Buffer getSubData(long offset, ByteBuffer data);
+
+    <T> T getSubData(long offset, T bean, BufferIO<T> bufferIO);
+
+    default <T> T getSubData(long offset, T bean) {
+        return getSubData(offset, bean, BufferIO.ofBean(bean));
     }
 
-    static CloseableArray<Buffer> of(int n, Type type, DataType dataType) {
-        return Meta.createArray(n, type, dataType);
+    default <T> T getSubData(long offset, TypeReferenceBean<T> typeReferenceBean) {
+        return getSubData(offset, typeReferenceBean.getBean(), BufferIO.ofType(typeReferenceBean));
+    }
+    //endregion
+
+    Buffer copySubData(long readOffset, Buffer dstBuffer, long writeOffset, long size);
+
+    long size();
+
+    BindingPoint bindAt(int bindingPoint, long offset, long size);
+
+    BindingPoint bindAt(int bindingPoint);
+
+    <T> Mapping<T> createMapping(T bean, long offset);
+
+    <T> Mapping<T> createMapping(TypeReferenceBean<T> typeReferenceBean, long offset);
+
+    static Buffer of(DataType dataType) {
+        return MetaHolder.Buffer.create(dataType);
     }
 
-    static Buffer ofArray(DataType dataType) {
-        return of(Type.Array, dataType);
+    static BufferArray of(int n, DataType dataType) {
+        return (BufferArray) MetaHolder.Buffer.createArray(n, dataType);
     }
 
-    static CloseableArray<Buffer> ofArray(int n, DataType dataType) {
-        return of(n, Type.Array, dataType);
+    interface BindingPoint extends IntEnum {
+        Target target();
+
+        Buffer buffer();
+
+        long offset();
+
+        long size();
+
+        <T, B extends ProgramResource.BufferBinding<B> & ProgramResource.BufferDataSize<B>>
+        Mapping<T> createMapping(T bean, B bufferBinding);
     }
 
-    static Buffer ofElementArray(DataType dataType) {
-        return of(Type.ElementArray, dataType);
-    }
+    interface Mapping<T> extends Closeable {
+        T getBean();
 
-    static CloseableArray<Buffer> ofElementArray(int n, DataType dataType) {
-        return of(n, Type.ElementArray, dataType);
+        int size();
+
+        Buffer.BindingPoint getBindingPoint();
+
+        void flush();
+
+        <F> void flush(SerializableFunction<T, F> fieldGetter);
+
+        void load();
+
+        <F> void load(SerializableFunction<T, F> fieldGetter);
+
+        ByteBuffer storage();
     }
 }

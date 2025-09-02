@@ -4,6 +4,7 @@ import com.vanix.easygl.commons.value.FloatValue;
 import com.vanix.easygl.commons.value.Value;
 import com.vanix.easygl.core.Direction;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 
 public class Camera {
@@ -11,7 +12,7 @@ public class Camera {
     private final Vector3f pos;
     private final Vector3f up;
     private final Vector3f front;
-    private Matrix4f view;
+    private final Matrix4f view = new Matrix4f();
     private final FloatValue fov = Value.limited(45.f, 1.0f, 45.0f);
 
     public Camera(float speed, Vector3f pos, Vector3f up, Vector3f front) {
@@ -24,14 +25,13 @@ public class Camera {
 
     public Camera() {
         this(2.5f,
-                new Vector3f(0.0f, 0.0f, 3.0f),
+                new Vector3f(3f, 2f, 5.0f),
                 new Vector3f(0.0f, 1.0f, 0.0f),
                 new Vector3f(0.0f, 0.0f, -1.0f));
     }
 
     private void updateView() {
-        view = new Matrix4f().lookAt(this.pos, this.pos.clone().add(front), this.up);
-        //System.out.println(String.format("pos=%s, front=%s, up=%s, view=%s", pos, front, up, view));
+        new Matrix4f().lookAt(this.pos, this.pos.add(front, new Vector3f()), this.up, view);
     }
 
     public Camera update(float pitch, float yaw) {
@@ -47,22 +47,22 @@ public class Camera {
         float offset = speed.get() * deltaTime;
         switch (dir) {
             case Forward:
-                this.pos.add(front.clone().mul(offset));
+                this.pos.add(front.mul(offset, new Vector3f()));
                 break;
             case Backward:
-                this.pos.sub(front.clone().mul(offset));
+                this.pos.sub(front.mul(offset, new Vector3f()));
                 break;
             case Left:
-                this.pos.sub(front.clone().cross(up).normalize().mul(offset));
+                this.pos.sub(front.cross(up, new Vector3f()).normalize().mul(offset));
                 break;
             case Right:
-                this.pos.add(front.clone().cross(up).normalize().mul(offset));
+                this.pos.add(front.cross(up, new Vector3f()).normalize().mul(offset));
                 break;
             case Up:
-                this.pos.add(up.clone().mul(offset));
+                this.pos.add(up.mul(offset, new Vector3f()));
                 break;
             case Down:
-                this.pos.sub(up.clone().mul(offset));
+                this.pos.sub(up.mul(offset, new Vector3f()));
                 break;
             default:
                 break;
@@ -87,7 +87,7 @@ public class Camera {
         return pos;
     }
 
-    public Matrix4f view() {
+    public Matrix4fc view() {
         return view;
     }
 

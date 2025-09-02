@@ -2,8 +2,8 @@ package com.vanix.easygl.core.meta;
 
 import com.vanix.easygl.commons.util.IntBiConsumer;
 import com.vanix.easygl.core.BindTarget;
-import com.vanix.easygl.core.Bindable;
 import com.vanix.easygl.core.BindingState;
+import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.Handle;
 
 import java.util.function.BiFunction;
@@ -33,7 +33,19 @@ public class IntBindableMeta<E extends BindTarget<E, T>, T extends Handle> exten
                            BiFunction<Integer, Object[], T> init,
                            Consumer<int[]> initArray,
                            Consumer<int[]> closeArray) {
-        super(factory, close, init, initArray, closeArray);
+        this(factory, bind, unbind, unbindValue, close, init, null, null, HandleArray::new);
+    }
+
+    public IntBindableMeta(Function<Object[], T> factory,
+                           IntBiConsumer bind,
+                           IntBiConsumer unbind,
+                           int unbindValue,
+                           IntConsumer close,
+                           BiFunction<Integer, Object[], T> init,
+                           Consumer<int[]> initArray,
+                           Consumer<int[]> closeArray,
+                           ArrayFactory<T> arrayFactory) {
+        super(factory, close, init, initArray, closeArray, arrayFactory);
         this.bind = bind;
         this.unbind = unbind;
         this.unbindValue = unbindValue;

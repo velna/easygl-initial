@@ -1,21 +1,19 @@
 package com.vanix.easygl.opengl;
 
-import com.vanix.easygl.core.AbstractBindable;
-import com.vanix.easygl.core.graphics.CompareFunc;
-import com.vanix.easygl.core.graphics.PixelFormat;
-import com.vanix.easygl.core.graphics.Texture;
+import com.vanix.easygl.core.AbstractMultiTargetBindable;
+import com.vanix.easygl.core.graphics.*;
 import org.lwjgl.system.MemoryUtil;
 
 import java.util.function.IntConsumer;
 
-public abstract class AbstractTexture<T extends Texture<T>> extends AbstractBindable<Texture.Type<T>, T> implements Texture<T> {
+public abstract class AbstractTexture<T extends Texture<T>> extends AbstractMultiTargetBindable<Texture.Target<T>, T> implements Texture<T> {
 
-    protected AbstractTexture(int handle, Type<T> type) {
-        super(handle, type, (IntConsumer) GLX::glDeleteTextures);
+    protected AbstractTexture(int handle) {
+        super(handle, (IntConsumer) GLX::glDeleteTextures);
     }
 
-    public AbstractTexture(Type<T> type) {
-        this(GLX.glGenTextures(), type);
+    public AbstractTexture() {
+        this(GLX.glGenTextures());
     }
 
     @Override
@@ -43,7 +41,7 @@ public abstract class AbstractTexture<T extends Texture<T>> extends AbstractBind
     }
 
     @Override
-    public T compareFunc(CompareFunc func) {
+    public T compareFunc(CompareFunction func) {
         assertBinding();
         GLX.glTexParameteri(target().value(), GLX.GL_TEXTURE_COMPARE_FUNC, func.value());
         GLX.checkError();
@@ -170,4 +168,31 @@ public abstract class AbstractTexture<T extends Texture<T>> extends AbstractBind
         return self();
     }
 
+    @Override
+    public T borderColor(float red, float green, float blue, float alpha) {
+        assertBinding();
+        GLX.glTexParameterfv(target().value(), GLX.GL_TEXTURE_BORDER_COLOR, new float[]{red, green, blue, alpha});
+        GLX.checkError();
+        return self();
+    }
+
+    @Override
+    public T copyImageSubData(int srcMipMapLevel, int srcX, int srcY, int srcZ, int width, int height, int depth,
+                              RenderBuffer dst, int dstX, int dstY, int dstZ) {
+        GLX.glCopyImageSubData(intHandle(), target.value(), srcMipMapLevel, srcX, srcY, srcZ,
+                dst.intHandle(), dst.target().value(), 0, dstX, dstY, dstZ,
+                width, height, depth);
+        GLX.checkError();
+        return self();
+    }
+
+    @Override
+    public T copyImageSubData(int srcMipMapLevel, int srcX, int srcY, int srcZ, int width, int height, int depth,
+                              Texture<?> dst, int dstMipmapLevel, int dstX, int dstY, int dstZ) {
+        GLX.glCopyImageSubData(intHandle(), target.value(), srcMipMapLevel, srcX, srcY, srcZ,
+                dst.intHandle(), dst.target().value(), dstMipmapLevel, dstX, dstY, dstZ,
+                width, height, depth);
+        GLX.checkError();
+        return self();
+    }
 }

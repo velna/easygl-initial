@@ -1,6 +1,5 @@
 package com.vanix.easygl.opengl;
 
-import com.vanix.easygl.core.graphics.Texture;
 import com.vanix.easygl.core.graphics.TextureCube;
 import com.vanix.easygl.core.media.Image;
 
@@ -11,10 +10,11 @@ public class GlTextureCube extends AbstractTexture<TextureCube> implements Textu
     }
 
     protected GlTextureCube(int handle) {
-        super(handle, Texture.Type.CubeMap);
+        super(handle);
+        target = Target.CubeMap;
     }
 
-    public TextureCube load(Image[] images) {
+    public TextureCube load(Image... images) {
         if (null == images || images.length != 6) {
             throw new IllegalArgumentException("images must be size of 6.");
         }

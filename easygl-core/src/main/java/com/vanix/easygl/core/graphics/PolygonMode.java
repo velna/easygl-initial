@@ -1,8 +1,9 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public enum PolygonMode {
+public enum PolygonMode implements IntEnum {
     Point("POINT"),
     Line("LINE"),
     Fill("FILL");
@@ -12,6 +13,7 @@ public enum PolygonMode {
         this.value = MetaSystem.Graphics.queryInt(id);
     }
 
+    @Override
     public int value() {
         return value;
     }

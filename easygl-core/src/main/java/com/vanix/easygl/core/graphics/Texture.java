@@ -1,15 +1,14 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.commons.Identified;
-import com.vanix.easygl.core.BindTarget;
-import com.vanix.easygl.core.Bindable;
-import com.vanix.easygl.core.BindingState;
-import com.vanix.easygl.core.Handle;
+import com.vanix.easygl.commons.Color;
+import com.vanix.easygl.core.*;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
+import lombok.ToString;
+import org.joml.Vector3i;
+import org.joml.primitives.AABBi;
 
-public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>, T>, Handle {
-    BindableMeta<Texture.Unit, Texture.Unit> UnitMeta = MetaSystem.Graphics.of(Texture.Unit.class);
+public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Texture.Target<T>, T>, Handle {
 
     enum Unit implements Bindable<Unit, Unit>, BindTarget<Unit, Unit> {
         // @formatter:off
@@ -18,7 +17,7 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
 		U16, U17, U18, U19, U20, U21, U22, U23,
 		U24, U25, U26, U27, U28, U29, U30, U31;
 	    // @formatter:on
-        private final BindingState<Unit, Unit> state = UnitMeta.newBindingState("TextureUnit");
+        private final BindingState<Unit, Unit> state = MetaHolder.TextureUnit.newBindingState("TextureUnit");
 
         private final int value = (int) state.unbindValue() + ordinal();
 
@@ -43,75 +42,39 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
         }
 
         @Override
-        public Unit bind() {
-            return bind(this);
-        }
-
-        @Override
-        public Unit unbind() {
-            return unbind(this);
-        }
-
-        @Override
-        public void assertBinding() throws IllegalStateException {
-            state.assertBinding(this.ordinal());
-        }
-
-        @Override
         public void close() {
 
         }
     }
 
-    class Type<T extends Texture<T>> implements BindTarget<Type<T>, T>, Identified<String> {
+    @ToString
+    class Target<T extends Texture<T>> implements BindTarget<Target<T>, T> {
         //        public static final Type<?> T1D = new Type<>("TEXTURE_1D", GLC.GL_TEXTURE_1D);
-        public static final Type<Texture2D> T2D = new Type<>("TEXTURE_2D", MetaSystem.Graphics.queryInt("TEXTURE_2D"), Texture2D.Meta);
+        public static final Target<Texture2D> T2D = new Target<>("TEXTURE_2D", MetaHolder.Texture2D);
         //        public static final Type<?> T3D = new Type<>("TEXTURE_3D", GLC.GL_TEXTURE_3D);
 //        public static final Type<?> T1DArray = new Type<>("TEXTURE_1D_ARRAY", GLC.GL_TEXTURE_1D_ARRAY);
 //        public static final Type<?> T2DArray = new Type<>("TEXTURE_2D_ARRAY", GLC.GL_TEXTURE_2D_ARRAY);
 //        public static final Type<?> Rectangle = new Type<>("TEXTURE_RECTANGLE", GLC.GL_TEXTURE_RECTANGLE);
-        public static final Type<TextureCube> CubeMap = new Type<>("TEXTURE_CUBE_MAP", MetaSystem.Graphics.queryInt("TEXTURE_CUBE_MAP"), TextureCube.Meta);
-//        public static final Type<?> T2DMultisample = new Type<>("TEXTURE_2D_MULTISAMPLE", GLC.GL_TEXTURE_2D_MULTISAMPLE);
+        public static final Target<TextureCube> CubeMap = new Target<>("TEXTURE_CUBE_MAP", MetaHolder.TextureCube);
+        public static final Target<TextureMultiSample> T2DMultiSample = new Target<>("TEXTURE_2D_MULTISAMPLE", MetaHolder.TextureMultiSample);
 //        public static final Type<?> T2DMultisampleArray = new Type<>("TEXTURE_2D_MULTISAMPLE_ARRAY", GLC.GL_TEXTURE_2D_MULTISAMPLE_ARRAY);
 
         private final int value;
-        private final String id;
-        private final BindingState<Type<T>, T> state;
+        private final BindingState<Target<T>, T> state;
 
-        private Type(String id, int value, BindableMeta<Type<T>, T> meta) {
-            this.id = id;
-            this.value = value;
+        private Target(String id, BindableMeta<Target<T>, T> meta) {
+            this.value = MetaSystem.Graphics.queryInt(id);
             this.state = meta.newBindingState(id);
         }
 
         @Override
-        public String id() {
-            return id;
-        }
-
-        @Override
         public int value() {
             return value;
         }
 
         @Override
-        public BindingState<Type<T>, T> state() {
+        public BindingState<Target<T>, T> state() {
             return state;
-        }
-    }
-
-    enum MagFilter {
-        Nearest("NEAREST"),
-        Linear("LINEAR");
-
-        private final int value;
-
-        MagFilter(String id) {
-            this.value = MetaSystem.Graphics.queryInt(id);
-        }
-
-        public int value() {
-            return value;
         }
     }
 
@@ -151,28 +114,9 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
         }
     }
 
-    enum MinFilter {
-        Nearest("NEAREST"),
-        Linear("LINEAR"),
-        NearestMipmapNearest("NEAREST_MIPMAP_NEAREST"),
-        LinearMipmapNearest("LINEAR_MIPMAP_NEAREST"),
-        NearestMipmapLinear("NEAREST_MIPMAP_LINEAR"),
-        LinearMipmapLinear("LINEAR_MIPMAP_LINEAR");
-
-        private final int value;
-
-        MinFilter(String id) {
-            this.value = MetaSystem.Graphics.queryInt(id);
-        }
-
-        public int value() {
-            return value;
-        }
-    }
-
-    default T bind(Texture.Unit unit) {
+    default T bind(Target<T> target, Texture.Unit unit) {
         unit.bind();
-        return this.bind();
+        return this.bind(target);
     }
 
     T allocate(int width, int height, PixelFormat format);
@@ -181,7 +125,7 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
 
     T maxLevel(int value);
 
-    T compareFunc(CompareFunc func);
+    T compareFunc(CompareFunction func);
 
     T compareModeRefToTexture();
 
@@ -197,12 +141,16 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
 
     T maxLoad(float value);
 
+    @Support(since = Version.GL33)
     T swizzleR(Swizzle swizzle);
 
+    @Support(since = Version.GL33)
     T swizzleG(Swizzle swizzle);
 
+    @Support(since = Version.GL33)
     T swizzleB(Swizzle swizzle);
 
+    @Support(since = Version.GL33)
     T swizzleA(Swizzle swizzle);
 
     default T swizzle(Swizzle r, Swizzle g, Swizzle b, Swizzle a) {
@@ -217,11 +165,55 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.Type<T>,
 
     T generateMipmap();
 
+    T borderColor(float red, float green, float blue, float alpha);
+
+    default T borderColor(Color color) {
+        return borderColor(color.red(), color.green(), color.blue(), color.alpha());
+    }
+
+    //region CopyImageSubData
+    @Support(since = Version.GL43)
+    T copyImageSubData(int srcMipMapLevel, int srcX, int srcY, int srcZ, int width, int height, int depth,
+                       RenderBuffer dst, int dstX, int dstY, int dstZ);
+
+    @Support(since = Version.GL43)
+    T copyImageSubData(int srcMipMapLevel, int srcX, int srcY, int srcZ, int width, int height, int depth,
+                       Texture<?> dst, int dstMipmapLevel, int dstX, int dstY, int dstZ);
+
+    @Support(since = Version.GL43)
+    default T copyImageSubData(int srcMipMapLevel, Vector3i srcXyz, Vector3i size, RenderBuffer dst, Vector3i dstXyz) {
+        return copyImageSubData(srcMipMapLevel, srcXyz.x, srcXyz.y, srcXyz.z, size.x, size.y, size.z,
+                dst, dstXyz.x, dstXyz.y, dstXyz.z);
+    }
+
+    @Support(since = Version.GL43)
+    default T copyImageSubData(int srcMipMapLevel, Vector3i srcXyz, Vector3i size, Texture<?> dst, int dstMipmapLevel, Vector3i dstXyz) {
+        return copyImageSubData(srcMipMapLevel, srcXyz.x, srcXyz.y, srcXyz.z, size.x, size.y, size.z,
+                dst, dstMipmapLevel, dstXyz.x, dstXyz.y, dstXyz.z);
+    }
+
+    @Support(since = Version.GL43)
+    default T copyImageSubData(int srcMipMapLevel, AABBi src, RenderBuffer dst, Vector3i dstXyz) {
+        return copyImageSubData(srcMipMapLevel, src.minX, src.minY, src.minZ, src.lengthX(), src.lengthY(), src.lengthZ(),
+                dst, dstXyz.x, dstXyz.y, dstXyz.z);
+    }
+
+    @Support(since = Version.GL43)
+    default T copyImageSubData(int srcMipMapLevel, AABBi src, Texture<?> dst, int dstMipmapLevel, Vector3i dstXyz) {
+        return copyImageSubData(srcMipMapLevel, src.minX, src.minY, src.minZ, src.lengthX(), src.lengthY(), src.lengthZ(),
+                dst, dstMipmapLevel, dstXyz.x, dstXyz.y, dstXyz.z);
+    }
+    //endregion
+
     static Texture2D of2D() {
-        return Texture2D.Meta.create();
+        return MetaHolder.Texture2D.create();
     }
 
     static TextureCube ofCube() {
-        return TextureCube.Meta.create();
+        return MetaHolder.TextureCube.create();
+    }
+
+    static TextureMultiSample ofMultiSample() {
+        return MetaHolder.TextureMultiSample.create();
     }
 }

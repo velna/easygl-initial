@@ -20,6 +20,7 @@ import static org.lwjgl.glfw.GLFW.*;
 @Slf4j
 @SystemName("Window")
 public class GlfwMetaService extends AbstractMetaService {
+    private final int platform;
     static final BindableMeta<BindTarget.Default<Window>, Window> WindowMeta = new LongBindableMeta<>(
             args -> new GlWindow((Integer) args[0], (Integer) args[1], (String) args[2]),
             (target, h) -> glfwMakeContextCurrent(h),
@@ -31,6 +32,7 @@ public class GlfwMetaService extends AbstractMetaService {
         if (!glfwInit()) {
             throw new GraphicsException("glfwInit error.");
         }
+        platform = glfwGetPlatform();
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
         glfwWindowHint(GLFW_CONTEXT_CREATION_API, GLFW_NATIVE_CONTEXT_API);
@@ -39,7 +41,7 @@ public class GlfwMetaService extends AbstractMetaService {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
         glfwSetErrorCallback((error, description) ->
-                log.error("GLFW error({}): {}", error, GLFWErrorCallback.getDescription(description)));
+                log.error("GLFW error({}): ", error, new GraphicsException(GLFWErrorCallback.getDescription(description))));
         GLFW.glfwSetMonitorCallback(GlMonitor::fireMonitorOnConnection);
         register(Window.class, WindowMeta);
         register(WindowHint.IntHint.class,
@@ -65,7 +67,8 @@ public class GlfwMetaService extends AbstractMetaService {
         if (id.startsWith("KEY_")) {
             int keyCode = queryInt(id);
             int scancode = GLFW.glfwGetKeyScancode(keyCode);
-            String keyName = GLFW.glfwGetKeyName(keyCode, scancode);
+            // glfwGetKeyName crashes in wayland environment
+            String keyName = platform == GLFW_PLATFORM_WAYLAND ? "" : GLFW.glfwGetKeyName(keyCode, scancode);
             return new Object[]{keyCode, scancode, keyName};
         }
         return new Object[0];

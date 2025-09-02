@@ -1,17 +1,28 @@
 package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.core.graphics.*;
+import org.joml.Vector2f;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GLCapabilities;
 
-public class GlGraphics implements Graphics, GlFrameBufferOps<Graphics> {
+import java.nio.FloatBuffer;
 
-    private final DepthTest depthTest = new GlDepthTest();
-    private final CullFace cullFace = new GlCullFace();
-
-    private final Blend blend = new GlBlend();
+public class GlGraphics implements Graphics {
+    static final GLCapabilities CAPABILITIES = GL.createCapabilities();
+    private final DepthTest depthTest = new GlDepthTest(this);
+    private final Blending blending = new GlBlending(this);
+    private final StencilTest stencilTest = new GlStencilTest(this);
+    private final ScissorTest scissorTest = new GlScissorTest(this);
+    private final LogicalOperation logicalOperation = new GlLogicalOperation(this);
+    private final DefaultFrameBuffer defaultFrameBuffer = new GlDefaultFrameBuffer();
+    private final Debug debug;
 
     public GlGraphics() {
-        GL.createCapabilities();
+        if (CAPABILITIES.OpenGL43) {
+            debug = new GlDebug(this);
+        } else {
+            debug = null;
+        }
     }
 
     @Override
@@ -21,33 +32,243 @@ public class GlGraphics implements Graphics, GlFrameBufferOps<Graphics> {
     }
 
     @Override
-    public Graphics polygonMode(PolygonFace face, PolygonMode mode) {
-        GLX.glPolygonMode(face.value(), mode.value());
-        return this;
-    }
-
-    @Override
     public DepthTest depthTest() {
         return depthTest;
     }
 
     @Override
-    public CullFace cullFace() {
-        return cullFace;
+    public Blending blending() {
+        return blending;
     }
 
     @Override
-    public Blend blend() {
-        return blend;
+    public StencilTest stencilTest() {
+        return stencilTest;
     }
 
     @Override
-    public FrameBuffer defaultFrameBuffer() {
-        return GlFrameBuffer.DefaultFrameBuffer;
+    public ScissorTest scissorTest() {
+        return scissorTest;
+    }
+
+    @Override
+    public LogicalOperation logicalOperation() {
+        return logicalOperation;
+    }
+
+    @Override
+    public DefaultFrameBuffer defaultFrameBuffer() {
+        return defaultFrameBuffer;
+    }
+
+    @Override
+    public Debug debug() {
+        return debug;
+    }
+
+    @Override
+    public Graphics flush() {
+        GLX.glFlush();
+        return this;
+    }
+
+    @Override
+    public Graphics releaseShaderCompiler() {
+        GLX.glReleaseShaderCompiler();
+        return this;
+    }
+
+    @Override
+    public Vector2f getMultiSample(int index) {
+        float[] data = new float[2];
+        GLX.glGetMultisamplefv(GLX.GL_SAMPLE_POSITION, index, data);
+        GLX.checkError();
+        return new Vector2f(data);
+    }
+
+    @Override
+    public Graphics minSampleShading(float value) {
+        GLX.glMinSampleShading(value);
+        return this;
+    }
+
+    @Override
+    public Graphics setPointSize(float size) {
+        GLX.glPointSize(size);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Graphics setPointFadeThresholdSize(float size) {
+        GLX.glPointParameterf(GLX.GL_POINT_FADE_THRESHOLD_SIZE, size);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Graphics setPointSpriteCoordOrigin(SpriteCoordOrigin spriteCoordOrigin) {
+        GLX.glPointParameteri(GLX.GL_POINT_SPRITE_COORD_ORIGIN, spriteCoordOrigin.value());
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Graphics setLineWidth(float width) {
+        GLX.glLineWidth(width);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Graphics setFrontFaceDirection(FrontFaceDirection direction) {
+        GLX.glFrontFace(direction.value());
+        return this;
+    }
+
+    @Override
+    public Graphics setPolygonOffset(float factor, float units) {
+        GLX.glPolygonOffset(factor, units);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Graphics setPolygonMode(Face face, PolygonMode mode) {
+        GLX.glPolygonMode(face.value(), mode.value());
+        return this;
+    }
+
+    @Override
+    public float getPointSize() {
+        return GLX.glGetFloat(GLX.GL_POINT_SIZE);
+    }
+
+    @Override
+    public float getPointFadeThresholdSize() {
+        return GLX.glGetFloat(GLX.GL_POINT_FADE_THRESHOLD_SIZE);
+    }
+
+    @Override
+    public SpriteCoordOrigin getPointSpriteCoordOrigin() {
+        return switch (GLX.glGetInteger(GLX.GL_POINT_SPRITE_COORD_ORIGIN)) {
+            case GLX.GL_LOWER_LEFT -> SpriteCoordOrigin.LowerLeft;
+            case GLX.GL_UPPER_LEFT -> SpriteCoordOrigin.UpperLeft;
+            default -> {
+                GLX.checkError();
+                yield null;
+            }
+        };
+    }
+
+    @Override
+    public float getLineWidth() {
+        return GLX.glGetFloat(GLX.GL_LINE_WIDTH);
+    }
+
+    @Override
+    public FrontFaceDirection getFrontFaceDirection() {
+        return switch (GLX.glGetInteger(GLX.GL_FRONT_FACE)) {
+            case GLX.GL_CW -> FrontFaceDirection.Clockwise;
+            case GLX.GL_CCW -> FrontFaceDirection.Counterclockwise;
+            default -> {
+                GLX.checkError();
+                yield null;
+            }
+        };
+    }
+
+    @Override
+    public Graphics setCullFaceMode(CullFaceMode mode) {
+        GLX.glCullFace(mode.value());
+        return this;
+    }
+
+    @Override
+    public CullFaceMode getCullFaceMode() {
+        return switch (GLX.glGetInteger(GLX.GL_CULL_FACE_MODE)) {
+            case GLX.GL_FRONT -> CullFaceMode.Front;
+            case GLX.GL_BACK -> CullFaceMode.Back;
+            case GLX.GL_FRONT_AND_BACK -> CullFaceMode.FrontAndBack;
+            default -> {
+                GLX.checkError();
+                yield null;
+            }
+        };
+    }
+
+    @Override
+    public PolygonMode[] getPolygonMode() {
+        int[] values = new int[2];
+        GLX.glGetIntegerv(GLX.GL_POLYGON_MODE, values);
+        GLX.checkError();
+        return new PolygonMode[]{Cache.PolygonMode.valueOf(values[0]), Cache.PolygonMode.valueOf(values[1])};
+    }
+
+    @Override
+    public float getPolygonOffsetFactor() {
+        return GLX.glGetFloat(GLX.GL_POLYGON_OFFSET_FACTOR);
+    }
+
+    @Override
+    public float getPolygonOffsetUnits() {
+        return GLX.glGetFloat(GLX.GL_POLYGON_OFFSET_UNITS);
+    }
+
+    @Override
+    public Graphics enable(Capability feature) {
+        GLX.glEnable(feature.value());
+        return this;
+    }
+
+    @Override
+    public Graphics disable(Capability feature) {
+        GLX.glDisable(feature.value());
+        return this;
+    }
+
+    @Override
+    public boolean isEnable(Capability feature) {
+        return GLX.glIsEnabled(feature.value());
+    }
+
+    @Override
+    public Graphics then() {
+        return this;
     }
 
     @Override
     public void close() {
 
+    }
+
+    @Override
+    public Graphics setPathVertices(int count) {
+        GLX.glPatchParameteri(GLX.GL_PATCH_VERTICES, count);
+        return this;
+    }
+
+    @Override
+    public Graphics setPathDefaultOuterLevel(float[] values) {
+        GLX.glPatchParameterfv(GLX.GL_PATCH_DEFAULT_OUTER_LEVEL, values);
+        return this;
+    }
+
+    @Override
+    public Graphics setPathDefaultOuterLevel(FloatBuffer value) {
+        GLX.glPatchParameterfv(GLX.GL_PATCH_DEFAULT_OUTER_LEVEL, value);
+        return this;
+    }
+
+    @Override
+    public Graphics setPathDefaultInnerLevel(float[] values) {
+        GLX.glPatchParameterfv(GLX.GL_PATCH_DEFAULT_INNER_LEVEL, values);
+        return this;
+    }
+
+    @Override
+    public Graphics setPathDefaultInnerLevel(FloatBuffer value) {
+        GLX.glPatchParameterfv(GLX.GL_PATCH_DEFAULT_INNER_LEVEL, value);
+        return this;
     }
 }

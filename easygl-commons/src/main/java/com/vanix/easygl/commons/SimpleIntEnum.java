@@ -1,8 +1,13 @@
 package com.vanix.easygl.commons;
 
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@EqualsAndHashCode
+@ToString
 public class SimpleIntEnum implements IntEnum {
 
-    private final int value;
+    protected final int value;
 
     public SimpleIntEnum(int value) {
         this.value = value;

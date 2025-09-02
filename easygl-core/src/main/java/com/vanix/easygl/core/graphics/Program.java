@@ -2,19 +2,20 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
-import com.vanix.easygl.core.meta.BindableMeta;
-import com.vanix.easygl.core.meta.MetaSystem;
+import com.vanix.easygl.core.Support;
+import com.vanix.easygl.core.graphics.program.UniformBlock;
 import org.joml.*;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.Set;
 
 public interface Program extends Bindable<BindTarget.Default<Program>, Program> {
 
-    BindableMeta<BindTarget.Default<Program>, Program> Meta = MetaSystem.Graphics.of(Program.class);
-    BindTarget.Default<Program> Target = new BindTarget.Default<>("Program", Meta);
+    BindTarget.Default<Program> Target = new BindTarget.Default<>("Program", MetaHolder.Program);
 
     Program attach(Shader shader);
 
@@ -50,10 +51,28 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     Program link();
 
-    @Override
-    Program bind();
+    @Support(since = Version.GL41)
+    Program setBinaryRetrievable(boolean retrievable);
 
-    Program set(String key, int value);
+    @Support(since = Version.GL41)
+    Binary getBinary();
+
+    @Support(since = Version.GL41)
+    Program loadBinary(int format, ByteBuffer data);
+
+    @Support(since = Version.GL41)
+    default Program loadBinary(Binary binary) {
+        return loadBinary(binary.format, binary.data);
+    }
+
+    @Support(since = Version.GL41)
+    Program setSeparable(boolean separable);
+
+    default Program setBoolean(String key, boolean value) {
+        return setInt(key, value ? 1 : 0);
+    }
+
+    Program setInt(String key, int value);
 
     Program setVec1(String key, int[] value);
 
@@ -101,7 +120,7 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     Program setUnsignedVec4(String key, IntBuffer buffer);
 
-    Program set(String key, float value);
+    Program setFloat(String key, float value);
 
     Program setVec2(String key, float v1, float v2);
 
@@ -161,42 +180,59 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     Program setMatrix4x3(String key, FloatBuffer buffer);
 
-    default Program set(String key, Vector2f value) {
+    default Program setVec2(String key, Vector2f value) {
         return setVec2(key, value.x, value.y);
     }
 
-    default Program set(String key, Vector3f value) {
+    default Program setVec3(String key, Vector3f value) {
         return setVec3(key, value.x, value.y, value.z);
     }
 
-    default Program set(String key, Vector4f value) {
+    default Program setVec4(String key, Vector4f value) {
         return setVec4(key, value.x, value.y, value.z, value.w);
     }
 
-    default Program set(String key, Matrix2f value) {
+    default Program setMatrix2(String key, Matrix2f value) {
         return setMatrix2(key, value.get(new float[4]));
     }
 
-    default Program set(String key, Matrix3f value) {
+    default Program setMatrix3(String key, Matrix3f value) {
         return setMatrix3(key, value.get(new float[9]));
     }
 
-    default Program set(String key, Matrix4f value) {
+    default Program setMatrix4(String key, Matrix4f value) {
         return setMatrix4(key, value.get(new float[16]));
     }
 
-    default Program set(String key, Matrix3x2f value) {
+    default Program setMatrix3x2(String key, Matrix3x2f value) {
         return setMatrix3x2(key, value.get(new float[6]));
     }
 
-    default Program set(String key, Matrix4x3f value) {
+    default Program setMatrix4x3(String key, Matrix4x3f value) {
         return setMatrix4x3(key, value.get(new float[12]));
     }
 
-    Program set(String key, Texture.Unit unit, Texture<?> texture);
+    Program setTexture(String key, Texture.Unit unit, Texture<?> texture);
+
+    boolean getAttribute(ProgramAttribute.Bool attribute);
+
+    int getAttribute(ProgramAttribute.Int attribute);
+
+    boolean containsUniform(String name);
+
+    Set<String> uniformNames();
+
+    @Support(since = Version.GL43)
+    ProgramInterfaces interfaces();
+
+    @Support(since = Version.GL31)
+    UniformBlock getUniformBlock(String name);
 
     static Program of() {
-        return Meta.create();
+        return MetaHolder.Program.create();
+    }
+
+    record Binary(int format, ByteBuffer data) {
     }
 
 }

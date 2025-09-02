@@ -2,23 +2,23 @@ package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
-import com.vanix.easygl.core.graphics.GraphicsException;
-import com.vanix.easygl.core.graphics.Program;
-import com.vanix.easygl.core.graphics.Shader;
-import com.vanix.easygl.core.graphics.Texture;
+import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.program.UniformBlock;
+import com.vanix.easygl.opengl.program.Gl31UniformBlock;
 import org.eclipse.collections.api.factory.primitive.ObjectIntMaps;
-import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
-import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Program> implements Program {
-    private final MutableIntObjectMap<Shader> shaders = new IntObjectHashMap<>();
     private final MutableObjectIntMap<String> uniforms = ObjectIntMaps.mutable.of();
+    private GlProgramInterfaces interfaces;
 
     protected GlProgram() {
         this(GLX.glCreateProgram());
@@ -30,22 +30,15 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
 
     @Override
     public Program attach(Shader shader) {
-        shaders.getIfAbsentPut(shader.intHandle(), () -> {
-            GLX.glAttachShader(intHandle(), shader.intHandle());
-            GLX.checkError();
-            return shader;
-        });
+        GLX.glAttachShader(intHandle(), shader.intHandle());
+        GLX.checkError();
         return self();
     }
 
     @Override
     public Program detach(Shader shader) {
-        if (shaders.remove(shader.intHandle()) != null) {
-            GLX.glDetachShader(intHandle(), shader.intHandle());
-            GLX.checkError();
-        } else {
-            throw new IllegalStateException("Shader never attached.");
-        }
+        GLX.glDetachShader(intHandle(), shader.intHandle());
+        GLX.checkError();
         return self();
     }
 
@@ -63,22 +56,61 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
+    public Program setBinaryRetrievable(boolean retrievable) {
+        assertBinding();
+        GLX.glProgramParameteri(intHandle(), GLX.GL_PROGRAM_BINARY_RETRIEVABLE_HINT, retrievable ? GLX.GL_TRUE : GLX.GL_FALSE);
+        return this;
+    }
+
+    @Override
+    public Binary getBinary() {
+        assertBinding();
+        int len = GLX.glGetProgrami(intHandle(), GLX.GL_PROGRAM_BINARY_LENGTH);
+        if (len <= 0) {
+            GLX.checkError();
+            return null;
+        }
+        ByteBuffer buffer = ByteBuffer.allocate(len);
+        int[] format = new int[1];
+        GLX.glGetProgramBinary(intHandle(), null, format, buffer);
+        GLX.checkError();
+        return new Binary(format[0], buffer);
+    }
+
+    @Override
+    public Program loadBinary(int format, ByteBuffer data) {
+        assertBinding();
+        GLX.glProgramBinary(intHandle(), format, data);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Program setSeparable(boolean separable) {
+        assertBinding();
+        GLX.glProgramParameteri(intHandle(), GLX.GL_PROGRAM_SEPARABLE, separable ? GLX.GL_TRUE : GLX.GL_FALSE);
+        return this;
+    }
+
+    @Override
     public void close() {
         super.close();
-        shaders.forEach(Shader::close);
-        shaders.clear();
     }
 
     private int uniform(String key) {
-        int ret = uniforms.getIfAbsentPutWithKey(key, k -> GLX.glGetUniformLocation(intHandle(), k));
+        int ret = uniforms.getIfAbsentPutWithKey(key, this::getUniformLocation);
         if (ret < 0) {
             throw new GraphicsException("Can not find uniform for name " + key);
         }
         return ret;
     }
 
+    private int getUniformLocation(String key) {
+        return GLX.glGetUniformLocation(intHandle(), key);
+    }
+
     @Override
-    public Program set(String key, int value) {
+    public Program setInt(String key, int value) {
         assertBinding();
         GLX.glUniform1i(uniform(key), value);
         GLX.checkError();
@@ -270,7 +302,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, float value) {
+    public Program setFloat(String key, float value) {
         assertBinding();
         GLX.glUniform1f(uniform(key), value);
         GLX.checkError();
@@ -510,9 +542,53 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program set(String key, Texture.Unit unit, Texture<?> texture) {
+    public Program setTexture(String key, Texture.Unit unit, Texture<?> texture) {
         unit.assertBinding();
         texture.assertBinding();
-        return set(key, unit.ordinal());
+        return setInt(key, unit.ordinal());
+    }
+
+    @Override
+    public GlProgramInterfaces interfaces() {
+        if (interfaces == null) {
+            interfaces = new GlProgramInterfaces(this);
+        }
+        return interfaces;
+    }
+
+    @Override
+    public boolean containsUniform(String name) {
+        return uniforms.getIfAbsentPutWithKey(name, this::getUniformLocation) >= 0;
+    }
+
+    @Override
+    public Set<String> uniformNames() {
+        int uniformCount = getAttribute(ProgramAttribute.ActiveUniforms);
+        if (uniforms.size() < uniformCount) {
+            for (int i = 0; i < uniformCount; i++) {
+                var name = GLX.glGetActiveUniformName(intHandle(), i);
+                uniforms.put(name, i);
+            }
+        }
+        return uniforms.keySet();
+    }
+
+    @Override
+    public UniformBlock getUniformBlock(String name) {
+        int index = GLX.glGetUniformBlockIndex(intHandle(), name);
+        if (index == GLX.GL_INVALID_INDEX) {
+            throw new NoSuchElementException("No uniform block of name find: " + name);
+        }
+        return new Gl31UniformBlock(this, index, name);
+    }
+
+    @Override
+    public boolean getAttribute(ProgramAttribute.Bool attribute) {
+        return GLX.glGetProgrami(intHandle(), attribute.value()) == GLX.GL_TRUE;
+    }
+
+    @Override
+    public int getAttribute(ProgramAttribute.Int attribute) {
+        return GLX.glGetProgrami(intHandle(), attribute.value());
     }
 }

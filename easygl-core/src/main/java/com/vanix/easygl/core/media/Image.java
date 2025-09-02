@@ -10,10 +10,6 @@ import java.nio.ByteBuffer;
 public interface Image extends Closeable {
     Meta<Image> Meta = MetaSystem.Media.of(Image.class);
 
-    static Image load(String resourceFile) {
-        return Meta.create(resourceFile);
-    }
-
     PixelFormat format();
 
     int width();
@@ -21,4 +17,20 @@ public interface Image extends Closeable {
     int height();
 
     ByteBuffer data();
+
+    static Image load(String resourceFile) {
+        return load(resourceFile, false, false);
+    }
+
+    static Image load(String resourceFile, boolean flipVertically) {
+        return load(resourceFile, flipVertically, false);
+    }
+
+    static Image load(String resourceFile, boolean flipVertically, boolean unPremultiply) {
+        return Meta.create(resourceFile, flipVertically, unPremultiply);
+    }
+
+    static Image empty(PixelFormat format, int width, int height) {
+        return new SimpleImage(format, width, height, null);
+    }
 }

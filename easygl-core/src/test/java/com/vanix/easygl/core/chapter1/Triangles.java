@@ -14,9 +14,9 @@ public class Triangles implements Renderer<ClientApp, RenderContext> {
 
     @Override
     public void init(ClientApp clientApp) throws GraphicsException {
-        vbo = Buffer.of(Buffer.Type.Array, DataType.Float)
-                .bind()
-                .realloc(Buffer.DataUsage.STATIC_DRAW, new float[]{
+        vbo = Buffer.of(DataType.Float)
+                .bind(Buffer.Target.Array)
+                .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                         // Triangle 1
                         -0.90f, -0.90f,
                         0.85f, -0.90f,
@@ -43,14 +43,14 @@ public class Triangles implements Renderer<ClientApp, RenderContext> {
                         """).compile())
                 .link()
                 .bind();
-        vao = VertexArray.of().bind().attributes(vbo, 2);
+        vao = VertexArray.of().bind().enableAttributes(2f).then();
     }
 
     @Override
     public void render(RenderContext context) throws GraphicsException {
-        context.graphics().defaultFrameBuffer().clearColor(DrawBufferIndex.Index0, new Vector4f(0.0f));
+        context.graphics().defaultFrameBuffer().clearColorBuffer(FrameInnerBuffer.DrawBuffer.of(0), new Vector4f(0.0f));
         program.bind();
-        vao.bind().drawArray(DrawMode.Triangles, vbo);
+        vao.bind().drawArray(DrawMode.Triangles, 0, vbo.count() / 2);
     }
 
 }

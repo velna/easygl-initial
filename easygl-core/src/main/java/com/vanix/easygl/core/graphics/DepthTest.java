@@ -1,39 +1,21 @@
 package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.Feature;
-import com.vanix.easygl.core.meta.MetaSystem;
+import com.vanix.easygl.core.Support;
 
-public interface DepthTest extends Feature<DepthTest> {
+public interface DepthTest extends Feature<DepthTest, Graphics> {
 
-    enum Function {
-        Never("NEVER"),
-        LT("LESS"),
-        EQ("EQUAL"),
-        LE("LEQUAL"),
-        GT("GREATER"),
-        NE("NOTEQUAL"),
-        GE("GEQUAL"),
-        ALWAYS("ALWAYS");
-        private final int value;
+    DepthTest setFunction(CompareFunction function);
 
-        Function(String id) {
-            this.value = MetaSystem.Graphics.queryInt(id);
-        }
+    DepthTest setRange(double near, double far);
 
-        public int value() {
-            return value;
-        }
-    }
+    @Support(since = Version.GL41)
+    DepthTest setRange(float near, float far);
 
-    DepthTest function(Function function);
+    @Support(since = Version.GL41)
+    float[] getRangeFloat();
 
-    DepthTest range(double near, double far);
+    double[] getRangeDouble();
 
-    DepthTest range(float near, float far);
-
-    float[] rangeFloat();
-
-    double[] rangeDouble();
-
-    int[] rangeIntMapped();
+    int[] getRangeIntMapped();
 }

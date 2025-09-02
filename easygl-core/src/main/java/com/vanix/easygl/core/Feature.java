@@ -1,6 +1,8 @@
 package com.vanix.easygl.core;
 
-public interface Feature<T extends Feature<T>> {
+import com.vanix.easygl.commons.Chained;
+
+public interface Feature<T extends Feature<T, C>, C> extends Chained<C> {
     boolean isEnabled();
 
     T enable();

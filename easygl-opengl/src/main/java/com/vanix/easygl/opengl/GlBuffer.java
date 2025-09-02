@@ -1,23 +1,46 @@
 package com.vanix.easygl.opengl;
 
-import com.vanix.easygl.core.AbstractBindable;
+import com.vanix.easygl.commons.BitSet;
+import com.vanix.easygl.commons.SimpleIntEnum;
+import com.vanix.easygl.commons.bufferio.BufferIO;
+import com.vanix.easygl.commons.bufferio.StructBufferIO;
+import com.vanix.easygl.commons.util.SerializableFunction;
+import com.vanix.easygl.commons.util.TypeReferenceBean;
+import com.vanix.easygl.core.AbstractMultiTargetBindable;
 import com.vanix.easygl.core.graphics.Buffer;
-import com.vanix.easygl.core.graphics.DataType;
+import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.program.UniformBlock;
+import lombok.EqualsAndHashCode;
+import org.eclipse.collections.api.factory.primitive.IntObjectMaps;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.lwjgl.system.MemoryUtil;
 
 import java.nio.*;
 import java.util.function.IntConsumer;
 
-public class GlBuffer extends AbstractBindable<Buffer.Type, Buffer> implements Buffer {
+public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer> implements Buffer {
+    private static final MutableIntObjectMap<Buffer> BUFFERS = IntObjectMaps.mutable.of();
     private final DataType dataType;
-    private int bytes;
+    private long sizeInBytes;
 
-    protected GlBuffer(int handle, Type type, DataType dataType) {
-        super(handle, type, (IntConsumer) GLX::glDeleteBuffers);
+    protected GlBuffer(int handle, DataType dataType) {
+        super(handle, (IntConsumer) GLX::glDeleteBuffers);
         this.dataType = dataType;
+        BUFFERS.put(handle, this);
     }
 
-    protected GlBuffer(Type type, DataType dataType) {
-        this(GLX.glGenBuffers(), type, dataType);
+    protected GlBuffer(DataType dataType) {
+        this(GLX.glGenBuffers(), dataType);
+    }
+
+    static Buffer get(int handle) {
+        return BUFFERS.get(handle);
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        BUFFERS.remove(intHandle());
     }
 
     @Override
@@ -31,9 +54,16 @@ public class GlBuffer extends AbstractBindable<Buffer.Type, Buffer> implements B
 
     private <T> Buffer realloc(ReallocFunction<T> reallocFn, DataUsage usage, T data, int dataBytes) {
         assertBinding();
-        reallocFn.accept(target().value(), data, usage.value());
+        reallocFn.accept(target.value(), data, usage.value());
         GLX.checkError();
-        this.bytes = dataBytes;
+        sizeInBytes = dataBytes;
+        return this;
+    }
+
+    @Override
+    public Buffer realloc(DataUsage usage, int size) {
+        GLX.glBufferData(target.value(), size, usage.value());
+        sizeInBytes = size;
         return this;
     }
 
@@ -82,122 +112,602 @@ public class GlBuffer extends AbstractBindable<Buffer.Type, Buffer> implements B
         return realloc(GLX::glBufferData, usage, data, DataType.bytesOf(data));
     }
 
+    @Override
+    public <T> Buffer realloc(DataUsage usage, T bean, BufferIO<T> bufferIO) {
+        var buffer = MemoryUtil.memAlloc(bufferIO.size());
+        bufferIO.write(bean, buffer);
+        realloc(GLX::glBufferData, usage, buffer.clear(), bufferIO.size());
+        MemoryUtil.memFree(buffer);
+        return this;
+    }
+
     private interface SubDataFunction<T> {
         void accept(int target, long offset, T data);
     }
 
-    private <T> Buffer set(SubDataFunction<T> subDataFunction, int offset, T data, int dataBytes) {
+    private <T> Buffer setSubData(SubDataFunction<T> subDataFunction, long offset, T data) {
         assertBinding();
         subDataFunction.accept(target().value(), offset, data);
         GLX.checkError();
-        this.bytes = offset + dataBytes;
         return this;
     }
 
     @Override
-    public Buffer set(int offset, DoubleBuffer data) {
-        return set(GLX::glBufferSubData, DataType.Double.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, DoubleBuffer data) {
+        return setSubData(GLX::glBufferSubData, offset, data);
     }
 
     @Override
-    public Buffer set(int offset, FloatBuffer data) {
-        return set(GLX::glBufferSubData, DataType.Float.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, FloatBuffer data) {
+        return setSubData(GLX::glBufferSubData, offset, data);
     }
 
     @Override
-    public Buffer set(int offset, IntBuffer data) {
-        return set(GLX::glBufferSubData, DataType.Int.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, IntBuffer data) {
+        return setSubData(GLX::glBufferSubData, offset, data);
     }
 
     @Override
-    public Buffer set(int offset, ShortBuffer data) {
-        return set(GLX::glBufferSubData, DataType.Short.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, ShortBuffer data) {
+        return setSubData(GLX::glBufferSubData, offset, data);
     }
 
     @Override
-    public Buffer set(int offset, ByteBuffer data) {
-        return set(GLX::glBufferSubData, DataType.Byte.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, ByteBuffer data) {
+        return setSubData(GLX::glBufferSubData, offset, data);
     }
 
     @Override
-    public Buffer set(int offset, double[] data) {
-        return set(GLX::glBufferSubData, DataType.Double.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, double[] data) {
+        return setSubData(GLX::glBufferSubData, offset, data);
     }
 
     @Override
-    public Buffer set(int offset, float[] data) {
-        return set(GLX::glBufferSubData, DataType.Float.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, float[] data) {
+        return setSubData(GLX::glBufferSubData, offset, data);
     }
 
     @Override
-    public Buffer set(int offset, int[] data) {
-        return set(GLX::glBufferSubData, DataType.Int.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, int[] data) {
+        return setSubData(GLX::glBufferSubData, offset, data);
     }
 
     @Override
-    public Buffer set(int offset, short[] data) {
-        return set(GLX::glBufferSubData, DataType.Short.bytesOfCount(offset), data, DataType.bytesOf(data));
+    public Buffer setSubData(long offset, short[] data) {
+        return setSubData(GLX::glBufferSubData, offset, data);
+    }
+
+    @Override
+    public <T> Buffer setSubData(long offset, T bean, BufferIO<T> bufferIO) {
+        bufferIO.write(bean, mapRange(offset, bufferIO.size(), MapAccessBits.Write));
+        unmap();
+        return this;
     }
 
     private interface StorageFunction<T> {
         void accept(int target, T data, int flags);
     }
 
-    private <T> Buffer storage(StorageFunction<T> storageFn, T data, int dataBytes, StorageFlags... flags) {
+    private <T> Buffer storage(StorageFunction<T> storageFn, T data, int dataBytes, int flags) {
         assertBinding();
-        storageFn.accept(target.value(), data, StorageFlags.value(flags));
+        storageFn.accept(target.value(), data, flags);
         GLX.checkError();
-        this.bytes = dataBytes;
+        sizeInBytes = dataBytes;
         return this;
     }
 
     @Override
-    public Buffer storage(DoubleBuffer data, StorageFlags... flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(DoubleBuffer data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     @Override
-    public Buffer storage(FloatBuffer data, StorageFlags... flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(FloatBuffer data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     @Override
-    public Buffer storage(IntBuffer data, StorageFlags... flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(IntBuffer data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     @Override
-    public Buffer storage(ShortBuffer data, StorageFlags... flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(ShortBuffer data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     @Override
-    public Buffer storage(ByteBuffer data, StorageFlags... flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(ByteBuffer data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     @Override
-    public Buffer storage(double[] data, StorageFlags... flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(double[] data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     @Override
-    public Buffer storage(float[] data, StorageFlags... flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(float[] data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     @Override
-    public Buffer storage(int[] data, StorageFlags... flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(int[] data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     @Override
-    public Buffer storage(short[] data, StorageFlags... flags) {
-        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags);
+    public Buffer storage(short[] data, StorageBits flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
 
     @Override
-    public int bytes() {
-        return bytes;
+    public Buffer storage(DoubleBuffer data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
     }
+
+    @Override
+    public Buffer storage(FloatBuffer data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
+    }
+
+    @Override
+    public Buffer storage(IntBuffer data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
+    }
+
+    @Override
+    public Buffer storage(ShortBuffer data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
+    }
+
+    @Override
+    public Buffer storage(ByteBuffer data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
+    }
+
+    @Override
+    public Buffer storage(double[] data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
+    }
+
+    @Override
+    public Buffer storage(float[] data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
+    }
+
+    @Override
+    public Buffer storage(int[] data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
+    }
+
+    @Override
+    public Buffer storage(short[] data, BitSet<StorageBits> flags) {
+        return storage(GLX::glBufferStorage, data, DataType.bytesOf(data), flags.value());
+    }
+
+    private interface ClearDataFunction<T> {
+        void accept(int target, int internalFormat, int format, int type, T data);
+    }
+
+    private <T> Buffer clearData(ClearDataFunction<T> clearFunction, InternalPixelFormat internalFormat, PixelFormat format, DataType type, T data) {
+        assertBinding();
+        clearFunction.accept(target.value(), internalFormat.value(), format.value(), type.value(), data);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type) {
+        return clearData(GLX::glClearBufferData, internalFormat, format, type, (ByteBuffer) null);
+    }
+
+    @Override
+    public Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, ByteBuffer data) {
+        return clearData(GLX::glClearBufferData, internalFormat, format, type, data);
+    }
+
+    @Override
+    public Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, short[] data) {
+        return clearData(GLX::glClearBufferData, internalFormat, format, type, data);
+    }
+
+    @Override
+    public Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, ShortBuffer data) {
+        return clearData(GLX::glClearBufferData, internalFormat, format, type, data);
+    }
+
+    @Override
+    public Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, int[] data) {
+        return clearData(GLX::glClearBufferData, internalFormat, format, type, data);
+    }
+
+    @Override
+    public Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, IntBuffer data) {
+        return clearData(GLX::glClearBufferData, internalFormat, format, type, data);
+    }
+
+    @Override
+    public Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, float[] data) {
+        return clearData(GLX::glClearBufferData, internalFormat, format, type, data);
+    }
+
+    @Override
+    public Buffer clearData(InternalPixelFormat internalFormat, PixelFormat format, DataType type, FloatBuffer data) {
+        return clearData(GLX::glClearBufferData, internalFormat, format, type, data);
+    }
+
+    private interface ClearSubDataFunction<T> {
+        void accept(int target, int internalFormat, long offset, long size, int format, int type, T data);
+    }
+
+    private <T> Buffer clearSubData(ClearSubDataFunction<T> clearFunction, InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, T data) {
+        assertBinding();
+        clearFunction.accept(target.value(), internalFormat.value(), offset, size, format.value(), type.value(), data);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type) {
+        return clearSubData(GLX::glClearBufferSubData, internalFormat, offset, size, format, type, (ByteBuffer) null);
+    }
+
+    @Override
+    public Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, ByteBuffer data) {
+        return clearSubData(GLX::glClearBufferSubData, internalFormat, offset, size, format, type, data);
+    }
+
+    @Override
+    public Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, short[] data) {
+        return clearSubData(GLX::glClearBufferSubData, internalFormat, offset, size, format, type, data);
+    }
+
+    @Override
+    public Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, ShortBuffer data) {
+        return clearSubData(GLX::glClearBufferSubData, internalFormat, offset, size, format, type, data);
+    }
+
+    @Override
+    public Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, int[] data) {
+        return clearSubData(GLX::glClearBufferSubData, internalFormat, offset, size, format, type, data);
+    }
+
+    @Override
+    public Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, IntBuffer data) {
+        return clearSubData(GLX::glClearBufferSubData, internalFormat, offset, size, format, type, data);
+    }
+
+    @Override
+    public Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, float[] data) {
+        return clearSubData(GLX::glClearBufferSubData, internalFormat, offset, size, format, type, data);
+    }
+
+    @Override
+    public Buffer clearSubData(InternalPixelFormat internalFormat, long offset, long size, PixelFormat format, DataType type, FloatBuffer data) {
+        return clearSubData(GLX::glClearBufferSubData, internalFormat, offset, size, format, type, data);
+    }
+
+    @Override
+    public ByteBuffer mapRange(long offset, long size, MapAccessBits access) {
+        assertBinding();
+        var ret = GLX.glMapBufferRange(target.value(), offset, size, access.value());
+        GLX.checkError();
+        return ret;
+    }
+
+    @Override
+    public ByteBuffer mapRange(long offset, long size, BitSet<MapAccessBits> access) {
+        assertBinding();
+        var ret = GLX.glMapBufferRange(target.value(), offset, size, access.value());
+        GLX.checkError();
+        return ret;
+    }
+
+    @Override
+    public ByteBuffer map(MapAccessBits access) {
+        assertBinding();
+        var ret = GLX.glMapBuffer(target.value(), access.value());
+        GLX.checkError();
+        return ret;
+    }
+
+    @Override
+    public ByteBuffer map(BitSet<MapAccessBits> access) {
+        assertBinding();
+        var ret = GLX.glMapBuffer(target.value(), access.value());
+        GLX.checkError();
+        return ret;
+    }
+
+    @Override
+    public Buffer flushMappedRange(long offset, long size) {
+        assertBinding();
+        GLX.glFlushMappedBufferRange(target.value(), offset, size);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public boolean unmap() {
+        assertBinding();
+        boolean ret = GLX.glUnmapBuffer(target.value());
+        GLX.checkError();
+        return ret;
+    }
+
+    @Override
+    public Buffer invalidateSubData(long offset, long size) {
+        GLX.glInvalidateBufferSubData(intHandle(), offset, size);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Buffer invalidateData() {
+        GLX.glInvalidateBufferData(intHandle());
+        GLX.checkError();
+        return this;
+    }
+
+    private interface GetSubDataFunction<T> {
+        void accept(int target, long offset, T data);
+    }
+
+    private <T> Buffer getSubData(GetSubDataFunction<T> getSubDataFunction, long offset, T data) {
+        assertBinding();
+        getSubDataFunction.accept(target.value(), offset, data);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Buffer getSubData(long offset, short[] data) {
+        return getSubData(GLX::glGetBufferSubData, offset, data);
+    }
+
+    @Override
+    public Buffer getSubData(long offset, ShortBuffer data) {
+        return getSubData(GLX::glGetBufferSubData, offset, data);
+    }
+
+    @Override
+    public Buffer getSubData(long offset, int[] data) {
+        return getSubData(GLX::glGetBufferSubData, offset, data);
+    }
+
+    @Override
+    public Buffer getSubData(long offset, IntBuffer data) {
+        return getSubData(GLX::glGetBufferSubData, offset, data);
+    }
+
+    @Override
+    public Buffer getSubData(long offset, float[] data) {
+        return getSubData(GLX::glGetBufferSubData, offset, data);
+    }
+
+    @Override
+    public Buffer getSubData(long offset, FloatBuffer data) {
+        return getSubData(GLX::glGetBufferSubData, offset, data);
+    }
+
+    @Override
+    public Buffer getSubData(long offset, long[] data) {
+        return getSubData(GLX::glGetBufferSubData, offset, data);
+    }
+
+    @Override
+    public Buffer getSubData(long offset, LongBuffer data) {
+        return getSubData(GLX::glGetBufferSubData, offset, data);
+    }
+
+    @Override
+    public Buffer getSubData(long offset, double[] data) {
+        return getSubData(GLX::glGetBufferSubData, offset, data);
+    }
+
+    @Override
+    public Buffer getSubData(long offset, DoubleBuffer data) {
+        return getSubData(GLX::glGetBufferSubData, offset, data);
+    }
+
+    @Override
+    public Buffer getSubData(long offset, ByteBuffer data) {
+        return getSubData(GLX::glGetBufferSubData, offset, data);
+    }
+
+    @Override
+    public <T> T getSubData(long offset, T bean, BufferIO<T> bufferIO) {
+        T object = bufferIO.read(bean, mapRange(offset, bufferIO.size(), MapAccessBits.Read), null);
+        unmap();
+        return object;
+    }
+
+    @Override
+    public Buffer copySubData(long readOffset, Buffer dstBuffer, long writeOffset, long size) {
+        assertBinding();
+        GLX.glCopyBufferSubData(target.value(), dstBuffer.target().value(), readOffset, writeOffset, size);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public long size() {
+        return sizeInBytes;
+    }
+
+    @Override
+    public BindingPoint bindAt(int bindingPoint, long offset, long size) {
+        assertBinding();
+        GLX.glBindBufferRange(target.value(), bindingPoint, intHandle(), offset, size);
+        GLX.checkError();
+        return new GlBindingPoint(bindingPoint, this, offset, size);
+    }
+
+    @Override
+    public BindingPoint bindAt(int bindingPoint) {
+        assertBinding();
+        GLX.glBindBufferBase(target.value(), bindingPoint, intHandle());
+        GLX.checkError();
+        return new GlBindingPoint(bindingPoint, this, 0, size());
+    }
+
+    @Override
+    public <T> Mapping<T> createMapping(TypeReferenceBean<T> typeReferenceBean, long offset) {
+        return new GlMapping<>(this, typeReferenceBean, offset);
+    }
+
+    @Override
+    public <T> Mapping<T> createMapping(T bean, long offset) {
+        return new GlMapping<>(this, bean, offset);
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    static class GlBindingPoint extends SimpleIntEnum implements BindingPoint {
+        private final Buffer buffer;
+        private final Target target;
+        private final long offset;
+        private final long size;
+
+        public GlBindingPoint(int value, Buffer buffer, long offset, long size) {
+            super(value);
+            this.buffer = buffer;
+            this.target = buffer.target();
+            this.offset = offset;
+            this.size = size;
+        }
+
+        @Override
+        public <T, B extends ProgramResource.BufferBinding<B> & ProgramResource.BufferDataSize<B>> Mapping<T> createMapping(T bean, B bufferBinding) {
+            return new GlMapping<>(this, bean, bufferBinding);
+        }
+
+        @Override
+        public Target target() {
+            return target;
+        }
+
+        @Override
+        public Buffer buffer() {
+            return buffer;
+        }
+
+        @Override
+        public long offset() {
+            return offset;
+        }
+
+        @Override
+        public long size() {
+            return size;
+        }
+
+        @Override
+        public String toString() {
+            return "BindingPoint{" +
+                    "target=" + target + ", value=" + value() +
+                    '}';
+        }
+    }
+
+    static class GlMapping<T> implements Mapping<T> {
+        private final Buffer.BindingPoint bindingPoint;
+        private final T bean;
+        private final ByteBuffer storage;
+        private final BufferIO<T> bufferIO;
+
+        public <B extends ProgramResource.BufferBinding<B> & ProgramResource.BufferDataSize<B>> GlMapping(
+                Buffer.BindingPoint bindingPoint, T bean, B bufferBinding) {
+            this.bindingPoint = bindingPoint;
+            this.bean = bean;
+            storage = MemoryUtil.memCalloc(bufferBinding.getBufferDataSize());
+            if (bufferBinding instanceof UniformBlock uniformBlock) {
+                this.bufferIO = uniformBlock.createBufferIO(bean, storage);
+            } else {
+                throw new UnsupportedOperationException();
+            }
+        }
+
+        public GlMapping(Buffer buffer, TypeReferenceBean<T> typeReferenceBean, long offset) {
+            this(buffer, typeReferenceBean.getBean(), BufferIO.ofType(typeReferenceBean), offset);
+        }
+
+        public GlMapping(Buffer buffer, T bean, long offset) {
+            this(buffer, bean, BufferIO.ofBean(bean), offset);
+        }
+
+        private GlMapping(Buffer buffer, T bean, BufferIO<T> bufferIO, long offset) {
+            this.bean = bean;
+            this.bufferIO = bufferIO;
+            storage = MemoryUtil.memCalloc(bufferIO.size());
+            this.bindingPoint = new GlBindingPoint(-1, buffer, offset, storage.capacity());
+        }
+
+        @Override
+        public T getBean() {
+            return bean;
+        }
+
+        @Override
+        public int size() {
+            return storage.capacity();
+        }
+
+        @Override
+        public ByteBuffer storage() {
+            return storage;
+        }
+
+        @Override
+        public Buffer.BindingPoint getBindingPoint() {
+            return bindingPoint.value() == -1 ? null : bindingPoint;
+        }
+
+        @Override
+        public void flush() {
+            bufferIO.write(bean, storage.clear());
+            bindingPoint.buffer().setSubData(bindingPoint.offset(), storage.clear());
+        }
+
+        @Override
+        public <F> void flush(SerializableFunction<T, F> fieldGetter) {
+            if (bufferIO instanceof StructBufferIO<T> structBufferIO) {
+                var fieldBufferIO = structBufferIO.getFieldBufferIO(fieldGetter);
+                fieldBufferIO.write(fieldGetter.apply(bean), storage);
+                int dataOffset = fieldBufferIO.getOffset();
+                int dataSize = fieldBufferIO.size();
+                bindingPoint.buffer().setSubData(bindingPoint.offset() + dataOffset,
+                        storage.clear().position(dataOffset).limit(dataOffset + dataSize));
+            } else {
+                throw new UnsupportedOperationException("Not a plain pojo: " + bean.getClass());
+            }
+        }
+
+        @Override
+        public void load() {
+            bindingPoint.buffer().getSubData(bindingPoint.offset(), storage.clear());
+            bufferIO.read(bean, storage, null);
+        }
+
+        @Override
+        public <F> void load(SerializableFunction<T, F> fieldGetter) {
+            if (bufferIO instanceof StructBufferIO<T> structBufferIO) {
+                var fieldBufferIO = structBufferIO.getFieldBufferIO(fieldGetter);
+                int dataOffset = fieldBufferIO.getOffset();
+                int dataSize = fieldBufferIO.size();
+                bindingPoint.buffer().getSubData(bindingPoint.offset() + dataOffset,
+                        storage.clear().position(dataOffset).limit(dataOffset + dataSize));
+                fieldBufferIO.read(fieldGetter.apply(bean), storage, null);
+            } else {
+                throw new UnsupportedOperationException("Not a plain pojo: " + bean.getClass());
+            }
+        }
+
+        @Override
+        public void close() {
+            MemoryUtil.memFree(storage);
+        }
+
+    }
+
 }

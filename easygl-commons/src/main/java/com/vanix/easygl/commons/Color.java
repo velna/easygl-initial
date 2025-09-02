@@ -40,6 +40,10 @@ public class Color extends Vector4f {
 
     @Override
     public Color clone() {
-        return (Color) super.clone();
+        try {
+            return (Color) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

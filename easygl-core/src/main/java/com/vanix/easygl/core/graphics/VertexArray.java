@@ -1,35 +1,45 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.core.BindTarget;
-import com.vanix.easygl.core.Bindable;
-import com.vanix.easygl.core.CloseableArray;
-import com.vanix.easygl.core.Handle;
-import com.vanix.easygl.core.meta.BindableMeta;
-import com.vanix.easygl.core.meta.MetaSystem;
+import com.vanix.easygl.core.*;
 
+@Support(since = Version.GL30)
 public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, VertexArray>, Handle {
-    BindableMeta<BindTarget.Default<VertexArray>, VertexArray> Meta = MetaSystem.Graphics.of(VertexArray.class);
-    BindTarget.Default<VertexArray> Target = new BindTarget.Default<>("VertexArray", Meta);
+    BindTarget.Default<VertexArray> Target = new BindTarget.Default<>("VertexArray", MetaHolder.VertexArray);
 
-    VertexArray attributes(Buffer buffer, int... layouts);
-
-    default void drawArray(DrawMode mode, Buffer vbo) {
-        drawArray(mode, vbo, 0);
+    default VertexAttribute enableAttributes(Number... layouts) {
+        return attribute(0).enableAttributes(layouts);
     }
 
-    void drawArray(DrawMode mode, Buffer vbo, int first);
+    VertexAttribute attribute(int index);
 
-    default void drawElements(DrawMode mode, Buffer vbo, Buffer ebo) {
-        drawElements(mode, vbo, ebo, 0);
+    @Support(since = Version.GL43)
+    VertexArray bind(int bindingPoint, Buffer buffer, long offset, int stride);
+
+    default void drawArray(DrawMode mode, int count) {
+        drawArray(mode, 0, count);
     }
 
-    void drawElements(DrawMode mode, Buffer vbo, Buffer ebo, int indices);
+    void drawArray(DrawMode mode, int first, int count);
+
+    void drawArrayInstanced(DrawMode mode, int first, int count, int instanceCount);
+
+    default void drawElements(DrawMode mode, Buffer ebo) {
+        drawElements(mode, ebo, 0);
+    }
+
+    void drawElements(DrawMode mode, Buffer ebo, int indices);
+
+    default void drawElementsInstanced(DrawMode mode, Buffer ebo, int instanceCount) {
+        drawElementsInstanced(mode, ebo, 0, instanceCount);
+    }
+
+    void drawElementsInstanced(DrawMode mode, Buffer ebo, int indices, int instanceCount);
 
     static VertexArray of() {
-        return Meta.create();
+        return MetaHolder.VertexArray.create();
     }
 
-    static CloseableArray<VertexArray> of(int n) {
-        return Meta.createArray(n);
+    static HandleArray<VertexArray> of(int n) {
+        return MetaHolder.VertexArray.createArray(n);
     }
 }
