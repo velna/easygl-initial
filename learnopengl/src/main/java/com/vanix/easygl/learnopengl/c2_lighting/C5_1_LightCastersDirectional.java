@@ -146,8 +146,8 @@ public class C5_1_LightCastersDirectional {
                         .setMatrix4("view", view.get(mat4f))
                         .setMatrix4("model", new Matrix4f());
 
-                diffuseMap.bind(Texture.Target.T2D, Texture.Unit.U0);
-                specularMap.bind(Texture.Target.T2D, Texture.Unit.U1);
+                diffuseMap.bind(Texture.Target.T2D, TextureUnit.U0);
+                specularMap.bind(Texture.Target.T2D, TextureUnit.U1);
 
 //                cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 

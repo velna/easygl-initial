@@ -129,7 +129,7 @@ public class C4_1_LightingMapsDiffuse {
                         .setMatrix4("view", view.get(mat4f))
                         .setMatrix4("model", new Matrix4f());
 
-                Texture.Unit.U0.bind();
+                TextureUnit.U0.bind();
                 diffuseMap.bind(Texture.Target.T2D);
 
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeAttr.countOfStride());

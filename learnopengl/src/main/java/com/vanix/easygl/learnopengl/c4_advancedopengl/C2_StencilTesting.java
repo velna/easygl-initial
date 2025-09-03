@@ -157,7 +157,7 @@ public class C2_StencilTesting {
 
                 // cubes
                 cubeVAO.bind();
-                cubeTexture.bind(Texture.Target.T2D, Texture.Unit.U0);
+                cubeTexture.bind(Texture.Target.T2D, TextureUnit.U0);
                 program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
                 program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));

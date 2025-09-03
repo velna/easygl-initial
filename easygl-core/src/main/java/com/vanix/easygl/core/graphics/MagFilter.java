@@ -1,8 +1,9 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public enum MagFilter {
+public enum MagFilter implements IntEnum {
     Nearest("NEAREST"),
     Linear("LINEAR");
 
@@ -12,6 +13,7 @@ public enum MagFilter {
         this.value = MetaSystem.Graphics.queryInt(id);
     }
 
+    @Override
     public int value() {
         return value;
     }

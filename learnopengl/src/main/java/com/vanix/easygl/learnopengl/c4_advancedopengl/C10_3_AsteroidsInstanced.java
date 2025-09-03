@@ -111,7 +111,7 @@ public class C10_3_AsteroidsInstanced {
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", camera.update().view().get(mat4f))
                         .setInt("texture_diffuse1", 0);
-                Texture.Unit.U0.bind();
+                TextureUnit.U0.bind();
                 rock.getTextures(Model.TextureType.Height).getFirst().getTexture().bind();
                 for (var mesh : rockMeshes) {
                     mesh.getVao().bind().drawElementsInstanced(DrawMode.Triangles, mesh.getEbo(), modelMatrices.length);
@@ -127,7 +127,7 @@ public class C10_3_AsteroidsInstanced {
             if (program.containsUniform("texture_diffuse1")) {
                 var textures = mesh.getTextures(Model.TextureType.Diffuse);
                 if (!textures.isEmpty()) {
-                    textures.getFirst().getTexture().bind(Texture.Target.T2D, Texture.Unit.U0);
+                    textures.getFirst().getTexture().bind(Texture.Target.T2D, TextureUnit.U0);
                     program.setInt("texture_diffuse1", 0);
                 }
             }

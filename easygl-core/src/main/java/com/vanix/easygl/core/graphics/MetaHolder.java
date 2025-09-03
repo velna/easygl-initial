@@ -7,10 +7,11 @@ import com.vanix.easygl.core.meta.MetaSystem;
 
 class MetaHolder {
     static final BindableMeta<BindTarget.Default<VertexArray>, VertexArray> VertexArray = MetaSystem.Graphics.of(VertexArray.class);
+    static final HandleMeta<Sampler> Sampler = MetaSystem.Graphics.of(Sampler.class);
     static final BindableMeta<Texture.Target<TextureCube>, TextureCube> TextureCube = MetaSystem.Graphics.of(TextureCube.class);
     static final BindableMeta<Texture.Target<TextureMultiSample>, TextureMultiSample> TextureMultiSample = MetaSystem.Graphics.of(TextureMultiSample.class);
     static final BindableMeta<Texture.Target<Texture2D>, Texture2D> Texture2D = MetaSystem.Graphics.of(Texture2D.class);
-    static final BindableMeta<Texture.Unit, Texture.Unit> TextureUnit = MetaSystem.Graphics.of(Texture.Unit.class);
+    static final BindableMeta<BindTarget.Default<TextureUnit>, com.vanix.easygl.core.graphics.TextureUnit> TextureUnit = MetaSystem.Graphics.of(com.vanix.easygl.core.graphics.TextureUnit.class);
     static final com.vanix.easygl.core.meta.Meta<Sync> Sync = MetaSystem.Graphics.of(Sync.class);
     static final HandleMeta<Shader> Shader = MetaSystem.Graphics.of(Shader.class);
     static final BindableMeta<BindTarget.Default<RenderBuffer>, RenderBuffer> RenderBuffer = MetaSystem.Graphics.of(RenderBuffer.class);
