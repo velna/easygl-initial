@@ -4,6 +4,7 @@ import com.vanix.easygl.commons.SimpleIndexedIntEnum;
 import com.vanix.easygl.commons.util.IndexedEnumCache;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
+import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public abstract class TextureUnit extends SimpleIndexedIntEnum implements Bindable<BindTarget.Default<TextureUnit>, TextureUnit> {
@@ -56,9 +57,12 @@ public abstract class TextureUnit extends SimpleIndexedIntEnum implements Bindab
         return this;
     }
 
+    @Support(since = Version.GL44)
     public abstract TextureUnit binTextures(Texture<?>... textures);
 
+    @Support(since = Version.GL33)
     public abstract TextureUnit bindSampler(Sampler sampler);
 
+    @Support(since = Version.GL44)
     public abstract TextureUnit bindSamplers(Sampler... samplers);
 }
