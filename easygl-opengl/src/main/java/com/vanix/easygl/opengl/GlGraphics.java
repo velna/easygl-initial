@@ -15,6 +15,7 @@ public class GlGraphics implements Graphics {
     private final ScissorTest scissorTest = new GlScissorTest(this);
     private final LogicalOperation logicalOperation = new GlLogicalOperation(this);
     private final DefaultFrameBuffer defaultFrameBuffer = new GlDefaultFrameBuffer();
+    private final PixelStorageMode pixelStorageMode = new GlPixelStorageMode(this);
     private final Debug debug;
 
     public GlGraphics() {
@@ -29,6 +30,11 @@ public class GlGraphics implements Graphics {
     public Graphics viewPort(int x, int y, int width, int height) {
         GLX.glViewport(x, y, width, height);
         return this;
+    }
+
+    @Override
+    public PixelStorageMode pixelStorageMode() {
+        return pixelStorageMode;
     }
 
     @Override

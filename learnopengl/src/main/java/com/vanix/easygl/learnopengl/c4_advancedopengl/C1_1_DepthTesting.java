@@ -30,7 +30,7 @@ public class C1_1_DepthTesting {
              var floorTexture = Texture.of2D()) {
 
             window
-                    .attributes().Resizable.disable()
+                    .attributes().Resizable.disable().then()
                     .inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
             window.inputs().mouse().cursorMode(Mouse.CursorMode.CURSOR_CAPTURED);
 
@@ -130,13 +130,13 @@ public class C1_1_DepthTesting {
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f));
 
-                cubeTexture.bind(Texture.Target.T2D, Texture.Unit.U0);
+                cubeTexture.bind(Texture.Target.T2D, TextureUnit.U0);
                 program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
                 program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
 
-                floorTexture.bind(Texture.Target.T2D, Texture.Unit.U0);
+                floorTexture.bind(Texture.Target.T2D, TextureUnit.U0);
                 program.setMatrix4("model", new Matrix4f().get(mat4f));
                 planeVAO.bind().drawArray(DrawMode.Triangles, planeTriangleCount);
 

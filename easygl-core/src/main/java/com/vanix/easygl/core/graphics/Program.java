@@ -212,7 +212,7 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
         return setMatrix4x3(key, value.get(new float[12]));
     }
 
-    Program setTexture(String key, Texture.Unit unit, Texture<?> texture);
+    Program setTexture(String key, TextureUnit unit, Texture<?> texture);
 
     boolean getAttribute(ProgramAttribute.Bool attribute);
 

@@ -1,8 +1,9 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public enum MinFilter {
+public enum MinFilter implements IntEnum {
     Nearest("NEAREST"),
     Linear("LINEAR"),
     NearestMipmapNearest("NEAREST_MIPMAP_NEAREST"),
@@ -16,6 +17,7 @@ public enum MinFilter {
         this.value = MetaSystem.Graphics.queryInt(id);
     }
 
+    @Override
     public int value() {
         return value;
     }

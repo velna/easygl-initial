@@ -21,6 +21,10 @@ class Cache {
     static final IntObjectMap<FrameInnerBuffer.ReadBuffer> FrameReadBuffer = intObjectMapOf(FrameInnerBuffer.ReadBuffer.class);
     static final IntObjectMap<BaseFrameBuffer.Status> FrameBufferStatus = intObjectMapOf(BaseFrameBuffer.Status.class);
     static final IntObjectMap<DataType> DataType = intObjectMapOf(DataType.class);
+    static final IntObjectMap<MinFilter> MinFilter = intObjectMapOf(MinFilter.class);
+    static final IntEnumCache<MagFilter> MagFilter = new IntEnumCache<>(MagFilter.class, 0xf);
+    static final IntEnumCache<Texture.Wrap> TextureWrap = new IntEnumCache<>(Texture.Wrap.class, 0xf);
+
     private static <T extends IntEnum> IntObjectMap<T> intObjectMapOf(Class<T> type) {
         T[] array = IntEnum.values(type);
         MutableIntObjectMap<T> map = IntObjectMaps.mutable.of();

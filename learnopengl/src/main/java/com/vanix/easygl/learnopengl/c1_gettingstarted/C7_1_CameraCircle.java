@@ -124,9 +124,9 @@ public class C7_1_CameraCircle {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
 
-                Texture.Unit.U0.bind();
+                TextureUnit.U0.bind();
                 texture1.bind(Texture.Target.T2D);
-                Texture.Unit.U1.bind();
+                TextureUnit.U1.bind();
                 texture2.bind(Texture.Target.T2D);
 
                 float time = (System.currentTimeMillis() - start) / 1000.0f;

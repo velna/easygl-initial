@@ -1,7 +1,9 @@
 package com.vanix.easygl.opengl;
 
+import com.vanix.easygl.commons.Color;
 import com.vanix.easygl.core.AbstractMultiTargetBindable;
 import com.vanix.easygl.core.graphics.*;
+import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
 import java.util.function.IntConsumer;
@@ -174,6 +176,65 @@ public abstract class AbstractTexture<T extends Texture<T>> extends AbstractMult
         GLX.glTexParameterfv(target().value(), GLX.GL_TEXTURE_BORDER_COLOR, new float[]{red, green, blue, alpha});
         GLX.checkError();
         return self();
+    }
+
+    @Override
+    public CompareFunction compareFunc() {
+        return Cache.CompareFunction.valueOf(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_COMPARE_FUNC));
+    }
+
+    @Override
+    public boolean isCompareModeRefToTexture() {
+        return GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_COMPARE_MODE) == GLX.GL_COMPARE_REF_TO_TEXTURE;
+    }
+
+    @Override
+    public float loadBias() {
+        return GLX.glGetTextureParameterf(intHandle(), GLX.GL_TEXTURE_LOD_BIAS);
+    }
+
+    @Override
+    public MinFilter minFilter() {
+        return Cache.MinFilter.get(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_MIN_FILTER));
+    }
+
+    @Override
+    public MagFilter magFilter() {
+        return Cache.MagFilter.valueOf(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_MAG_FILTER));
+    }
+
+    @Override
+    public float minLoad() {
+        return GLX.glGetTextureParameterf(intHandle(), GLX.GL_TEXTURE_MIN_LOD);
+    }
+
+    @Override
+    public float maxLoad() {
+        return GLX.glGetTextureParameterf(intHandle(), GLX.GL_TEXTURE_MAX_LOD);
+    }
+
+    @Override
+    public Wrap wrapS() {
+        return Cache.TextureWrap.valueOf(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_WRAP_S));
+    }
+
+    @Override
+    public Wrap wrapT() {
+        return Cache.TextureWrap.valueOf(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_WRAP_T));
+    }
+
+    @Override
+    public Wrap wrapR() {
+        return Cache.TextureWrap.valueOf(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_WRAP_R));
+    }
+
+    @Override
+    public Color borderColor() {
+        try (MemoryStack stack = MemoryStack.stackGet()) {
+            var buffer = stack.mallocFloat(4);
+            GLX.glGetTextureParameterfv(intHandle(), GLX.GL_TEXTURE_BORDER_COLOR, buffer);
+            return new Color(buffer.get(0), buffer.get(1), buffer.get(2), buffer.get(3));
+        }
     }
 
     @Override

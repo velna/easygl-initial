@@ -72,9 +72,9 @@ public class C4_6_TexturesExercise4 {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
 
-                Texture.Unit.U0.bind();
+                TextureUnit.U0.bind();
                 texture1.bind(Texture.Target.T2D);
-                Texture.Unit.U1.bind();
+                TextureUnit.U1.bind();
                 texture2.bind(Texture.Target.T2D);
 
                 program.bind().setFloat("mixValue", mixValue);

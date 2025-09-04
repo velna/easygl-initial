@@ -1,7 +1,7 @@
 package com.vanix.easygl.commons;
 
 public class SimpleIndexedIntEnum extends SimpleIntEnum implements IndexedIntEnum {
-    private final int index;
+    protected final int index;
 
     public SimpleIndexedIntEnum(int value, int index) {
         super(value);

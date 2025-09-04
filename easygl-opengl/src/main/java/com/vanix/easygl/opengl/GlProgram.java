@@ -542,10 +542,10 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Program setTexture(String key, Texture.Unit unit, Texture<?> texture) {
+    public Program setTexture(String key, TextureUnit unit, Texture<?> texture) {
         unit.assertBinding();
         texture.assertBinding();
-        return setInt(key, unit.ordinal());
+        return setInt(key, unit.index());
     }
 
     @Override

@@ -76,14 +76,21 @@ public class GlMetaService extends AbstractMetaService {
             GLX::glGenRenderbuffers,
             GLX::glDeleteRenderbuffers);
 
-    static final BindableMeta<Texture.Unit, Texture.Unit> TextureUnitMeta = new IntBindableMeta<>(
-            null,
+    static final BindableMeta<BindTarget.Default<TextureUnit>, TextureUnit> TextureUnitMeta = new IntBindableMeta<>(
+            args -> new GlTextureUnit((int) args[0]),
             (target, h) -> GLX.glActiveTexture(h),
             (target, h) -> GLX.glActiveTexture(h),
             GLX.GL_TEXTURE0,
             null,
             null
     );
+
+    static final HandleMeta<Sampler> SamplerMeta = new IntHandleMeta<>(
+            args -> new GlSampler(GLX.glGenSamplers()),
+            GLX::glDeleteSamplers,
+            (handle, args) -> new GlSampler(handle),
+            GLX::glGenSamplers,
+            GLX::glDeleteSamplers);
 
     static final BindableMeta<Texture.Target<Texture2D>, Texture2D> Texture2DMeta = createTextureMeta(
             args -> new GlTexture2D(),
@@ -128,7 +135,8 @@ public class GlMetaService extends AbstractMetaService {
         register(VertexArray.class, VertexArrayMeta);
         register(RenderBuffer.class, RenderBufferMeta);
         register(Program.class, ProgramMeta);
-        register(Texture.Unit.class, TextureUnitMeta);
+        register(TextureUnit.class, TextureUnitMeta);
+        register(Sampler.class, SamplerMeta);
         register(Texture2D.class, Texture2DMeta);
         register(TextureCube.class, TextureCubeMeta);
         register(TextureMultiSample.class, TextureMultiSampleMeta);

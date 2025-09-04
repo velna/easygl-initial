@@ -9,10 +9,9 @@ import org.lwjgl.glfw.GLFW;
 
 public class GlWindowAttributes extends WindowAttributes {
 
-    private final Window window;
 
     public GlWindowAttributes(Window window) {
-        this.window = window;
+        super(window);
     }
 
     @Override
@@ -21,7 +20,7 @@ public class GlWindowAttributes extends WindowAttributes {
     }
 
     @Override
-    protected UpdatableBooleanAttribute<Window> ofUpdatableBoolean(int key) {
+    protected UpdatableBooleanAttribute<WindowAttributes> ofUpdatableBoolean(int key) {
         return new WindowBooleanAttribute(key);
     }
 
@@ -31,20 +30,20 @@ public class GlWindowAttributes extends WindowAttributes {
         }
     }
 
-    private class WindowBooleanAttribute extends AbstractWindowAttribute implements UpdatableBooleanAttribute<Window> {
+    private class WindowBooleanAttribute extends AbstractWindowAttribute implements UpdatableBooleanAttribute<WindowAttributes> {
         public WindowBooleanAttribute(int key) {
             super(key);
         }
 
         @Override
         public boolean getAsBoolean() {
-            return GLFW.glfwGetWindowAttrib(window.handle(), key()) == GLFW.GLFW_TRUE;
+            return GLFW.glfwGetWindowAttrib(owner.handle(), key()) == GLFW.GLFW_TRUE;
         }
 
         @Override
-        public Window set(boolean value) {
-            GLFW.glfwSetWindowAttrib(window.handle(), key(), value ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
-            return window;
+        public WindowAttributes set(boolean value) {
+            GLFW.glfwSetWindowAttrib(owner.handle(), key(), value ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+            return GlWindowAttributes.this;
         }
     }
 

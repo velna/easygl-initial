@@ -2,7 +2,7 @@ package com.vanix.easygl.commons.attr;
 
 import com.vanix.easygl.commons.EnumType;
 
-public abstract class AttributesEnum<O> extends EnumType<AttributeType> {
+public abstract class AttributesEnum<A> extends EnumType<AttributeType> {
     protected AttributesEnum() {
         super(AttributeType.class);
     }
@@ -11,7 +11,7 @@ public abstract class AttributesEnum<O> extends EnumType<AttributeType> {
         throw new UnsupportedOperationException();
     }
 
-    protected UpdatableBooleanAttribute<O> ofUpdatableBoolean(int key) {
+    protected UpdatableBooleanAttribute<A> ofUpdatableBoolean(int key) {
         throw new UnsupportedOperationException();
     }
 
@@ -19,15 +19,15 @@ public abstract class AttributesEnum<O> extends EnumType<AttributeType> {
         throw new UnsupportedOperationException();
     }
 
-    protected UpdatableIntAttribute<O> ofUpdatableInt(int key) {
+    protected UpdatableIntAttribute<A> ofUpdatableInt(int key) {
         throw new UnsupportedOperationException();
     }
 
-    protected Attribute<O> of(int key) {
+    protected Attribute<A> of(int key) {
         throw new UnsupportedOperationException();
     }
 
-    protected <T> UpdatableAttribute<O, T> ofUpdatable(int key) {
+    protected <T> UpdatableAttribute<A, T> ofUpdatable(int key) {
         throw new UnsupportedOperationException();
     }
 

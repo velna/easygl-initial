@@ -1,51 +1,17 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.commons.Color;
-import com.vanix.easygl.core.*;
+import com.vanix.easygl.commons.IntEnum;
+import com.vanix.easygl.core.BindTarget;
+import com.vanix.easygl.core.BindingState;
+import com.vanix.easygl.core.MultiTargetBindable;
+import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
 import lombok.ToString;
 import org.joml.Vector3i;
 import org.joml.primitives.AABBi;
 
-public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Texture.Target<T>, T>, Handle {
-
-    enum Unit implements Bindable<Unit, Unit>, BindTarget<Unit, Unit> {
-        // @formatter:off
-        U0,  U1,  U2,  U3,  U4,  U5,  U6,  U7,
-        U8,  U9,  U10, U11, U12, U13, U14, U15,
-		U16, U17, U18, U19, U20, U21, U22, U23,
-		U24, U25, U26, U27, U28, U29, U30, U31;
-	    // @formatter:on
-        private final BindingState<Unit, Unit> state = MetaHolder.TextureUnit.newBindingState("TextureUnit");
-
-        private final int value = (int) state.unbindValue() + ordinal();
-
-        @Override
-        public long handle() {
-            return value;
-        }
-
-        @Override
-        public int value() {
-            return value;
-        }
-
-        @Override
-        public Unit target() {
-            return this;
-        }
-
-        @Override
-        public BindingState<Unit, Unit> state() {
-            return state;
-        }
-
-        @Override
-        public void close() {
-
-        }
-    }
+public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Texture.Target<T>, T>, TextureParameters<T> {
 
     @ToString
     class Target<T extends Texture<T>> implements BindTarget<Target<T>, T> {
@@ -97,7 +63,7 @@ public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Textu
         }
     }
 
-    enum Wrap {
+    enum Wrap implements IntEnum {
         ClampToEdge("CLAMP_TO_EDGE"),
         ClampToBorder("CLAMP_TO_BORDER"),
         MirroredRepeat("MIRRORED_REPEAT"),
@@ -109,12 +75,13 @@ public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Textu
             this.value = MetaSystem.Graphics.queryInt(id);
         }
 
+        @Override
         public int value() {
             return value;
         }
     }
 
-    default T bind(Target<T> target, Texture.Unit unit) {
+    default T bind(Target<T> target, TextureUnit unit) {
         unit.bind();
         return this.bind(target);
     }
@@ -124,22 +91,6 @@ public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Textu
     T baseLevel(int value);
 
     T maxLevel(int value);
-
-    T compareFunc(CompareFunction func);
-
-    T compareModeRefToTexture();
-
-    T compareModeNone();
-
-    T loadBias(float value);
-
-    T minFilter(MinFilter mf);
-
-    T magFilter(MagFilter mf);
-
-    T minLoad(float value);
-
-    T maxLoad(float value);
 
     @Support(since = Version.GL33)
     T swizzleR(Swizzle swizzle);
@@ -157,19 +108,7 @@ public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Textu
         return swizzleR(r).swizzleG(g).swizzleB(b).swizzleA(a);
     }
 
-    T wrapS(Wrap wrap);
-
-    T wrapT(Wrap wrap);
-
-    T wrapR(Wrap wrap);
-
     T generateMipmap();
-
-    T borderColor(float red, float green, float blue, float alpha);
-
-    default T borderColor(Color color) {
-        return borderColor(color.red(), color.green(), color.blue(), color.alpha());
-    }
 
     //region CopyImageSubData
     @Support(since = Version.GL43)

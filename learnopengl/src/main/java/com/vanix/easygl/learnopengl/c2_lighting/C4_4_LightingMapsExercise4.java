@@ -138,9 +138,9 @@ public class C4_4_LightingMapsExercise4 {
                         .setMatrix4("view", view.get(mat4f))
                         .setMatrix4("model", new Matrix4f());
 
-                diffuseMap.bind(Texture.Target.T2D, Texture.Unit.U0);
-                specularMap.bind(Texture.Target.T2D, Texture.Unit.U1);
-                emissionMap.bind(Texture.Target.T2D, Texture.Unit.U2);
+                diffuseMap.bind(Texture.Target.T2D, TextureUnit.U0);
+                specularMap.bind(Texture.Target.T2D, TextureUnit.U1);
+                emissionMap.bind(Texture.Target.T2D, TextureUnit.U2);
 
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
 
