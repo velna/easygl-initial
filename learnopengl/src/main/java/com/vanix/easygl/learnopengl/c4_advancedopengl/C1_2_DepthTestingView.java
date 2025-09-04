@@ -30,7 +30,7 @@ public class C1_2_DepthTestingView {
              var floorTexture = Texture.of2D()) {
 
             window
-                    .attributes().Resizable.disable()
+                    .attributes().Resizable.disable().then()
                     .inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
             window.inputs().mouse().cursorMode(Mouse.CursorMode.CURSOR_CAPTURED);
 

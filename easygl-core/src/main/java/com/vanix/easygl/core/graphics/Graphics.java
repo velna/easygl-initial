@@ -20,6 +20,8 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
     @Support(since = Version.GL41)
     Graphics releaseShaderCompiler();
 
+    PixelStorageMode pixelStorageMode();
+
     //region Features
     DepthTest depthTest();
 

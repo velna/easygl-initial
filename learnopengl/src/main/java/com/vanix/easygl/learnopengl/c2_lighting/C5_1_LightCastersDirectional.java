@@ -30,7 +30,7 @@ public class C5_1_LightCastersDirectional {
              var specularMap = Texture.of2D()) {
 
             window
-                    .attributes().Resizable.disable()
+                    .attributes().Resizable.disable().then()
                     .inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
             graphics.depthTest().enable();
 
