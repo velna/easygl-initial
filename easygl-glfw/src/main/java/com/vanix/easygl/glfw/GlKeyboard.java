@@ -20,7 +20,7 @@ public class GlKeyboard implements Keyboard {
     }
 
     private void onKey(long window, int key, int scancode, int action, int mods) {
-        KeyboardEvent event = new KeyboardEvent(this, Cache.keyOfCode(key), Cache.actionOfCode(action), scancode, mods);
+        KeyboardEvent event = new KeyboardEvent(this, Cache.keyOfCode(key, scancode), Cache.actionOfCode(action), scancode, mods);
         Consumer<KeyboardListener> consumer = l -> l.keyboardOnKey(event);
         listenerSupport.forEach(0, consumer);
         listenerSupport.forEach(key, consumer);

@@ -43,7 +43,10 @@ class Cache {
         return ACTIONS[code];
     }
 
-    static Keyboard.Key keyOfCode(int code) {
+    static Keyboard.Key keyOfCode(int code, int scancode) {
+        if (code < 0 || code >= KEYS.length) {
+            return new Keyboard.UnknownKey(scancode);
+        }
         return KEYS[code];
     }
 
