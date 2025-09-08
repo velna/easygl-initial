@@ -47,7 +47,7 @@ public class C2_1_HelloTriangle {
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 program.bind();
-                vao.drawArray(DrawMode.Triangles, triangleCount);
+                vao.bind().drawArray(DrawMode.Triangles, triangleCount);
 
                 window.swapBuffers().pollEvents();
             }

@@ -45,4 +45,8 @@ public interface Bindable<E extends BindTarget<E, T>, T extends Bindable<E, T>> 
         }
     }
 
+    @SuppressWarnings("unchecked")
+    default T self() {
+        return (T) this;
+    }
 }

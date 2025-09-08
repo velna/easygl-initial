@@ -1,0 +1,31 @@
+package com.vanix.easygl.opengl;
+
+import com.vanix.easygl.core.graphics.Texture;
+import com.vanix.easygl.core.graphics.TextureCubeMapArray;
+
+public class GlTextureCubeMapArray extends AbstractTexture<TextureCubeMapArray> implements TextureCubeMapArray,
+        GlTextureOps.Parameters<TextureCubeMapArray>,
+        GlTextureOps.CopyImageSubData<TextureCubeMapArray>,
+        GlTextureOps.MakeView<TextureCubeMapArray>,
+        GlTextureOps.GenerateMipmap<TextureCubeMapArray>,
+        GlTextureOps.Copy3DSub<TextureCubeMapArray>,
+        GlTextureOps.Load3DCompressedSub<TextureCubeMapArray>,
+        GlTextureOps.SetStorage3D<TextureCubeMapArray> {
+    public GlTextureCubeMapArray() {
+        this(GLX.glGenTextures());
+    }
+
+    public GlTextureCubeMapArray(int handle) {
+        super(handle, Target);
+    }
+
+    private GlTextureCubeMapArray(int handle, Texture.TexTarget<TextureCubeMapArray> target) {
+        super(handle, target);
+    }
+
+    @Override
+    public TextureCubeMapArray proxy() {
+        return new GlTextureCubeMapArray(intHandle(), target.proxy(GLX.GL_PROXY_TEXTURE_CUBE_MAP_ARRAY));
+    }
+
+}

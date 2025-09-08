@@ -26,8 +26,8 @@ public class C1_1_DepthTesting {
              var cubeVBO = Buffer.of(DataType.Float);
              var planeVAO = VertexArray.of();
              var planeVBO = Buffer.of(DataType.Float);
-             var cubeTexture = Texture.of2D();
-             var floorTexture = Texture.of2D()) {
+             var cubeTexture = Texture2D.of();
+             var floorTexture = Texture2D.of()) {
 
             window
                     .attributes().Resizable.disable().then()
@@ -99,11 +99,11 @@ public class C1_1_DepthTesting {
             });
             var planeTriangleCount = planeVAO.bind().enableAttributes(3f, 2f).countOfStride();
 
-            cubeTexture.bind(Texture.Target.T2D)
+            cubeTexture.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/marble.jpg")
                     .generateMipmap();
-            floorTexture.bind(Texture.Target.T2D)
+            floorTexture.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/metal.png")
                     .generateMipmap();
@@ -130,13 +130,13 @@ public class C1_1_DepthTesting {
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f));
 
-                cubeTexture.bind(Texture.Target.T2D, TextureUnit.U0);
+                cubeTexture.bind(TextureUnit.U0);
                 program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
                 program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
 
-                floorTexture.bind(Texture.Target.T2D, TextureUnit.U0);
+                floorTexture.bind(TextureUnit.U0);
                 program.setMatrix4("model", new Matrix4f().get(mat4f));
                 planeVAO.bind().drawArray(DrawMode.Triangles, planeTriangleCount);
 

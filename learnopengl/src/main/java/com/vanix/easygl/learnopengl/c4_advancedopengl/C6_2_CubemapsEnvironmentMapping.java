@@ -29,7 +29,7 @@ public class C6_2_CubemapsEnvironmentMapping {
              var cubeVBO = Buffer.of(DataType.Float);
              var skyboxVAO = VertexArray.of();
              var skyboxVBO = Buffer.of(DataType.Float);
-             var cubemapTexture = Texture.ofCube()) {
+             var cubemapTexture = TextureCubeMap.of()) {
 
             window
                     .inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));

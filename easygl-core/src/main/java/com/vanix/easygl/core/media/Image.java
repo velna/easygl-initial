@@ -1,6 +1,7 @@
 package com.vanix.easygl.core.media;
 
 import com.vanix.easygl.core.Closeable;
+import com.vanix.easygl.core.graphics.DataType;
 import com.vanix.easygl.core.graphics.PixelFormat;
 import com.vanix.easygl.core.meta.Meta;
 import com.vanix.easygl.core.meta.MetaSystem;
@@ -11,6 +12,8 @@ public interface Image extends Closeable {
     Meta<Image> Meta = MetaSystem.Media.of(Image.class);
 
     PixelFormat format();
+
+    DataType dataType();
 
     int width();
 
@@ -31,6 +34,6 @@ public interface Image extends Closeable {
     }
 
     static Image empty(PixelFormat format, int width, int height) {
-        return new SimpleImage(format, width, height, null);
+        return new SimpleImage(format, width, height, DataType.UnsignedByte, null);
     }
 }

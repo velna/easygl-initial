@@ -65,7 +65,7 @@ public class C9_3_NormalVisualization {
                         if (pg.containsUniform("texture_diffuse1")) {
                             var textures = mesh.getTextures(Model.TextureType.Diffuse);
                             if (!textures.isEmpty()) {
-                                textures.getFirst().getTexture().bind(Texture.Target.T2D, TextureUnit.U0);
+                                textures.getFirst().getTexture().bind(TextureUnit.U0);
                                 pg.setInt("texture_diffuse1", 0);
                             }
                         }

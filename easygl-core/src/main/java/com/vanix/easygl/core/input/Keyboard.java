@@ -21,7 +21,7 @@ public interface Keyboard extends InputDevice<Keyboard.Key> {
         return Type.Keyboard;
     }
 
-    sealed interface Key extends Input permits PrintableKey, FunctionKey {
+    interface Key extends Input {
         int scancode();
 
         String keyName();
@@ -29,6 +29,39 @@ public interface Keyboard extends InputDevice<Keyboard.Key> {
         boolean isPrintableKey();
 
         boolean isFunctionKey();
+    }
+
+    class UnknownKey implements Key {
+        private final int scancode;
+
+        public UnknownKey(int scancode) {
+            this.scancode = scancode;
+        }
+
+        @Override
+        public int code() {
+            return -1;
+        }
+
+        @Override
+        public int scancode() {
+            return scancode;
+        }
+
+        @Override
+        public String keyName() {
+            return null;
+        }
+
+        @Override
+        public boolean isPrintableKey() {
+            return false;
+        }
+
+        @Override
+        public boolean isFunctionKey() {
+            return false;
+        }
     }
 
     enum PrintableKey implements Key {

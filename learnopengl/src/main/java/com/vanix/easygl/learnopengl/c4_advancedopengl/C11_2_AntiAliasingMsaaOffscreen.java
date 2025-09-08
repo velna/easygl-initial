@@ -24,8 +24,8 @@ public class C11_2_AntiAliasingMsaaOffscreen {
              var frameBuffer = FrameBuffer.of();
              var renderBuffer = RenderBuffer.of();
              var intermediateFBO = FrameBuffer.of();
-             var screenTexture = Texture.of2D();
-             var textureColorBufferMultiSampled = Texture.ofMultiSample();
+             var screenTexture = Texture2D.of();
+             var textureColorBufferMultiSampled = Texture2DMultiSample.of();
              var program = Program.of();
              var screenProgram = Program.of();
              var cubeVao = VertexArray.of();
@@ -106,10 +106,10 @@ public class C11_2_AntiAliasingMsaaOffscreen {
             var quadTriangleCount = quadVao.bind().enableAttributes(2f, 2f).countOfStride();
 
             renderBuffer.bind()
-                    .storageMultiSample(4, InternalPixelFormat.BaseFormat.DEPTH24_STENCIL8, window.frameBufferWidth(), window.frameBufferHeight())
+                    .storageMultiSample(4, InternalPixelFormat.Base.DEPTH24_STENCIL8, window.frameBufferWidth(), window.frameBufferHeight())
                     .unbind();
             textureColorBufferMultiSampled.bind()
-                    .establish(4, InternalPixelFormat.BaseFormat.RGB, window.frameBufferWidth(), window.frameBufferHeight())
+                    .establish(4, InternalPixelFormat.Base.RGB, window.frameBufferWidth(), window.frameBufferHeight())
                     .unbind();
             frameBuffer.bindFrame()
                     .attach(FrameInnerBuffer.Attachment.ofColor(0), textureColorBufferMultiSampled)
@@ -118,7 +118,7 @@ public class C11_2_AntiAliasingMsaaOffscreen {
                     .unbind();
 
             screenTexture.bind()
-                    .allocate(window.frameBufferWidth(), window.frameBufferHeight(), PixelFormat.RGB)
+                    .allocate(InternalPixelFormat.Base.RGB, window.frameBufferWidth(), window.frameBufferHeight())
                     .minFilter(MinFilter.Linear)
                     .magFilter(MagFilter.Linear);
             intermediateFBO.bindFrame()

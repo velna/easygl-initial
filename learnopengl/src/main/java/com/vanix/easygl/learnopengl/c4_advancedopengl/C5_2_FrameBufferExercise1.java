@@ -32,10 +32,10 @@ public class C5_2_FrameBufferExercise1 {
              var quadVAO = VertexArray.of();
              var quadVBO = Buffer.of(DataType.Float);
              var frameBuffer = FrameBuffer.of();
-             var textureColor = Texture.of2D();
-             var cubeTexture = Texture.of2D();
+             var textureColor = Texture2D.of();
+             var cubeTexture = Texture2D.of();
              var renderBuffer = RenderBuffer.of();
-             var floorTexture = Texture.of2D()) {
+             var floorTexture = Texture2D.of()) {
 
             window
                     .inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
@@ -122,11 +122,11 @@ public class C5_2_FrameBufferExercise1 {
             });
             var quadTriangleCount = quadVAO.bind().enableAttributes(2f, 2f).countOfStride();
 
-            cubeTexture.bind(Texture.Target.T2D)
+            cubeTexture.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/container.jpg")
                     .generateMipmap();
-            floorTexture.bind(Texture.Target.T2D)
+            floorTexture.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/metal.png")
                     .generateMipmap();
@@ -136,12 +136,12 @@ public class C5_2_FrameBufferExercise1 {
 
             frameBuffer.bindDraw()
                     .attach(FrameInnerBuffer.Attachment.ofColor(0),
-                            textureColor.bind(Texture.Target.T2D)
+                            textureColor.bind()
                                     .minFilter(MinFilter.Linear)
                                     .magFilter(MagFilter.Linear)
                                     .load(Image.empty(PixelFormat.RGB, window.frameBufferWidth(), window.frameBufferHeight())))
                     .attach(FrameInnerBuffer.Attachment.DepthStencil,
-                            renderBuffer.bind().storage(InternalPixelFormat.BaseFormat.DEPTH24_STENCIL8, window.frameBufferWidth(), window.frameBufferHeight()))
+                            renderBuffer.bind().storage(InternalPixelFormat.Base.DEPTH24_STENCIL8, window.frameBufferWidth(), window.frameBufferHeight()))
                     .checkStatus();
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
@@ -161,7 +161,7 @@ public class C5_2_FrameBufferExercise1 {
                             .setMatrix4("projection", projection.get(mat4f))
                             .setMatrix4("view", view.get(mat4f));
 
-                    cubeTexture.bind(Texture.Target.T2D, TextureUnit.U0);
+                    cubeTexture.bind(TextureUnit.U0);
                     program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
                     cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
                     program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));

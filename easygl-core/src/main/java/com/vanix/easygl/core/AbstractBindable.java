@@ -18,14 +18,19 @@ public abstract class AbstractBindable<E extends BindTarget<E, T>, T extends Bin
         this.target = Objects.requireNonNull(target);
     }
 
-    @SuppressWarnings("unchecked")
-    protected T self() {
-        return (T) this;
-    }
-
     @Override
     public E target() {
         return target;
     }
 
+    public void assertBinding() throws IllegalStateException {
+        if (!isBound()) {
+            throw new IllegalStateException(this + " not bound.");
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public T self() {
+        return (T) this;
+    }
 }

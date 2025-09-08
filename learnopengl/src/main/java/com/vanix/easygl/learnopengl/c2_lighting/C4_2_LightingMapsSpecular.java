@@ -26,8 +26,8 @@ public class C4_2_LightingMapsSpecular {
              var cubeVAO = VertexArray.of();
              var lightCubeVAO = VertexArray.of();
              var vbo = Buffer.of(DataType.Float);
-             var diffuseMap = Texture.of2D();
-             var specularMap = Texture.of2D()) {
+             var diffuseMap = Texture2D.of();
+             var specularMap = Texture2D.of()) {
 
             window.inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
             graphics.depthTest().enable();
@@ -88,14 +88,14 @@ public class C4_2_LightingMapsSpecular {
             var lightAttr = lightCubeVAO.bind().enableAttributes(3f, -3f, -2f);
 
 
-            diffuseMap.bind(Texture.Target.T2D)
+            diffuseMap.bind()
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .magFilter(MagFilter.Linear)
                     .load("textures/container2.png")
                     .generateMipmap();
-            specularMap.bind(Texture.Target.T2D)
+            specularMap.bind()
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.LinearMipmapLinear)
@@ -138,9 +138,9 @@ public class C4_2_LightingMapsSpecular {
                         .setMatrix4("model", new Matrix4f());
 
                 TextureUnit.U0.bind();
-                diffuseMap.bind(Texture.Target.T2D);
+                diffuseMap.bind();
                 TextureUnit.U1.bind();
-                specularMap.bind(Texture.Target.T2D);
+                specularMap.bind();
 
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeAttr.countOfStride());
 

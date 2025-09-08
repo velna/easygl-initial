@@ -127,7 +127,7 @@ public class C10_3_AsteroidsInstanced {
             if (program.containsUniform("texture_diffuse1")) {
                 var textures = mesh.getTextures(Model.TextureType.Diffuse);
                 if (!textures.isEmpty()) {
-                    textures.getFirst().getTexture().bind(Texture.Target.T2D, TextureUnit.U0);
+                    textures.getFirst().getTexture().bind(TextureUnit.U0);
                     program.setInt("texture_diffuse1", 0);
                 }
             }

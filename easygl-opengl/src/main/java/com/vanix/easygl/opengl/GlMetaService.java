@@ -92,17 +92,49 @@ public class GlMetaService extends AbstractMetaService {
             GLX::glGenSamplers,
             GLX::glDeleteSamplers);
 
-    static final BindableMeta<Texture.Target<Texture2D>, Texture2D> Texture2DMeta = createTextureMeta(
+    static final BindableMeta<Texture.TexTarget<Texture1D>, Texture1D> Texture1DMeta = createTextureMeta(
+            args -> new GlTexture1D(),
+            (handle, args) -> new GlTexture1D(handle));
+
+    static final BindableMeta<Texture.TexTarget<Texture1DArray>, Texture1DArray> Texture1DArrayMeta = createTextureMeta(
+            args -> new GlTexture1DArray(),
+            (handle, args) -> new GlTexture1DArray(handle));
+
+    static final BindableMeta<Texture.TexTarget<TextureRectangle>, TextureRectangle> TextureRectangleMeta = createTextureMeta(
+            args -> new GlTextureRectangle(),
+            (handle, args) -> new GlTextureRectangle(handle));
+
+    static final BindableMeta<Texture.TexTarget<Texture2D>, Texture2D> Texture2DMeta = createTextureMeta(
             args -> new GlTexture2D(),
             (handle, args) -> new GlTexture2D(handle));
 
-    static final BindableMeta<Texture.Target<TextureCube>, TextureCube> TextureCubeMeta = createTextureMeta(
-            args -> new GlTextureCube(),
-            (handle, args) -> new GlTextureCube(handle));
+    static final BindableMeta<Texture.TexTarget<Texture2DArray>, Texture2DArray> Texture2DArrayMeta = createTextureMeta(
+            args -> new GlTexture2DArray(),
+            (handle, args) -> new GlTexture2DArray(handle));
 
-    static final BindableMeta<Texture.Target<TextureMultiSample>, TextureMultiSample> TextureMultiSampleMeta = createTextureMeta(
-            args -> new GlTextureMultiSample(),
-            (handle, args) -> new GlTextureMultiSample(handle));
+    static final BindableMeta<Texture.TexTarget<Texture3D>, Texture3D> Texture3DMeta = createTextureMeta(
+            args -> new GlTexture3D(),
+            (handle, args) -> new GlTexture3D(handle));
+
+    static final BindableMeta<Texture.TexTarget<TextureBuffer>, TextureBuffer> TextureBufferMeta = createTextureMeta(
+            args -> new GlTextureBuffer(),
+            (handle, args) -> new GlTextureBuffer(handle));
+
+    static final BindableMeta<Texture.TexTarget<TextureCubeMap>, TextureCubeMap> TextureCubeMeta = createTextureMeta(
+            args -> new GlTextureCubeMap(),
+            (handle, args) -> new GlTextureCubeMap(handle));
+
+    static final BindableMeta<Texture.TexTarget<TextureCubeMapArray>, TextureCubeMapArray> TextureCubeMapArrayMeta = createTextureMeta(
+            args -> new GlTextureCubeMapArray(),
+            (handle, args) -> new GlTextureCubeMapArray(handle));
+
+    static final BindableMeta<Texture.TexTarget<Texture2DMultiSample>, Texture2DMultiSample> Texture2DMultiSampleMeta = createTextureMeta(
+            args -> new GlTexture2DMultiSample(),
+            (handle, args) -> new GlTexture2DMultiSample(handle));
+
+    static final BindableMeta<Texture.TexTarget<Texture2DMultiSampleArray>, Texture2DMultiSampleArray> Texture2DMultiSampleArrayMeta = createTextureMeta(
+            args -> new GlTexture2DMultiSampleArray(),
+            (handle, args) -> new GlTexture2DMultiSampleArray(handle));
 
     static final Meta<Sync> SyncMeta = new DefaultMeta<>(args -> new GlSync());
 
@@ -137,9 +169,17 @@ public class GlMetaService extends AbstractMetaService {
         register(Program.class, ProgramMeta);
         register(TextureUnit.class, TextureUnitMeta);
         register(Sampler.class, SamplerMeta);
+        register(Texture1D.class, Texture1DMeta);
+        register(Texture1DArray.class, Texture1DArrayMeta);
+        register(TextureRectangle.class, TextureRectangleMeta);
         register(Texture2D.class, Texture2DMeta);
-        register(TextureCube.class, TextureCubeMeta);
-        register(TextureMultiSample.class, TextureMultiSampleMeta);
+        register(Texture2DArray.class, Texture2DArrayMeta);
+        register(Texture3D.class, Texture3DMeta);
+        register(TextureBuffer.class, TextureBufferMeta);
+        register(TextureCubeMap.class, TextureCubeMeta);
+        register(TextureCubeMapArray.class, TextureCubeMapArrayMeta);
+        register(Texture2DMultiSample.class, Texture2DMultiSampleMeta);
+        register(Texture2DMultiSampleArray.class, Texture2DMultiSampleArrayMeta);
         register(Shader.class, ShaderMeta);
         register(Sync.class, SyncMeta);
         register(Query.SampleQuery.class, SampleQueryMeta);
@@ -184,8 +224,8 @@ public class GlMetaService extends AbstractMetaService {
     }
 
     private static <T extends Texture<T>>
-    BindableMeta<Texture.Target<T>, T> createTextureMeta(Function<Object[], T> factory,
-                                                         BiFunction<Integer, Object[], T> init) {
+    BindableMeta<Texture.TexTarget<T>, T> createTextureMeta(Function<Object[], T> factory,
+                                                            BiFunction<Integer, Object[], T> init) {
         return new IntBindableMeta<>(
                 factory,
                 GLX::glBindTexture,

@@ -1,0 +1,254 @@
+package com.vanix.easygl.core.graphics;
+
+import com.vanix.easygl.core.Support;
+import com.vanix.easygl.core.media.Image;
+import org.joml.Vector3i;
+import org.joml.primitives.AABBi;
+
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
+
+public interface TextureOps {
+    interface Load2DCompressed<T> {
+        T loadCompressed(int level, InternalPixelFormat.Compressed format, int width, int height, ByteBuffer data);
+    }
+
+    interface Load2DCompressedSub<T> {
+        T loadCompressedSub(int level, InternalPixelFormat.Compressed format, int xOffset, int yOffset, int width, int height, ByteBuffer data);
+    }
+
+    interface Copy2D<T> {
+        T copy(int level, InternalPixelFormat internalPixelFormat, int x, int y, int width, int height);
+    }
+
+    interface Copy2DSub<T> {
+        T copySub(int level, int xOffset, int yOffset, int x, int y, int width, int height);
+    }
+
+    interface Load2D<T> {
+        default T allocate(InternalPixelFormat format, int width, int height) {
+            return allocate(0, format, width, height);
+        }
+
+        T allocate(int level, InternalPixelFormat format, int width, int height);
+
+        default T load(String imageResource) {
+            return load(imageResource, false);
+        }
+
+        default T load(String imageResource, boolean flipVertically) {
+            try (var image = Image.load(imageResource, flipVertically)) {
+                return load(0, image.format().internalPixelFormat(), image);
+            }
+        }
+
+        default T load(Image image) {
+            return load(0, image.format().internalPixelFormat(), image);
+        }
+
+        default T load(int level, Image image) {
+            return load(level, image.format().internalPixelFormat(), image);
+        }
+
+        default T load(int level, InternalPixelFormat internalFormat, Image image) {
+            return load(level, internalFormat, image.width(), image.height(), image.format(), image.dataType(), image.data());
+        }
+
+        T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, PixelFormat format, DataType dataType, ByteBuffer data);
+
+        T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, PixelFormat format, DataType dataType, ShortBuffer data);
+
+        T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, PixelFormat format, DataType dataType, FloatBuffer data);
+
+        T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, PixelFormat format, DataType dataType, DoubleBuffer data);
+
+        T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, PixelFormat format, DataType dataType, short[] data);
+
+        T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, PixelFormat format, DataType dataType, int[] data);
+
+        T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, PixelFormat format, DataType dataType, float[] data);
+
+        T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, PixelFormat format, DataType dataType, double[] data);
+
+    }
+
+    interface Load2DSub<T> {
+        default T loadSub(int xOffset, int yOffset, String imageResource) {
+            return loadSub(xOffset, yOffset, imageResource, false);
+        }
+
+        default T loadSub(int xOffset, int yOffset, String imageResource, boolean flipVertically) {
+            try (var image = Image.load(imageResource, flipVertically)) {
+                return loadSub(xOffset, yOffset, image);
+            }
+        }
+
+        default T loadSub(int xOffset, int yOffset, Image image) {
+            return loadSub(0, xOffset, yOffset, image.width(), image.height(), image.format(), image.dataType(), image.data());
+        }
+
+        default T loadSub(int level, int xOffset, int yOffset, Image image) {
+            return loadSub(level, xOffset, yOffset, image.width(), image.height(), image.format(), image.dataType(), image.data());
+        }
+
+        default T loadSub(int level, int xOffset, int yOffset, Image image, DataType dataType) {
+            return loadSub(level, xOffset, yOffset, image.width(), image.height(), image.format(), dataType, image.data());
+        }
+
+        T loadSub(int level, int xOffset, int yOffset, int width, int height, PixelFormat format, DataType dataType, ByteBuffer data);
+
+        T loadSub(int level, int xOffset, int yOffset, int width, int height, PixelFormat format, DataType dataType, ShortBuffer data);
+
+        T loadSub(int level, int xOffset, int yOffset, int width, int height, PixelFormat format, DataType dataType, FloatBuffer data);
+
+        T loadSub(int level, int xOffset, int yOffset, int width, int height, PixelFormat format, DataType dataType, DoubleBuffer data);
+
+        T loadSub(int level, int xOffset, int yOffset, int width, int height, PixelFormat format, DataType dataType, short[] data);
+
+        T loadSub(int level, int xOffset, int yOffset, int width, int height, PixelFormat format, DataType dataType, int[] data);
+
+        T loadSub(int level, int xOffset, int yOffset, int width, int height, PixelFormat format, DataType dataType, float[] data);
+
+        T loadSub(int level, int xOffset, int yOffset, int width, int height, PixelFormat format, DataType dataType, double[] data);
+    }
+
+    interface SetStorage2D<T> {
+
+        @Support(since = Version.GL42)
+        T setStorage(int levels, InternalPixelFormat.Sized format, int width, int height);
+    }
+
+    interface Load3DCompressed<T> {
+        T loadCompressed(int level, InternalPixelFormat.Compressed format, int width, int height, int depth, ByteBuffer data);
+    }
+
+    interface Load3DCompressedSub<T> {
+        T loadCompressedSub(int level, InternalPixelFormat.Compressed format,
+                            int xOffset, int yOffset, int zOffset,
+                            int width, int height, int depth,
+                            ByteBuffer data);
+    }
+
+    interface Copy3DSub<T> {
+        T copySub(int level, int xOffset, int yOffset, int zOffset, int x, int y, int width, int height);
+    }
+
+    interface Load3D<T> {
+        default T allocate(InternalPixelFormat format, int width, int height, int depth) {
+            return allocate(0, format, width, height, depth);
+        }
+
+        T allocate(int level, InternalPixelFormat format, int width, int height, int depth);
+
+        T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, int depth, PixelFormat format, DataType dataType, ByteBuffer data);
+
+        T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, int depth, PixelFormat format, DataType dataType, ShortBuffer data);
+
+        T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, int depth, PixelFormat format, DataType dataType, FloatBuffer data);
+
+        T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, int depth, PixelFormat format, DataType dataType, DoubleBuffer data);
+
+        T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, int depth, PixelFormat format, DataType dataType, short[] data);
+
+        T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, int depth, PixelFormat format, DataType dataType, int[] data);
+
+        T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, int depth, PixelFormat format, DataType dataType, float[] data);
+
+        T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, int depth, PixelFormat format, DataType dataType, double[] data);
+
+    }
+
+    interface Load3DSub<T> {
+        T loadSub(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, ByteBuffer data);
+
+        T loadSub(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, ShortBuffer data);
+
+        T loadSub(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, FloatBuffer data);
+
+        T loadSub(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, DoubleBuffer data);
+
+        T loadSub(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, short[] data);
+
+        T loadSub(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, int[] data);
+
+        T loadSub(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, float[] data);
+
+        T loadSub(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, double[] data);
+    }
+
+    interface SetStorage3D<T> {
+
+        @Support(since = Version.GL42)
+        T setStorage(int levels, InternalPixelFormat.Sized format, int width, int height, int depth);
+    }
+
+    interface CopyImageSubData<T> {
+        @Support(since = Version.GL43)
+        T copyImageSubData(int srcMipMapLevel, int srcX, int srcY, int srcZ, int width, int height, int depth,
+                           RenderBuffer dst, int dstX, int dstY, int dstZ);
+
+        @Support(since = Version.GL43)
+        T copyImageSubData(int srcMipMapLevel, int srcX, int srcY, int srcZ, int width, int height, int depth,
+                           Texture<?> dst, int dstMipmapLevel, int dstX, int dstY, int dstZ);
+
+        @Support(since = Version.GL43)
+        default T copyImageSubData(int srcMipMapLevel, Vector3i srcXyz, Vector3i size, RenderBuffer dst, Vector3i dstXyz) {
+            return copyImageSubData(srcMipMapLevel, srcXyz.x, srcXyz.y, srcXyz.z, size.x, size.y, size.z,
+                    dst, dstXyz.x, dstXyz.y, dstXyz.z);
+        }
+
+        @Support(since = Version.GL43)
+        default T copyImageSubData(int srcMipMapLevel, Vector3i srcXyz, Vector3i size, Texture<?> dst, int dstMipmapLevel, Vector3i dstXyz) {
+            return copyImageSubData(srcMipMapLevel, srcXyz.x, srcXyz.y, srcXyz.z, size.x, size.y, size.z,
+                    dst, dstMipmapLevel, dstXyz.x, dstXyz.y, dstXyz.z);
+        }
+
+        @Support(since = Version.GL43)
+        default T copyImageSubData(int srcMipMapLevel, AABBi src, RenderBuffer dst, Vector3i dstXyz) {
+            return copyImageSubData(srcMipMapLevel, src.minX, src.minY, src.minZ, src.lengthX(), src.lengthY(), src.lengthZ(),
+                    dst, dstXyz.x, dstXyz.y, dstXyz.z);
+        }
+
+        @Support(since = Version.GL43)
+        default T copyImageSubData(int srcMipMapLevel, AABBi src, Texture<?> dst, int dstMipmapLevel, Vector3i dstXyz) {
+            return copyImageSubData(srcMipMapLevel, src.minX, src.minY, src.minZ, src.lengthX(), src.lengthY(), src.lengthZ(),
+                    dst, dstMipmapLevel, dstXyz.x, dstXyz.y, dstXyz.z);
+        }
+    }
+
+    interface GenerateMipmap<T> {
+        T generateMipmap();
+    }
+
+    interface MakeView {
+        <V extends Texture<V>> V makeView(Texture.TexTarget<V> target, InternalPixelFormat format,
+                                          int minLevel, int numLevels, int minLayer, int numLayers);
+    }
+
+    interface Parameters<T> extends SamplerParameters<T> {
+        @Support(since = Version.GL43)
+        T depthStencilMode(Texture.DepthStencilMode mode);
+
+        T baseLevel(int value);
+
+        T maxLevel(int value);
+
+        @Support(since = Version.GL33)
+        T swizzleR(Texture.Swizzle swizzle);
+
+        @Support(since = Version.GL33)
+        T swizzleG(Texture.Swizzle swizzle);
+
+        @Support(since = Version.GL33)
+        T swizzleB(Texture.Swizzle swizzle);
+
+        @Support(since = Version.GL33)
+        T swizzleA(Texture.Swizzle swizzle);
+
+        @Support(since = Version.GL33)
+        T swizzle(Texture.Swizzle r, Texture.Swizzle g, Texture.Swizzle b, Texture.Swizzle a);
+    }
+
+}
