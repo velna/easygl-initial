@@ -1,5 +1,6 @@
 package com.vanix.easygl.media.stb;
 
+import com.vanix.easygl.core.graphics.DataType;
 import com.vanix.easygl.core.graphics.GraphicsException;
 import com.vanix.easygl.core.graphics.PixelFormat;
 import com.vanix.easygl.core.media.Image;
@@ -23,7 +24,7 @@ public class StbImage {
             stbi_set_unpremultiply_on_load(unPremultiply);
             ByteBuffer data = stbi_load(stack.UTF8(textureFile), tWidth, tHeight, tChannels, 0);
             if (null != data) {
-                return new SimpleImage(PixelFormat.ofChannels(tChannels.get()), tWidth.get(), tHeight.get(), data);
+                return new SimpleImage(PixelFormat.ofChannels(tChannels.get()), tWidth.get(), tHeight.get(), DataType.UnsignedByte, data);
             } else {
                 throw new GraphicsException("Image load failed: " + resourceFile);
             }

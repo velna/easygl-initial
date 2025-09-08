@@ -39,15 +39,15 @@ public abstract class GlBaseFrameBuffer<T extends BaseFrameBuffer<T>>
     }
 
     @Override
-    public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureMultiSample textureMultiSample) {
+    public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture2DMultiSample textureMultiSample) {
         GLX.glFramebufferTexture2D(target.value(), attachment.value(), textureMultiSample.target().value(), textureMultiSample.intHandle(), 0);
         GLX.checkError();
         return self();
     }
 
     @Override
-    public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureCube textureCube, TextureCube.Face face, int level) {
-        GLX.glFramebufferTexture2D(target.value(), attachment.value(), face.value(), textureCube.intHandle(), level);
+    public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureCubeMap textureCubeMap, TextureCubeMap.FaceTarget face, int level) {
+        GLX.glFramebufferTexture2D(target.value(), attachment.value(), face.value(), textureCubeMap.intHandle(), level);
         GLX.checkError();
         return self();
     }

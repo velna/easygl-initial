@@ -26,9 +26,9 @@ public class C4_4_LightingMapsExercise4 {
              var cubeVAO = VertexArray.of();
              var lightCubeVAO = VertexArray.of();
              var vbo = Buffer.of(DataType.Float);
-             var diffuseMap = Texture.of2D();
-             var specularMap = Texture.of2D();
-             var emissionMap = Texture.of2D()) {
+             var diffuseMap = Texture2D.of();
+             var specularMap = Texture2D.of();
+             var emissionMap = Texture2D.of()) {
 
             window.inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
             graphics.depthTest().enable();
@@ -89,15 +89,15 @@ public class C4_4_LightingMapsExercise4 {
             var lightTriangleCount = lightCubeVAO.bind().enableAttributes(3f, -3f, -2f).countOfStride();
 
 
-            diffuseMap.bind(Texture.Target.T2D)
+            diffuseMap.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/container2.png")
                     .generateMipmap();
-            specularMap.bind(Texture.Target.T2D)
+            specularMap.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/container2_specular.png")
                     .generateMipmap();
-            emissionMap.bind(Texture.Target.T2D)
+            emissionMap.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/matrix.jpg")
                     .generateMipmap();
@@ -138,9 +138,9 @@ public class C4_4_LightingMapsExercise4 {
                         .setMatrix4("view", view.get(mat4f))
                         .setMatrix4("model", new Matrix4f());
 
-                diffuseMap.bind(Texture.Target.T2D, TextureUnit.U0);
-                specularMap.bind(Texture.Target.T2D, TextureUnit.U1);
-                emissionMap.bind(Texture.Target.T2D, TextureUnit.U2);
+                diffuseMap.bind(TextureUnit.U0);
+                specularMap.bind(TextureUnit.U1);
+                emissionMap.bind(TextureUnit.U2);
 
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
 

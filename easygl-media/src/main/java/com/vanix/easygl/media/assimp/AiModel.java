@@ -4,6 +4,7 @@ import com.vanix.easygl.commons.collection.eclipse.IntBufferArrayList;
 import com.vanix.easygl.core.graphics.MagFilter;
 import com.vanix.easygl.core.graphics.MinFilter;
 import com.vanix.easygl.core.graphics.Texture;
+import com.vanix.easygl.core.graphics.Texture2D;
 import com.vanix.easygl.core.media.MediaException;
 import com.vanix.easygl.core.media.Mesh;
 import com.vanix.easygl.core.media.Model;
@@ -128,7 +129,7 @@ public class AiModel implements Model {
             String path = string.dataString();
             if (texturesLoaded.add(path)) {
                 var textureInfo = new Mesh.TextureInfo();
-                textureInfo.setTexture(Texture.of2D().bind()
+                textureInfo.setTexture(Texture2D.of().bind()
                         .load(directory + "/" + path, true)
                         .generateMipmap()
                         .wrapS(Texture.Wrap.Repeat)

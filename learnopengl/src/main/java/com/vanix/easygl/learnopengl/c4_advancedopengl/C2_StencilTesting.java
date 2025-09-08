@@ -27,8 +27,8 @@ public class C2_StencilTesting {
              var cubeVBO = Buffer.of(DataType.Float);
              var planeVAO = VertexArray.of();
              var planeVBO = Buffer.of(DataType.Float);
-             var cubeTexture = Texture.of2D();
-             var floorTexture = Texture.of2D()) {
+             var cubeTexture = Texture2D.of();
+             var floorTexture = Texture2D.of()) {
 
             window
                     .attributes().Resizable.disable().then()
@@ -109,11 +109,11 @@ public class C2_StencilTesting {
             });
             var planeTriangleCount = planeVAO.bind().enableAttributes(3f, 2f).countOfStride();
 
-            cubeTexture.bind(Texture.Target.T2D)
+            cubeTexture.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/marble.jpg")
                     .generateMipmap();
-            floorTexture.bind(Texture.Target.T2D)
+            floorTexture.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/metal.png")
                     .generateMipmap();
@@ -146,7 +146,7 @@ public class C2_StencilTesting {
 
                 //floor
                 planeVAO.bind();
-                floorTexture.bind(Texture.Target.T2D);
+                floorTexture.bind();
                 program.setMatrix4("model", new Matrix4f().get(mat4f));
                 planeVAO.drawArray(DrawMode.Triangles, planeTriangleCount);
 
@@ -157,7 +157,7 @@ public class C2_StencilTesting {
 
                 // cubes
                 cubeVAO.bind();
-                cubeTexture.bind(Texture.Target.T2D, TextureUnit.U0);
+                cubeTexture.bind(TextureUnit.U0);
                 program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
                 program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
@@ -174,7 +174,7 @@ public class C2_StencilTesting {
                 float scale = 1.1f;
                 // cubes
                 cubeVAO.bind();
-                cubeTexture.bind(Texture.Target.T2D);
+                cubeTexture.bind();
                 singleColorProgram.setMatrix4("model", new Matrix4f()
                         .translate(-1.0f, 0.0f, -1.0f)
                         .scale(scale)

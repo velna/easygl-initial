@@ -1,31 +1,22 @@
 package com.vanix.easygl.core.graphics;
 
-import com.vanix.easygl.core.media.Image;
+import com.vanix.easygl.core.meta.MetaSystem;
 
-public interface Texture2D extends Texture<Texture2D> {
+public interface Texture2D extends Texture<Texture2D>,
+        TextureOps.MakeView,
+        TextureOps.Parameters<Texture2D>,
+        TextureOps.CopyImageSubData<Texture2D>,
+        TextureOps.GenerateMipmap<Texture2D>,
+        TextureOps.Load2D<Texture2D>,
+        TextureOps.Load2DSub<Texture2D>,
+        TextureOps.Copy2D<Texture2D>,
+        TextureOps.Copy2DSub<Texture2D>,
+        TextureOps.Load2DCompressed<Texture2D>,
+        TextureOps.Load2DCompressedSub<Texture2D>,
+        TextureOps.SetStorage2D<Texture2D> {
+    Texture.TexTarget<Texture2D> Target = new Texture.TexTarget<>(MetaSystem.Graphics.queryInt("TEXTURE_2D"), "Texture2D", MetaHolder.Texture2D);
 
-    default Texture2D load(String imageResource, boolean flipVertically) {
-        try (var image = Image.load(imageResource, flipVertically)) {
-            return load(image);
-        }
+    static Texture2D of() {
+        return MetaHolder.Texture2D.create();
     }
-
-    default Texture2D load(String imageResource) {
-        return load(imageResource, false);
-    }
-
-    default Texture2D load(Image image) {
-        return load(image, 0);
-    }
-
-    default Texture2D load(Image image, int level) {
-        InternalPixelFormat internalPixelFormat = image.format().internalPixelFormat();
-        if (internalPixelFormat == null) {
-            throw new IllegalArgumentException();
-        }
-        return load(image, level, internalPixelFormat);
-    }
-
-    Texture2D load(Image image, int level, InternalPixelFormat internalFormat);
-
 }

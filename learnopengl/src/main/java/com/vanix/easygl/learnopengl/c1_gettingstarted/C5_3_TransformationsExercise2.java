@@ -24,8 +24,8 @@ public class C5_3_TransformationsExercise2 {
              var vao = VertexArray.of();
              var vbo = Buffer.of(DataType.Float);
              var ebo = Buffer.of(DataType.UnsignedInt);
-             var texture1 = Texture.of2D();
-             var texture2 = Texture.of2D()) {
+             var texture1 = Texture2D.of();
+             var texture2 = Texture2D.of()) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
 
@@ -46,7 +46,7 @@ public class C5_3_TransformationsExercise2 {
                     1, 2, 3  // second triangle
             });
 
-            texture1.bind(Texture.Target.T2D)
+            texture1.bind()
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.Linear)
@@ -55,13 +55,13 @@ public class C5_3_TransformationsExercise2 {
                 texture1.load(image).generateMipmap();
             }
 
-            texture2.bind(Texture.Target.T2D)
+            texture2.bind()
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.Linear)
                     .magFilter(MagFilter.Linear);
             try (var image = Image.load("textures/awesomeface.png")) {
-                texture2.load(image, 0, InternalPixelFormat.BaseFormat.RGB).generateMipmap();
+                texture2.load(0, InternalPixelFormat.Base.RGB, image).generateMipmap();
             }
 
             program.bind()
@@ -75,9 +75,9 @@ public class C5_3_TransformationsExercise2 {
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 TextureUnit.U0.bind();
-                texture1.bind(Texture.Target.T2D);
+                texture1.bind();
                 TextureUnit.U1.bind();
-                texture2.bind(Texture.Target.T2D);
+                texture2.bind();
 
                 float time = (System.currentTimeMillis() - start) / 1000.0f;
 

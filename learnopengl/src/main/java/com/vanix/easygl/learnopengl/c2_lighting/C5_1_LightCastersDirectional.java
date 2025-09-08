@@ -26,8 +26,8 @@ public class C5_1_LightCastersDirectional {
              var cubeVAO = VertexArray.of();
              var lightCubeVAO = VertexArray.of();
              var vbo = Buffer.of(DataType.Float);
-             var diffuseMap = Texture.of2D();
-             var specularMap = Texture.of2D()) {
+             var diffuseMap = Texture2D.of();
+             var specularMap = Texture2D.of()) {
 
             window
                     .attributes().Resizable.disable().then()
@@ -103,11 +103,11 @@ public class C5_1_LightCastersDirectional {
             var lightAttr = lightCubeVAO.bind().enableAttributes(3f, -3f, -2f);
 
 
-            diffuseMap.bind(Texture.Target.T2D)
+            diffuseMap.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/container2.png")
                     .generateMipmap();
-            specularMap.bind(Texture.Target.T2D)
+            specularMap.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/container2_specular.png")
                     .generateMipmap();
@@ -146,8 +146,8 @@ public class C5_1_LightCastersDirectional {
                         .setMatrix4("view", view.get(mat4f))
                         .setMatrix4("model", new Matrix4f());
 
-                diffuseMap.bind(Texture.Target.T2D, TextureUnit.U0);
-                specularMap.bind(Texture.Target.T2D, TextureUnit.U1);
+                diffuseMap.bind(TextureUnit.U0);
+                specularMap.bind(TextureUnit.U1);
 
 //                cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 

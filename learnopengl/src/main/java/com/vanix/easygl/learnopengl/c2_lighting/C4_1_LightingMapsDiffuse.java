@@ -26,7 +26,7 @@ public class C4_1_LightingMapsDiffuse {
              var cubeVAO = VertexArray.of();
              var lightCubeVAO = VertexArray.of();
              var vbo = Buffer.of(DataType.Float);
-             var diffuseMap = Texture.of2D()) {
+             var diffuseMap = Texture2D.of()) {
 
             window.inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
             graphics.depthTest().enable();
@@ -86,7 +86,7 @@ public class C4_1_LightingMapsDiffuse {
             var cubeAttr = cubeVAO.bind().enableAttributes(3f, 3f, 2f);
             var lightAttr = lightCubeVAO.bind().enableAttributes(3f, -3f, -2f);
 
-            diffuseMap.bind(Texture.Target.T2D)
+            diffuseMap.bind()
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.LinearMipmapLinear)
@@ -130,7 +130,7 @@ public class C4_1_LightingMapsDiffuse {
                         .setMatrix4("model", new Matrix4f());
 
                 TextureUnit.U0.bind();
-                diffuseMap.bind(Texture.Target.T2D);
+                diffuseMap.bind();
 
                 cubeVAO.bind().drawArray(DrawMode.Triangles, cubeAttr.countOfStride());
 

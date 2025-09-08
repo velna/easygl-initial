@@ -26,8 +26,8 @@ public class C7_4_CameraClass {
              var program = Program.of();
              var vao = VertexArray.of();
              var vbo = Buffer.of(DataType.Float);
-             var texture1 = Texture.of2D();
-             var texture2 = Texture.of2D()) {
+             var texture1 = Texture2D.of();
+             var texture2 = Texture2D.of()) {
 
             window.inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
             graphics.depthTest().enable();
@@ -93,7 +93,7 @@ public class C7_4_CameraClass {
                     new Vector3f(1.5f, 0.2f, -1.5f),
                     new Vector3f(-1.3f, 1.0f, -1.5f)};
 
-            texture1.bind(Texture.Target.T2D)
+            texture1.bind()
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.Linear)
@@ -102,13 +102,13 @@ public class C7_4_CameraClass {
                 texture1.load(image).generateMipmap();
             }
 
-            texture2.bind(Texture.Target.T2D)
+            texture2.bind()
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.Linear)
                     .magFilter(MagFilter.Linear);
             try (var image = Image.load("textures/awesomeface.png")) {
-                texture2.load(image, 0, InternalPixelFormat.BaseFormat.RGB).generateMipmap();
+                texture2.load(0, InternalPixelFormat.Base.RGB, image).generateMipmap();
             }
 
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
@@ -124,9 +124,9 @@ public class C7_4_CameraClass {
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
 
                 TextureUnit.U0.bind();
-                texture1.bind(Texture.Target.T2D);
+                texture1.bind();
                 TextureUnit.U1.bind();
-                texture2.bind(Texture.Target.T2D);
+                texture2.bind();
 
                 program.bind()
                         .setMatrix4("projection", new Matrix4f()

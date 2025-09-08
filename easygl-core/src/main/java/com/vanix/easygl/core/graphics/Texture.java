@@ -2,35 +2,60 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.BindTarget;
+import com.vanix.easygl.core.Bindable;
 import com.vanix.easygl.core.BindingState;
-import com.vanix.easygl.core.MultiTargetBindable;
 import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
-import lombok.ToString;
-import org.joml.Vector3i;
-import org.joml.primitives.AABBi;
 
-public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Texture.Target<T>, T>, TextureParameters<T> {
+public interface Texture<T extends Texture<T>> extends Bindable<Texture.TexTarget<T>, T> {
 
-    @ToString
-    class Target<T extends Texture<T>> implements BindTarget<Target<T>, T> {
-        //        public static final Type<?> T1D = new Type<>("TEXTURE_1D", GLC.GL_TEXTURE_1D);
-        public static final Target<Texture2D> T2D = new Target<>("TEXTURE_2D", MetaHolder.Texture2D);
-        //        public static final Type<?> T3D = new Type<>("TEXTURE_3D", GLC.GL_TEXTURE_3D);
-//        public static final Type<?> T1DArray = new Type<>("TEXTURE_1D_ARRAY", GLC.GL_TEXTURE_1D_ARRAY);
-//        public static final Type<?> T2DArray = new Type<>("TEXTURE_2D_ARRAY", GLC.GL_TEXTURE_2D_ARRAY);
-//        public static final Type<?> Rectangle = new Type<>("TEXTURE_RECTANGLE", GLC.GL_TEXTURE_RECTANGLE);
-        public static final Target<TextureCube> CubeMap = new Target<>("TEXTURE_CUBE_MAP", MetaHolder.TextureCube);
-        public static final Target<TextureMultiSample> T2DMultiSample = new Target<>("TEXTURE_2D_MULTISAMPLE", MetaHolder.TextureMultiSample);
-//        public static final Type<?> T2DMultisampleArray = new Type<>("TEXTURE_2D_MULTISAMPLE_ARRAY", GLC.GL_TEXTURE_2D_MULTISAMPLE_ARRAY);
+    default T bind(TextureUnit unit) {
+        unit.bind();
+        return this.bind();
+    }
 
+    T proxy();
+
+    T invalidateSub(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth);
+
+    default T invalidateSub1D(int level, int xOffset, int width) {
+        return invalidateSub(level, xOffset, 0, 0, width, 1, 1);
+    }
+
+    default T invalidateSub1D(int xOffset, int width) {
+        return invalidateSub(0, xOffset, 0, 0, width, 1, 1);
+    }
+
+    default T invalidateSub2D(int level, int xOffset, int yOffset, int width, int height) {
+        return invalidateSub(level, xOffset, yOffset, 0, width, height, 1);
+    }
+
+    default T invalidateSub2D(int xOffset, int yOffset, int width, int height) {
+        return invalidateSub(0, xOffset, yOffset, 0, width, height, 1);
+    }
+
+    class TexTarget<T extends Texture<T>> implements BindTarget<TexTarget<T>, T> {
         private final int value;
-        private final BindingState<Target<T>, T> state;
+        private final Integer proxyValue;
+        private final BindingState<TexTarget<T>, T> state;
 
-        private Target(String id, BindableMeta<Target<T>, T> meta) {
-            this.value = MetaSystem.Graphics.queryInt(id);
-            this.state = meta.newBindingState(id);
+        public TexTarget(int value, String name, BindableMeta<TexTarget<T>, T> meta) {
+            this(value, null, meta.newBindingState(name));
+        }
+
+        private TexTarget(int value, Integer proxyValue, BindingState<TexTarget<T>, T> state) {
+            this.value = value;
+            this.proxyValue = value;
+            this.state = state;
+        }
+
+        public int value(boolean proxy) {
+            if (proxy && proxyValue != null) {
+                return proxyValue;
+            } else {
+                return value;
+            }
         }
 
         @Override
@@ -39,8 +64,12 @@ public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Textu
         }
 
         @Override
-        public BindingState<Target<T>, T> state() {
+        public BindingState<TexTarget<T>, T> state() {
             return state;
+        }
+
+        public TexTarget<T> proxy(int proxyValue) {
+            return new TexTarget<>(value, proxyValue, state);
         }
     }
 
@@ -67,7 +96,9 @@ public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Textu
         ClampToEdge("CLAMP_TO_EDGE"),
         ClampToBorder("CLAMP_TO_BORDER"),
         MirroredRepeat("MIRRORED_REPEAT"),
-        Repeat("REPEAT");
+        Repeat("REPEAT"),
+        @Support(since = Version.GL44)
+        MirrorClampToEdge("MIRROR_CLAMP_TO_EDGE");
 
         private final int value;
 
@@ -81,78 +112,20 @@ public interface Texture<T extends Texture<T>> extends MultiTargetBindable<Textu
         }
     }
 
-    default T bind(Target<T> target, TextureUnit unit) {
-        unit.bind();
-        return this.bind(target);
+    enum DepthStencilMode implements IntEnum {
+        DepthComponent("DEPTH_COMPONENT"),
+        StencilIndex("STENCIL_INDEX");
+
+        private final int value;
+
+        DepthStencilMode(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
+        }
+
+        @Override
+        public int value() {
+            return value;
+        }
     }
 
-    T allocate(int width, int height, PixelFormat format);
-
-    T baseLevel(int value);
-
-    T maxLevel(int value);
-
-    @Support(since = Version.GL33)
-    T swizzleR(Swizzle swizzle);
-
-    @Support(since = Version.GL33)
-    T swizzleG(Swizzle swizzle);
-
-    @Support(since = Version.GL33)
-    T swizzleB(Swizzle swizzle);
-
-    @Support(since = Version.GL33)
-    T swizzleA(Swizzle swizzle);
-
-    default T swizzle(Swizzle r, Swizzle g, Swizzle b, Swizzle a) {
-        return swizzleR(r).swizzleG(g).swizzleB(b).swizzleA(a);
-    }
-
-    T generateMipmap();
-
-    //region CopyImageSubData
-    @Support(since = Version.GL43)
-    T copyImageSubData(int srcMipMapLevel, int srcX, int srcY, int srcZ, int width, int height, int depth,
-                       RenderBuffer dst, int dstX, int dstY, int dstZ);
-
-    @Support(since = Version.GL43)
-    T copyImageSubData(int srcMipMapLevel, int srcX, int srcY, int srcZ, int width, int height, int depth,
-                       Texture<?> dst, int dstMipmapLevel, int dstX, int dstY, int dstZ);
-
-    @Support(since = Version.GL43)
-    default T copyImageSubData(int srcMipMapLevel, Vector3i srcXyz, Vector3i size, RenderBuffer dst, Vector3i dstXyz) {
-        return copyImageSubData(srcMipMapLevel, srcXyz.x, srcXyz.y, srcXyz.z, size.x, size.y, size.z,
-                dst, dstXyz.x, dstXyz.y, dstXyz.z);
-    }
-
-    @Support(since = Version.GL43)
-    default T copyImageSubData(int srcMipMapLevel, Vector3i srcXyz, Vector3i size, Texture<?> dst, int dstMipmapLevel, Vector3i dstXyz) {
-        return copyImageSubData(srcMipMapLevel, srcXyz.x, srcXyz.y, srcXyz.z, size.x, size.y, size.z,
-                dst, dstMipmapLevel, dstXyz.x, dstXyz.y, dstXyz.z);
-    }
-
-    @Support(since = Version.GL43)
-    default T copyImageSubData(int srcMipMapLevel, AABBi src, RenderBuffer dst, Vector3i dstXyz) {
-        return copyImageSubData(srcMipMapLevel, src.minX, src.minY, src.minZ, src.lengthX(), src.lengthY(), src.lengthZ(),
-                dst, dstXyz.x, dstXyz.y, dstXyz.z);
-    }
-
-    @Support(since = Version.GL43)
-    default T copyImageSubData(int srcMipMapLevel, AABBi src, Texture<?> dst, int dstMipmapLevel, Vector3i dstXyz) {
-        return copyImageSubData(srcMipMapLevel, src.minX, src.minY, src.minZ, src.lengthX(), src.lengthY(), src.lengthZ(),
-                dst, dstMipmapLevel, dstXyz.x, dstXyz.y, dstXyz.z);
-    }
-    //endregion
-
-    static Texture2D of2D() {
-        return MetaHolder.Texture2D.create();
-    }
-
-    static TextureCube ofCube() {
-        return MetaHolder.TextureCube.create();
-    }
-
-    static TextureMultiSample ofMultiSample() {
-        return MetaHolder.TextureMultiSample.create();
-    }
 }

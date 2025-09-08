@@ -5,7 +5,7 @@ import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.Support;
 
 @Support(since = Version.GL33)
-public interface Sampler extends Handle, TextureParameters<Sampler> {
+public interface Sampler extends Handle, SamplerParameters<Sampler> {
     default Sampler bind(TextureUnit unit) {
         unit.bindSampler(this);
         return this;

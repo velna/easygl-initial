@@ -29,8 +29,8 @@ public class C6_1_CubemapsSkybox {
              var cubeVBO = Buffer.of(DataType.Float);
              var skyboxVAO = VertexArray.of();
              var skyboxVBO = Buffer.of(DataType.Float);
-             var cubeTexture = Texture.of2D();
-             var cubemapTexture = Texture.ofCube()) {
+             var cubeTexture = Texture2D.of();
+             var cubemapTexture = TextureCubeMap.of()) {
 
             window
                     .inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));

@@ -25,7 +25,7 @@ public class C1_AdvancedLighting {
              var program = Program.of();
              var planeVao = VertexArray.of();
              var planeVbo = Buffer.of(DataType.Float);
-             var floorTexture = Texture.of2D()) {
+             var floorTexture = Texture2D.of()) {
 
             window.inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
             window.inputs().mouse().cursorMode(Mouse.CursorMode.CURSOR_DISABLED);
@@ -48,7 +48,7 @@ public class C1_AdvancedLighting {
             });
             var planeTriangleCount = planeVao.bind().enableAttributes(3f, 3f, 2f).countOfStride();
 
-            floorTexture.bind(Texture.Target.T2D)
+            floorTexture.bind()
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.LinearMipmapLinear)

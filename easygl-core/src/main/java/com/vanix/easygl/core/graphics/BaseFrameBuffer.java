@@ -38,10 +38,10 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
     T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture2D texture2D, int level);
 
     @Support(since = Version.GL30)
-    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureMultiSample textureMultiSample);
+    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture2DMultiSample textureMultiSample);
 
     @Support(since = Version.GL30)
-    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureCube textureCube, TextureCube.Face face, int level);
+    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureCubeMap textureCubeMap, TextureCubeMap.FaceTarget face, int level);
 
     @Support(since = Version.GL30)
     T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, RenderBuffer renderBuffer);
@@ -60,18 +60,18 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
     }
 
     @Support(since = Version.GL30)
-    default T attach(FrameInnerBuffer.Attachment attachment, TextureMultiSample textureMultiSample) {
+    default T attach(FrameInnerBuffer.Attachment attachment, Texture2DMultiSample textureMultiSample) {
         return attach(target(), attachment, textureMultiSample);
     }
 
     @Support(since = Version.GL30)
-    default T attach(FrameInnerBuffer.Attachment attachment, TextureCube textureCube, TextureCube.Face face) {
-        return attach(target(), attachment, textureCube, face, 0);
+    default T attach(FrameInnerBuffer.Attachment attachment, TextureCubeMap textureCubeMap, TextureCubeMap.FaceTarget face) {
+        return attach(target(), attachment, textureCubeMap, face, 0);
     }
 
     @Support(since = Version.GL30)
-    default T attach(FrameInnerBuffer.Attachment attachment, TextureCube textureCube, TextureCube.Face face, int level) {
-        return attach(target(), attachment, textureCube, face, level);
+    default T attach(FrameInnerBuffer.Attachment attachment, TextureCubeMap textureCubeMap, TextureCubeMap.FaceTarget face, int level) {
+        return attach(target(), attachment, textureCubeMap, face, level);
     }
 
     @Support(since = Version.GL30)

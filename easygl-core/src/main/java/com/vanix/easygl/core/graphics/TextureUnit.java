@@ -9,6 +9,7 @@ import com.vanix.easygl.core.meta.MetaSystem;
 
 public abstract class TextureUnit extends SimpleIndexedIntEnum implements Bindable<BindTarget.Default<TextureUnit>, TextureUnit> {
     public static final int MAX_TEXTURE_UNITS = MetaSystem.Graphics.queryInt("MAX_COMBINED_TEXTURE_IMAGE_UNITS");
+    private static final IndexedEnumCache<TextureUnit> cache = new IndexedEnumCache<>(MAX_TEXTURE_UNITS, MetaHolder.TextureUnit::create);
     public static final BindTarget.Default<TextureUnit> Target = new BindTarget.Default<>(MetaHolder.TextureUnit.newBindingState("TextureUnit"));
     public static final TextureUnit U0 = of(0);
     public static final TextureUnit U1 = of(1);
@@ -26,7 +27,6 @@ public abstract class TextureUnit extends SimpleIndexedIntEnum implements Bindab
     public static final TextureUnit U13 = of(13);
     public static final TextureUnit U14 = of(14);
     public static final TextureUnit U15 = of(15);
-    private static final IndexedEnumCache<TextureUnit> cache = new IndexedEnumCache<>(MAX_TEXTURE_UNITS, MetaHolder.TextureUnit::create);
 
     protected TextureUnit(int index) {
         super((int) Target.state().unbindValue() + index, index);

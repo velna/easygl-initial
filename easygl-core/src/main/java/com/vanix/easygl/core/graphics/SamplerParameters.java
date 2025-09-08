@@ -2,7 +2,7 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.Color;
 
-public interface TextureParameters<T extends TextureParameters<T>> {
+public interface SamplerParameters<T> {
 
     T compareFunc(CompareFunction func);
 

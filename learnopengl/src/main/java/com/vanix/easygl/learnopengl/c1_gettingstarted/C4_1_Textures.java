@@ -20,7 +20,7 @@ public class C4_1_Textures {
              var vao = VertexArray.of();
              var vbo = Buffer.of(DataType.Float);
              var ebo = Buffer.of(DataType.UnsignedInt);
-             var texture = Texture.of2D()) {
+             var texture = Texture2D.of()) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
 
@@ -41,7 +41,7 @@ public class C4_1_Textures {
                     1, 2, 3  // second triangle
             });
 
-            texture.bind(Texture.Target.T2D)
+            texture.bind()
                     .wrapS(Texture.Wrap.Repeat)
                     .wrapT(Texture.Wrap.Repeat)
                     .minFilter(MinFilter.LinearMipmapLinear)
@@ -54,7 +54,7 @@ public class C4_1_Textures {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
 
-                texture.bind(Texture.Target.T2D);
+                texture.bind();
                 program.bind();
                 vao.drawElements(DrawMode.Triangles, ebo, 0);
 
