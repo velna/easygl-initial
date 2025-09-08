@@ -13,27 +13,27 @@
 
 (部分OpengGL 4.5的API尚未实现）
 
-| 类别  | 完成度 |
-| ------------- | ------------- |
-| Synchronization  | 100%  |
-| Asynchronous Queries  | 100%  |
-| Timer Queries  | 100%  |
-| Buffer Objects  | 90%，除了一些查询方法  |
-| Shaders and Programs  | 95%  |
-| Textures and Samplers  | 20%  |
-| Framebuffer Objects  | 90%，Texture相关只实现了2D  |
-| Vertices  | 100%  |
-| Vertex Arrays  | 20%  |
-| Vertex Attributes  |  0% |
-| Vertex Post-Processing  | 0%  |
-| Rasterization  | 100%  |
-| Fragment Shaders  | 0%  |
-| Compute Shaders  | 0%  |
-| Per-Fragment Operations  | 100%  |
-| Hints  | 0%  |
-| Whole Framebuffer  | 100%  |
-| Reading and Copying Pixels  | 100%  |
-| Debug Output  | 100%  |
+| 类别  | 完成度                 |
+| ------------- |---------------------|
+| Synchronization  | 100%                |
+| Asynchronous Queries  | 100%                |
+| Timer Queries  | 100%                |
+| Buffer Objects  | 90%，除了一些查询方法        |
+| Shaders and Programs  | 95%                 |
+| Textures and Samplers  | 95%                 |
+| Framebuffer Objects  | 90%，Texture相关只实现了2D |
+| Vertices  | 100%                |
+| Vertex Arrays  | 20%                 |
+| Vertex Attributes  | 0%                  |
+| Vertex Post-Processing  | 0%                  |
+| Rasterization  | 100%                |
+| Fragment Shaders  | 0%                  |
+| Compute Shaders  | 0%                  |
+| Per-Fragment Operations  | 100%                |
+| Hints  | 0%                  |
+| Whole Framebuffer  | 100%                |
+| Reading and Copying Pixels  | 100%                |
+| Debug Output  | 100%                |
 | State and State Requests  | 不直接实现，全部分散到相关接口方法中  |
 
 
@@ -58,7 +58,7 @@ public class C2_1_HelloTriangle {
              var vao = VertexArray.of();
              var vbo = Buffer.of(DataType.Float)) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
-                    .subscribe(event -> event.source().window().shouldClose(true));
+                    .subscribe((event) -> event.source().window().shouldClose(true));
 
             program.attachVertex("""
                             #version 330 core
@@ -75,19 +75,16 @@ public class C2_1_HelloTriangle {
                             }
                             """)
                     .link();
-            
             vbo.bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             -0.5f, -0.5f, 0.0f, // left
                             0.5f, -0.5f, 0.0f, // right
                             0.0f, 0.5f, 0.0f  // top
                     });
-            
             var triangleCount = vao.bind().enableAttributes(3f).countOfStride();
 
             while (!window.shouldClose()) {
-                graphics.defaultFrameBuffer()
-                        .setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
+                graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 program.bind();
@@ -131,8 +128,8 @@ public class C11_2_AntiAliasingMsaaOffscreen {
              var frameBuffer = FrameBuffer.of();
              var renderBuffer = RenderBuffer.of();
              var intermediateFBO = FrameBuffer.of();
-             var screenTexture = Texture.of2D();
-             var textureColorBufferMultiSampled = Texture.ofMultiSample();
+             var screenTexture = Texture2D.of();
+             var textureColorBufferMultiSampled = Texture2DMultiSample.of();
              var program = Program.of();
              var screenProgram = Program.of();
              var cubeVao = VertexArray.of();
@@ -213,10 +210,10 @@ public class C11_2_AntiAliasingMsaaOffscreen {
             var quadTriangleCount = quadVao.bind().enableAttributes(2f, 2f).countOfStride();
 
             renderBuffer.bind()
-                    .storageMultiSample(4, InternalPixelFormat.BaseFormat.DEPTH24_STENCIL8, window.frameBufferWidth(), window.frameBufferHeight())
+                    .storageMultiSample(4, InternalPixelFormat.Base.DEPTH24_STENCIL8, window.frameBufferWidth(), window.frameBufferHeight())
                     .unbind();
             textureColorBufferMultiSampled.bind()
-                    .establish(4, InternalPixelFormat.BaseFormat.RGB, window.frameBufferWidth(), window.frameBufferHeight())
+                    .establish(4, InternalPixelFormat.Base.RGB, window.frameBufferWidth(), window.frameBufferHeight())
                     .unbind();
             frameBuffer.bindFrame()
                     .attach(FrameInnerBuffer.Attachment.ofColor(0), textureColorBufferMultiSampled)
@@ -225,7 +222,7 @@ public class C11_2_AntiAliasingMsaaOffscreen {
                     .unbind();
 
             screenTexture.bind()
-                    .allocate(window.frameBufferWidth(), window.frameBufferHeight(), PixelFormat.RGB)
+                    .allocate(InternalPixelFormat.Base.RGB, window.frameBufferWidth(), window.frameBufferHeight())
                     .minFilter(MinFilter.Linear)
                     .magFilter(MagFilter.Linear);
             intermediateFBO.bindFrame()
