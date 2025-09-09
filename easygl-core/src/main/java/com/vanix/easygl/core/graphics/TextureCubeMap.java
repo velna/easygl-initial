@@ -5,6 +5,8 @@ import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface TextureCubeMap extends Texture<TextureCubeMap>,
+        TextureOps.GetSubImage<TextureCubeMap>,
+        TextureOps.GetCompressedSubImage<TextureCubeMap>,
         TextureOps.MakeView,
         TextureOps.Parameters<TextureCubeMap>,
         TextureOps.CopyImageSubData<TextureCubeMap>,
@@ -38,6 +40,8 @@ public interface TextureCubeMap extends Texture<TextureCubeMap>,
     }
 
     interface Face extends
+            TextureOps.GetImage<Face>,
+            TextureOps.GetCompressedImage<Face>,
             TextureOps.Load2D<Face>,
             TextureOps.Load2DSub<Face>,
             TextureOps.Copy2D<Face>,

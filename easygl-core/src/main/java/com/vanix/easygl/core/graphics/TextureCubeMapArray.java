@@ -3,6 +3,10 @@ package com.vanix.easygl.core.graphics;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface TextureCubeMapArray extends Texture<TextureCubeMapArray>,
+        TextureOps.GetImage<TextureCubeMapArray>,
+        TextureOps.GetSubImage<TextureCubeMapArray>,
+        TextureOps.GetCompressedImage<TextureCubeMapArray>,
+        TextureOps.GetCompressedSubImage<TextureCubeMapArray>,
         TextureOps.MakeView,
         TextureOps.Parameters<TextureCubeMapArray>,
         TextureOps.CopyImageSubData<TextureCubeMapArray>,

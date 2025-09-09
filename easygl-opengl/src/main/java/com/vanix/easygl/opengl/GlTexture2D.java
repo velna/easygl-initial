@@ -4,6 +4,10 @@ import com.vanix.easygl.core.graphics.Texture;
 import com.vanix.easygl.core.graphics.Texture2D;
 
 public class GlTexture2D extends AbstractTexture<Texture2D> implements Texture2D,
+        GlTextureOps.GetImage<Texture2D>,
+        GlTextureOps.GetSubImage<Texture2D>,
+        GlTextureOps.GetCompressedImage<Texture2D>,
+        GlTextureOps.GetCompressedSubImage<Texture2D>,
         GlTextureOps.Parameters<Texture2D>,
         GlTextureOps.CopyImageSubData<Texture2D>,
         GlTextureOps.Load2D<Texture2D>,

@@ -3,6 +3,10 @@ package com.vanix.easygl.core.graphics;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface Texture1DArray extends Texture<Texture1DArray>,
+        TextureOps.GetImage<Texture1DArray>,
+        TextureOps.GetSubImage<Texture1DArray>,
+        TextureOps.GetCompressedImage<Texture1DArray>,
+        TextureOps.GetCompressedSubImage<Texture1DArray>,
         TextureOps.MakeView,
         TextureOps.Parameters<Texture1DArray>,
         TextureOps.CopyImageSubData<Texture1DArray>,

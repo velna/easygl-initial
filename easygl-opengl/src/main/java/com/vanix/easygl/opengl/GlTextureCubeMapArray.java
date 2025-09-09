@@ -4,6 +4,10 @@ import com.vanix.easygl.core.graphics.Texture;
 import com.vanix.easygl.core.graphics.TextureCubeMapArray;
 
 public class GlTextureCubeMapArray extends AbstractTexture<TextureCubeMapArray> implements TextureCubeMapArray,
+        GlTextureOps.GetImage<TextureCubeMapArray>,
+        GlTextureOps.GetSubImage<TextureCubeMapArray>,
+        GlTextureOps.GetCompressedImage<TextureCubeMapArray>,
+        GlTextureOps.GetCompressedSubImage<TextureCubeMapArray>,
         GlTextureOps.Parameters<TextureCubeMapArray>,
         GlTextureOps.CopyImageSubData<TextureCubeMapArray>,
         GlTextureOps.MakeView<TextureCubeMapArray>,

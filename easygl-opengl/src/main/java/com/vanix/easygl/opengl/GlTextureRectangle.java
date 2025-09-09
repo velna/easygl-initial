@@ -4,6 +4,10 @@ import com.vanix.easygl.core.graphics.Texture;
 import com.vanix.easygl.core.graphics.TextureRectangle;
 
 public class GlTextureRectangle extends AbstractTexture<TextureRectangle> implements TextureRectangle,
+        GlTextureOps.GetImage<TextureRectangle>,
+        GlTextureOps.GetSubImage<TextureRectangle>,
+        GlTextureOps.GetCompressedImage<TextureRectangle>,
+        GlTextureOps.GetCompressedSubImage<TextureRectangle>,
         GlTextureOps.Parameters<TextureRectangle>,
         GlTextureOps.CopyImageSubData<TextureRectangle>,
         GlTextureOps.MakeView<TextureRectangle>,

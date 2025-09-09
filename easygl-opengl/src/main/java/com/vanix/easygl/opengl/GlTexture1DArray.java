@@ -4,6 +4,10 @@ import com.vanix.easygl.core.graphics.Texture;
 import com.vanix.easygl.core.graphics.Texture1DArray;
 
 public class GlTexture1DArray extends AbstractTexture<Texture1DArray> implements Texture1DArray,
+        GlTextureOps.GetImage<Texture1DArray>,
+        GlTextureOps.GetSubImage<Texture1DArray>,
+        GlTextureOps.GetCompressedImage<Texture1DArray>,
+        GlTextureOps.GetCompressedSubImage<Texture1DArray>,
         GlTextureOps.CopyImageSubData<Texture1DArray>,
         GlTextureOps.Parameters<Texture1DArray>,
         GlTextureOps.MakeView<Texture1DArray>,

@@ -5,10 +5,7 @@ import com.vanix.easygl.core.graphics.*;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
+import java.nio.*;
 
 public interface GlTextureOps<T> {
 
@@ -23,6 +20,141 @@ public interface GlTextureOps<T> {
     }
 
     int targetValue(boolean proxy);
+
+    interface ClearImage<T> extends TextureOps.ClearImage<T>, GlTextureOps<T> {
+        interface GlClearTexImage<D> {
+            void apply(int texture, int level, int format, int dataType, D data);
+        }
+
+        private <D> T clearImage(GlClearTexImage<D> glClearTexImage, int level, PixelFormat format, DataType dataType, D data) {
+            glClearTexImage.apply(intHandle(), level, format.value(), dataType.value(), data);
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default T clearImage(int level, PixelFormat format, DataType dataType, ByteBuffer data) {
+            return clearImage(GLX::glClearTexImage, level, format, dataType, data);
+        }
+
+        @Override
+        default T clearImage(int level, PixelFormat format, DataType dataType, short[] data) {
+            return clearImage(GLX::glClearTexImage, level, format, dataType, data);
+        }
+
+        @Override
+        default T clearImage(int level, PixelFormat format, DataType dataType, int[] data) {
+            return clearImage(GLX::glClearTexImage, level, format, dataType, data);
+        }
+
+        @Override
+        default T clearImage(int level, PixelFormat format, DataType dataType, float[] data) {
+            return clearImage(GLX::glClearTexImage, level, format, dataType, data);
+        }
+
+        @Override
+        default T clearImage(int level, PixelFormat format, DataType dataType, double[] data) {
+            return clearImage(GLX::glClearTexImage, level, format, dataType, data);
+        }
+
+        @Override
+        default T clearImage(int level, PixelFormat format, DataType dataType, ShortBuffer data) {
+            return clearImage(GLX::glClearTexImage, level, format, dataType, data);
+        }
+
+        @Override
+        default T clearImage(int level, PixelFormat format, DataType dataType, IntBuffer data) {
+            return clearImage(GLX::glClearTexImage, level, format, dataType, data);
+        }
+
+        @Override
+        default T clearImage(int level, PixelFormat format, DataType dataType, FloatBuffer data) {
+            return clearImage(GLX::glClearTexImage, level, format, dataType, data);
+        }
+
+        @Override
+        default T clearImage(int level, PixelFormat format, DataType dataType, DoubleBuffer data) {
+            return clearImage(GLX::glClearTexImage, level, format, dataType, data);
+        }
+    }
+
+    interface ClearSubImage<T> extends TextureOps.ClearSubImage<T>, GlTextureOps<T> {
+        interface GlClearTexSubImage<D> {
+            void apply(int texture, int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, int format, int dataType, D data);
+        }
+
+        private <D> T clearSubImage(GlClearTexSubImage<D> glClearTexSubImage, int level,
+                                    int xOffset, int yOffset, int zOffset,
+                                    int width, int height, int depth,
+                                    PixelFormat format, DataType dataType, D data) {
+            glClearTexSubImage.apply(intHandle(), level, xOffset, yOffset, zOffset, width, height, depth, format.value(), dataType.value(), data);
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                PixelFormat format, DataType dataType, ByteBuffer data) {
+            return clearSubImage(GLX::glClearTexSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
+        }
+
+        @Override
+        default T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                PixelFormat format, DataType dataType, short[] data) {
+            return clearSubImage(GLX::glClearTexSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
+        }
+
+        @Override
+        default T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                PixelFormat format, DataType dataType, int[] data) {
+            return clearSubImage(GLX::glClearTexSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
+        }
+
+        @Override
+        default T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                PixelFormat format, DataType dataType, float[] data) {
+            return clearSubImage(GLX::glClearTexSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
+        }
+
+        @Override
+        default T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                PixelFormat format, DataType dataType, double[] data) {
+            return clearSubImage(GLX::glClearTexSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
+        }
+
+        @Override
+        default T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                PixelFormat format, DataType dataType, ShortBuffer data) {
+            return clearSubImage(GLX::glClearTexSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
+        }
+
+        @Override
+        default T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                PixelFormat format, DataType dataType, IntBuffer data) {
+            return clearSubImage(GLX::glClearTexSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
+        }
+
+        @Override
+        default T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                PixelFormat format, DataType dataType, FloatBuffer data) {
+            return clearSubImage(GLX::glClearTexSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
+        }
+
+        @Override
+        default T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                PixelFormat format, DataType dataType, DoubleBuffer data) {
+            return clearSubImage(GLX::glClearTexSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
+        }
+    }
 
     interface Copy2D<T> extends TextureOps.Copy2D<T>, GlTextureOps<T> {
 
@@ -90,6 +222,189 @@ public interface GlTextureOps<T> {
             GLX.glGenerateMipmap(targetValue());
             GLX.checkError();
             return (T) this;
+        }
+    }
+
+    interface GetCompressedImage<T> extends TextureOps.GetCompressedImage<T>, GlTextureOps<T> {
+        @Override
+        default T getCompressedImage(int level, ByteBuffer data) {
+            GLX.glGetCompressedTexImage(targetValue(), level, data);
+            GLX.checkError();
+            return self();
+        }
+    }
+
+    interface GetCompressedSubImage<T> extends TextureOps.GetCompressedSubImage<T>, GlTextureOps<T> {
+        interface GlGetCompressedTextureSubImage<D> {
+            void apply(int texture, int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, D data);
+        }
+
+        private <D> T getCompressedSubImage(GlGetCompressedTextureSubImage<D> glGetCompressedTextureSubImage,
+                                            int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, D data) {
+            glGetCompressedTextureSubImage.apply(intHandle(), level, xOffset, yOffset, zOffset, width, height, depth, data);
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, ByteBuffer data) {
+            return getCompressedSubImage(GLX::glGetCompressedTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, data);
+        }
+
+        @Override
+        default T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, short[] data) {
+            return getCompressedSubImage(GLX::glGetCompressedTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, data);
+        }
+
+        @Override
+        default T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, int[] data) {
+            return getCompressedSubImage(GLX::glGetCompressedTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, data);
+        }
+
+        @Override
+        default T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, float[] data) {
+            return getCompressedSubImage(GLX::glGetCompressedTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, data);
+        }
+
+        @Override
+        default T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, double[] data) {
+            return getCompressedSubImage(GLX::glGetCompressedTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, data);
+        }
+
+        @Override
+        default T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, ShortBuffer data) {
+            return getCompressedSubImage(GLX::glGetCompressedTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, data);
+        }
+
+        @Override
+        default T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, IntBuffer data) {
+            return getCompressedSubImage(GLX::glGetCompressedTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, data);
+        }
+
+        @Override
+        default T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, FloatBuffer data) {
+            return getCompressedSubImage(GLX::glGetCompressedTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, data);
+        }
+
+        @Override
+        default T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, DoubleBuffer data) {
+            return getCompressedSubImage(GLX::glGetCompressedTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, data);
+        }
+    }
+
+    interface GetImage<T> extends TextureOps.GetImage<T>, GlTextureOps<T> {
+        interface GlGetTextImage<D> {
+            void apply(int texture, int level, int format, int dataType, D data);
+        }
+
+        private <D> T getImage(GlGetTextImage<D> glGetTextImage, int level, PixelFormat format, DataType dataType, D data) {
+            glGetTextImage.apply(intHandle(), level, format.value(), dataType.value(), data);
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default T getImage(int level, PixelFormat format, DataType dataType, ByteBuffer data) {
+            return getImage(GLX::glGetTexImage, level, format, dataType, data);
+        }
+
+        @Override
+        default T getImage(int level, PixelFormat format, DataType dataType, short[] data) {
+            return getImage(GLX::glGetTexImage, level, format, dataType, data);
+        }
+
+        @Override
+        default T getImage(int level, PixelFormat format, DataType dataType, int[] data) {
+            return getImage(GLX::glGetTexImage, level, format, dataType, data);
+        }
+
+        @Override
+        default T getImage(int level, PixelFormat format, DataType dataType, float[] data) {
+            return getImage(GLX::glGetTexImage, level, format, dataType, data);
+        }
+
+        @Override
+        default T getImage(int level, PixelFormat format, DataType dataType, double[] data) {
+            return getImage(GLX::glGetTexImage, level, format, dataType, data);
+        }
+
+        @Override
+        default T getImage(int level, PixelFormat format, DataType dataType, ShortBuffer data) {
+            return getImage(GLX::glGetTexImage, level, format, dataType, data);
+        }
+
+        @Override
+        default T getImage(int level, PixelFormat format, DataType dataType, IntBuffer data) {
+            return getImage(GLX::glGetTexImage, level, format, dataType, data);
+        }
+
+        @Override
+        default T getImage(int level, PixelFormat format, DataType dataType, FloatBuffer data) {
+            return getImage(GLX::glGetTexImage, level, format, dataType, data);
+        }
+
+        @Override
+        default T getImage(int level, PixelFormat format, DataType dataType, DoubleBuffer data) {
+            return getImage(GLX::glGetTexImage, level, format, dataType, data);
+        }
+    }
+
+    interface GetSubImage<T> extends TextureOps.GetSubImage<T>, GlTextureOps<T> {
+        interface GlGetTextureSubImage<D> {
+            void apply(int texture, int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, int format, int dataType, D data);
+        }
+
+        private <D> T getSubImage(GlGetTextureSubImage<D> glGetTextureSubImage, int level,
+                                  int xOffset, int yOffset, int zOffset, int width, int height, int depth,
+                                  PixelFormat format, DataType dataType, D data) {
+            glGetTextureSubImage.apply(intHandle(), level, xOffset, yOffset, zOffset, width, height, depth, format.value(), dataType.value(), data);
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default T getSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, ByteBuffer data) {
+            return getSubImage(GLX::glGetTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
+        }
+
+        @Override
+        default T getSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, short[] data) {
+            return getSubImage(GLX::glGetTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
+        }
+
+        @Override
+        default T getSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, int[] data) {
+            return getSubImage(GLX::glGetTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
+        }
+
+        @Override
+        default T getSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, float[] data) {
+            return getSubImage(GLX::glGetTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
+        }
+
+        @Override
+        default T getSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, double[] data) {
+            return getSubImage(GLX::glGetTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
+        }
+
+        @Override
+        default T getSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, ShortBuffer data) {
+            return getSubImage(GLX::glGetTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
+        }
+
+        @Override
+        default T getSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, IntBuffer data) {
+            return getSubImage(GLX::glGetTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
+        }
+
+        @Override
+        default T getSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, FloatBuffer data) {
+            return getSubImage(GLX::glGetTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
+        }
+
+        @Override
+        default T getSubImage(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, DoubleBuffer data) {
+            return getSubImage(GLX::glGetTextureSubImage, level, xOffset, yOffset, zOffset, width, height, depth, format, dataType, data);
         }
     }
 

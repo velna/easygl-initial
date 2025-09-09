@@ -6,6 +6,10 @@ import org.lwjgl.system.MemoryUtil;
 import java.nio.*;
 
 public class GlTexture1D extends AbstractTexture<Texture1D> implements Texture1D,
+        GlTextureOps.GetImage<Texture1D>,
+        GlTextureOps.GetSubImage<Texture1D>,
+        GlTextureOps.GetCompressedImage<Texture1D>,
+        GlTextureOps.GetCompressedSubImage<Texture1D>,
         GlTextureOps.CopyImageSubData<Texture1D>,
         GlTextureOps.Parameters<Texture1D>,
         GlTextureOps.MakeView<Texture1D>,
