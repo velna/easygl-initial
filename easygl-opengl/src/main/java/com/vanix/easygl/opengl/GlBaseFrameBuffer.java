@@ -25,6 +25,13 @@ public abstract class GlBaseFrameBuffer<T extends BaseFrameBuffer<T>>
     }
 
     @Override
+    public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture1D texture1D, int level) {
+        GLX.glFramebufferTexture1D(target.value(), attachment.value(), texture1D.target().value(), texture1D.intHandle(), level);
+        GLX.checkError();
+        return self();
+    }
+
+    @Override
     public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture2D texture, int level) {
         GLX.glFramebufferTexture2D(target.value(), attachment.value(), texture.target().value(), texture.intHandle(), level);
         GLX.checkError();
@@ -32,8 +39,8 @@ public abstract class GlBaseFrameBuffer<T extends BaseFrameBuffer<T>>
     }
 
     @Override
-    public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, RenderBuffer renderBuffer) {
-        GLX.glFramebufferRenderbuffer(target.value(), attachment.value(), GLX.GL_RENDERBUFFER, renderBuffer.intHandle());
+    public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureRectangle textureRectangle) {
+        GLX.glFramebufferTexture2D(target.value(), attachment.value(), textureRectangle.target().value(), textureRectangle.intHandle(), 0);
         GLX.checkError();
         return self();
     }
@@ -46,8 +53,22 @@ public abstract class GlBaseFrameBuffer<T extends BaseFrameBuffer<T>>
     }
 
     @Override
-    public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureCubeMap textureCubeMap, TextureCubeMap.FaceTarget face, int level) {
-        GLX.glFramebufferTexture2D(target.value(), attachment.value(), face.value(), textureCubeMap.intHandle(), level);
+    public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureCubeMap.Face face, int level) {
+        GLX.glFramebufferTexture2D(target.value(), attachment.value(), face.target().value(), face.cubeMap().intHandle(), level);
+        GLX.checkError();
+        return self();
+    }
+
+    @Override
+    public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture3D texture3D, int level, int layer) {
+        GLX.glFramebufferTexture3D(target.value(), attachment.value(), texture3D.target().value(), texture3D.intHandle(), level, layer);
+        GLX.checkError();
+        return self();
+    }
+
+    @Override
+    public T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, RenderBuffer renderBuffer) {
+        GLX.glFramebufferRenderbuffer(target.value(), attachment.value(), GLX.GL_RENDERBUFFER, renderBuffer.intHandle());
         GLX.checkError();
         return self();
     }

@@ -35,19 +35,10 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
     }
 
     @Support(since = Version.GL30)
+    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture1D texture1D, int level);
+
+    @Support(since = Version.GL30)
     T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture2D texture2D, int level);
-
-    @Support(since = Version.GL30)
-    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture2DMultiSample textureMultiSample);
-
-    @Support(since = Version.GL30)
-    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureCubeMap textureCubeMap, TextureCubeMap.FaceTarget face, int level);
-
-    @Support(since = Version.GL30)
-    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, RenderBuffer renderBuffer);
-
-    @Support(since = Version.GL30)
-    T detachRenderBuffer(Target<T> target, FrameInnerBuffer.Attachment attachment);
 
     @Support(since = Version.GL30)
     default T attach(FrameInnerBuffer.Attachment attachment, Texture2D texture2D) {
@@ -60,24 +51,42 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
     }
 
     @Support(since = Version.GL30)
+    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureRectangle textureRectangle);
+
+    @Support(since = Version.GL30)
+    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, TextureCubeMap.Face face, int level);
+
+    @Support(since = Version.GL30)
+    default T attach(FrameInnerBuffer.Attachment attachment, TextureCubeMap.Face face) {
+        return attach(target(), attachment, face, 0);
+    }
+
+    @Support(since = Version.GL30)
+    default T attach(FrameInnerBuffer.Attachment attachment, TextureCubeMap.Face face, int level) {
+        return attach(target(), attachment, face, level);
+    }
+
+    @Support(since = Version.GL30)
+    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture2DMultiSample textureMultiSample);
+
+    @Support(since = Version.GL30)
     default T attach(FrameInnerBuffer.Attachment attachment, Texture2DMultiSample textureMultiSample) {
         return attach(target(), attachment, textureMultiSample);
     }
 
     @Support(since = Version.GL30)
-    default T attach(FrameInnerBuffer.Attachment attachment, TextureCubeMap textureCubeMap, TextureCubeMap.FaceTarget face) {
-        return attach(target(), attachment, textureCubeMap, face, 0);
-    }
+    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, Texture3D texture3D, int level, int layer);
 
     @Support(since = Version.GL30)
-    default T attach(FrameInnerBuffer.Attachment attachment, TextureCubeMap textureCubeMap, TextureCubeMap.FaceTarget face, int level) {
-        return attach(target(), attachment, textureCubeMap, face, level);
-    }
+    T attach(Target<T> target, FrameInnerBuffer.Attachment attachment, RenderBuffer renderBuffer);
 
     @Support(since = Version.GL30)
     default T attach(FrameInnerBuffer.Attachment attachment, RenderBuffer renderBuffer) {
         return attach(target(), attachment, renderBuffer);
     }
+
+    @Support(since = Version.GL30)
+    T detachRenderBuffer(Target<T> target, FrameInnerBuffer.Attachment attachment);
 
     @Support(since = Version.GL30)
     default T detachRenderBuffer(FrameInnerBuffer.Attachment attachment) {
