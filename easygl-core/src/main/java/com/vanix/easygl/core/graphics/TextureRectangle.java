@@ -3,6 +3,10 @@ package com.vanix.easygl.core.graphics;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface TextureRectangle extends Texture<TextureRectangle>,
+        TextureOps.GetImage<TextureRectangle>,
+        TextureOps.GetSubImage<TextureRectangle>,
+        TextureOps.GetCompressedImage<TextureRectangle>,
+        TextureOps.GetCompressedSubImage<TextureRectangle>,
         TextureOps.MakeView,
         TextureOps.Parameters<TextureRectangle>,
         TextureOps.CopyImageSubData<TextureRectangle>,

@@ -5,6 +5,8 @@ import com.vanix.easygl.core.graphics.TextureCubeMap;
 import com.vanix.easygl.core.media.Image;
 
 public class GlTextureCubeMap extends AbstractTexture<TextureCubeMap> implements TextureCubeMap,
+        GlTextureOps.GetSubImage<TextureCubeMap>,
+        GlTextureOps.GetCompressedSubImage<TextureCubeMap>,
         GlTextureOps.Parameters<TextureCubeMap>,
         GlTextureOps.CopyImageSubData<TextureCubeMap>,
         GlTextureOps.MakeView<TextureCubeMap>,
@@ -65,6 +67,8 @@ public class GlTextureCubeMap extends AbstractTexture<TextureCubeMap> implements
     private record FaceImpl(TextureCubeMap textureCubeMap,
                             FaceTarget faceTarget,
                             Integer proxyValue) implements Face,
+            GetImage<Face>,
+            GetCompressedImage<Face>,
             Load2D<Face>,
             Load2DSub<Face>,
             Copy2D<Face>,

@@ -8,7 +8,9 @@ import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.BindableMeta;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public interface Texture<T extends Texture<T>> extends Bindable<Texture.TexTarget<T>, T> {
+public interface Texture<T extends Texture<T>> extends Bindable<Texture.TexTarget<T>, T>,
+        TextureOps.ClearImage<T>,
+        TextureOps.ClearSubImage<T> {
 
     default T bind(TextureUnit unit) {
         unit.bind();

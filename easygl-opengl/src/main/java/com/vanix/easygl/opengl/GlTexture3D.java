@@ -4,6 +4,10 @@ import com.vanix.easygl.core.graphics.Texture;
 import com.vanix.easygl.core.graphics.Texture3D;
 
 public class GlTexture3D extends AbstractTexture<Texture3D> implements Texture3D,
+        GlTextureOps.GetImage<Texture3D>,
+        GlTextureOps.GetSubImage<Texture3D>,
+        GlTextureOps.GetCompressedImage<Texture3D>,
+        GlTextureOps.GetCompressedSubImage<Texture3D>,
         GlTextureOps.Parameters<Texture3D>,
         GlTextureOps.CopyImageSubData<Texture3D>,
         GlTextureOps.MakeView<Texture3D>,

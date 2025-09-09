@@ -5,12 +5,84 @@ import com.vanix.easygl.core.media.Image;
 import org.joml.Vector3i;
 import org.joml.primitives.AABBi;
 
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
-import java.nio.FloatBuffer;
-import java.nio.ShortBuffer;
+import java.nio.*;
 
 public interface TextureOps {
+
+    interface ClearImage<T> {
+        @Support(since = Version.GL44)
+        T clearImage(int level, PixelFormat format, DataType dataType, ByteBuffer data);
+
+        @Support(since = Version.GL44)
+        T clearImage(int level, PixelFormat format, DataType dataType, short[] data);
+
+        @Support(since = Version.GL44)
+        T clearImage(int level, PixelFormat format, DataType dataType, int[] data);
+
+        @Support(since = Version.GL44)
+        T clearImage(int level, PixelFormat format, DataType dataType, float[] data);
+
+        T clearImage(int level, PixelFormat format, DataType dataType, double[] data);
+
+        @Support(since = Version.GL44)
+        T clearImage(int level, PixelFormat format, DataType dataType, ShortBuffer data);
+
+        @Support(since = Version.GL44)
+        T clearImage(int level, PixelFormat format, DataType dataType, IntBuffer data);
+
+        @Support(since = Version.GL44)
+        T clearImage(int level, PixelFormat format, DataType dataType, FloatBuffer data);
+
+        @Support(since = Version.GL44)
+        T clearImage(int level, PixelFormat format, DataType dataType, DoubleBuffer data);
+    }
+
+    interface ClearSubImage<T> {
+        @Support(since = Version.GL44)
+        T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                        int width, int height, int depth,
+                        PixelFormat format, DataType dataType, ByteBuffer data);
+
+        @Support(since = Version.GL44)
+        T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                        int width, int height, int depth,
+                        PixelFormat format, DataType dataType, short[] data);
+
+        @Support(since = Version.GL44)
+        T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                        int width, int height, int depth,
+                        PixelFormat format, DataType dataType, int[] data);
+
+        @Support(since = Version.GL44)
+        T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                        int width, int height, int depth,
+                        PixelFormat format, DataType dataType, float[] data);
+
+        T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                        int width, int height, int depth,
+                        PixelFormat format, DataType dataType, double[] data);
+
+        @Support(since = Version.GL44)
+        T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                        int width, int height, int depth,
+                        PixelFormat format, DataType dataType, ShortBuffer data);
+
+        @Support(since = Version.GL44)
+        T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                        int width, int height, int depth,
+                        PixelFormat format, DataType dataType, IntBuffer data);
+
+        @Support(since = Version.GL44)
+        T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                        int width, int height, int depth,
+                        PixelFormat format, DataType dataType, FloatBuffer data);
+
+        @Support(since = Version.GL44)
+        T clearSubImage(int level, int xOffset, int yOffset, int zOffset,
+                        int width, int height, int depth,
+                        PixelFormat format, DataType dataType, DoubleBuffer data);
+    }
+
     interface Copy2D<T> {
         T copy(int level, InternalPixelFormat internalPixelFormat, int x, int y, int width, int height);
     }
@@ -59,6 +131,124 @@ public interface TextureOps {
 
     interface GenerateMipmap<T> {
         T generateMipmap();
+    }
+
+    interface GetCompressedImage<T> {
+        T getCompressedImage(int level, ByteBuffer data);
+    }
+
+    interface GetCompressedSubImage<T> {
+        @Support(since = Version.GL45)
+        T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                ByteBuffer data);
+
+        @Support(since = Version.GL45)
+        T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                short[] data);
+
+        @Support(since = Version.GL45)
+        T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                int[] data);
+
+        @Support(since = Version.GL45)
+        T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                float[] data);
+
+        @Support(since = Version.GL45)
+        T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                double[] data);
+
+        @Support(since = Version.GL45)
+        T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                ShortBuffer data);
+
+        @Support(since = Version.GL45)
+        T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                IntBuffer data);
+
+        @Support(since = Version.GL45)
+        T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                FloatBuffer data);
+
+        @Support(since = Version.GL45)
+        T getCompressedSubImage(int level, int xOffset, int yOffset, int zOffset,
+                                int width, int height, int depth,
+                                DoubleBuffer data);
+    }
+
+    interface GetImage<T> {
+        T getImage(int level, PixelFormat format, DataType dataType, ByteBuffer data);
+
+        T getImage(int level, PixelFormat format, DataType dataType, short[] data);
+
+        T getImage(int level, PixelFormat format, DataType dataType, int[] data);
+
+        T getImage(int level, PixelFormat format, DataType dataType, float[] data);
+
+        T getImage(int level, PixelFormat format, DataType dataType, double[] data);
+
+        T getImage(int level, PixelFormat format, DataType dataType, ShortBuffer data);
+
+        T getImage(int level, PixelFormat format, DataType dataType, IntBuffer data);
+
+        T getImage(int level, PixelFormat format, DataType dataType, FloatBuffer data);
+
+        T getImage(int level, PixelFormat format, DataType dataType, DoubleBuffer data);
+    }
+
+    interface GetSubImage<T> {
+        @Support(since = Version.GL45)
+        T getSubImage(int level, int xOffset, int yOffset, int zOffset,
+                      int width, int height, int depth,
+                      PixelFormat format, DataType dataType, ByteBuffer data);
+
+        @Support(since = Version.GL45)
+        T getSubImage(int level, int xOffset, int yOffset, int zOffset,
+                      int width, int height, int depth,
+                      PixelFormat format, DataType dataType, short[] data);
+
+        @Support(since = Version.GL45)
+        T getSubImage(int level, int xOffset, int yOffset, int zOffset,
+                      int width, int height, int depth,
+                      PixelFormat format, DataType dataType, int[] data);
+
+        @Support(since = Version.GL45)
+        T getSubImage(int level, int xOffset, int yOffset, int zOffset,
+                      int width, int height, int depth,
+                      PixelFormat format, DataType dataType, float[] data);
+
+        @Support(since = Version.GL45)
+        T getSubImage(int level, int xOffset, int yOffset, int zOffset,
+                      int width, int height, int depth,
+                      PixelFormat format, DataType dataType, double[] data);
+
+        @Support(since = Version.GL45)
+        T getSubImage(int level, int xOffset, int yOffset, int zOffset,
+                      int width, int height, int depth,
+                      PixelFormat format, DataType dataType, ShortBuffer data);
+
+        @Support(since = Version.GL45)
+        T getSubImage(int level, int xOffset, int yOffset, int zOffset,
+                      int width, int height, int depth,
+                      PixelFormat format, DataType dataType, IntBuffer data);
+
+        @Support(since = Version.GL45)
+        T getSubImage(int level, int xOffset, int yOffset, int zOffset,
+                      int width, int height, int depth,
+                      PixelFormat format, DataType dataType, FloatBuffer data);
+
+        @Support(since = Version.GL45)
+        T getSubImage(int level, int xOffset, int yOffset, int zOffset,
+                      int width, int height, int depth,
+                      PixelFormat format, DataType dataType, DoubleBuffer data);
     }
 
     interface Load2D<T> {

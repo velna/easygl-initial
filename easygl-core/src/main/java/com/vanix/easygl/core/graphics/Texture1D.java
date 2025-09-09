@@ -6,6 +6,10 @@ import com.vanix.easygl.core.meta.MetaSystem;
 import java.nio.*;
 
 public interface Texture1D extends Texture<Texture1D>,
+        TextureOps.GetImage<Texture1D>,
+        TextureOps.GetSubImage<Texture1D>,
+        TextureOps.GetCompressedImage<Texture1D>,
+        TextureOps.GetCompressedSubImage<Texture1D>,
         TextureOps.MakeView,
         TextureOps.Parameters<Texture1D>,
         TextureOps.CopyImageSubData<Texture1D>,

@@ -3,6 +3,10 @@ package com.vanix.easygl.core.graphics;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface Texture3D extends Texture<Texture3D>,
+        TextureOps.GetImage<Texture3D>,
+        TextureOps.GetSubImage<Texture3D>,
+        TextureOps.GetCompressedImage<Texture3D>,
+        TextureOps.GetCompressedSubImage<Texture3D>,
         TextureOps.MakeView,
         TextureOps.Parameters<Texture3D>,
         TextureOps.CopyImageSubData<Texture3D>,

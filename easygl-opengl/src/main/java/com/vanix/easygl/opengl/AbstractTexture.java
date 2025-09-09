@@ -9,8 +9,9 @@ import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 
 import java.util.function.IntConsumer;
 
-public abstract class AbstractTexture<T extends Texture<T>> extends AbstractBindable<Texture.TexTarget<T>, T>
-        implements Texture<T> {
+public abstract class AbstractTexture<T extends Texture<T>> extends AbstractBindable<Texture.TexTarget<T>, T> implements Texture<T>,
+        GlTextureOps.ClearImage<T>,
+        GlTextureOps.ClearSubImage<T> {
 
     private static final MutableIntObjectMap<Texture<?>> CACHE = IntObjectMaps.mutable.of();
 
