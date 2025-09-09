@@ -9,14 +9,22 @@ public enum PixelFormat {
     DEPTH_COMPONENT("DEPTH_COMPONENT", InternalPixelFormat.Base.DEPTH_COMPONENT),
     GL_DEPTH_STENCIL("DEPTH_STENCIL", InternalPixelFormat.Base.DEPTH_STENCIL),
     RED("RED", InternalPixelFormat.Base.RED),
-    RG("RG", InternalPixelFormat.Base.RG),
     GREEN("GREEN"),
     BLUE("BLUE"),
     ALPHA("ALPHA"),
+    RG("RG", InternalPixelFormat.Base.RG),
     RGB("RGB", InternalPixelFormat.Base.RGB),
     RGBA("RGBA", InternalPixelFormat.Base.RGBA),
     BGR("BGR", InternalPixelFormat.Base.RGB),
-    BGRA("BGRA", InternalPixelFormat.Base.RGBA);
+    BGRA("BGRA", InternalPixelFormat.Base.RGBA),
+    RED_INTEGER("RED_INTEGER", InternalPixelFormat.Base.RED),
+    GREEN_INTEGER("GREEN_INTEGER"),
+    BLUE_INTEGER("BLUE_INTEGER"),
+    RG_INTEGER("RG_INTEGER", InternalPixelFormat.Base.RG),
+    RGB_INTEGER("RGB_INTEGER", InternalPixelFormat.Base.RGB),
+    RGBA_INTEGER("RGBA_INTEGER", InternalPixelFormat.Base.RGBA),
+    BGR_INTEGER("BGR_INTEGER", InternalPixelFormat.Base.RGB),
+    BGRA_INTEGER("BGRA_INTEGER", InternalPixelFormat.Base.RGBA);
 
     private final int value;
     private final InternalPixelFormat internalPixelFormat;

@@ -19,7 +19,8 @@ class MetaHolder {
     static final BindableMeta<Texture.TexTarget<Texture2DArray>, Texture2DArray> Texture2DArray = MetaSystem.Graphics.of(Texture2DArray.class);
     static final BindableMeta<Texture.TexTarget<Texture3D>, Texture3D> Texture3D = MetaSystem.Graphics.of(Texture3D.class);
     static final BindableMeta<Texture.TexTarget<TextureBuffer>, TextureBuffer> TextureBuffer = MetaSystem.Graphics.of(TextureBuffer.class);
-    static final BindableMeta<BindTarget.Default<TextureUnit>, com.vanix.easygl.core.graphics.TextureUnit> TextureUnit = MetaSystem.Graphics.of(com.vanix.easygl.core.graphics.TextureUnit.class);
+    static final BindableMeta<BindTarget.Default<TextureUnit>, TextureUnit> TextureUnit = MetaSystem.Graphics.of(TextureUnit.class);
+    static final com.vanix.easygl.core.meta.Meta<ImageUnit> ImageUnit = MetaSystem.Graphics.of(ImageUnit.class);
     static final com.vanix.easygl.core.meta.Meta<Sync> Sync = MetaSystem.Graphics.of(Sync.class);
     static final HandleMeta<Shader> Shader = MetaSystem.Graphics.of(Shader.class);
     static final BindableMeta<BindTarget.Default<RenderBuffer>, RenderBuffer> RenderBuffer = MetaSystem.Graphics.of(RenderBuffer.class);

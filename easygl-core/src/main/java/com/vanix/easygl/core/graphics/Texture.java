@@ -17,6 +17,45 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.TexTarge
 
     T proxy();
 
+    // region Level Parameters
+    int alphaSize(int level);
+
+    DataType alphaType(int level);
+
+    int blueSize(int level);
+
+    DataType blueType(int level);
+
+    int bufferOffset(int level);
+
+    int bufferSize(int level);
+
+    int compressedImageSize(int level);
+
+    int depth(int level);
+
+    int depthSize(int level);
+
+    DataType depthType(int level);
+
+    int greenSize(int level);
+
+    DataType greenType(int level);
+
+    int height(int level);
+
+    InternalPixelFormat internalFormat(int level);
+
+    boolean isCompressed(int level);
+
+    int redSize(int level);
+
+    DataType redType(int level);
+
+    int width(int level);
+    // endregion
+
+    // region Invalidate Sub
     T invalidateSub(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth);
 
     default T invalidateSub1D(int level, int xOffset, int width) {
@@ -34,6 +73,7 @@ public interface Texture<T extends Texture<T>> extends Bindable<Texture.TexTarge
     default T invalidateSub2D(int xOffset, int yOffset, int width, int height) {
         return invalidateSub(0, xOffset, yOffset, 0, width, height, 1);
     }
+    // endregion
 
     class TexTarget<T extends Texture<T>> implements BindTarget<TexTarget<T>, T> {
         private final int value;

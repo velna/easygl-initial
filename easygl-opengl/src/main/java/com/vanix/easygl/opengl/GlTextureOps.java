@@ -12,17 +12,17 @@ import java.nio.ShortBuffer;
 
 public interface GlTextureOps<T> {
 
-    T self();
-
     void assertBinding() throws IllegalStateException;
 
-    int targetValue(boolean proxy);
+    int intHandle();
+
+    T self();
 
     default int targetValue() {
         return targetValue(false);
     }
 
-    int intHandle();
+    int targetValue(boolean proxy);
 
     interface Copy2D<T> extends TextureOps.Copy2D<T>, GlTextureOps<T> {
 
@@ -112,22 +112,6 @@ public interface GlTextureOps<T> {
             return (T) this;
         }
 
-        @SuppressWarnings("unchecked")
-        private <D> T load0(GlTexImage2D<D> glTexImage2D, int level, InternalPixelFormat internalPixelFormat, int width, int height, PixelFormat format, DataType dataType, D data) {
-            assertBinding();
-            glTexImage2D.apply(targetValue(true),
-                    level,
-                    internalPixelFormat.value(),
-                    width,
-                    height,
-                    0,
-                    format.value(),
-                    dataType.value(),
-                    data);
-            GLX.checkError();
-            return (T) this;
-        }
-
         @Override
         default T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, PixelFormat format, DataType dataType, ByteBuffer data) {
             return load0(GLX::glTexImage2D, level, internalPixelFormat, width, height, format, dataType, data);
@@ -166,6 +150,22 @@ public interface GlTextureOps<T> {
         @Override
         default T load(int level, InternalPixelFormat internalPixelFormat, int width, int height, PixelFormat format, DataType dataType, double[] data) {
             return load0(GLX::glTexImage2D, level, internalPixelFormat, width, height, format, dataType, data);
+        }
+
+        @SuppressWarnings("unchecked")
+        private <D> T load0(GlTexImage2D<D> glTexImage2D, int level, InternalPixelFormat internalPixelFormat, int width, int height, PixelFormat format, DataType dataType, D data) {
+            assertBinding();
+            glTexImage2D.apply(targetValue(true),
+                    level,
+                    internalPixelFormat.value(),
+                    width,
+                    height,
+                    0,
+                    format.value(),
+                    dataType.value(),
+                    data);
+            GLX.checkError();
+            return (T) this;
         }
 
         interface GlTexImage2D<T> {
@@ -262,21 +262,21 @@ public interface GlTextureOps<T> {
     interface Load3D<T> extends TextureOps.Load3D<T>, GlTextureOps<T> {
 
         @SuppressWarnings("unchecked")
-        private <D> T load(GlTexImage3D<D> glTexImage3D, int level, InternalPixelFormat internalPixelFormat,
-                           int width, int height, int depth, PixelFormat format, DataType dataType, D data) {
-            assertBinding();
-            glTexImage3D.apply(targetValue(true), level, internalPixelFormat.value(),
-                    width, height, depth, 0, format.value(), dataType.value(), data);
-            GLX.checkError();
-            return (T) this;
-        }
-
-        @SuppressWarnings("unchecked")
         @Override
         default T allocate(int level, InternalPixelFormat format, int width, int height, int depth) {
             assertBinding();
             GLX.glTexImage3D(targetValue(true), level, format.value(),
                     width, height, depth, 0, format.value(), DataType.UnsignedByte.value(), MemoryUtil.NULL);
+            GLX.checkError();
+            return (T) this;
+        }
+
+        @SuppressWarnings("unchecked")
+        private <D> T load(GlTexImage3D<D> glTexImage3D, int level, InternalPixelFormat internalPixelFormat,
+                           int width, int height, int depth, PixelFormat format, DataType dataType, D data) {
+            assertBinding();
+            glTexImage3D.apply(targetValue(true), level, internalPixelFormat.value(),
+                    width, height, depth, 0, format.value(), dataType.value(), data);
             GLX.checkError();
             return (T) this;
         }
@@ -475,6 +475,257 @@ public interface GlTextureOps<T> {
 
     }
 
+    interface Parameters<T> extends TextureOps.Parameters<T>, GlTextureOps<T> {
+        @Override
+        default T baseLevel(int value) {
+            assertBinding();
+            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_BASE_LEVEL, value);
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default T borderColor(float red, float green, float blue, float alpha) {
+            assertBinding();
+            GLX.glTexParameterfv(targetValue(), GLX.GL_TEXTURE_BORDER_COLOR, new float[]{red, green, blue, alpha});
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default Color borderColor() {
+            try (MemoryStack stack = MemoryStack.stackGet()) {
+                var buffer = stack.mallocFloat(4);
+                GLX.glGetTextureParameterfv(intHandle(), GLX.GL_TEXTURE_BORDER_COLOR, buffer);
+                return new Color(buffer.get(0), buffer.get(1), buffer.get(2), buffer.get(3));
+            }
+        }
+
+        @Override
+        default T compareFunc(CompareFunction func) {
+            assertBinding();
+            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_COMPARE_FUNC, func.value());
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default CompareFunction compareFunc() {
+            return Cache.CompareFunction.valueOf(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_COMPARE_FUNC));
+        }
+
+        @Override
+        default T compareModeNone() {
+            assertBinding();
+            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_COMPARE_MODE, GLX.GL_NONE);
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default T compareModeRefToTexture() {
+            assertBinding();
+            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_COMPARE_MODE, GLX.GL_COMPARE_REF_TO_TEXTURE);
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default T depthStencilMode(Texture.DepthStencilMode mode) {
+            assertBinding();
+            GLX.glTexParameteri(targetValue(), GLX.GL_DEPTH_STENCIL_TEXTURE_MODE, mode.value());
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default int immutableLevels() {
+            return GLX.glGetTexParameteri(targetValue(), GLX.GL_TEXTURE_IMMUTABLE_LEVELS);
+        }
+
+        @Override
+        default boolean isCompareModeRefToTexture() {
+            return GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_COMPARE_MODE) == GLX.GL_COMPARE_REF_TO_TEXTURE;
+        }
+
+        @Override
+        default boolean isImmutableFormat() {
+            return GLX.glGetTexParameteri(targetValue(), GLX.GL_TEXTURE_IMMUTABLE_FORMAT) == GLX.GL_TRUE;
+        }
+
+        @Override
+        default T loadBias(float value) {
+            assertBinding();
+            GLX.glTexParameterf(targetValue(), GLX.GL_TEXTURE_LOD_BIAS, value);
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default float loadBias() {
+            return GLX.glGetTextureParameterf(intHandle(), GLX.GL_TEXTURE_LOD_BIAS);
+        }
+
+        @Override
+        default T magFilter(MagFilter mf) {
+            assertBinding();
+            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_MAG_FILTER, mf.value());
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default MagFilter magFilter() {
+            return Cache.MagFilter.valueOf(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_MAG_FILTER));
+        }
+
+        @Override
+        default T maxLevel(int value) {
+            assertBinding();
+            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_MAX_LEVEL, value);
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default T maxLoad(float value) {
+            assertBinding();
+            GLX.glTexParameterf(targetValue(), GLX.GL_TEXTURE_MAX_LOD, value);
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default float maxLoad() {
+            return GLX.glGetTextureParameterf(intHandle(), GLX.GL_TEXTURE_MAX_LOD);
+        }
+
+        @Override
+        default T minFilter(MinFilter mf) {
+            assertBinding();
+            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_MIN_FILTER, mf.value());
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default MinFilter minFilter() {
+            return Cache.MinFilter.get(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_MIN_FILTER));
+        }
+
+        @Override
+        default T minLoad(float value) {
+            assertBinding();
+            GLX.glTexParameterf(targetValue(), GLX.GL_TEXTURE_MIN_LOD, value);
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default float minLoad() {
+            return GLX.glGetTextureParameterf(intHandle(), GLX.GL_TEXTURE_MIN_LOD);
+        }
+
+        @Override
+        default T swizzle(Texture.Swizzle r, Texture.Swizzle g, Texture.Swizzle b, Texture.Swizzle a) {
+            assertBinding();
+            GLX.glTexParameteriv(targetValue(), GLX.GL_TEXTURE_SWIZZLE_RGBA, new int[]{r.value(), g.value(), b.value(), a.value()});
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default T swizzleA(Texture.Swizzle swizzle) {
+            assertBinding();
+            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_SWIZZLE_A, swizzle.value());
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default T swizzleB(Texture.Swizzle swizzle) {
+            assertBinding();
+            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_SWIZZLE_B, swizzle.value());
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default T swizzleG(Texture.Swizzle swizzle) {
+            assertBinding();
+            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_SWIZZLE_G, swizzle.value());
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default T swizzleR(Texture.Swizzle swizzle) {
+            assertBinding();
+            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_SWIZZLE_R, swizzle.value());
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default int viewMinLayer() {
+            return GLX.glGetTexParameteri(targetValue(), GLX.GL_TEXTURE_VIEW_MIN_LAYER);
+        }
+
+        @Override
+        default int viewMinLevel() {
+            return GLX.glGetTexParameteri(targetValue(), GLX.GL_TEXTURE_VIEW_MIN_LEVEL);
+        }
+
+        @Override
+        default int viewNumLayers() {
+            return GLX.glGetTexParameteri(targetValue(), GLX.GL_TEXTURE_VIEW_NUM_LAYERS);
+        }
+
+        @Override
+        default int viewNumLevels() {
+            return GLX.glGetTexParameteri(targetValue(), GLX.GL_TEXTURE_VIEW_NUM_LEVELS);
+        }
+
+        @Override
+        default T wrapR(Texture.Wrap wrap) {
+            assertBinding();
+            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_WRAP_R, wrap.value());
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default Texture.Wrap wrapR() {
+            return Cache.TextureWrap.valueOf(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_WRAP_R));
+        }
+
+        @Override
+        default T wrapS(Texture.Wrap wrap) {
+            assertBinding();
+            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_WRAP_S, wrap.value());
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default Texture.Wrap wrapS() {
+            return Cache.TextureWrap.valueOf(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_WRAP_S));
+        }
+
+        @Override
+        default T wrapT(Texture.Wrap wrap) {
+            assertBinding();
+            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_WRAP_T, wrap.value());
+            GLX.checkError();
+            return self();
+        }
+
+        @Override
+        default Texture.Wrap wrapT() {
+            return Cache.TextureWrap.valueOf(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_WRAP_T));
+        }
+    }
+
     interface SetStorage2D<T> extends TextureOps.SetStorage2D<T>, GlTextureOps<T> {
 
         @SuppressWarnings("unchecked")
@@ -496,227 +747,5 @@ public interface GlTextureOps<T> {
             GLX.checkError();
             return (T) this;
         }
-    }
-
-    interface Parameters<T> extends TextureOps.Parameters<T>, GlTextureOps<T> {
-        @Override
-        default T depthStencilMode(Texture.DepthStencilMode mode) {
-            assertBinding();
-            GLX.glTexParameteri(targetValue(), GLX.GL_DEPTH_STENCIL_TEXTURE_MODE, mode.value());
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T baseLevel(int value) {
-            assertBinding();
-            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_BASE_LEVEL, value);
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T maxLevel(int value) {
-            assertBinding();
-            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_MAX_LEVEL, value);
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T compareFunc(CompareFunction func) {
-            assertBinding();
-            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_COMPARE_FUNC, func.value());
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T compareModeRefToTexture() {
-            assertBinding();
-            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_COMPARE_MODE, GLX.GL_COMPARE_REF_TO_TEXTURE);
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T compareModeNone() {
-            assertBinding();
-            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_COMPARE_MODE, GLX.GL_NONE);
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T loadBias(float value) {
-            assertBinding();
-            GLX.glTexParameterf(targetValue(), GLX.GL_TEXTURE_LOD_BIAS, value);
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T minFilter(MinFilter mf) {
-            assertBinding();
-            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_MIN_FILTER, mf.value());
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T magFilter(MagFilter mf) {
-            assertBinding();
-            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_MAG_FILTER, mf.value());
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T minLoad(float value) {
-            assertBinding();
-            GLX.glTexParameterf(targetValue(), GLX.GL_TEXTURE_MIN_LOD, value);
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T maxLoad(float value) {
-            assertBinding();
-            GLX.glTexParameterf(targetValue(), GLX.GL_TEXTURE_MAX_LOD, value);
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T swizzleR(Texture.Swizzle swizzle) {
-            assertBinding();
-            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_SWIZZLE_R, swizzle.value());
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T swizzleG(Texture.Swizzle swizzle) {
-            assertBinding();
-            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_SWIZZLE_G, swizzle.value());
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T swizzleB(Texture.Swizzle swizzle) {
-            assertBinding();
-            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_SWIZZLE_B, swizzle.value());
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T swizzleA(Texture.Swizzle swizzle) {
-            assertBinding();
-            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_SWIZZLE_A, swizzle.value());
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T swizzle(Texture.Swizzle r, Texture.Swizzle g, Texture.Swizzle b, Texture.Swizzle a) {
-            assertBinding();
-            GLX.glTexParameteriv(targetValue(), GLX.GL_TEXTURE_SWIZZLE_RGBA, new int[]{r.value(), g.value(), b.value(), a.value()});
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T wrapS(Texture.Wrap wrap) {
-            assertBinding();
-            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_WRAP_S, wrap.value());
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T wrapT(Texture.Wrap wrap) {
-            assertBinding();
-            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_WRAP_T, wrap.value());
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T wrapR(Texture.Wrap wrap) {
-            assertBinding();
-            GLX.glTexParameteri(targetValue(), GLX.GL_TEXTURE_WRAP_R, wrap.value());
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default T borderColor(float red, float green, float blue, float alpha) {
-            assertBinding();
-            GLX.glTexParameterfv(targetValue(), GLX.GL_TEXTURE_BORDER_COLOR, new float[]{red, green, blue, alpha});
-            GLX.checkError();
-            return self();
-        }
-
-        @Override
-        default CompareFunction compareFunc() {
-            return Cache.CompareFunction.valueOf(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_COMPARE_FUNC));
-        }
-
-        @Override
-        default boolean isCompareModeRefToTexture() {
-            return GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_COMPARE_MODE) == GLX.GL_COMPARE_REF_TO_TEXTURE;
-        }
-
-        @Override
-        default float loadBias() {
-            return GLX.glGetTextureParameterf(intHandle(), GLX.GL_TEXTURE_LOD_BIAS);
-        }
-
-        @Override
-        default MinFilter minFilter() {
-            return Cache.MinFilter.get(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_MIN_FILTER));
-        }
-
-        @Override
-        default MagFilter magFilter() {
-            return Cache.MagFilter.valueOf(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_MAG_FILTER));
-        }
-
-        @Override
-        default float minLoad() {
-            return GLX.glGetTextureParameterf(intHandle(), GLX.GL_TEXTURE_MIN_LOD);
-        }
-
-        @Override
-        default float maxLoad() {
-            return GLX.glGetTextureParameterf(intHandle(), GLX.GL_TEXTURE_MAX_LOD);
-        }
-
-        @Override
-        default Texture.Wrap wrapS() {
-            return Cache.TextureWrap.valueOf(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_WRAP_S));
-        }
-
-        @Override
-        default Texture.Wrap wrapT() {
-            return Cache.TextureWrap.valueOf(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_WRAP_T));
-        }
-
-        @Override
-        default Texture.Wrap wrapR() {
-            return Cache.TextureWrap.valueOf(GLX.glGetTextureParameteri(intHandle(), GLX.GL_TEXTURE_WRAP_R));
-        }
-
-        @Override
-        default Color borderColor() {
-            try (MemoryStack stack = MemoryStack.stackGet()) {
-                var buffer = stack.mallocFloat(4);
-                GLX.glGetTextureParameterfv(intHandle(), GLX.GL_TEXTURE_BORDER_COLOR, buffer);
-                return new Color(buffer.get(0), buffer.get(1), buffer.get(2), buffer.get(3));
-            }
-        }
-
     }
 }

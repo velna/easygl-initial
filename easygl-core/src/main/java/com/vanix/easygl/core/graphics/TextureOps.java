@@ -11,20 +11,54 @@ import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 
 public interface TextureOps {
-    interface Load2DCompressed<T> {
-        T loadCompressed(int level, InternalPixelFormat.Compressed format, int width, int height, ByteBuffer data);
-    }
-
-    interface Load2DCompressedSub<T> {
-        T loadCompressedSub(int level, InternalPixelFormat.Compressed format, int xOffset, int yOffset, int width, int height, ByteBuffer data);
-    }
-
     interface Copy2D<T> {
         T copy(int level, InternalPixelFormat internalPixelFormat, int x, int y, int width, int height);
     }
 
     interface Copy2DSub<T> {
         T copySub(int level, int xOffset, int yOffset, int x, int y, int width, int height);
+    }
+
+    interface Copy3DSub<T> {
+        T copySub(int level, int xOffset, int yOffset, int zOffset, int x, int y, int width, int height);
+    }
+
+    interface CopyImageSubData<T> {
+        @Support(since = Version.GL43)
+        T copyImageSubData(int srcMipMapLevel, int srcX, int srcY, int srcZ, int width, int height, int depth,
+                           RenderBuffer dst, int dstX, int dstY, int dstZ);
+
+        @Support(since = Version.GL43)
+        T copyImageSubData(int srcMipMapLevel, int srcX, int srcY, int srcZ, int width, int height, int depth,
+                           Texture<?> dst, int dstMipmapLevel, int dstX, int dstY, int dstZ);
+
+        @Support(since = Version.GL43)
+        default T copyImageSubData(int srcMipMapLevel, Vector3i srcXyz, Vector3i size, RenderBuffer dst, Vector3i dstXyz) {
+            return copyImageSubData(srcMipMapLevel, srcXyz.x, srcXyz.y, srcXyz.z, size.x, size.y, size.z,
+                    dst, dstXyz.x, dstXyz.y, dstXyz.z);
+        }
+
+        @Support(since = Version.GL43)
+        default T copyImageSubData(int srcMipMapLevel, Vector3i srcXyz, Vector3i size, Texture<?> dst, int dstMipmapLevel, Vector3i dstXyz) {
+            return copyImageSubData(srcMipMapLevel, srcXyz.x, srcXyz.y, srcXyz.z, size.x, size.y, size.z,
+                    dst, dstMipmapLevel, dstXyz.x, dstXyz.y, dstXyz.z);
+        }
+
+        @Support(since = Version.GL43)
+        default T copyImageSubData(int srcMipMapLevel, AABBi src, RenderBuffer dst, Vector3i dstXyz) {
+            return copyImageSubData(srcMipMapLevel, src.minX, src.minY, src.minZ, src.lengthX(), src.lengthY(), src.lengthZ(),
+                    dst, dstXyz.x, dstXyz.y, dstXyz.z);
+        }
+
+        @Support(since = Version.GL43)
+        default T copyImageSubData(int srcMipMapLevel, AABBi src, Texture<?> dst, int dstMipmapLevel, Vector3i dstXyz) {
+            return copyImageSubData(srcMipMapLevel, src.minX, src.minY, src.minZ, src.lengthX(), src.lengthY(), src.lengthZ(),
+                    dst, dstMipmapLevel, dstXyz.x, dstXyz.y, dstXyz.z);
+        }
+    }
+
+    interface GenerateMipmap<T> {
+        T generateMipmap();
     }
 
     interface Load2D<T> {
@@ -74,6 +108,14 @@ public interface TextureOps {
 
     }
 
+    interface Load2DCompressed<T> {
+        T loadCompressed(int level, InternalPixelFormat.Compressed format, int width, int height, ByteBuffer data);
+    }
+
+    interface Load2DCompressedSub<T> {
+        T loadCompressedSub(int level, InternalPixelFormat.Compressed format, int xOffset, int yOffset, int width, int height, ByteBuffer data);
+    }
+
     interface Load2DSub<T> {
         default T loadSub(int xOffset, int yOffset, String imageResource) {
             return loadSub(xOffset, yOffset, imageResource, false);
@@ -114,27 +156,6 @@ public interface TextureOps {
         T loadSub(int level, int xOffset, int yOffset, int width, int height, PixelFormat format, DataType dataType, double[] data);
     }
 
-    interface SetStorage2D<T> {
-
-        @Support(since = Version.GL42)
-        T setStorage(int levels, InternalPixelFormat.Sized format, int width, int height);
-    }
-
-    interface Load3DCompressed<T> {
-        T loadCompressed(int level, InternalPixelFormat.Compressed format, int width, int height, int depth, ByteBuffer data);
-    }
-
-    interface Load3DCompressedSub<T> {
-        T loadCompressedSub(int level, InternalPixelFormat.Compressed format,
-                            int xOffset, int yOffset, int zOffset,
-                            int width, int height, int depth,
-                            ByteBuffer data);
-    }
-
-    interface Copy3DSub<T> {
-        T copySub(int level, int xOffset, int yOffset, int zOffset, int x, int y, int width, int height);
-    }
-
     interface Load3D<T> {
         default T allocate(InternalPixelFormat format, int width, int height, int depth) {
             return allocate(0, format, width, height, depth);
@@ -160,6 +181,17 @@ public interface TextureOps {
 
     }
 
+    interface Load3DCompressed<T> {
+        T loadCompressed(int level, InternalPixelFormat.Compressed format, int width, int height, int depth, ByteBuffer data);
+    }
+
+    interface Load3DCompressedSub<T> {
+        T loadCompressedSub(int level, InternalPixelFormat.Compressed format,
+                            int xOffset, int yOffset, int zOffset,
+                            int width, int height, int depth,
+                            ByteBuffer data);
+    }
+
     interface Load3DSub<T> {
         T loadSub(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, ByteBuffer data);
 
@@ -178,77 +210,63 @@ public interface TextureOps {
         T loadSub(int level, int xOffset, int yOffset, int zOffset, int width, int height, int depth, PixelFormat format, DataType dataType, double[] data);
     }
 
-    interface SetStorage3D<T> {
-
-        @Support(since = Version.GL42)
-        T setStorage(int levels, InternalPixelFormat.Sized format, int width, int height, int depth);
-    }
-
-    interface CopyImageSubData<T> {
-        @Support(since = Version.GL43)
-        T copyImageSubData(int srcMipMapLevel, int srcX, int srcY, int srcZ, int width, int height, int depth,
-                           RenderBuffer dst, int dstX, int dstY, int dstZ);
-
-        @Support(since = Version.GL43)
-        T copyImageSubData(int srcMipMapLevel, int srcX, int srcY, int srcZ, int width, int height, int depth,
-                           Texture<?> dst, int dstMipmapLevel, int dstX, int dstY, int dstZ);
-
-        @Support(since = Version.GL43)
-        default T copyImageSubData(int srcMipMapLevel, Vector3i srcXyz, Vector3i size, RenderBuffer dst, Vector3i dstXyz) {
-            return copyImageSubData(srcMipMapLevel, srcXyz.x, srcXyz.y, srcXyz.z, size.x, size.y, size.z,
-                    dst, dstXyz.x, dstXyz.y, dstXyz.z);
-        }
-
-        @Support(since = Version.GL43)
-        default T copyImageSubData(int srcMipMapLevel, Vector3i srcXyz, Vector3i size, Texture<?> dst, int dstMipmapLevel, Vector3i dstXyz) {
-            return copyImageSubData(srcMipMapLevel, srcXyz.x, srcXyz.y, srcXyz.z, size.x, size.y, size.z,
-                    dst, dstMipmapLevel, dstXyz.x, dstXyz.y, dstXyz.z);
-        }
-
-        @Support(since = Version.GL43)
-        default T copyImageSubData(int srcMipMapLevel, AABBi src, RenderBuffer dst, Vector3i dstXyz) {
-            return copyImageSubData(srcMipMapLevel, src.minX, src.minY, src.minZ, src.lengthX(), src.lengthY(), src.lengthZ(),
-                    dst, dstXyz.x, dstXyz.y, dstXyz.z);
-        }
-
-        @Support(since = Version.GL43)
-        default T copyImageSubData(int srcMipMapLevel, AABBi src, Texture<?> dst, int dstMipmapLevel, Vector3i dstXyz) {
-            return copyImageSubData(srcMipMapLevel, src.minX, src.minY, src.minZ, src.lengthX(), src.lengthY(), src.lengthZ(),
-                    dst, dstMipmapLevel, dstXyz.x, dstXyz.y, dstXyz.z);
-        }
-    }
-
-    interface GenerateMipmap<T> {
-        T generateMipmap();
-    }
-
     interface MakeView {
+        @Support(since = Version.GL43)
         <V extends Texture<V>> V makeView(Texture.TexTarget<V> target, InternalPixelFormat format,
                                           int minLevel, int numLevels, int minLayer, int numLayers);
     }
 
     interface Parameters<T> extends SamplerParameters<T> {
+        T baseLevel(int value);
+
         @Support(since = Version.GL43)
         T depthStencilMode(Texture.DepthStencilMode mode);
 
-        T baseLevel(int value);
+        @Support(since = Version.GL43)
+        int immutableLevels();
+
+        boolean isImmutableFormat();
 
         T maxLevel(int value);
 
         @Support(since = Version.GL33)
-        T swizzleR(Texture.Swizzle swizzle);
-
-        @Support(since = Version.GL33)
-        T swizzleG(Texture.Swizzle swizzle);
-
-        @Support(since = Version.GL33)
-        T swizzleB(Texture.Swizzle swizzle);
+        T swizzle(Texture.Swizzle r, Texture.Swizzle g, Texture.Swizzle b, Texture.Swizzle a);
 
         @Support(since = Version.GL33)
         T swizzleA(Texture.Swizzle swizzle);
 
         @Support(since = Version.GL33)
-        T swizzle(Texture.Swizzle r, Texture.Swizzle g, Texture.Swizzle b, Texture.Swizzle a);
+        T swizzleB(Texture.Swizzle swizzle);
+
+        @Support(since = Version.GL33)
+        T swizzleG(Texture.Swizzle swizzle);
+
+        @Support(since = Version.GL33)
+        T swizzleR(Texture.Swizzle swizzle);
+
+        @Support(since = Version.GL43)
+        int viewMinLayer();
+
+        @Support(since = Version.GL43)
+        int viewMinLevel();
+
+        @Support(since = Version.GL43)
+        int viewNumLayers();
+
+        @Support(since = Version.GL43)
+        int viewNumLevels();
+    }
+
+    interface SetStorage2D<T> {
+
+        @Support(since = Version.GL42)
+        T setStorage(int levels, InternalPixelFormat.Sized format, int width, int height);
+    }
+
+    interface SetStorage3D<T> {
+
+        @Support(since = Version.GL42)
+        T setStorage(int levels, InternalPixelFormat.Sized format, int width, int height, int depth);
     }
 
 }
