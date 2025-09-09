@@ -48,6 +48,8 @@ public interface TextureCubeMap extends Texture<TextureCubeMap>,
             TextureOps.Copy2DSub<Face>,
             TextureOps.Load2DCompressed<Face>,
             TextureOps.Load2DCompressedSub<Face> {
+        TextureCubeMap cubeMap();
+
         Face proxy();
 
         FaceTarget target();

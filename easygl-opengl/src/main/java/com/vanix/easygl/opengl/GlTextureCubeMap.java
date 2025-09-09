@@ -86,6 +86,11 @@ public class GlTextureCubeMap extends AbstractTexture<TextureCubeMap> implements
         }
 
         @Override
+        public TextureCubeMap cubeMap() {
+            return textureCubeMap;
+        }
+
+        @Override
         public int intHandle() {
             return textureCubeMap.intHandle();
         }
