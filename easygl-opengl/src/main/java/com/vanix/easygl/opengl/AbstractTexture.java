@@ -4,14 +4,29 @@ import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.graphics.DataType;
 import com.vanix.easygl.core.graphics.InternalPixelFormat;
 import com.vanix.easygl.core.graphics.Texture;
+import org.eclipse.collections.api.factory.primitive.IntObjectMaps;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 
 import java.util.function.IntConsumer;
 
 public abstract class AbstractTexture<T extends Texture<T>> extends AbstractBindable<Texture.TexTarget<T>, T>
         implements Texture<T> {
 
+    private static final MutableIntObjectMap<Texture<?>> CACHE = IntObjectMaps.mutable.of();
+
     protected AbstractTexture(int handle, Texture.TexTarget<T> target) {
         super(handle, target, (IntConsumer) GLX::glDeleteTextures);
+        CACHE.put(handle, this);
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        CACHE.remove(intHandle());
+    }
+
+    static Texture<?> get(int handle) {
+        return CACHE.get(handle);
     }
 
     public int targetValue(boolean proxy) {

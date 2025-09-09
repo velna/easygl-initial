@@ -25,6 +25,7 @@ class Cache {
     static final IntEnumCache<MagFilter> MagFilter = new IntEnumCache<>(MagFilter.class, 0xf);
     static final IntEnumCache<Texture.Wrap> TextureWrap = new IntEnumCache<>(Texture.Wrap.class, 0xf);
     static final IntObjectMap<InternalPixelFormat> InternalPixelFormatCache = internalPixelFormatCache();
+    static final IntEnumCache<Access> Acess = new IntEnumCache<>(Access.class, 0xf);
 
     private static <T extends IntEnum> IntObjectMap<T> intObjectMapOf(Class<T> type) {
         T[] array = IntEnum.values(type);

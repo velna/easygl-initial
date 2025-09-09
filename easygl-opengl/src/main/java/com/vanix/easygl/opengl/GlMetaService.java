@@ -137,6 +137,7 @@ public class GlMetaService extends AbstractMetaService {
             (handle, args) -> new GlTexture2DMultiSampleArray(handle));
 
     static final Meta<Sync> SyncMeta = new DefaultMeta<>(args -> new GlSync());
+    static final Meta<ImageUnit> ImageUnitMeta = new DefaultMeta<>(args -> new GlImageUnit((int) args[0]));
 
     static final HandleMeta<Query.SampleQuery> SampleQueryMeta = new IntHandleMeta<>(
             args -> new GlQuery.GlSampleQuery((Query.SampleType) args[0]),
@@ -181,6 +182,7 @@ public class GlMetaService extends AbstractMetaService {
         register(Texture2DMultiSample.class, Texture2DMultiSampleMeta);
         register(Texture2DMultiSampleArray.class, Texture2DMultiSampleArrayMeta);
         register(Shader.class, ShaderMeta);
+        register(ImageUnit.class, ImageUnitMeta);
         register(Sync.class, SyncMeta);
         register(Query.SampleQuery.class, SampleQueryMeta);
         register(Query.IndexQuery.class, IndexQueryMeta);
