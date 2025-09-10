@@ -34,7 +34,7 @@ public class GlImageUnit extends ImageUnit {
 
     @Override
     public Access bindingAccess() {
-        return Cache.Acess.valueOf(GLX.glGetIntegeri(GLX.GL_IMAGE_BINDING_ACCESS, value));
+        return Cache.Access.valueOf(GLX.glGetIntegeri(GLX.GL_IMAGE_BINDING_ACCESS, value));
     }
 
     @Override

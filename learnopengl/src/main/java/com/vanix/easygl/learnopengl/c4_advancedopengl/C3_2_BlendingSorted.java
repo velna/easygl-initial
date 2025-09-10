@@ -2,6 +2,7 @@ package com.vanix.easygl.learnopengl.c4_advancedopengl;
 
 import com.vanix.easygl.core.g3d.ControllableCamera;
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.feature.Blending;
 import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.window.Window;

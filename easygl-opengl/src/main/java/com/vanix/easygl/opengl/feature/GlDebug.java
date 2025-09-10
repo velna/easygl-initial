@@ -1,7 +1,9 @@
-package com.vanix.easygl.opengl;
+package com.vanix.easygl.opengl.feature;
 
-import com.vanix.easygl.core.graphics.Debug;
+import com.vanix.easygl.core.graphics.feature.Debug;
 import com.vanix.easygl.core.graphics.Graphics;
+import com.vanix.easygl.opengl.Cache;
+import com.vanix.easygl.opengl.GLX;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 

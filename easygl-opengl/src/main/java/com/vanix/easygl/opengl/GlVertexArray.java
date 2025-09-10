@@ -3,10 +3,12 @@ package com.vanix.easygl.opengl;
 import com.vanix.easygl.commons.SimpleIntEnum;
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
+import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.graphics.Buffer;
 import com.vanix.easygl.core.graphics.DrawMode;
 import com.vanix.easygl.core.graphics.VertexArray;
 import com.vanix.easygl.core.graphics.VertexAttribute;
+import org.lwjgl.system.MemoryStack;
 
 import java.util.function.IntConsumer;
 
@@ -47,6 +49,44 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
             bindingPoints[bindingIndex] = ret;
         }
         return ret;
+    }
+
+    @Override
+    public VertexArray bindBuffers(int firstBindingIndex, Iterable<Buffer> bufferIterable, long[] offsets, int[] strides) {
+        assertBinding();
+        int[] handles;
+        if (bufferIterable instanceof HandleArray<Buffer> handleArray) {
+            handles = handleArray.getHandles();
+        } else {
+            handles = new int[offsets.length];
+            int i = 0;
+            for (Buffer buffer : bufferIterable) {
+                handles[i++] = buffer.intHandle();
+            }
+        }
+        try (MemoryStack memoryStack = MemoryStack.stackGet()) {
+            var pointerBuffer = memoryStack.mallocPointer(offsets.length);
+            pointerBuffer.put(offsets);
+            GLX.glBindVertexBuffers(firstBindingIndex, handles, pointerBuffer.clear(), strides);
+            GLX.checkError();
+        }
+        return this;
+    }
+
+    @Override
+    public VertexArray bindBuffers(int firstBindingIndex, Buffer[] buffers, long[] offsets, int[] strides) {
+        assertBinding();
+        int[] handles = new int[buffers.length];
+        for (int i = 0; i < buffers.length; i++) {
+            handles[i] = buffers[i].intHandle();
+        }
+        try (MemoryStack memoryStack = MemoryStack.stackGet()) {
+            var pointerBuffer = memoryStack.mallocPointer(offsets.length);
+            pointerBuffer.put(offsets);
+            GLX.glBindVertexBuffers(firstBindingIndex, handles, pointerBuffer.clear(), strides);
+            GLX.checkError();
+        }
+        return this;
     }
 
     @Override

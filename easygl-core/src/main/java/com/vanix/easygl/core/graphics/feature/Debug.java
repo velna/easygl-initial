@@ -1,15 +1,17 @@
-package com.vanix.easygl.core.graphics;
+package com.vanix.easygl.core.graphics.feature;
 
 import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.Feature;
 import com.vanix.easygl.core.Support;
+import com.vanix.easygl.core.graphics.Graphics;
+import com.vanix.easygl.core.graphics.Version;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 import java.nio.IntBuffer;
 import java.util.List;
 
 @Support(since = Version.GL43)
-public interface Debug extends Feature<Debug, Graphics> {
+public interface Debug extends GraphicsFeature<Debug> {
     Debug setMessageCallback(Callback callback, long userParam);
 
     Debug setMessageControl(Source source, Type type, Severity severity, int id, boolean enable);

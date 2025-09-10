@@ -70,6 +70,10 @@ public class HandleArray<T extends Handle> implements Closeable, ExtendedIterabl
         return list.isEmpty();
     }
 
+    public int[] getHandles() {
+        return handles;
+    }
+
     @Override
     public void close() {
         if (closeFunction != null && handles != null) {

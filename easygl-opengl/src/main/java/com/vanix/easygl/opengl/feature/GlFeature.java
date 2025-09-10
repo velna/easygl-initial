@@ -1,9 +1,10 @@
-package com.vanix.easygl.opengl;
+package com.vanix.easygl.opengl.feature;
 
-import com.vanix.easygl.core.Feature;
 import com.vanix.easygl.core.graphics.Graphics;
+import com.vanix.easygl.core.graphics.feature.GraphicsFeature;
+import com.vanix.easygl.opengl.GLX;
 
-public abstract class GlFeature<T extends Feature<T, Graphics>> implements Feature<T, Graphics> {
+public abstract class GlFeature<T extends GraphicsFeature<T>> implements GraphicsFeature<T> {
     private final int capability;
     private final Graphics graphics;
 

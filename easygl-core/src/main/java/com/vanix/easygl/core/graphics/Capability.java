@@ -18,8 +18,6 @@ public enum Capability implements IntEnum {
     CullFace("CULL_FACE"),
     DepthClamp("DEPTH_CLAMP"),
     Dither("DITHER"),
-    @Support(since = Version.GL31)
-    PrimitiveRestart("PRIMITIVE_RESTART"),
     @Support(since = Version.GL43)
     PrimitiveRestartFixedIndex("PRIMITIVE_RESTART_FIXED_INDEX"),
     FramebufferSRGB("FRAMEBUFFER_SRGB"),

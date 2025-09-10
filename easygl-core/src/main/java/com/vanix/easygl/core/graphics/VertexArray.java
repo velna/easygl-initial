@@ -25,6 +25,10 @@ public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, V
 
     BindingPoint bidingPoint(int bindingIndex);
 
+    VertexArray bindBuffers(int firstBindingIndex, Iterable<Buffer> bufferIterable, long[] offsets, int[] strides);
+
+    VertexArray bindBuffers(int firstBindingIndex, Buffer[] buffers, long[] offsets, int[] strides);
+
     default void drawArray(DrawMode mode, int count) {
         drawArray(mode, 0, count);
     }

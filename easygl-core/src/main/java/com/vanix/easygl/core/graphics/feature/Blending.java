@@ -1,12 +1,15 @@
-package com.vanix.easygl.core.graphics;
+package com.vanix.easygl.core.graphics.feature;
 
 import com.vanix.easygl.commons.Color;
 import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.IndexedFeature;
 import com.vanix.easygl.core.Support;
+import com.vanix.easygl.core.graphics.FrameInnerBuffer;
+import com.vanix.easygl.core.graphics.Graphics;
+import com.vanix.easygl.core.graphics.Version;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public interface Blending extends IndexedFeature<Blending, Graphics> {
+public interface Blending extends IndexedFeature<Blending, Graphics>, GraphicsFeature<Blending> {
 
     Blending setFunction(Function src, Function dst);
 

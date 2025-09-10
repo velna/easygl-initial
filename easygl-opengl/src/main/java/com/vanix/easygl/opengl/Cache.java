@@ -3,29 +3,33 @@ package com.vanix.easygl.opengl;
 import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.commons.util.IntEnumCache;
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.feature.Blending;
+import com.vanix.easygl.core.graphics.feature.Debug;
+import com.vanix.easygl.core.graphics.feature.LogicalOperation;
+import com.vanix.easygl.core.graphics.feature.StencilTest;
 import org.eclipse.collections.api.factory.primitive.IntObjectMaps;
 import org.eclipse.collections.api.map.primitive.IntObjectMap;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 
-class Cache {
-    static final IntEnumCache<Sync.Result> SyncResult = new IntEnumCache<>(Sync.Result.class, 0xf);
-    static final IntEnumCache<LogicalOperation.Op> LogicalOp = new IntEnumCache<LogicalOperation.Op>(LogicalOperation.Op.class, 0xf);
-    static final IntEnumCache<Blending.Function> BlendingFunction = new IntEnumCache<>(Blending.Function.class, 2, 0xf);
-    static final IntEnumCache<Blending.Equation> BlendingEquation = new IntEnumCache<>(Blending.Equation.class, 0xf);
-    static final IntEnumCache<PolygonMode> PolygonMode = new IntEnumCache<>(PolygonMode.class, 0xf);
-    static final IntEnumCache<CompareFunction> CompareFunction = new IntEnumCache<>(CompareFunction.class, 0xf);
-    static final IntEnumCache<StencilTest.Op> StencilTestOp = new IntEnumCache<>(StencilTest.Op.class, 1, 0xf);
-    static final IntEnumCache<Debug.Source> DebugSource = new IntEnumCache<>(Debug.Source.class, 0xf);
-    static final IntEnumCache<Debug.Type> DebugType = new IntEnumCache<>(Debug.Type.class, 0xf);
-    static final IntEnumCache<Debug.Severity> DebugSeverity = new IntEnumCache<>(Debug.Severity.class, 0xf);
-    static final IntObjectMap<FrameInnerBuffer.ReadBuffer> FrameReadBuffer = intObjectMapOf(FrameInnerBuffer.ReadBuffer.class);
-    static final IntObjectMap<BaseFrameBuffer.Status> FrameBufferStatus = intObjectMapOf(BaseFrameBuffer.Status.class);
-    static final IntObjectMap<DataType> DataType = intObjectMapOf(DataType.class);
-    static final IntObjectMap<MinFilter> MinFilter = intObjectMapOf(MinFilter.class);
-    static final IntEnumCache<MagFilter> MagFilter = new IntEnumCache<>(MagFilter.class, 0xf);
-    static final IntEnumCache<Texture.Wrap> TextureWrap = new IntEnumCache<>(Texture.Wrap.class, 0xf);
-    static final IntObjectMap<InternalPixelFormat> InternalPixelFormatCache = internalPixelFormatCache();
-    static final IntEnumCache<Access> Acess = new IntEnumCache<>(Access.class, 0xf);
+public class Cache {
+    public static final IntEnumCache<Sync.Result> SyncResult = new IntEnumCache<>(Sync.Result.class, 0xf);
+    public static final IntEnumCache<LogicalOperation.Op> LogicalOp = new IntEnumCache<LogicalOperation.Op>(LogicalOperation.Op.class, 0xf);
+    public static final IntEnumCache<Blending.Function> BlendingFunction = new IntEnumCache<>(Blending.Function.class, 2, 0xf);
+    public static final IntEnumCache<Blending.Equation> BlendingEquation = new IntEnumCache<>(Blending.Equation.class, 0xf);
+    public static final IntEnumCache<PolygonMode> PolygonMode = new IntEnumCache<>(PolygonMode.class, 0xf);
+    public static final IntEnumCache<CompareFunction> CompareFunction = new IntEnumCache<>(CompareFunction.class, 0xf);
+    public static final IntEnumCache<StencilTest.Op> StencilTestOp = new IntEnumCache<>(StencilTest.Op.class, 1, 0xf);
+    public static final IntEnumCache<Debug.Source> DebugSource = new IntEnumCache<>(Debug.Source.class, 0xf);
+    public static final IntEnumCache<Debug.Type> DebugType = new IntEnumCache<>(Debug.Type.class, 0xf);
+    public static final IntEnumCache<Debug.Severity> DebugSeverity = new IntEnumCache<>(Debug.Severity.class, 0xf);
+    public static final IntObjectMap<FrameInnerBuffer.ReadBuffer> FrameReadBuffer = intObjectMapOf(FrameInnerBuffer.ReadBuffer.class);
+    public static final IntObjectMap<BaseFrameBuffer.Status> FrameBufferStatus = intObjectMapOf(BaseFrameBuffer.Status.class);
+    public static final IntObjectMap<DataType> DataType = intObjectMapOf(DataType.class);
+    public static final IntObjectMap<MinFilter> MinFilter = intObjectMapOf(MinFilter.class);
+    public static final IntEnumCache<MagFilter> MagFilter = new IntEnumCache<>(MagFilter.class, 0xf);
+    public static final IntEnumCache<Texture.Wrap> TextureWrap = new IntEnumCache<>(Texture.Wrap.class, 0xf);
+    public static final IntObjectMap<InternalPixelFormat> InternalPixelFormatCache = internalPixelFormatCache();
+    public static final IntEnumCache<Access> Access = new IntEnumCache<>(Access.class, 0xf);
 
     private static <T extends IntEnum> IntObjectMap<T> intObjectMapOf(Class<T> type) {
         T[] array = IntEnum.values(type);

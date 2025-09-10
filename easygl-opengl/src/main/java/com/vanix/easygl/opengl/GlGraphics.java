@@ -1,6 +1,8 @@
 package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.feature.*;
+import com.vanix.easygl.opengl.feature.*;
 import org.joml.Vector2f;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
@@ -16,6 +18,7 @@ public class GlGraphics implements Graphics {
     private final LogicalOperation logicalOperation = new GlLogicalOperation(this);
     private final DefaultFrameBuffer defaultFrameBuffer = new GlDefaultFrameBuffer();
     private final PixelStorageMode pixelStorageMode = new GlPixelStorageMode(this);
+    private final PrimitiveRestart primitiveRestart = new GlPrimitiveRestart(this);
     private final Debug debug;
 
     public GlGraphics() {
@@ -70,6 +73,11 @@ public class GlGraphics implements Graphics {
     @Override
     public Debug debug() {
         return debug;
+    }
+
+    @Override
+    public PrimitiveRestart primitiveRestart() {
+        return primitiveRestart;
     }
 
     @Override
