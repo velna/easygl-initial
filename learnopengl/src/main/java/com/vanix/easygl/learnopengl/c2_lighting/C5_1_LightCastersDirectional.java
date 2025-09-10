@@ -99,8 +99,8 @@ public class C5_1_LightCastersDirectional {
                     new Vector3f(1.5f, 0.2f, -1.5f),
                     new Vector3f(-1.3f, 1.0f, -1.5f)};
 
-            var cubeAttr = cubeVAO.bind().enableAttributes(3f, 3f, 2f);
-            var lightAttr = lightCubeVAO.bind().enableAttributes(3f, -3f, -2f);
+            var cubeAttr = cubeVAO.bind().enableAttributePointers(3f, 3f, 2f);
+            var lightAttr = lightCubeVAO.bind().enableAttributePointers(3f, -3f, -2f);
 
 
             diffuseMap.bind()

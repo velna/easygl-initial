@@ -5,9 +5,14 @@ import com.vanix.easygl.core.Feature;
 import com.vanix.easygl.core.Support;
 import org.joml.*;
 
+import javax.annotation.Nullable;
 import java.nio.*;
 
 public interface VertexAttribute extends Feature<VertexAttribute, VertexArray>, IntEnum {
+
+    VertexAttribute nextAttribute();
+
+    VertexAttribute setPointer(int size, DataType dataType, boolean normalized, int stride, int offset);
 
     /**
      * 目前支持Byte, UnsignedByte, Short, UnsignedShort, Int, UnsignedInt, Float, HalfFloat, Double。<br>
@@ -20,11 +25,7 @@ public interface VertexAttribute extends Feature<VertexAttribute, VertexArray>, 
      * @param layouts layouts
      * @return last attribute object, not this!
      */
-    VertexAttribute enableAttributes(Number... layouts);
-
-    VertexAttribute nextAttribute();
-
-    VertexAttribute setPointer(int size, DataType dataType, boolean normalized, int stride, int offset);
+    VertexAttribute enablePointers(Number... layouts);
 
     default int countOfStride() {
         return (int) (getBindingBuffer().size() / getStride());
@@ -33,11 +34,14 @@ public interface VertexAttribute extends Feature<VertexAttribute, VertexArray>, 
     @Support(since = Version.GL43)
     VertexAttribute setFormat(int size, DataType dataType, boolean normalized, int offset);
 
+    @Support(since = Version.GL43)
+    VertexAttribute enableFormats(VertexArray.BindingPoint bindingPoint, Number... layouts);
+
     @Support(since = Version.GL33)
     VertexAttribute setDivisor(int divisor);
 
     @Support(since = Version.GL43)
-    VertexAttribute bind(Buffer.BindingPoint bindingPoint);
+    VertexAttribute bind(VertexArray.BindingPoint bindingPoint);
 
     // region Set Values
     VertexAttribute setShort(short v0);
@@ -296,6 +300,7 @@ public interface VertexAttribute extends Feature<VertexAttribute, VertexArray>, 
     // endregion
 
     // region Get parameters
+    @Nullable
     Buffer getBindingBuffer();
 
     int getSize();
@@ -312,7 +317,7 @@ public interface VertexAttribute extends Feature<VertexAttribute, VertexArray>, 
 
     int getDivisor();
 
-    int getBindingPoint();
+    VertexArray.BindingPoint getBindingPoint();
 
     int getOffset();
 

@@ -46,7 +46,7 @@ public class C1_AdvancedLighting {
                     -10.0f, -0.5f, -10.0f, 0.0f, 1.0f, 0.0f, 0.0f, 10.0f,
                     10.0f, -0.5f, -10.0f, 0.0f, 1.0f, 0.0f, 10.0f, 10.0f
             });
-            var planeTriangleCount = planeVao.bind().enableAttributes(3f, 3f, 2f).countOfStride();
+            var planeTriangleCount = planeVao.bind().enableAttributePointers(3f, 3f, 2f).countOfStride();
 
             floorTexture.bind()
                     .wrapS(Texture.Wrap.Repeat)

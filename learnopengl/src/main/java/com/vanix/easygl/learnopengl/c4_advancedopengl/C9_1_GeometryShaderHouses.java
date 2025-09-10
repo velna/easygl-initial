@@ -38,7 +38,7 @@ public class C9_1_GeometryShaderHouses {
                     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // bottom-right
                     -0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // bottom-left
             });
-            var triangleCount = vao.bind().enableAttributes(2f, 3f).countOfStride();
+            var triangleCount = vao.bind().enableAttributePointers(2f, 3f).countOfStride();
 
             while (!window.shouldClose()) {
                 graphics.depthTest().enable().then()

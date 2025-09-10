@@ -90,7 +90,7 @@ public class C3_1_BlendingDiscard {
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
             });
 
-            var cubeTriangleCount = cubeVAO.bind().enableAttributes(3f, 2f).countOfStride();
+            var cubeTriangleCount = cubeVAO.bind().enableAttributePointers(3f, 2f).countOfStride();
 
             planeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // texture Coords
@@ -102,7 +102,7 @@ public class C3_1_BlendingDiscard {
                     -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
                     5.0f, -0.5f, -5.0f, 2.0f, 2.0f
             });
-            var planeTriangleCount = planeVAO.bind().enableAttributes(3f, 2f).countOfStride();
+            var planeTriangleCount = planeVAO.bind().enableAttributePointers(3f, 2f).countOfStride();
 
 
             transparentVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
@@ -115,7 +115,7 @@ public class C3_1_BlendingDiscard {
                     1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
                     1.0f, 0.5f, 0.0f, 1.0f, 0.0f
             });
-            var transparentTriangleCount = transparentVAO.bind().enableAttributes(3f, 2f).countOfStride();
+            var transparentTriangleCount = transparentVAO.bind().enableAttributePointers(3f, 2f).countOfStride();
 
             cubeTexture.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)

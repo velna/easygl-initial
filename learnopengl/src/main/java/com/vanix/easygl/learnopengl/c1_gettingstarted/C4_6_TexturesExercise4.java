@@ -40,7 +40,7 @@ public class C4_6_TexturesExercise4 {
                             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
                             -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
                     });
-            vao.bind().enableAttributes(3f, 3f, 2f);
+            vao.bind().enableAttributePointers(3f, 3f, 2f);
             ebo.bind(Buffer.Target.ElementArray).realloc(Buffer.DataUsage.StaticDraw, new int[]{
                     0, 1, 3, // first triangle
                     1, 2, 3  // second triangle

@@ -85,7 +85,7 @@ public class C1_1_DepthTesting {
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
             });
 
-            var cubeTriangleCount = cubeVAO.bind().enableAttributes(3f, 2f).countOfStride();
+            var cubeTriangleCount = cubeVAO.bind().enableAttributePointers(3f, 2f).countOfStride();
 
             planeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
@@ -97,7 +97,7 @@ public class C1_1_DepthTesting {
                     -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
                     5.0f, -0.5f, -5.0f, 2.0f, 2.0f
             });
-            var planeTriangleCount = planeVAO.bind().enableAttributes(3f, 2f).countOfStride();
+            var planeTriangleCount = planeVAO.bind().enableAttributePointers(3f, 2f).countOfStride();
 
             cubeTexture.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)

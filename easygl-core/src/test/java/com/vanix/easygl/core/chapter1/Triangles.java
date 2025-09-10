@@ -43,7 +43,7 @@ public class Triangles implements Renderer<ClientApp, RenderContext> {
                         """).compile())
                 .link()
                 .bind();
-        vao = VertexArray.of().bind().enableAttributes(2f).then();
+        vao = VertexArray.of().bind().enableAttributePointers(2f).then();
     }
 
     @Override

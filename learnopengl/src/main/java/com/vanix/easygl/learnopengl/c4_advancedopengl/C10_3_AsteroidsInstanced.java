@@ -79,7 +79,7 @@ public class C10_3_AsteroidsInstanced {
 
             for (var mesh : rock.getMeshes()) {
                 var attr3 = mesh.getVao().bind().attribute(3);
-                attr3.enableAttributes(4f, 4f, 4f, 4f);
+                attr3.enablePointers(4f, 4f, 4f, 4f);
                 attr3.setDivisor(1)
                         .nextAttribute().setDivisor(1)
                         .nextAttribute().setDivisor(1)

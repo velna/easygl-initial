@@ -89,7 +89,7 @@ public class C6_1_CubemapsSkybox {
                     -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
             });
-            var cubeTriangleCount = cubeVAO.bind().enableAttributes(3f, 2f).countOfStride();
+            var cubeTriangleCount = cubeVAO.bind().enableAttributePointers(3f, 2f).countOfStride();
 
             skyboxVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions
@@ -135,7 +135,7 @@ public class C6_1_CubemapsSkybox {
                     -1.0f, -1.0f, 1.0f,
                     1.0f, -1.0f, 1.0f
             });
-            var skyBoxTriangleCount = skyboxVAO.bind().enableAttributes(3f).countOfStride();
+            var skyBoxTriangleCount = skyboxVAO.bind().enableAttributePointers(3f).countOfStride();
 
             cubeTexture.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)

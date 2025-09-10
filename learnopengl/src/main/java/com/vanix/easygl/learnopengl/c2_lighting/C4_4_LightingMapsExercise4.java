@@ -85,8 +85,8 @@ public class C4_4_LightingMapsExercise4 {
                     -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
             });
-            var cubeTriangleCount = cubeVAO.bind().enableAttributes(3f, 3f, 2f).countOfStride();
-            var lightTriangleCount = lightCubeVAO.bind().enableAttributes(3f, -3f, -2f).countOfStride();
+            var cubeTriangleCount = cubeVAO.bind().enableAttributePointers(3f, 3f, 2f).countOfStride();
+            var lightTriangleCount = lightCubeVAO.bind().enableAttributePointers(3f, -3f, -2f).countOfStride();
 
 
             diffuseMap.bind()

@@ -84,8 +84,8 @@ public class C4_2_LightingMapsSpecular {
                     -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
             });
-            var cubeAttr = cubeVAO.bind().enableAttributes(3f, 3f, 2f);
-            var lightAttr = lightCubeVAO.bind().enableAttributes(3f, -3f, -2f);
+            var cubeAttr = cubeVAO.bind().enableAttributePointers(3f, 3f, 2f);
+            var lightAttr = lightCubeVAO.bind().enableAttributePointers(3f, -3f, -2f);
 
 
             diffuseMap.bind()

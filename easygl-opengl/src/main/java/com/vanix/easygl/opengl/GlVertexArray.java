@@ -1,5 +1,6 @@
 package com.vanix.easygl.opengl;
 
+import com.vanix.easygl.commons.SimpleIntEnum;
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.graphics.Buffer;
@@ -11,7 +12,8 @@ import java.util.function.IntConsumer;
 
 public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArray>, VertexArray> implements VertexArray {
 
-    private final VertexAttribute[] attributes = new VertexAttribute[GLX.glGetInteger(GLX.GL_MAX_VERTEX_ATTRIBS)];
+    private final VertexAttribute[] attributes = new VertexAttribute[MAX_ATTRIBUTES];
+    private final BindingPoint[] bindingPoints = new BindingPoint[MAX_BINDING_POINTS];
 
     GlVertexArray() {
         this(GLX.glGenVertexArrays());
@@ -35,11 +37,16 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
     }
 
     @Override
-    public VertexArray bind(int bindingPoint, Buffer buffer, long offset, int stride) {
-        assertBinding();
-        GLX.glBindVertexBuffer(bindingPoint, buffer.intHandle(), offset, stride);
-        GLX.checkError();
-        return this;
+    public BindingPoint bidingPoint(int bindingIndex) {
+        if (bindingIndex < 0 || bindingIndex > bindingPoints.length) {
+            throw new IllegalArgumentException("Vertex binding index must be range from 0 to " + bindingPoints.length);
+        }
+        var ret = bindingPoints[bindingIndex];
+        if (ret == null) {
+            ret = new GlBindingPoint(bindingIndex);
+            bindingPoints[bindingIndex] = ret;
+        }
+        return ret;
     }
 
     @Override
@@ -68,5 +75,53 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
         assertBinding();
         GLX.glDrawElementsInstanced(mode.value(), ebo.count(), ebo.dataType().value(), indices, instanceCount);
         GLX.checkError();
+    }
+
+    class GlBindingPoint extends SimpleIntEnum implements BindingPoint {
+        public GlBindingPoint(int value) {
+            super(value);
+        }
+
+        @Override
+        public BindingPoint bind(Buffer buffer, int offset, int stride) {
+            assertBinding();
+            GLX.glBindVertexBuffer(value, buffer.intHandle(), offset, stride);
+            GLX.checkError();
+            return this;
+        }
+
+        @Override
+        public BindingPoint setDivisor(int divisor) {
+            assertBinding();
+            GLX.glVertexBindingDivisor(value, divisor);
+            GLX.checkError();
+            return this;
+        }
+
+        @Override
+        public int getDivisor() {
+            assertBinding();
+            return GLX.glGetIntegeri(GLX.GL_VERTEX_BINDING_DIVISOR, value);
+        }
+
+        @Override
+        public int getOffset() {
+            assertBinding();
+            return GLX.glGetIntegeri(GLX.GL_VERTEX_BINDING_OFFSET, value);
+        }
+
+        @Override
+        public int getStride() {
+            assertBinding();
+            return GLX.glGetIntegeri(GLX.GL_VERTEX_BINDING_STRIDE, value);
+        }
+
+        @Override
+        public Buffer getBuffer() {
+            assertBinding();
+            int buffer = GLX.glGetIntegeri(GLX.GL_VERTEX_BINDING_BUFFER, value);
+            return buffer > 0 ? GlBuffer.get(buffer) : null;
+        }
+
     }
 }

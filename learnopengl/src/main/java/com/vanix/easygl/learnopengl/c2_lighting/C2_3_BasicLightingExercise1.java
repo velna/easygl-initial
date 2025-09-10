@@ -81,8 +81,8 @@ public class C2_3_BasicLightingExercise1 {
                     -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f
             });
-            var cubeTriangleCount = cubeVAO.bind().enableAttributes(3f, 3f).countOfStride();
-            var lightTriangleCount = lightCubeVAO.bind().enableAttributes(3f, -3f).countOfStride();
+            var cubeTriangleCount = cubeVAO.bind().enableAttributePointers(3f, 3f).countOfStride();
+            var lightTriangleCount = lightCubeVAO.bind().enableAttributePointers(3f, -3f).countOfStride();
 
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());

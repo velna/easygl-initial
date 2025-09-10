@@ -95,7 +95,7 @@ public class C8_AdvancedGlslUbo {
                     -0.5f, 0.5f, 0.5f,
                     -0.5f, 0.5f, -0.5f,
             });
-            cubeVAO.bind().enableAttributes(3f);
+            cubeVAO.bind().enableAttributePointers(3f);
 
             var matricesUniformBlock = programRed.getUniformBlock("Matrices");
             var bindingPoint = ubo.bind(Buffer.Target.Uniform)

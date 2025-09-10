@@ -78,7 +78,7 @@ public class C6_2_CoordinateSystemsDepth {
                             -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
                             -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
                     });
-            var triangleCount = vao.bind().enableAttributes(3f, 2f).countOfStride();
+            var triangleCount = vao.bind().enableAttributePointers(3f, 2f).countOfStride();
 
             texture1.bind()
                     .wrapS(Texture.Wrap.Repeat)
