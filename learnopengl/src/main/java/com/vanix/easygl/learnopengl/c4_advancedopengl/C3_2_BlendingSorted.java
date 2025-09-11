@@ -2,6 +2,7 @@ package com.vanix.easygl.learnopengl.c4_advancedopengl;
 
 import com.vanix.easygl.core.g3d.ControllableCamera;
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.feature.Blending;
 import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.window.Window;
@@ -91,7 +92,7 @@ public class C3_2_BlendingSorted {
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
             });
 
-            var cubeTriangleCount = cubeVAO.bind().enableAttributes(3f, 2f).countOfStride();
+            var cubeTriangleCount = cubeVAO.bind().enableAttributePointers(3f, 2f).countOfStride();
 
             planeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // texture Coords
@@ -103,7 +104,7 @@ public class C3_2_BlendingSorted {
                     -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
                     5.0f, -0.5f, -5.0f, 2.0f, 2.0f
             });
-            var planeTriangleCount = planeVAO.bind().enableAttributes(3f, 2f).countOfStride();
+            var planeTriangleCount = planeVAO.bind().enableAttributePointers(3f, 2f).countOfStride();
 
 
             transparentVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
@@ -116,7 +117,7 @@ public class C3_2_BlendingSorted {
                     1.0f, -0.5f, 0.0f, 1.0f, 1.0f,
                     1.0f, 0.5f, 0.0f, 1.0f, 0.0f
             });
-            var transparentTriangleCount = transparentVAO.bind().enableAttributes(3f, 2f).countOfStride();
+            var transparentTriangleCount = transparentVAO.bind().enableAttributePointers(3f, 2f).countOfStride();
 
             cubeTexture.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)
@@ -145,6 +146,9 @@ public class C3_2_BlendingSorted {
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
 
+            var cubeDrawable = cubeVAO.drawingArrays(DrawMode.Triangles, cubeTriangleCount).build();
+            var planeDrawable = planeVAO.drawingArrays(DrawMode.Triangles, planeTriangleCount).build();
+            var transparentDrawable = transparentVAO.drawingArrays(DrawMode.Triangles, transparentTriangleCount).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
@@ -163,21 +167,20 @@ public class C3_2_BlendingSorted {
                 cubeVAO.bind();
                 cubeTexture.bind();
                 program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
+                cubeDrawable.draw();
                 program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
+                cubeDrawable.draw();
 
                 //floor
                 floorTexture.bind();
                 program.setMatrix4("model", new Matrix4f().get(mat4f));
-                planeVAO.bind().drawArray(DrawMode.Triangles, planeTriangleCount);
+                planeDrawable.draw();
 
                 //
-                transparentVAO.bind();
                 transparentTexture.bind();
                 for (var vec : vegetation) {
                     program.setMatrix4("model", new Matrix4f().translate(vec).get(mat4f));
-                    transparentVAO.drawArray(DrawMode.Triangles, transparentTriangleCount);
+                    transparentDrawable.draw();
                 }
 
                 window.swapBuffers().pollEvents();

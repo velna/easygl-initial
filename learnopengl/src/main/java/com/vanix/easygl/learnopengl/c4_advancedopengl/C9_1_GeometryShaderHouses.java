@@ -38,15 +38,16 @@ public class C9_1_GeometryShaderHouses {
                     0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // bottom-right
                     -0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // bottom-left
             });
-            var triangleCount = vao.bind().enableAttributes(2f, 3f).countOfStride();
+            var triangleCount = vao.bind().enableAttributePointers(2f, 3f).countOfStride();
 
+            var cubeDrawable = vao.drawingArrays(DrawMode.Points, triangleCount).build();
             while (!window.shouldClose()) {
                 graphics.depthTest().enable().then()
                         .defaultFrameBuffer().setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
 
                 program.bind();
-                vao.bind().drawArray(DrawMode.Points, triangleCount);
+                cubeDrawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

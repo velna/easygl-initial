@@ -23,7 +23,7 @@
 | Textures and Samplers  | 100%               |
 | Framebuffer Objects  | 100%               |
 | Vertices  | 100%               |
-| Vertex Arrays  | 20%                |
+| Vertex Arrays  | 80%                |
 | Vertex Attributes  | 0%                 |
 | Vertex Post-Processing  | 0%                 |
 | Rasterization  | 100%               |
@@ -81,14 +81,15 @@ public class C2_1_HelloTriangle {
                             0.5f, -0.5f, 0.0f, // right
                             0.0f, 0.5f, 0.0f  // top
                     });
-            var triangleCount = vao.bind().enableAttributes(3f).countOfStride();
+            var triangleCount = vao.bind().enableAttributePointers(3f).countOfStride();
 
+            var drawable = vao.drawingArrays(DrawMode.Triangles, triangleCount).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 program.bind();
-                vao.bind().drawArray(DrawMode.Triangles, triangleCount);
+                drawable.draw();
 
                 window.swapBuffers().pollEvents();
             }
@@ -96,6 +97,7 @@ public class C2_1_HelloTriangle {
     }
 
 }
+
 ```
 运行效果：
 ![](learnopengl/screenshots/C2_1_HelloTriangle.png)
@@ -194,7 +196,7 @@ public class C11_2_AntiAliasingMsaaOffscreen {
                             -0.5f, 0.5f, 0.5f,
                             -0.5f, 0.5f, -0.5f
                     });
-            var cubeTriangleCount = cubeVao.bind().enableAttributes(3f).countOfStride();
+            var cubeTriangleCount = cubeVao.bind().enableAttributePointers(3f).countOfStride();
 
             quadVbo.bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{// vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
@@ -207,7 +209,7 @@ public class C11_2_AntiAliasingMsaaOffscreen {
                             1.0f, -1.0f, 1.0f, 0.0f,
                             1.0f, 1.0f, 1.0f, 1.0f
                     });
-            var quadTriangleCount = quadVao.bind().enableAttributes(2f, 2f).countOfStride();
+            var quadTriangleCount = quadVao.bind().enableAttributePointers(2f, 2f).countOfStride();
 
             renderBuffer.bind()
                     .storageMultiSample(4, InternalPixelFormat.Base.DEPTH24_STENCIL8, window.frameBufferWidth(), window.frameBufferHeight())
@@ -232,6 +234,8 @@ public class C11_2_AntiAliasingMsaaOffscreen {
 
             screenProgram.bind().setInt("screenTexture", 0);
 
+            var cubeDrawable = cubeVao.drawingArrays(DrawMode.Triangles, cubeTriangleCount).build();
+            var quadDrawable = quadVao.drawingArrays(DrawMode.Triangles, quadTriangleCount).build();
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
             while (!window.shouldClose()) {
@@ -250,7 +254,7 @@ public class C11_2_AntiAliasingMsaaOffscreen {
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", camera.update().view().get(mat4f))
                         .setMatrix4("model", new Matrix4f().get(mat4f));
-                cubeVao.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
+                cubeDrawable.draw();
 
                 frameBuffer.bindRead();
                 intermediateFBO.bindDraw()
@@ -263,7 +267,7 @@ public class C11_2_AntiAliasingMsaaOffscreen {
 
                 screenProgram.bind();
                 screenTexture.bind();
-                quadVao.bind().drawArray(DrawMode.Triangles, quadTriangleCount);
+                quadDrawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

@@ -1,8 +1,9 @@
-package com.vanix.easygl.opengl;
+package com.vanix.easygl.opengl.feature;
 
 import com.vanix.easygl.core.graphics.CompareFunction;
-import com.vanix.easygl.core.graphics.DepthTest;
+import com.vanix.easygl.core.graphics.feature.DepthTest;
 import com.vanix.easygl.core.graphics.Graphics;
+import com.vanix.easygl.opengl.GLX;
 
 public class GlDepthTest extends GlFeature<DepthTest> implements DepthTest {
     public GlDepthTest(Graphics graphics) {

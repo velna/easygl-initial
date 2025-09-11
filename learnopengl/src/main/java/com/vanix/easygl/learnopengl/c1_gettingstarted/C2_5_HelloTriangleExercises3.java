@@ -58,7 +58,7 @@ public class C2_5_HelloTriangleExercises3 {
                             -0.0f, -0.45f, 0.0f,  // right
                             -0.45f, 0.45f, 0.0f
                     });
-            vaos.getFirst().bind().enableAttributes(3f);
+            vaos.getFirst().bind().enableAttributePointers(3f);
             vbos.getLast().bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{
                             // second triangle
@@ -66,16 +66,18 @@ public class C2_5_HelloTriangleExercises3 {
                             0.9f, -0.45f, 0.0f,  // right
                             0.45f, 0.45f, 0.0f   // top
                     });
-            vaos.getLast().bind().enableAttributes(3f);
+            vaos.getLast().bind().enableAttributePointers(3f);
 
+            var fistDrawable = vaos.getFirst().drawingArrays(DrawMode.Triangles, 3).build();
+            var lastDrawable = vaos.getLast().drawingArrays(DrawMode.Triangles, 3).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 programOrange.bind();
-                vaos.getFirst().bind().drawArray(DrawMode.Triangles, 3);
+                fistDrawable.draw();
                 programYellow.bind();
-                vaos.getLast().bind().drawArray(DrawMode.Triangles, 3);
+                lastDrawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

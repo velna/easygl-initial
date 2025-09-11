@@ -49,14 +49,15 @@ public class C2_3_HelloTriangleExercises1 {
                             0.9f, -0.45f, 0.0f,  // right
                             0.45f, 0.45f, 0.0f   // top
                     });
-            var triangleCount = vao.bind().enableAttributes( 3f).countOfStride();
+            var triangleCount = vao.bind().enableAttributePointers( 3f).countOfStride();
 
+            var drawable = vao.drawingArrays(DrawMode.Triangles, triangleCount).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 program.bind();
-                vao.drawArray(DrawMode.Triangles, triangleCount);
+                drawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

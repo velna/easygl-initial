@@ -78,7 +78,7 @@ public class C6_2_CoordinateSystemsDepth {
                             -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
                             -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
                     });
-            var triangleCount = vao.bind().enableAttributes(3f, 2f).countOfStride();
+            var triangleCount = vao.bind().enableAttributePointers(3f, 2f).countOfStride();
 
             texture1.bind()
                     .wrapS(Texture.Wrap.Repeat)
@@ -104,6 +104,7 @@ public class C6_2_CoordinateSystemsDepth {
 
             long start = System.currentTimeMillis();
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
+            var drawable = vao.drawingArrays(DrawMode.Triangles, triangleCount).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
@@ -125,7 +126,7 @@ public class C6_2_CoordinateSystemsDepth {
                         .setMatrix4("projection", new Matrix4f()
                                 .perspective(Math.toRadians(45.0f), window.getAspect(), 0.1f, 100.0f)
                                 .get(mat4f));
-                vao.drawArray(DrawMode.Triangles, triangleCount);
+                drawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

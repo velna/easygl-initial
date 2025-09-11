@@ -16,6 +16,7 @@ public class KeyPress implements Renderer<ClientApp, RenderContext>, KeyboardLis
     private VertexArray vao;
     private Program program;
     private PolygonMode polygonMode = PolygonMode.Fill;
+    private Drawable drawable;
 
     @Override
     public void init(ClientApp clientApp) throws GraphicsException {
@@ -50,14 +51,15 @@ public class KeyPress implements Renderer<ClientApp, RenderContext>, KeyboardLis
                         """).compile())
                 .link()
                 .bind();
-        vao = VertexArray.of().bind().enableAttributes(2f).then();
+        vao = VertexArray.of().bind().enableAttributePointers(2f).then();
+        drawable = vao.drawingArrays(DrawMode.Triangles, 0, vbo.count() / 2).build();
     }
 
     @Override
     public void render(RenderContext context) throws GraphicsException {
         context.graphics().defaultFrameBuffer().clearColorBuffer(FrameInnerBuffer.DrawBuffer.of(0), new Vector4f(0.0f));
         program.bind();
-        vao.bind().drawArray(DrawMode.Triangles, 0, vbo.count() / 2);
+        drawable.draw();
     }
 
     @Override

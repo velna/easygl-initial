@@ -90,7 +90,7 @@ public class C11_2_AntiAliasingMsaaOffscreen {
                             -0.5f, 0.5f, 0.5f,
                             -0.5f, 0.5f, -0.5f
                     });
-            var cubeTriangleCount = cubeVao.bind().enableAttributes(3f).countOfStride();
+            var cubeTriangleCount = cubeVao.bind().enableAttributePointers(3f).countOfStride();
 
             quadVbo.bind(Buffer.Target.Array)
                     .realloc(Buffer.DataUsage.StaticDraw, new float[]{// vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
@@ -103,7 +103,7 @@ public class C11_2_AntiAliasingMsaaOffscreen {
                             1.0f, -1.0f, 1.0f, 0.0f,
                             1.0f, 1.0f, 1.0f, 1.0f
                     });
-            var quadTriangleCount = quadVao.bind().enableAttributes(2f, 2f).countOfStride();
+            var quadTriangleCount = quadVao.bind().enableAttributePointers(2f, 2f).countOfStride();
 
             renderBuffer.bind()
                     .storageMultiSample(4, InternalPixelFormat.Base.DEPTH24_STENCIL8, window.frameBufferWidth(), window.frameBufferHeight())
@@ -128,6 +128,8 @@ public class C11_2_AntiAliasingMsaaOffscreen {
 
             screenProgram.bind().setInt("screenTexture", 0);
 
+            var cubeDrawable = cubeVao.drawingArrays(DrawMode.Triangles, cubeTriangleCount).build();
+            var quadDrawable = quadVao.drawingArrays(DrawMode.Triangles, quadTriangleCount).build();
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
             while (!window.shouldClose()) {
@@ -146,7 +148,7 @@ public class C11_2_AntiAliasingMsaaOffscreen {
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", camera.update().view().get(mat4f))
                         .setMatrix4("model", new Matrix4f().get(mat4f));
-                cubeVao.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
+                cubeDrawable.draw();
 
                 frameBuffer.bindRead();
                 intermediateFBO.bindDraw()
@@ -159,7 +161,7 @@ public class C11_2_AntiAliasingMsaaOffscreen {
 
                 screenProgram.bind();
                 screenTexture.bind();
-                quadVao.bind().drawArray(DrawMode.Triangles, quadTriangleCount);
+                quadDrawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

@@ -85,7 +85,7 @@ public class C1_1_DepthTesting {
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
             });
 
-            var cubeTriangleCount = cubeVAO.bind().enableAttributes(3f, 2f).countOfStride();
+            var cubeTriangleCount = cubeVAO.bind().enableAttributePointers(3f, 2f).countOfStride();
 
             planeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
@@ -97,7 +97,7 @@ public class C1_1_DepthTesting {
                     -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
                     5.0f, -0.5f, -5.0f, 2.0f, 2.0f
             });
-            var planeTriangleCount = planeVAO.bind().enableAttributes(3f, 2f).countOfStride();
+            var planeTriangleCount = planeVAO.bind().enableAttributePointers(3f, 2f).countOfStride();
 
             cubeTexture.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)
@@ -114,6 +114,8 @@ public class C1_1_DepthTesting {
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
 
+            var cubeDrawable = cubeVAO.drawingArrays(DrawMode.Triangles, cubeTriangleCount).build();
+            var planeDrawable = planeVAO.drawingArrays(DrawMode.Triangles, planeTriangleCount).build();
             long start = System.currentTimeMillis();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
@@ -132,13 +134,13 @@ public class C1_1_DepthTesting {
 
                 cubeTexture.bind(TextureUnit.U0);
                 program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
+                cubeDrawable.draw();
                 program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
+                cubeDrawable.draw();
 
                 floorTexture.bind(TextureUnit.U0);
                 program.setMatrix4("model", new Matrix4f().get(mat4f));
-                planeVAO.bind().drawArray(DrawMode.Triangles, planeTriangleCount);
+                planeDrawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

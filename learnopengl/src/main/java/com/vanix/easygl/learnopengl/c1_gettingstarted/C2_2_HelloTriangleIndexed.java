@@ -46,7 +46,7 @@ public class C2_2_HelloTriangleIndexed {
                             -0.5f, -0.5f, 0.0f,  // bottom left
                             -0.5f, 0.5f, 0.0f   // top left
                     });
-            vao.bind().enableAttributes(3f);
+            vao.bind().enableAttributePointers(3f);
             ebo.bind(Buffer.Target.ElementArray)
                     .realloc(Buffer.DataUsage.StaticDraw, new int[]{
                             // note that we start from 0!
@@ -54,12 +54,13 @@ public class C2_2_HelloTriangleIndexed {
                             1, 2, 3   // second Triangle
                     });
 
+            var drawable = vao.drawingElements(DrawMode.Triangles, ebo).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 program.bind();
-                vao.drawElements(DrawMode.Triangles, ebo);
+                drawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

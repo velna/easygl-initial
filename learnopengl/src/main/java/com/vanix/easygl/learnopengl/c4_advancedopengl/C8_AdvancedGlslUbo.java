@@ -95,7 +95,7 @@ public class C8_AdvancedGlslUbo {
                     -0.5f, 0.5f, 0.5f,
                     -0.5f, 0.5f, -0.5f,
             });
-            cubeVAO.bind().enableAttributes(3f);
+            cubeVAO.bind().enableAttributePointers(3f);
 
             var matricesUniformBlock = programRed.getUniformBlock("Matrices");
             var bindingPoint = ubo.bind(Buffer.Target.Uniform)
@@ -109,6 +109,7 @@ public class C8_AdvancedGlslUbo {
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
 
+            var cubeDrawable = cubeVAO.drawingArrays(DrawMode.Triangles, cubeVBO.count()/3).build();
             while (!window.shouldClose()) {
                 graphics.depthTest().enable().then()
                         .defaultFrameBuffer().setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
@@ -123,19 +124,19 @@ public class C8_AdvancedGlslUbo {
 
                 programRed.bind()
                         .setMatrix4("model", new Matrix4f().translate(-0.75f, 0.75f, 0.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO.count() / 3);
+                cubeDrawable.draw();
 
                 programGreen.bind()
                         .setMatrix4("model", new Matrix4f().translate(0.75f, 0.75f, 0.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO.count() / 3);
+                cubeDrawable.draw();
 
                 programBlue.bind()
                         .setMatrix4("model", new Matrix4f().translate(-0.75f, -0.75f, 0.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO.count() / 3);
+                cubeDrawable.draw();
 
                 programYellow.bind()
                         .setMatrix4("model", new Matrix4f().translate(0.75f, -0.75f, 0.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeVBO.count() / 3);
+                cubeDrawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

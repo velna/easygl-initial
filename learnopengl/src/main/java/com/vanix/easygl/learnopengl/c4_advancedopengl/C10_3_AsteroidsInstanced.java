@@ -16,6 +16,7 @@ import org.lwjgl.BufferUtils;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -79,7 +80,7 @@ public class C10_3_AsteroidsInstanced {
 
             for (var mesh : rock.getMeshes()) {
                 var attr3 = mesh.getVao().bind().attribute(3);
-                attr3.enableAttributes(4f, 4f, 4f, 4f);
+                attr3.enablePointers(4f, 4f, 4f, 4f);
                 attr3.setDivisor(1)
                         .nextAttribute().setDivisor(1)
                         .nextAttribute().setDivisor(1)
@@ -92,6 +93,10 @@ public class C10_3_AsteroidsInstanced {
             var rockMeshes = rock.getMeshes();
             var planetMeshes = planet.getMeshes();
 
+            List<Drawable> drawables = new ArrayList<>();
+            for (var mesh : rockMeshes) {
+                drawables.add(mesh.getVao().drawingElements(DrawMode.Triangles, mesh.getEbo()).instanced(modelMatrices.length).build());
+            }
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
@@ -113,9 +118,7 @@ public class C10_3_AsteroidsInstanced {
                         .setInt("texture_diffuse1", 0);
                 TextureUnit.U0.bind();
                 rock.getTextures(Model.TextureType.Height).getFirst().getTexture().bind();
-                for (var mesh : rockMeshes) {
-                    mesh.getVao().bind().drawElementsInstanced(DrawMode.Triangles, mesh.getEbo(), modelMatrices.length);
-                }
+                drawables.forEach(Drawable::draw);
 
                 window.swapBuffers().pollEvents();
             }

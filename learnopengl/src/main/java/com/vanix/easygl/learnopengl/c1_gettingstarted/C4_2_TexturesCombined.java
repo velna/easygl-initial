@@ -36,7 +36,7 @@ public class C4_2_TexturesCombined {
                             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
                             -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
                     });
-            vao.bind().enableAttributes(3f, 3f, 2f);
+            vao.bind().enableAttributePointers(3f, 3f, 2f);
             ebo.bind(Buffer.Target.ElementArray).realloc(Buffer.DataUsage.StaticDraw, new int[]{
                     0, 1, 3, // first triangle
                     1, 2, 3  // second triangle
@@ -64,6 +64,7 @@ public class C4_2_TexturesCombined {
                     .setInt("texture1", 0)
                     .setInt("texture2", 1);
 
+            var drawable = vao.drawingElements(DrawMode.Triangles, ebo).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
@@ -74,7 +75,7 @@ public class C4_2_TexturesCombined {
                 texture2.bind();
 
                 program.bind();
-                vao.drawElements(DrawMode.Triangles, ebo, 0);
+                drawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

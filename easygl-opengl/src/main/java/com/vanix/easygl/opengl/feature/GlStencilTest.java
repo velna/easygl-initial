@@ -1,9 +1,12 @@
-package com.vanix.easygl.opengl;
+package com.vanix.easygl.opengl.feature;
 
 import com.vanix.easygl.core.graphics.CompareFunction;
 import com.vanix.easygl.core.graphics.Face;
 import com.vanix.easygl.core.graphics.Graphics;
-import com.vanix.easygl.core.graphics.StencilTest;
+import com.vanix.easygl.core.graphics.feature.StencilTest;
+import com.vanix.easygl.opengl.Cache;
+import com.vanix.easygl.opengl.GLX;
+import com.vanix.easygl.opengl.feature.GlFeature;
 
 public class GlStencilTest extends GlFeature<StencilTest> implements StencilTest {
 

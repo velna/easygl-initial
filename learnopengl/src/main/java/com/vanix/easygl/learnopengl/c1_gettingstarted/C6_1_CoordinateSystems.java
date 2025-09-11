@@ -41,7 +41,7 @@ public class C6_1_CoordinateSystems {
                             -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
                             -0.5f, 0.5f, 0.0f, 0.0f, 1.0f  // top left
                     });
-            vao.bind().enableAttributes(3f, 2f);
+            vao.bind().enableAttributePointers(3f, 2f);
             ebo.bind(Buffer.Target.ElementArray).realloc(Buffer.DataUsage.StaticDraw, new int[]{
                     0, 1, 3, // first triangle
                     1, 2, 3  // second triangle
@@ -69,8 +69,8 @@ public class C6_1_CoordinateSystems {
                     .setInt("texture1", 0)
                     .setInt("texture2", 1);
 
-            long start = System.currentTimeMillis();
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
+            var drawable = vao.drawingElements(DrawMode.Triangles, ebo).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
@@ -90,7 +90,7 @@ public class C6_1_CoordinateSystems {
                         .setMatrix4("projection", new Matrix4f()
                                 .perspective(Math.toRadians(45.0f), window.getAspect(), 0.1f, 100.0f)
                                 .get(mat4f));
-                vao.drawElements(DrawMode.Triangles, ebo, 0);
+                drawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

@@ -1,9 +1,11 @@
-package com.vanix.easygl.opengl;
+package com.vanix.easygl.opengl.feature;
 
 import com.vanix.easygl.commons.Color;
-import com.vanix.easygl.core.graphics.Blending;
+import com.vanix.easygl.core.graphics.feature.Blending;
 import com.vanix.easygl.core.graphics.FrameInnerBuffer;
 import com.vanix.easygl.core.graphics.Graphics;
+import com.vanix.easygl.opengl.Cache;
+import com.vanix.easygl.opengl.GLX;
 
 public class GlBlending extends GlFeature<Blending> implements Blending {
 

@@ -3,6 +3,7 @@ package com.vanix.easygl.core.graphics;
 import com.vanix.easygl.core.Closeable;
 import com.vanix.easygl.core.MultiFeature;
 import com.vanix.easygl.core.Support;
+import com.vanix.easygl.core.graphics.feature.*;
 import com.vanix.easygl.core.window.Window;
 import org.joml.Vector2f;
 
@@ -33,7 +34,11 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
 
     LogicalOperation logicalOperation();
 
+    @Support(since = Version.GL43)
     Debug debug();
+
+    @Support(since = Version.GL31)
+    PrimitiveRestart primitiveRestart();
     //endregion
 
     // region Multisampling

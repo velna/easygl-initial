@@ -1,12 +1,14 @@
-package com.vanix.easygl.core.graphics;
+package com.vanix.easygl.core.graphics.feature;
 
 import com.vanix.easygl.commons.Rectangle;
 import com.vanix.easygl.core.IndexedFeature;
 import com.vanix.easygl.core.Support;
+import com.vanix.easygl.core.graphics.Graphics;
+import com.vanix.easygl.core.graphics.Version;
 
 import java.nio.IntBuffer;
 
-public interface ScissorTest extends IndexedFeature<ScissorTest, Graphics> {
+public interface ScissorTest extends IndexedFeature<ScissorTest, Graphics>, GraphicsFeature<ScissorTest> {
 
     default ScissorTest setBox(int[] box) {
         return setBox(box[0], box[1], box[2], box[3]);

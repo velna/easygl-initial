@@ -2,6 +2,7 @@ package com.vanix.easygl.learnopengl.c5_advancedlighting;
 
 import com.vanix.easygl.core.g3d.ControllableCamera;
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.feature.Blending;
 import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.window.Window;
@@ -46,7 +47,7 @@ public class C1_AdvancedLighting {
                     -10.0f, -0.5f, -10.0f, 0.0f, 1.0f, 0.0f, 0.0f, 10.0f,
                     10.0f, -0.5f, -10.0f, 0.0f, 1.0f, 0.0f, 10.0f, 10.0f
             });
-            var planeTriangleCount = planeVao.bind().enableAttributes(3f, 3f, 2f).countOfStride();
+            var planeTriangleCount = planeVao.bind().enableAttributePointers(3f, 3f, 2f).countOfStride();
 
             floorTexture.bind()
                     .wrapS(Texture.Wrap.Repeat)
@@ -64,6 +65,7 @@ public class C1_AdvancedLighting {
 
             long start = System.currentTimeMillis();
 
+            var planeDrawable = planeVao.drawingArrays(DrawMode.Triangles, planeTriangleCount).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
@@ -86,7 +88,7 @@ public class C1_AdvancedLighting {
 
                 floorTexture.bind();
 
-                planeVao.bind().drawArray(DrawMode.Triangles, planeTriangleCount);
+                planeDrawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

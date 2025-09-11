@@ -1,10 +1,11 @@
-package com.vanix.easygl.core.graphics;
+package com.vanix.easygl.core.graphics.feature;
 
 import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.Feature;
+import com.vanix.easygl.core.graphics.Graphics;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public interface LogicalOperation extends Feature<LogicalOperation, Graphics> {
+public interface LogicalOperation extends GraphicsFeature<LogicalOperation> {
     LogicalOperation setOp(Op op);
 
     Op getOp();

@@ -1,9 +1,11 @@
-package com.vanix.easygl.opengl;
+package com.vanix.easygl.opengl.feature;
 
 import com.vanix.easygl.commons.Rectangle;
 import com.vanix.easygl.commons.SimpleRectangle;
 import com.vanix.easygl.core.graphics.Graphics;
-import com.vanix.easygl.core.graphics.ScissorTest;
+import com.vanix.easygl.core.graphics.feature.ScissorTest;
+import com.vanix.easygl.opengl.GLX;
+import com.vanix.easygl.opengl.feature.GlFeature;
 
 import java.nio.IntBuffer;
 

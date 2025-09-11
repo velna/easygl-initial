@@ -45,8 +45,9 @@ public class C3_1_ShaderUniform {
                             -0.5f, -0.5f, 0.0f,  // bottom left
                             0.0f, 0.5f, 0.0f   // top
                     });
-            vao.bind().enableAttributes(3f);
+            vao.bind().enableAttributePointers(3f);
 
+            var drawable = vao.drawingArrays(DrawMode.Triangles, 3).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
@@ -54,7 +55,7 @@ public class C3_1_ShaderUniform {
                 program.bind();
                 float greenValue = (float) (Math.sin(System.currentTimeMillis() / 1000.0) / 2.0 + 0.5);
                 program.setVec4("ourColor", 0.0f, greenValue, 0.0f, 1.0f);
-                vao.drawArray(DrawMode.Triangles, 3);
+                drawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

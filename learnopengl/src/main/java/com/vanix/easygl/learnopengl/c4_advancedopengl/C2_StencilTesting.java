@@ -2,6 +2,7 @@ package com.vanix.easygl.learnopengl.c4_advancedopengl;
 
 import com.vanix.easygl.core.g3d.ControllableCamera;
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.feature.StencilTest;
 import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.window.Window;
@@ -93,7 +94,7 @@ public class C2_StencilTesting {
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
             });
 
-            var cubeTriangleCount = cubeVAO.bind().enableAttributes(3f, 2f).countOfStride();
+            var cubeTriangleCount = cubeVAO.bind().enableAttributePointers(3f, 2f).countOfStride();
 
             planeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // texture Coords
@@ -107,7 +108,7 @@ public class C2_StencilTesting {
                     -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
                     5.0f, -0.5f, -5.0f, 2.0f, 2.0f
             });
-            var planeTriangleCount = planeVAO.bind().enableAttributes(3f, 2f).countOfStride();
+            var planeTriangleCount = planeVAO.bind().enableAttributePointers(3f, 2f).countOfStride();
 
             cubeTexture.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)
@@ -123,6 +124,8 @@ public class C2_StencilTesting {
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
 
+            var cubeDrawable = cubeVAO.drawingArrays(DrawMode.Triangles, cubeTriangleCount).build();
+            var planeDrawable = planeVAO.drawingArrays(DrawMode.Triangles, planeTriangleCount).build();
             while (!window.shouldClose()) {
                 frameBuffer.setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.All);
@@ -148,7 +151,7 @@ public class C2_StencilTesting {
                 planeVAO.bind();
                 floorTexture.bind();
                 program.setMatrix4("model", new Matrix4f().get(mat4f));
-                planeVAO.drawArray(DrawMode.Triangles, planeTriangleCount);
+                planeDrawable.draw();
 
                 // 1st. render pass, draw objects as normal, writing to the stencil buffer
                 // --------------------------------------------------------------------
@@ -159,9 +162,9 @@ public class C2_StencilTesting {
                 cubeVAO.bind();
                 cubeTexture.bind(TextureUnit.U0);
                 program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
+                cubeDrawable.draw();
                 program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
+                cubeDrawable.draw();
 
                 // 2nd. render pass: now draw slightly scaled versions of the objects, this time disabling stencil writing.
                 // Because the stencil buffer is now filled with several 1s.
@@ -179,12 +182,12 @@ public class C2_StencilTesting {
                         .translate(-1.0f, 0.0f, -1.0f)
                         .scale(scale)
                         .get(mat4f));
-                cubeVAO.drawArray(DrawMode.Triangles, cubeTriangleCount);
+                cubeDrawable.draw();
                 singleColorProgram.setMatrix4("model", new Matrix4f()
                         .translate(2.0f, 0.0f, 0.0f)
                         .scale(scale)
                         .get(mat4f));
-                cubeVAO.drawArray(DrawMode.Triangles, cubeTriangleCount);
+                cubeDrawable.draw();
 
                 frameBuffer.setStencilMask(0xff);
                 stencilTest.setFunction(CompareFunction.Always, 0, 0xff);

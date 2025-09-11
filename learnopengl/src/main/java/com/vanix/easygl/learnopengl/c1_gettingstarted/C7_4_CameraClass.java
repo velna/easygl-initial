@@ -79,7 +79,7 @@ public class C7_4_CameraClass {
                             -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
                             -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
                     });
-            var triangleCount = vao.bind().enableAttributes(3f, 2f).countOfStride();
+            var triangleCount = vao.bind().enableAttributePointers(3f, 2f).countOfStride();
 
             var cubePositions = new Vector3f[]{
                     new Vector3f(0.0f, 0.0f, 0.0f),
@@ -119,6 +119,7 @@ public class C7_4_CameraClass {
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             camera.setZoomOnMouseScroll(true);
 
+            var drawable = vao.drawingArrays(DrawMode.Triangles, triangleCount).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
@@ -138,7 +139,7 @@ public class C7_4_CameraClass {
                             .translate(cubePositions[i])
                             .rotate(Math.toRadians(20.0f * i), new Vector3f(1.0f, 0.3f, 0.5f))
                             .get(mat4f));
-                    vao.drawArray(DrawMode.Triangles, triangleCount);
+                    drawable.draw();
                 }
 
                 window.swapBuffers().pollEvents();

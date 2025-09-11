@@ -14,7 +14,6 @@ import java.nio.*;
 
 public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute {
     private final VertexArray vao;
-    private Buffer bindingBuffer;
     private int stride = -1;
 
     protected GlVertexAttribute(int value, VertexArray vao) {
@@ -46,10 +45,11 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
         return this;
     }
 
-    @Override
-    public VertexAttribute enableAttributes(Number... layouts) {
-        vao.assertBinding();
-        int pointer = 0;
+    interface LayoutConsumer {
+        void accept(VertexAttribute attribute, int strideBytes, DataType dataType, int index, boolean enable, int size, int offset);
+    }
+
+    private VertexAttribute withLayouts(Number[] layouts, LayoutConsumer layoutConsumer) {
         int strideBytes = 0;
         DataType[] dataTypes = new DataType[layouts.length];
         for (int i = 0; i < layouts.length; i++) {
@@ -71,23 +71,38 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
         }
 
         VertexAttribute attribute = this;
+        int offset = 0;
         for (int i = 0; i < layouts.length; i++) {
             attribute = vao.attribute(this.value + i);
             var layout = layouts[i];
-            int realSize = layout.intValue() % 10;
-            realSize = layout.intValue() > 0 ? realSize : -realSize;
+            int realSize = Math.abs(layout.intValue() % 10);
             DataType dataType = dataTypes[i];
-            if (realSize > 0) {
-                attribute.enable().setPointer(realSize, dataType, realSize == 5, strideBytes, pointer);
-            }
-            pointer += Math.abs(realSize) * dataType.bytes();
+            layoutConsumer.accept(attribute, strideBytes, dataType, i, layout.intValue() > 0, realSize, offset);
+            offset += realSize * dataType.bytes();
         }
         return attribute;
     }
 
     @Override
+    public VertexAttribute enablePointers(Number... layouts) {
+        vao.assertBinding();
+        return withLayouts(layouts, (attribute, strideBytes, dataType, index, enable, size, offset) -> {
+            if (enable) {
+                attribute.enable().setPointer(size, dataType, size == 5, strideBytes, offset);
+            } else {
+                attribute.disable();
+            }
+        });
+    }
+
+    @Override
+    public VertexAttribute prevAttribute() {
+        return vao.attribute(Math.max(0, value - 1));
+    }
+
+    @Override
     public VertexAttribute nextAttribute() {
-        return vao.attribute(value + 1);
+        return vao.attribute(Math.min(VertexArray.MAX_ATTRIBUTES, value + 1));
     }
 
     @Override
@@ -107,8 +122,28 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
     @Override
     public VertexAttribute setFormat(int size, DataType dataType, boolean normalized, int offset) {
         vao.assertBinding();
-        GLX.glVertexAttribFormat(value, size, dataType.value(), normalized, offset);
+        size = size == 5 ? GLX.GL_BGRA : size;
+        if (dataType == DataType.Double) {
+            GLX.glVertexAttribLFormat(value, size, dataType.value(), offset);
+        } else if (dataType == DataType.Float) {
+            GLX.glVertexAttribFormat(value, size, dataType.value(), normalized, offset);
+        } else {
+            GLX.glVertexAttribIFormat(value, size, dataType.value(), offset);
+        }
+        GLX.checkError();
         return this;
+    }
+
+    @Override
+    public VertexAttribute enableFormats(VertexArray.BindingPoint bindingPoint, Number... layouts) {
+        vao.assertBinding();
+        return withLayouts(layouts, (attribute, strideBytes, dataType, index, enable, size, offset) -> {
+            if (enable) {
+                attribute.enable().bind(bindingPoint).setFormat(size, dataType, size == 5, offset);
+            } else {
+                attribute.disable();
+            }
+        });
     }
 
     @Override
@@ -119,7 +154,7 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
     }
 
     @Override
-    public VertexAttribute bind(Buffer.BindingPoint bindingPoint) {
+    public VertexAttribute bind(VertexArray.BindingPoint bindingPoint) {
         vao.assertBinding();
         GLX.glVertexAttribBinding(value, bindingPoint.value());
         return this;
@@ -696,12 +731,9 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
 
     @Override
     public Buffer getBindingBuffer() {
-        if (bindingBuffer == null) {
-            vao.assertBinding();
-            int buffer = GLX.glGetVertexAttribi(value, GLX.GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING);
-            bindingBuffer = buffer == 0 ? null : GlBuffer.get(buffer);
-        }
-        return bindingBuffer;
+        vao.assertBinding();
+        int buffer = GLX.glGetVertexAttribi(value, GLX.GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING);
+        return buffer == 0 ? null : GlBuffer.get(buffer);
     }
 
     @Override
@@ -750,9 +782,9 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
     }
 
     @Override
-    public int getBindingPoint() {
+    public VertexArray.BindingPoint getBindingPoint() {
         vao.assertBinding();
-        return GLX.glGetVertexAttribi(value, GLX.GL_VERTEX_ATTRIB_BINDING);
+        return vao.bidingPoint(GLX.glGetVertexAttribi(value, GLX.GL_VERTEX_ATTRIB_BINDING));
     }
 
     @Override

@@ -1,7 +1,10 @@
-package com.vanix.easygl.opengl;
+package com.vanix.easygl.opengl.feature;
 
 import com.vanix.easygl.core.graphics.Graphics;
-import com.vanix.easygl.core.graphics.LogicalOperation;
+import com.vanix.easygl.core.graphics.feature.LogicalOperation;
+import com.vanix.easygl.opengl.Cache;
+import com.vanix.easygl.opengl.GLX;
+import com.vanix.easygl.opengl.feature.GlFeature;
 
 public class GlLogicalOperation extends GlFeature<LogicalOperation> implements LogicalOperation {
 

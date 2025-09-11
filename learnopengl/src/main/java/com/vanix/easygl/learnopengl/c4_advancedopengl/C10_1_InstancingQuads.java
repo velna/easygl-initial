@@ -43,7 +43,7 @@ public class C10_1_InstancingQuads {
                     0.05f, -0.05f, 0.0f, 1.0f, 0.0f,
                     0.05f, 0.05f, 0.0f, 1.0f, 1.0f
             });
-            var vertexAttr = quadVao.bind().enableAttributes(2f, 3f);
+            var vertexAttr = quadVao.bind().enableAttributePointers(2f, 3f);
 
             var translations = new Vector2f[100];
             var index = 0;
@@ -54,14 +54,15 @@ public class C10_1_InstancingQuads {
                 }
             }
             instanceVbo.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, translations);
-            vertexAttr.nextAttribute().enableAttributes(2f).setDivisor(1);
+            vertexAttr.nextAttribute().enablePointers(2f).setDivisor(1);
 
+            var drawable = quadVao.drawingArrays(DrawMode.Triangles, 0, 6).instanced(translations.length).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
 
                 program.bind();
-                quadVao.bind().drawArrayInstanced(DrawMode.Triangles, 0, 6, translations.length);
+                drawable.draw();
 
                 window.swapBuffers().pollEvents();
             }
