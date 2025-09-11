@@ -14,7 +14,9 @@ public interface VertexAttribute extends Feature<VertexAttribute, VertexArray>, 
 
     VertexAttribute nextAttribute();
 
-    VertexAttribute setPointer(int size, DataType dataType, boolean normalized, int stride, int offset);
+    VertexAttribute setPointer(int size, DataType dataType, boolean normalized, int stride, long offset);
+
+    long getPointer();
 
     /**
      * 目前支持Byte, UnsignedByte, Short, UnsignedShort, Int, UnsignedInt, Float, HalfFloat, Double。<br>
@@ -313,14 +315,19 @@ public interface VertexAttribute extends Feature<VertexAttribute, VertexArray>, 
 
     boolean isNormalized();
 
+    @Support(since = Version.GL30)
     boolean isInteger();
 
+    @Support(since = Version.GL43)
     boolean isLong();
 
+    @Support(since = Version.GL33)
     int getDivisor();
 
+    @Support(since = Version.GL43)
     VertexArray.BindingPoint getBindingPoint();
 
+    @Support(since = Version.GL43)
     int getOffset();
 
     Vector4f getFloat();

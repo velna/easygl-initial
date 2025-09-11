@@ -106,7 +106,7 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
     }
 
     @Override
-    public VertexAttribute setPointer(int size, DataType dataType, boolean normalized, int stride, int offset) {
+    public VertexAttribute setPointer(int size, DataType dataType, boolean normalized, int stride, long offset) {
         vao.assertBinding();
         size = size == 5 ? GLX.GL_BGRA : size;
         if (dataType == DataType.Double) {
@@ -117,6 +117,16 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
         GLX.checkError();
         this.stride = stride;
         return this;
+    }
+
+    @Override
+    public long getPointer() {
+        vao.assertBinding();
+        try (MemoryStack stack = MemoryStack.stackGet()) {
+            var pointerBuffer = stack.mallocPointer(1);
+            GLX.glGetVertexAttribPointerv(value, GLX.GL_VERTEX_ATTRIB_ARRAY_POINTER, pointerBuffer);
+            return pointerBuffer.get(0);
+        }
     }
 
     @Override
