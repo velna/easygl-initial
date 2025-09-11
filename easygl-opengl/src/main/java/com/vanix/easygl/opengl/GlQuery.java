@@ -74,6 +74,20 @@ public interface GlQuery<T extends Query<T>> extends Query<T> {
         public GlSampleQuery(int handle, SampleType type) {
             super(handle, type.value());
         }
+
+        @Override
+        public SampleQuery beginConditionalRender(Mode mode) {
+            GLX.glBeginConditionalRender(intHandle(), mode.value());
+            GLX.checkError();
+            return this;
+        }
+
+        @Override
+        public SampleQuery endConditionalRender() {
+            GLX.glEndConditionalRender();
+            GLX.checkError();
+            return this;
+        }
     }
 
     class GlIndexQuery extends AbstractGlQuery<IndexQuery> implements IndexQuery {
