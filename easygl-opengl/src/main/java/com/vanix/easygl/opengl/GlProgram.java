@@ -9,6 +9,7 @@ import org.eclipse.collections.api.factory.primitive.ObjectIntMaps;
 import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -590,5 +591,30 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     @Override
     public int getAttribute(ProgramAttribute.Int attribute) {
         return GLX.glGetProgrami(intHandle(), attribute.value());
+    }
+
+    @Override
+    public Program bindVertexAttribute(VertexAttribute vertexAttribute, String variableName) {
+        GLX.glBindAttribLocation(intHandle(), vertexAttribute.value(), variableName);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public AttributeVariable getActiveVertexAttribute(VertexAttribute vertexAttribute) {
+        try (MemoryStack stack = MemoryStack.stackGet()) {
+            IntBuffer lengthBuffer = stack.mallocInt(1);
+            IntBuffer sizeBuffer = stack.mallocInt(1);
+            IntBuffer typeBuffer = stack.mallocInt(1);
+            ByteBuffer nameBuffer = stack.malloc(getAttribute(ProgramAttribute.ActiveAttributeMaxLength));
+            GLX.glGetActiveAttrib(intHandle(), vertexAttribute.value(), lengthBuffer, sizeBuffer, typeBuffer, nameBuffer);
+            GLX.checkError();
+            return new AttributeVariable(sizeBuffer.get(), Cache.DataType.get(typeBuffer.get()), MemoryUtil.memUTF8(nameBuffer, lengthBuffer.get()));
+        }
+    }
+
+    @Override
+    public int getVertexAttributeLocation(String name) {
+        return GLX.glGetAttribLocation(intHandle(), name);
     }
 }

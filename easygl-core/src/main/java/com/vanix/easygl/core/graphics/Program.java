@@ -228,6 +228,12 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
     @Support(since = Version.GL31)
     UniformBlock getUniformBlock(String name);
 
+    Program bindVertexAttribute(VertexAttribute vertexAttribute, String variableName);
+
+    AttributeVariable getActiveVertexAttribute(VertexAttribute vertexAttribute);
+
+    int getVertexAttributeLocation(String name);
+
     static Program of() {
         return MetaHolder.Program.create();
     }
@@ -235,4 +241,5 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
     record Binary(int format, ByteBuffer data) {
     }
 
+    record AttributeVariable(int size, DataType dataType, String name) {}
 }
