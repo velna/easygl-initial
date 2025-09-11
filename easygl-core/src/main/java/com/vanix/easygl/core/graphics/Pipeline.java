@@ -33,14 +33,13 @@ public interface Pipeline extends Bindable<BindTarget.Default<Pipeline>, Pipelin
         }
     }
 
-    @Support(since = Version.GL41)
     Pipeline useProgramStages(Program program, Stage stage);
 
-    @Support(since = Version.GL41)
     Pipeline useProgramStages(Program program, BitSet<Stage> stages);
 
-    @Support(since = Version.GL41)
     Pipeline activeShaderProgram(Program program);
+
+    Pipeline validate();
 
     static Pipeline of() {
         return MetaHolder.Pipeline.create();

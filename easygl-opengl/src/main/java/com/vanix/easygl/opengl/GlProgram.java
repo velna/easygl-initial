@@ -57,6 +57,13 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
+    public Program validate() {
+        GLX.glValidateProgram(intHandle());
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
     public Program setBinaryRetrievable(boolean retrievable) {
         assertBinding();
         GLX.glProgramParameteri(intHandle(), GLX.GL_PROGRAM_BINARY_RETRIEVABLE_HINT, retrievable ? GLX.GL_TRUE : GLX.GL_FALSE);
@@ -601,7 +608,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public AttributeVariable getActiveVertexAttribute(VertexAttribute vertexAttribute) {
+    public Variable getActiveVertexAttribute(VertexAttribute vertexAttribute) {
         try (MemoryStack stack = MemoryStack.stackGet()) {
             IntBuffer lengthBuffer = stack.mallocInt(1);
             IntBuffer sizeBuffer = stack.mallocInt(1);
@@ -609,12 +616,32 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
             ByteBuffer nameBuffer = stack.malloc(getAttribute(ProgramAttribute.ActiveAttributeMaxLength));
             GLX.glGetActiveAttrib(intHandle(), vertexAttribute.value(), lengthBuffer, sizeBuffer, typeBuffer, nameBuffer);
             GLX.checkError();
-            return new AttributeVariable(sizeBuffer.get(), Cache.DataType.get(typeBuffer.get()), MemoryUtil.memUTF8(nameBuffer, lengthBuffer.get()));
+            return new Variable(sizeBuffer.get(), Cache.DataType.get(typeBuffer.get()), MemoryUtil.memUTF8(nameBuffer, lengthBuffer.get()));
         }
     }
 
     @Override
     public int getVertexAttributeLocation(String name) {
         return GLX.glGetAttribLocation(intHandle(), name);
+    }
+
+    @Override
+    public Program transformFeedbackVaryings(boolean interleaved, String... varyings) {
+        GLX.glTransformFeedbackVaryings(intHandle(), varyings, interleaved ? GLX.GL_INTERLEAVED_ATTRIBS : GLX.GL_SEPARATE_ATTRIBS);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Variable getTransformFeedbackVarying(int varyingsIndex) {
+        try (MemoryStack stack = MemoryStack.stackGet()) {
+            IntBuffer lengthBuffer = stack.mallocInt(1);
+            IntBuffer sizeBuffer = stack.mallocInt(1);
+            IntBuffer typeBuffer = stack.mallocInt(1);
+            ByteBuffer nameBuffer = stack.malloc(getAttribute(ProgramAttribute.ActiveAttributeMaxLength));
+            GLX.glGetTransformFeedbackVarying(intHandle(), varyingsIndex, lengthBuffer, sizeBuffer, typeBuffer, nameBuffer);
+            GLX.checkError();
+            return new Variable(sizeBuffer.get(), Cache.DataType.get(typeBuffer.get()), MemoryUtil.memUTF8(nameBuffer, lengthBuffer.get()));
+        }
     }
 }

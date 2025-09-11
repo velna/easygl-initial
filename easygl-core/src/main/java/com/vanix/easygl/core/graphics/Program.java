@@ -51,6 +51,8 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     Program link();
 
+    Program validate();
+
     @Support(since = Version.GL41)
     Program setBinaryRetrievable(boolean retrievable);
 
@@ -230,9 +232,13 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     Program bindVertexAttribute(VertexAttribute vertexAttribute, String variableName);
 
-    AttributeVariable getActiveVertexAttribute(VertexAttribute vertexAttribute);
+    Variable getActiveVertexAttribute(VertexAttribute vertexAttribute);
 
     int getVertexAttributeLocation(String name);
+
+    Program transformFeedbackVaryings(boolean interleaved, String... varyings);
+
+    Variable getTransformFeedbackVarying(int varyingsIndex);
 
     static Program of() {
         return MetaHolder.Program.create();
@@ -241,5 +247,6 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
     record Binary(int format, ByteBuffer data) {
     }
 
-    record AttributeVariable(int size, DataType dataType, String name) {}
+    record Variable(int size, DataType dataType, String name) {}
+
 }
