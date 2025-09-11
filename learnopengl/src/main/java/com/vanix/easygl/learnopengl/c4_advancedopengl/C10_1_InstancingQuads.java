@@ -56,12 +56,13 @@ public class C10_1_InstancingQuads {
             instanceVbo.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, translations);
             vertexAttr.nextAttribute().enablePointers(2f).setDivisor(1);
 
+            var drawable = quadVao.drawingArrays(DrawMode.Triangles, 0, 6).instanced(translations.length).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
 
                 program.bind();
-                quadVao.bind().drawArrayInstanced(DrawMode.Triangles, 0, 6, translations.length);
+                drawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

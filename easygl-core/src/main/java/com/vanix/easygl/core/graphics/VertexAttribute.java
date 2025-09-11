@@ -10,6 +10,8 @@ import java.nio.*;
 
 public interface VertexAttribute extends Feature<VertexAttribute, VertexArray>, IntEnum {
 
+    VertexAttribute prevAttribute();
+
     VertexAttribute nextAttribute();
 
     VertexAttribute setPointer(int size, DataType dataType, boolean normalized, int stride, int offset);

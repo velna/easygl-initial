@@ -11,7 +11,10 @@ import org.eclipse.collections.api.factory.primitive.IntObjectMaps;
 import org.eclipse.collections.api.map.primitive.IntObjectMap;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
 
+import java.lang.ref.Cleaner;
+
 public class Cache {
+    public static final Cleaner CLEANER = Cleaner.create();
     public static final IntEnumCache<Sync.Result> SyncResult = new IntEnumCache<>(Sync.Result.class, 0xf);
     public static final IntEnumCache<LogicalOperation.Op> LogicalOp = new IntEnumCache<LogicalOperation.Op>(LogicalOperation.Op.class, 0xf);
     public static final IntEnumCache<Blending.Function> BlendingFunction = new IntEnumCache<>(Blending.Function.class, 2, 0xf);

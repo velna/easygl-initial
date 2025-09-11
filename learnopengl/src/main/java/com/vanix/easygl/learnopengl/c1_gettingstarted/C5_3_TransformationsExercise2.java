@@ -70,6 +70,7 @@ public class C5_3_TransformationsExercise2 {
 
             long start = System.currentTimeMillis();
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
+            var drawable = vao.drawingElements(DrawMode.Triangles, ebo).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
@@ -84,12 +85,12 @@ public class C5_3_TransformationsExercise2 {
                 program.bind().setMatrix4("transform", new Matrix4f()
                         .translate(new Vector3f(0.5f, -0.5f, 0.0f))
                         .rotate(time, new Vector3f(0.0f, 0.0f, 1.0f)).get(mat4f));
-                vao.drawElements(DrawMode.Triangles, ebo, 0);
+                drawable.draw();
 
                 program.bind().setMatrix4("transform", new Matrix4f()
                         .translate(new Vector3f(-0.5f, 0.5f, 0.0f))
                         .scale((float) Math.sin(time)).get(mat4f));
-                vao.drawElements(DrawMode.Triangles, ebo, 0);
+                drawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

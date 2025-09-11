@@ -4,12 +4,11 @@ import com.vanix.easygl.commons.SimpleIntEnum;
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.HandleArray;
-import com.vanix.easygl.core.graphics.Buffer;
-import com.vanix.easygl.core.graphics.DrawMode;
-import com.vanix.easygl.core.graphics.VertexArray;
-import com.vanix.easygl.core.graphics.VertexAttribute;
+import com.vanix.easygl.core.graphics.*;
 import org.lwjgl.system.MemoryStack;
 
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.function.IntConsumer;
 
 public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArray>, VertexArray> implements VertexArray {
@@ -90,31 +89,38 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
     }
 
     @Override
-    public void drawArray(DrawMode mode, int first, int count) {
-        assertBinding();
-        GLX.glDrawArrays(mode.value(), first, count);
-        GLX.checkError();
+    public Drawing.Arrays drawingArrays(DrawMode mode) {
+        return new GlDrawing(this, mode);
     }
 
     @Override
-    public void drawArrayInstanced(DrawMode mode, int first, int count, int instanceCount) {
-        assertBinding();
-        GLX.glDrawArraysInstanced(mode.value(), first, count, instanceCount);
-        GLX.checkError();
+    public Drawing.Arrays drawingArrays(DrawMode mode, int first, int count) {
+        return new GlDrawing(this, mode, first, count);
     }
 
     @Override
-    public void drawElements(DrawMode mode, Buffer ebo, int indices) {
-        assertBinding();
-        GLX.glDrawElements(mode.value(), ebo.count(), ebo.dataType().value(), indices);
-        GLX.checkError();
+    public Drawing.Elements drawingElements(DrawMode mode, Buffer ebo) {
+        return new GlDrawing(this, mode, ebo);
     }
 
     @Override
-    public void drawElementsInstanced(DrawMode mode, Buffer ebo, int indices, int instanceCount) {
-        assertBinding();
-        GLX.glDrawElementsInstanced(mode.value(), ebo.count(), ebo.dataType().value(), indices, instanceCount);
-        GLX.checkError();
+    public Drawing.Elements drawingElements(DrawMode mode, DataType dataType, int[] indices) {
+        return new GlDrawing(this, mode, dataType, indices);
+    }
+
+    @Override
+    public Drawing.Elements drawingElements(DrawMode mode, DataType dataType, IntBuffer indices) {
+        return new GlDrawing(this, mode, dataType, indices);
+    }
+
+    @Override
+    public Drawing.Elements drawingElements(DrawMode mode, DataType dataType, ByteBuffer indices) {
+        return new GlDrawing(this, mode, dataType, indices);
+    }
+
+    @Override
+    public Drawing.Elements drawingElements(DrawMode mode, DataType dataType, IntBuffer[] indices) {
+        return new GlDrawing(this, mode, dataType, indices);
     }
 
     class GlBindingPoint extends SimpleIntEnum implements BindingPoint {

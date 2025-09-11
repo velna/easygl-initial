@@ -128,6 +128,8 @@ public class C11_2_AntiAliasingMsaaOffscreen {
 
             screenProgram.bind().setInt("screenTexture", 0);
 
+            var cubeDrawable = cubeVao.drawingArrays(DrawMode.Triangles, cubeTriangleCount).build();
+            var quadDrawable = quadVao.drawingArrays(DrawMode.Triangles, quadTriangleCount).build();
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
             while (!window.shouldClose()) {
@@ -146,7 +148,7 @@ public class C11_2_AntiAliasingMsaaOffscreen {
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", camera.update().view().get(mat4f))
                         .setMatrix4("model", new Matrix4f().get(mat4f));
-                cubeVao.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
+                cubeDrawable.draw();
 
                 frameBuffer.bindRead();
                 intermediateFBO.bindDraw()
@@ -159,7 +161,7 @@ public class C11_2_AntiAliasingMsaaOffscreen {
 
                 screenProgram.bind();
                 screenTexture.bind();
-                quadVao.bind().drawArray(DrawMode.Triangles, quadTriangleCount);
+                quadDrawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

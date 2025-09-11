@@ -64,6 +64,7 @@ public class C4_5_TexturesExercise3 {
                     .setInt("texture1", 0)
                     .setInt("texture2", 1);
 
+            var drawable = vao.drawingElements(DrawMode.Triangles, ebo).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
@@ -74,7 +75,7 @@ public class C4_5_TexturesExercise3 {
                 texture2.bind();
 
                 program.bind();
-                vao.drawElements(DrawMode.Triangles, ebo, 0);
+                drawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

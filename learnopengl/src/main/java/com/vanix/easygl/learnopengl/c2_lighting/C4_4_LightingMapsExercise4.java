@@ -86,10 +86,11 @@ public class C4_4_LightingMapsExercise4 {
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
             });
             var cubeTriangleCount = cubeVAO.bind().enableAttributePointers(3f, 3f, 2f).countOfStride();
-            var lightTriangleCount = lightCubeVAO.bind().enableAttributePointers(3f, -3f, -2f).countOfStride();
+            lightCubeVAO.bind().enableAttributePointers(3f, -3f, -2f);
+            var lightTriangleCount = lightCubeVAO.attribute(0).countOfStride();
 
 
-            diffuseMap.bind()
+                    diffuseMap.bind()
                     .minFilter(MinFilter.LinearMipmapLinear)
                     .load("textures/container2.png")
                     .generateMipmap();
@@ -111,6 +112,8 @@ public class C4_4_LightingMapsExercise4 {
             var lightPos = new Vector3f(1.2f, 1.0f, 2.0f);
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
 
+            var cubeDrawable = cubeVAO.drawingArrays(DrawMode.Triangles, cubeTriangleCount).build();
+            var lightCubeDrawable = lightCubeVAO.drawingArrays(DrawMode.Triangles, lightTriangleCount).build();
             long start = System.currentTimeMillis();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
@@ -141,14 +144,13 @@ public class C4_4_LightingMapsExercise4 {
                 diffuseMap.bind(TextureUnit.U0);
                 specularMap.bind(TextureUnit.U1);
                 emissionMap.bind(TextureUnit.U2);
-
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
+                cubeDrawable.draw();
 
                 lightCubeProgram.bind()
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))
                         .setMatrix4("model", new Matrix4f().translate(lightPos).scale(0.2f));
-                lightCubeVAO.bind().drawArray(DrawMode.Triangles, lightTriangleCount);
+                lightCubeDrawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

@@ -136,6 +136,7 @@ public class C7_3_CameraMouseZoom {
 
             long start = System.currentTimeMillis();
 
+            var drawable = vao.drawingArrays(DrawMode.Triangles, triangleCount).build();
             while (!window.shouldClose()) {
                 float currentFrame = (System.currentTimeMillis() - start) / 1000.0f;
                 deltaTime = currentFrame - lastFrame;
@@ -163,7 +164,7 @@ public class C7_3_CameraMouseZoom {
                             .translate(cubePositions[i])
                             .rotate(Math.toRadians(20.0f * i), new Vector3f(1.0f, 0.3f, 0.5f))
                             .get(mat4f));
-                    vao.drawArray(DrawMode.Triangles, triangleCount);
+                    drawable.draw();
                 }
 
                 window.swapBuffers().pollEvents();

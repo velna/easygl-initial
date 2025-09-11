@@ -51,12 +51,13 @@ public class C3_2_ShaderInterpolation {
                     });
             vao.bind().enableAttributePointers(3f, 3f);
 
+            var drawable = vao.drawingArrays(DrawMode.Triangles, 3).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 program.bind();
-                vao.drawArray(DrawMode.Triangles, 3);
+                drawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

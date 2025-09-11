@@ -5,6 +5,8 @@ import com.vanix.easygl.core.*;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 import javax.annotation.Nullable;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 
 @Support(since = Version.GL30)
 public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, VertexArray>, Handle {
@@ -29,25 +31,23 @@ public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, V
 
     VertexArray bindBuffers(int firstBindingIndex, Buffer[] buffers, long[] offsets, int[] strides);
 
-    default void drawArray(DrawMode mode, int count) {
-        drawArray(mode, 0, count);
+    Drawing.Arrays drawingArrays(DrawMode mode);
+
+    default Drawing.Arrays drawingArrays(DrawMode mode, int count) {
+        return drawingArrays(mode, 0, count);
     }
 
-    void drawArray(DrawMode mode, int first, int count);
+    Drawing.Arrays drawingArrays(DrawMode mode, int first, int count);
 
-    void drawArrayInstanced(DrawMode mode, int first, int count, int instanceCount);
+    Drawing.Elements drawingElements(DrawMode mode, Buffer ebo);
 
-    default void drawElements(DrawMode mode, Buffer ebo) {
-        drawElements(mode, ebo, 0);
-    }
+    Drawing.Elements drawingElements(DrawMode mode, DataType dataType, int[] indices);
 
-    void drawElements(DrawMode mode, Buffer ebo, int indices);
+    Drawing.Elements drawingElements(DrawMode mode, DataType dataType, IntBuffer indices);
 
-    default void drawElementsInstanced(DrawMode mode, Buffer ebo, int instanceCount) {
-        drawElementsInstanced(mode, ebo, 0, instanceCount);
-    }
+    Drawing.Elements drawingElements(DrawMode mode, DataType dataType, ByteBuffer indices);
 
-    void drawElementsInstanced(DrawMode mode, Buffer ebo, int indices, int instanceCount);
+    Drawing.Elements drawingElements(DrawMode mode, DataType dataType, IntBuffer[] indices);
 
     static VertexArray of() {
         return MetaHolder.VertexArray.create();
@@ -77,6 +77,6 @@ public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, V
 
         @Nullable
         Buffer getBuffer();
-
     }
+
 }

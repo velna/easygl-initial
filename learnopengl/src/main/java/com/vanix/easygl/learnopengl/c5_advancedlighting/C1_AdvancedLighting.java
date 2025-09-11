@@ -65,6 +65,7 @@ public class C1_AdvancedLighting {
 
             long start = System.currentTimeMillis();
 
+            var planeDrawable = planeVao.drawingArrays(DrawMode.Triangles, planeTriangleCount).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
@@ -87,7 +88,7 @@ public class C1_AdvancedLighting {
 
                 floorTexture.bind();
 
-                planeVao.bind().drawArray(DrawMode.Triangles, planeTriangleCount);
+                planeDrawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

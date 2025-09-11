@@ -42,12 +42,13 @@ public class C2_1_HelloTriangle {
                     });
             var triangleCount = vao.bind().enableAttributePointers(3f).countOfStride();
 
+            var drawable = vao.drawingArrays(DrawMode.Triangles, triangleCount).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 program.bind();
-                vao.bind().drawArray(DrawMode.Triangles, triangleCount);
+                drawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

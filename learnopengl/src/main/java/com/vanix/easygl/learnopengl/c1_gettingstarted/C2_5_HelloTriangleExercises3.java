@@ -68,14 +68,16 @@ public class C2_5_HelloTriangleExercises3 {
                     });
             vaos.getLast().bind().enableAttributePointers(3f);
 
+            var fistDrawable = vaos.getFirst().drawingArrays(DrawMode.Triangles, 3).build();
+            var lastDrawable = vaos.getLast().drawingArrays(DrawMode.Triangles, 3).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 programOrange.bind();
-                vaos.getFirst().bind().drawArray(DrawMode.Triangles, 3);
+                fistDrawable.draw();
                 programYellow.bind();
-                vaos.getLast().bind().drawArray(DrawMode.Triangles, 3);
+                lastDrawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

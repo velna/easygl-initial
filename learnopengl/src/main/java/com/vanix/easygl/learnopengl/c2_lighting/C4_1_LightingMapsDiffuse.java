@@ -83,8 +83,9 @@ public class C4_1_LightingMapsDiffuse {
                     -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
                     -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
             });
-            var cubeAttr = cubeVAO.bind().enableAttributePointers(3f, 3f, 2f);
-            var lightAttr = lightCubeVAO.bind().enableAttributePointers(3f, -3f, -2f);
+            var cubeTriangleCount = cubeVAO.bind().enableAttributePointers(3f, 3f, 2f).countOfStride();
+            lightCubeVAO.bind().enableAttributePointers(3f, -3f, -2f);
+            var lightTriangleCount = lightCubeVAO.attribute(0).countOfStride();
 
             diffuseMap.bind()
                     .wrapS(Texture.Wrap.Repeat)
@@ -102,6 +103,8 @@ public class C4_1_LightingMapsDiffuse {
 
             long start = System.currentTimeMillis();
 
+            var cubeDrawable = cubeVAO.drawingArrays(DrawMode.Triangles, cubeTriangleCount).build();
+            var lightCubeDrawable = lightCubeVAO.drawingArrays(DrawMode.Triangles, lightTriangleCount).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
@@ -131,14 +134,13 @@ public class C4_1_LightingMapsDiffuse {
 
                 TextureUnit.U0.bind();
                 diffuseMap.bind();
-
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeAttr.countOfStride());
+                cubeDrawable.draw();
 
                 lightCubeProgram.bind()
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))
                         .setMatrix4("model", new Matrix4f().translate(lightPos).scale(0.2f));
-                lightCubeVAO.bind().drawArray(DrawMode.Triangles, lightAttr.countOfStride());
+                lightCubeDrawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

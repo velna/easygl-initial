@@ -69,8 +69,8 @@ public class C6_1_CoordinateSystems {
                     .setInt("texture1", 0)
                     .setInt("texture2", 1);
 
-            long start = System.currentTimeMillis();
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
+            var drawable = vao.drawingElements(DrawMode.Triangles, ebo).build();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
@@ -90,7 +90,7 @@ public class C6_1_CoordinateSystems {
                         .setMatrix4("projection", new Matrix4f()
                                 .perspective(Math.toRadians(45.0f), window.getAspect(), 0.1f, 100.0f)
                                 .get(mat4f));
-                vao.drawElements(DrawMode.Triangles, ebo, 0);
+                drawable.draw();
 
                 window.swapBuffers().pollEvents();
             }

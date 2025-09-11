@@ -156,6 +156,8 @@ public class C6_2_CubemapsEnvironmentMapping {
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
 
+            var cubeDrawable = cubeVAO.drawingArrays(DrawMode.Triangles, cubeTriangleCount).build();
+            var skyboxDrawable = skyboxVAO.drawingArrays(DrawMode.Triangles, skyBoxTriangleCount).build();
             while (!window.shouldClose()) {
                 graphics.depthTest().enable().then()
                         .defaultFrameBuffer().setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
@@ -171,13 +173,13 @@ public class C6_2_CubemapsEnvironmentMapping {
                         .setMatrix4("view", view.get(mat4f))
                         .setMatrix4("model", new Matrix4f().get(mat4f))
                         .setVec3("cameraPos", camera.position());
-                cubeVAO.bind().drawArray(DrawMode.Triangles, cubeTriangleCount);
+                cubeDrawable.draw();
 
                 graphics.depthTest().setFunction(CompareFunction.LessEqual);
                 skyboxProgram.bind()
                         .setMatrix4("view", new Matrix4f(view.get3x3(new Matrix3f())).get(mat4f))
                         .setMatrix4("projection", projection.get(mat4f));
-                skyboxVAO.bind().drawArray(DrawMode.Triangles, skyBoxTriangleCount);
+                skyboxDrawable.draw();
                 graphics.depthTest().setFunction(CompareFunction.LessThan);
 
                 window.swapBuffers().pollEvents();

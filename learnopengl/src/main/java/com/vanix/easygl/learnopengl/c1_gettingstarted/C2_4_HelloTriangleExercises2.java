@@ -53,14 +53,15 @@ public class C2_4_HelloTriangleExercises2 {
                             0.9f, -0.45f, 0.0f,  // right
                             0.45f, 0.45f, 0.0f   // top
                     });
-            vaos.getLast().bind().enableAttributePointers(3f);
+            vaos.getLast().bind().enableAttributePointers(3f).countOfStride();
 
+            var drawables = vaos.stream().map(vao -> vao.drawingArrays(DrawMode.Triangles, 3).build()).toList();
             while (!window.shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 program.bind();
-                vaos.forEach((vao, i) -> vao.bind().drawArray(DrawMode.Triangles, 3));
+                drawables.forEach(Drawable::draw);
                 window.swapBuffers().pollEvents();
             }
         }

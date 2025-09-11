@@ -96,8 +96,13 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
     }
 
     @Override
+    public VertexAttribute prevAttribute() {
+        return vao.attribute(Math.max(0, value - 1));
+    }
+
+    @Override
     public VertexAttribute nextAttribute() {
-        return vao.attribute(value + 1);
+        return vao.attribute(Math.min(VertexArray.MAX_ATTRIBUTES, value + 1));
     }
 
     @Override

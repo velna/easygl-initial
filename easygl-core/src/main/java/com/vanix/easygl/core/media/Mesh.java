@@ -24,6 +24,7 @@ public class Mesh implements Closeable {
     private final Buffer vbo;
     @Getter
     private final Buffer ebo;
+    private final Drawable drawable;
 
     public Mesh(List<Vertex> vertices, IntList indices, Map<Model.TextureType, List<TextureInfo>> textures) {
         this.textures = textures;
@@ -36,11 +37,11 @@ public class Mesh implements Closeable {
                 .realloc(Buffer.DataUsage.StaticDraw, indices);
 
         vao.bind().enableAttributePointers(3f, 3f, 2f, 3f, 3f, 14, 4f);
+        drawable = vao.drawingElements(DrawMode.Triangles, ebo).build();
     }
 
     public void draw() {
-        vao.bind().drawElements(DrawMode.Triangles, ebo.bind());
-        vao.unbind();
+        drawable.draw();
     }
 
     public List<TextureInfo> getTextures(Model.TextureType textureType) {
