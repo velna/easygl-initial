@@ -1,6 +1,7 @@
 package com.vanix.easygl.learnopengl.c1_gettingstarted;
 
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.draw.Drawing;
 import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
@@ -61,7 +62,7 @@ public class C2_4_HelloTriangleExercises2 {
                         .clear(FrameInnerBuffer.Mask.Color);
 
                 program.bind();
-                drawables.forEach(Drawable::draw);
+                drawables.forEach(Drawing::draw);
                 window.swapBuffers().pollEvents();
             }
         }

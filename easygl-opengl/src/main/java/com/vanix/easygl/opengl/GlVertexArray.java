@@ -5,6 +5,8 @@ import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.draw.ArraysDrawing;
+import com.vanix.easygl.core.graphics.draw.ElementsDrawing;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
@@ -88,39 +90,46 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
         return this;
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public Drawing.Arrays drawingArrays(DrawMode mode) {
-        return new GlDrawing(this, mode);
+    public ArraysDrawing.Builder drawingArrays(DrawMode mode) {
+        return new GlVertexArrayDrawing(this, mode);
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public Drawing.Arrays drawingArrays(DrawMode mode, int first, int count) {
-        return new GlDrawing(this, mode, first, count);
+    public ArraysDrawing.Builder drawingArrays(DrawMode mode, int first, int count) {
+        return new GlVertexArrayDrawing(this, mode, first, count);
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public Drawing.Elements drawingElements(DrawMode mode, Buffer ebo) {
-        return new GlDrawing(this, mode, ebo);
+    public ElementsDrawing.Builder drawingElements(DrawMode mode, Buffer ebo) {
+        return new GlVertexArrayDrawing(this, mode, ebo);
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public Drawing.Elements drawingElements(DrawMode mode, DataType dataType, int[] indices) {
-        return new GlDrawing(this, mode, dataType, indices);
+    public ElementsDrawing.Builder drawingElements(DrawMode mode, DataType dataType, int[] indices) {
+        return new GlVertexArrayDrawing(this, mode, dataType, indices);
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public Drawing.Elements drawingElements(DrawMode mode, DataType dataType, IntBuffer indices) {
-        return new GlDrawing(this, mode, dataType, indices);
+    public ElementsDrawing.Builder drawingElements(DrawMode mode, DataType dataType, IntBuffer indices) {
+        return new GlVertexArrayDrawing(this, mode, dataType, indices);
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public Drawing.Elements drawingElements(DrawMode mode, DataType dataType, ByteBuffer indices) {
-        return new GlDrawing(this, mode, dataType, indices);
+    public ElementsDrawing.Builder drawingElements(DrawMode mode, DataType dataType, ByteBuffer indices) {
+        return new GlVertexArrayDrawing(this, mode, dataType, indices);
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
-    public Drawing.Elements drawingElements(DrawMode mode, DataType dataType, IntBuffer[] indices) {
-        return new GlDrawing(this, mode, dataType, indices);
+    public ElementsDrawing.Builder drawingElements(DrawMode mode, DataType dataType, IntBuffer[] indices) {
+        return new GlVertexArrayDrawing(this, mode, dataType, indices);
     }
 
     class GlBindingPoint extends SimpleIntEnum implements BindingPoint {

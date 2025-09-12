@@ -40,4 +40,11 @@ public class GlPipeline extends AbstractBindable<BindTarget.Default<Pipeline>, P
         GLX.checkError();
         return this;
     }
+
+    @Override
+    public Pipeline validate() {
+        GLX.glValidateProgramPipeline(intHandle());
+        GLX.checkError();
+        return this;
+    }
 }

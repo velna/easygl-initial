@@ -4,6 +4,7 @@ import com.vanix.easygl.core.ClientApp;
 import com.vanix.easygl.core.RenderContext;
 import com.vanix.easygl.core.Renderer;
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.draw.Drawing;
 import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.event.KeyboardEvent;
 import com.vanix.easygl.core.input.event.KeyboardListener;
@@ -16,7 +17,7 @@ public class KeyPress implements Renderer<ClientApp, RenderContext>, KeyboardLis
     private VertexArray vao;
     private Program program;
     private PolygonMode polygonMode = PolygonMode.Fill;
-    private Drawable drawable;
+    private Drawing<VertexArray> drawable;
 
     @Override
     public void init(ClientApp clientApp) throws GraphicsException {
