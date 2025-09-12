@@ -3,6 +3,7 @@ package com.vanix.easygl.learnopengl.c4_advancedopengl;
 import com.vanix.easygl.commons.Random;
 import com.vanix.easygl.core.g3d.ControllableCamera;
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.draw.Drawing;
 import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.media.Mesh;
@@ -93,7 +94,7 @@ public class C10_3_AsteroidsInstanced {
             var rockMeshes = rock.getMeshes();
             var planetMeshes = planet.getMeshes();
 
-            List<Drawable> drawables = new ArrayList<>();
+            List<Drawing<VertexArray>> drawables = new ArrayList<>();
             for (var mesh : rockMeshes) {
                 drawables.add(mesh.getVao().drawingElements(DrawMode.Triangles, mesh.getEbo()).instanced(modelMatrices.length).build());
             }
@@ -118,7 +119,7 @@ public class C10_3_AsteroidsInstanced {
                         .setInt("texture_diffuse1", 0);
                 TextureUnit.U0.bind();
                 rock.getTextures(Model.TextureType.Height).getFirst().getTexture().bind();
-                drawables.forEach(Drawable::draw);
+                drawables.forEach(Drawing::draw);
 
                 window.swapBuffers().pollEvents();
             }

@@ -2,6 +2,8 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.*;
+import com.vanix.easygl.core.graphics.draw.ArraysDrawing;
+import com.vanix.easygl.core.graphics.draw.ElementsDrawing;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 import javax.annotation.Nullable;
@@ -31,23 +33,23 @@ public interface VertexArray extends Bindable<BindTarget.Default<VertexArray>, V
 
     VertexArray bindBuffers(int firstBindingIndex, Buffer[] buffers, long[] offsets, int[] strides);
 
-    Drawing.Arrays drawingArrays(DrawMode mode);
+    ArraysDrawing.Builder<ArraysDrawing> drawingArrays(DrawMode mode);
 
-    default Drawing.Arrays drawingArrays(DrawMode mode, int count) {
+    default ArraysDrawing.Builder<ArraysDrawing> drawingArrays(DrawMode mode, int count) {
         return drawingArrays(mode, 0, count);
     }
 
-    Drawing.Arrays drawingArrays(DrawMode mode, int first, int count);
+    ArraysDrawing.Builder<ArraysDrawing> drawingArrays(DrawMode mode, int first, int count);
 
-    Drawing.Elements drawingElements(DrawMode mode, Buffer ebo);
+    ElementsDrawing.Builder<ElementsDrawing> drawingElements(DrawMode mode, Buffer ebo);
 
-    Drawing.Elements drawingElements(DrawMode mode, DataType dataType, int[] indices);
+    ElementsDrawing.Builder<ElementsDrawing> drawingElements(DrawMode mode, DataType dataType, int[] indices);
 
-    Drawing.Elements drawingElements(DrawMode mode, DataType dataType, IntBuffer indices);
+    ElementsDrawing.Builder<ElementsDrawing> drawingElements(DrawMode mode, DataType dataType, IntBuffer indices);
 
-    Drawing.Elements drawingElements(DrawMode mode, DataType dataType, ByteBuffer indices);
+    ElementsDrawing.Builder<ElementsDrawing> drawingElements(DrawMode mode, DataType dataType, ByteBuffer indices);
 
-    Drawing.Elements drawingElements(DrawMode mode, DataType dataType, IntBuffer[] indices);
+    ElementsDrawing.Builder<ElementsDrawing> drawingElements(DrawMode mode, DataType dataType, IntBuffer[] indices);
 
     static VertexArray of() {
         return MetaHolder.VertexArray.create();

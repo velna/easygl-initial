@@ -4,6 +4,7 @@ import com.vanix.easygl.core.ClientApp;
 import com.vanix.easygl.core.RenderContext;
 import com.vanix.easygl.core.Renderer;
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.draw.Drawing;
 import org.joml.Vector4f;
 
 public class Triangles implements Renderer<ClientApp, RenderContext> {
@@ -11,7 +12,7 @@ public class Triangles implements Renderer<ClientApp, RenderContext> {
     private Buffer vbo;
     private VertexArray vao;
     private Program program;
-    private Drawable drawable;
+    private Drawing<VertexArray> drawable;
 
     @Override
     public void init(ClientApp clientApp) throws GraphicsException {

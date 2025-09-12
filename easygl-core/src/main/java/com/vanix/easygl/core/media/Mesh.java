@@ -5,6 +5,7 @@ import com.vanix.easygl.commons.bufferio.BufferStruct;
 import com.vanix.easygl.commons.util.TypeReferenceBean;
 import com.vanix.easygl.core.Closeable;
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.draw.Drawing;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -24,7 +25,7 @@ public class Mesh implements Closeable {
     private final Buffer vbo;
     @Getter
     private final Buffer ebo;
-    private final Drawable drawable;
+    private final Drawing<VertexArray> drawable;
 
     public Mesh(List<Vertex> vertices, IntList indices, Map<Model.TextureType, List<TextureInfo>> textures) {
         this.textures = textures;

@@ -1,6 +1,10 @@
 package com.vanix.easygl.opengl;
 
-import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.Buffer;
+import com.vanix.easygl.core.graphics.DataType;
+import com.vanix.easygl.core.graphics.DrawMode;
+import com.vanix.easygl.core.graphics.VertexArray;
+import com.vanix.easygl.core.graphics.draw.*;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.collections.api.factory.primitive.LongObjectMaps;
 import org.eclipse.collections.api.map.primitive.MutableLongObjectMap;
@@ -16,19 +20,30 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.function.IntToLongFunction;
 
-public class GlDrawing implements
-        Drawable,
-        Drawing.Arrays,
-        Drawing.Elements,
-        Drawing.Instanced,
-        Drawing.BaseInstanced,
-        Drawing.Indirect,
-        Drawing.MultiFirsts,
-        Drawing.MultiCounts,
-        Drawing.MultiStride,
-        Drawing.BaseVertex,
-        Drawing.MultiBaseVertex,
-        Drawing.Range {
+public class GlVertexArrayDrawing implements
+        ArraysDrawing,
+        ArraysDrawing.Instanced,
+        ArraysDrawing.BaseInstanced,
+        ArraysDrawing.MultiStrideIndirect,
+        ArraysDrawing.MultiFirsts,
+        ArraysDrawing.Builder<GlVertexArrayDrawing>,
+        ElementsDrawing,
+        ElementsDrawing.Instanced,
+        ElementsDrawing.BaseInstanced,
+        ElementsDrawing.Indirect,
+        ElementsDrawing.MultiStrideIndirect,
+        ElementsDrawing.MultiCounts,
+        ElementsDrawing.Range,
+        ElementsDrawing.RangeBaseVertex,
+        ElementsDrawing.BaseVertex,
+        ElementsDrawing.InstancedBaseVertex,
+        ElementsDrawing.BaseInstancedBaseVertex,
+        ElementsDrawing.MultiBaseVertex,
+        ElementsDrawing.Builder<GlVertexArrayDrawing>,
+        InstancedDrawing.Builder<VertexArray, GlVertexArrayDrawing, GlVertexArrayDrawing>,
+        IndirectDrawing.Builder<VertexArray, GlVertexArrayDrawing, GlVertexArrayDrawing>,
+        BaseVertexDrawing.Builder<VertexArray, GlVertexArrayDrawing, GlVertexArrayDrawing, GlVertexArrayDrawing, GlVertexArrayDrawing> {
+
     private static final int F_ARRAYS = 1;
     private static final int F_ELEMENTS = 1 << 1;
     private static final int F_INSTANCED = 1 << 2;
@@ -36,10 +51,9 @@ public class GlDrawing implements
     private static final int F_INDIRECT = 1 << 4;
     private static final int F_MULTI_COUNTS = 1 << 5;
     private static final int F_MULTI_STRIDE = 1 << 6;
-    private static final int F_MULTI_FIRSTS = 1 << 7;
+    private static final int F_MULTI_FIRSTS_BASE_VERTEX = 1 << 7;
     private static final int F_BASE_VERTEX = 1 << 8;
-    private static final int F_MULTI_BASE_VERTEX = 1 << 9;
-    private static final int F_RANGE = 1 << 10;
+    private static final int F_RANGE = 1 << 9;
     private static final int T_NULL = 0;
     private static final int T_INT_ARRAY = 1;
     private static final int T_INT_BUFFER = 2;
@@ -50,10 +64,9 @@ public class GlDrawing implements
     private static final int T_END = T_BUFFER;
     private static final int SHIFT_INDICES = 32;
     private static final int SHIFT_COUNTS = 40;
-    private static final int SHIFT_BASE_VERTEXES = 48;
-    private static final int SHIFT_FIRSTS = 56;
+    private static final int SHIFT_FIRSTS_OR_BASE_VERTEXES = 48;
 
-    private static final MutableLongObjectMap<Consumer<GlDrawing>> MAPPING = LongObjectMaps.mutable.of();
+    private static final MutableLongObjectMap<Consumer<GlVertexArrayDrawing>> MAPPING = LongObjectMaps.mutable.of();
 
     static {
         MAPPING.put(arraysMask(0, 0, 0, F_ARRAYS), d ->
@@ -79,11 +92,12 @@ public class GlDrawing implements
                             GLX.glDrawArraysIndirect(d.mode.value(), (ByteBuffer) d.indices);
                     default -> null;
                 });
-        forEachType(type -> arraysMask(0, type, type, F_MULTI_FIRSTS, F_ARRAYS), type ->
+        forEachType(type -> arraysMask(0, type, type, F_MULTI_FIRSTS_BASE_VERTEX, F_ARRAYS), type ->
                 switch (type) {
-                    case T_INT_ARRAY -> d -> GLX.glMultiDrawArrays(d.mode.value(), (int[]) d.firsts, (int[]) d.counts);
+                    case T_INT_ARRAY ->
+                            d -> GLX.glMultiDrawArrays(d.mode.value(), (int[]) d.firstsOrBaseVertexes, (int[]) d.counts);
                     case T_INT_BUFFER ->
-                            d -> GLX.glMultiDrawArrays(d.mode.value(), (IntBuffer) d.firsts, (IntBuffer) d.counts);
+                            d -> GLX.glMultiDrawArrays(d.mode.value(), (IntBuffer) d.firstsOrBaseVertexes, (IntBuffer) d.counts);
                     default -> null;
                 });
         forEachType(type -> arraysMask(type, 0, 0, F_MULTI_STRIDE, F_ARRAYS, F_INDIRECT), type ->
@@ -207,12 +221,12 @@ public class GlDrawing implements
                             d -> GLX.glMultiDrawElementsIndirect(d.mode.value(), d.dataType.value(), (ByteBuffer) d.indices, d.drawCount, d.stride);
                     default -> null;
                 });
-        forEachType(type -> elementsMask(type, 0, type, F_MULTI_BASE_VERTEX, F_ELEMENTS), type ->
+        forEachType(type -> elementsMask(type, 0, type, F_MULTI_FIRSTS_BASE_VERTEX, F_ELEMENTS), type ->
                 switch (type) {
                     case T_INT_ARRAY ->
-                            d -> GLX.glMultiDrawElementsBaseVertex(d.mode.value(), (int[]) d.counts, d.dataType.value(), (PointerBuffer) d.indices, (int[]) d.baseVertexes);
+                            d -> GLX.glMultiDrawElementsBaseVertex(d.mode.value(), (int[]) d.counts, d.dataType.value(), (PointerBuffer) d.indices, (int[]) d.firstsOrBaseVertexes);
                     case T_INT_BUFFER ->
-                            d -> GLX.glMultiDrawElementsBaseVertex(d.mode.value(), (IntBuffer) d.counts, d.dataType.value(), (PointerBuffer) d.indices, (IntBuffer) d.baseVertexes);
+                            d -> GLX.glMultiDrawElementsBaseVertex(d.mode.value(), (IntBuffer) d.counts, d.dataType.value(), (PointerBuffer) d.indices, (IntBuffer) d.firstsOrBaseVertexes);
                     default -> null;
                 });
     }
@@ -222,25 +236,24 @@ public class GlDrawing implements
     private final DataType dataType;
     private final int first;
     private final int count;
-    private Object firsts;
+    private Object firstsOrBaseVertexes;
     private Object indices;
     private int min;
     private int max;
     private int instanceCount;
     private int baseInstance;
     private int baseVertex;
-    private Object baseVertexes;
     private Object counts;
     private int drawCount;
     private int stride;
     private long mask;
-    private Consumer<GlDrawing> drawFunction;
+    private Consumer<GlVertexArrayDrawing> drawFunction;
 
-    public GlDrawing(VertexArray vertexArray, DrawMode mode) {
+    public GlVertexArrayDrawing(VertexArray vertexArray, DrawMode mode) {
         this(vertexArray, mode, -1, -1);
     }
 
-    public GlDrawing(VertexArray vertexArray, DrawMode mode, int first, int count) {
+    public GlVertexArrayDrawing(VertexArray vertexArray, DrawMode mode, int first, int count) {
         this.vertexArray = vertexArray;
         this.mode = mode;
         this.dataType = null;
@@ -250,27 +263,27 @@ public class GlDrawing implements
         mask = F_ARRAYS;
     }
 
-    public GlDrawing(VertexArray vertexArray, DrawMode mode, DataType dataType, int[] indices) {
+    public GlVertexArrayDrawing(VertexArray vertexArray, DrawMode mode, DataType dataType, int[] indices) {
         this(vertexArray, mode, dataType, indices, indices == null ? 0 : indices.length, T_INT_ARRAY);
     }
 
-    public GlDrawing(VertexArray vertexArray, DrawMode mode, DataType dataType, IntBuffer indices) {
+    public GlVertexArrayDrawing(VertexArray vertexArray, DrawMode mode, DataType dataType, IntBuffer indices) {
         this(vertexArray, mode, dataType, indices, indices == null ? 0 : indices.remaining(), T_INT_BUFFER);
     }
 
-    public GlDrawing(VertexArray vertexArray, DrawMode mode, DataType dataType, ByteBuffer indices) {
+    public GlVertexArrayDrawing(VertexArray vertexArray, DrawMode mode, DataType dataType, ByteBuffer indices) {
         this(vertexArray, mode, dataType, indices, indices == null ? 0 : indices.remaining(), T_BYTE_BUFFER);
     }
 
-    public GlDrawing(VertexArray vertexArray, DrawMode mode, DataType dataType, IntBuffer[] indices) {
+    public GlVertexArrayDrawing(VertexArray vertexArray, DrawMode mode, DataType dataType, IntBuffer[] indices) {
         this(vertexArray, mode, dataType, indices, indices == null ? 0 : indices.length, T_INT_BUFFER_ARRAY);
     }
 
-    public GlDrawing(VertexArray vertexArray, DrawMode mode, Buffer ebo) {
+    public GlVertexArrayDrawing(VertexArray vertexArray, DrawMode mode, Buffer ebo) {
         this(vertexArray, mode, ebo.dataType(), ebo, ebo.count(), T_BUFFER);
     }
 
-    private GlDrawing(VertexArray vertexArray, DrawMode mode, DataType dataType, Object indices, int count, int indicesType) {
+    private GlVertexArrayDrawing(VertexArray vertexArray, DrawMode mode, DataType dataType, Object indices, int count, int indicesType) {
         this.vertexArray = vertexArray;
         this.mode = mode;
         this.dataType = dataType;
@@ -286,86 +299,8 @@ public class GlDrawing implements
         }
     }
 
-    private static long arraysMask(int indicesType, int countsType, int firstsType, int... functions) {
-        long masks = indicesType(indicesType) | countsType(countsType) | firstsType(firstsType);
-        for (var function : functions) {
-            masks |= function;
-        }
-        return masks;
-    }
-
-    private static long baseVertexesType(long type) {
-        return type << SHIFT_BASE_VERTEXES;
-    }
-
-    private static long countsType(long type) {
-        return type << SHIFT_COUNTS;
-    }
-
-    private static long elementsMask(int indicesType, int countsType, int baseVertexesType, int... functions) {
-        long masks = indicesType(indicesType) | countsType(countsType) | baseVertexesType(baseVertexesType);
-        for (var function : functions) {
-            masks |= function;
-        }
-        return masks;
-    }
-
-    private static long firstsType(long type) {
-        return type << SHIFT_FIRSTS;
-    }
-
-    private static void forEachType(IntToLongFunction keyMapper, IntFunction<Consumer<GlDrawing>> drawingFactory) {
-        for (int type = T_START; type <= T_END; type++) {
-            var drawing = drawingFactory.apply(type);
-            if (drawing != null) {
-                MAPPING.put(keyMapper.applyAsLong(type), drawing);
-            }
-        }
-    }
-
-    private static long indicesType(long type) {
-        return type << SHIFT_INDICES;
-    }
-
-    private static PointerBuffer toPointerBuffer(IntBuffer[] buffers) {
-        var pointerBuffer = MemoryUtil.memAllocPointer(buffers.length);
-        for (var buffer : buffers) {
-            pointerBuffer.put(MemoryUtil.memAddress(buffer));
-        }
-        return pointerBuffer;
-    }
-
     @Override
-    public int baseInstance() {
-        return baseInstance;
-    }
-
-    @Override
-    public BaseInstanced baseInstanced(int baseInstance) {
-        this.baseInstance = baseInstance;
-        mask |= F_BASE_INSTANCE;
-        return this;
-    }
-
-    @Override
-    public BaseVertex baseVertex(int baseVertex) {
-        this.baseVertex = baseVertex;
-        mask |= F_BASE_VERTEX;
-        return this;
-    }
-
-    @Override
-    public int baseVertex() {
-        return baseVertex;
-    }
-
-    @Override
-    public Object baseVertexes() {
-        return baseVertexes;
-    }
-
-    @Override
-    public Drawable build() {
+    public GlVertexArrayDrawing build() {
         drawFunction = MAPPING.get(mask);
         if (drawFunction == null) {
             String function = "Draw";
@@ -401,21 +336,179 @@ public class GlDrawing implements
                 function = "Multi" + function + "_Stride";
                 params.add("indices:" + typeString(SHIFT_INDICES));
             }
-            if ((mask & F_MULTI_FIRSTS) > 0) {
+            if ((mask & (F_MULTI_FIRSTS_BASE_VERTEX | F_ARRAYS)) > 0) {
                 function = "Multi" + function + "_Firsts";
-                params.add("firsts:" + typeString(SHIFT_FIRSTS));
+                params.add("firsts:" + typeString(SHIFT_FIRSTS_OR_BASE_VERTEXES));
                 params.add("indices:" + typeString(SHIFT_INDICES));
             }
-            if ((mask & F_MULTI_BASE_VERTEX) > 0) {
+            if ((mask & (F_MULTI_FIRSTS_BASE_VERTEX | F_ELEMENTS)) > 0) {
                 function = "Multi" + function + "BaseVertex";
                 params.add("indices:" + typeString(SHIFT_INDICES));
-                params.add("baseVertexes:" + typeString(SHIFT_BASE_VERTEXES));
+                params.add("baseVertexes:" + typeString(SHIFT_FIRSTS_OR_BASE_VERTEXES));
             }
             function += "(" + StringUtils.join(params, ", ") + ")";
 
             throw new UnsupportedOperationException(function);
         }
         return this;
+    }
+
+    @Override
+    public void draw() {
+        vertexArray.bind();
+        if (indices instanceof Buffer buffer) {
+            buffer.bind();
+        }
+        drawFunction.accept(this);
+        vertexArray.unbind();
+        GLX.checkError();
+    }
+
+    private String typeString(int shift) {
+        int type = (int) ((mask >> shift) & 0xff);
+        return switch (type) {
+            case T_NULL -> "null";
+            case T_BUFFER -> "Buffer";
+            case T_BYTE_BUFFER -> "ByteBuffer";
+            case T_INT_BUFFER -> "IntBuffer";
+            case T_INT_ARRAY -> "int[]";
+            case T_INT_BUFFER_ARRAY -> "IntBuffer[]";
+            default -> "Unknown";
+        };
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public InstancedDrawing.Builder instanced(int instanceCount) {
+        this.instanceCount = instanceCount;
+        mask |= F_INSTANCED;
+        return this;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public Drawing.Builder baseInstance(int baseInstance) {
+        this.baseInstance = baseInstance;
+        mask |= F_BASE_INSTANCE;
+        return this;
+    }
+
+    @SuppressWarnings("rawtypes")
+    private IndirectDrawing.Builder indirect(Object indirect, int type) {
+        this.indices = indirect;
+        mask |= F_INDIRECT | indicesType(indirect == null ? T_NULL : type);
+        return this;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public IndirectDrawing.Builder indirect(int[] indirect) {
+        return indirect(indirect, T_INT_ARRAY);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public IndirectDrawing.Builder indirect(IntBuffer indirect) {
+        return indirect(indirect, T_INT_BUFFER);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public IndirectDrawing.Builder indirect(ByteBuffer indirect) {
+        return indirect(indirect, T_BYTE_BUFFER);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public IndirectDrawing.Builder indirect() {
+        mask |= F_INDIRECT;
+        return this;
+    }
+
+    @Override
+    public Drawing.Builder<VertexArray, GlVertexArrayDrawing> multi(int drawCount, int stride) {
+        this.stride = stride;
+        this.drawCount = drawCount;
+        mask |= F_MULTI_STRIDE;
+        return this;
+    }
+
+    @SuppressWarnings("rawtypes")
+    private Drawing.Builder multi(Object counts, int drawCount, Object firstsOrBaseVertexes, int type) {
+        this.counts = counts;
+        this.drawCount = drawCount;
+        this.firstsOrBaseVertexes = firstsOrBaseVertexes;
+        mask |= F_MULTI_FIRSTS_BASE_VERTEX | countsType(counts == null ? T_NULL : type) | firstsOrBaseVertexesType(firstsOrBaseVertexes == null ? T_NULL : type);
+        return this;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public Drawing.Builder multi(int[] counts, int drawCount, int[] firstsOrBaseVertexes) {
+        return multi(counts, drawCount, firstsOrBaseVertexes, T_INT_ARRAY);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public Drawing.Builder multi(IntBuffer counts, int drawCount, IntBuffer firstsOrBaseVertexes) {
+        return multi(counts, drawCount, firstsOrBaseVertexes, T_INT_BUFFER);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private Drawing.Builder multi(Object counts, int drawCount, int type) {
+        this.counts = counts;
+        this.drawCount = drawCount;
+        mask |= F_MULTI_COUNTS | countsType(counts == null ? T_NULL : type);
+        return this;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public Drawing.Builder multi(int[] counts, int drawCount) {
+        return multi(counts, drawCount, T_INT_ARRAY);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public Drawing.Builder multi(IntBuffer counts, int drawCount) {
+        return multi(counts, drawCount, T_INT_BUFFER);
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public BaseVertexDrawing.Builder baseVertex(int baseVertex) {
+        this.baseVertex = baseVertex;
+        mask |= F_BASE_VERTEX;
+        return this;
+    }
+
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public Drawing.Builder range(int min, int max) {
+        this.min = min;
+        this.max = max;
+        mask |= F_RANGE;
+        return this;
+    }
+
+    @Override
+    public VertexArray source() {
+        return vertexArray;
+    }
+
+    @Override
+    public int baseInstance() {
+        return baseInstance;
+    }
+
+    @Override
+    public int baseVertex() {
+        return baseVertex;
+    }
+
+    @Override
+    public Object baseVertexes() {
+        return firstsOrBaseVertexes;
     }
 
     @Override
@@ -435,17 +528,6 @@ public class GlDrawing implements
     }
 
     @Override
-    public void draw() {
-        vertexArray.bind();
-        if (indices instanceof Buffer buffer) {
-            buffer.bind();
-        }
-        drawFunction.accept(this);
-        vertexArray.unbind();
-        GLX.checkError();
-    }
-
-    @Override
     public int drawCount() {
         return drawCount;
     }
@@ -457,7 +539,7 @@ public class GlDrawing implements
 
     @Override
     public Object firsts() {
-        return firsts;
+        return firstsOrBaseVertexes;
     }
 
     @Nullable
@@ -467,42 +549,8 @@ public class GlDrawing implements
     }
 
     @Override
-    public Indirect indirect(int[] indirect) {
-        this.indices = indirect;
-        mask |= F_INDIRECT | indicesType(indirect == null ? T_NULL : T_INT_ARRAY);
-        return this;
-    }
-
-    @Override
-    public Indirect indirect(IntBuffer indirect) {
-        this.indices = indirect;
-        mask |= F_INDIRECT | indicesType(indirect == null ? T_NULL : T_INT_BUFFER);
-        return this;
-    }
-
-    @Override
-    public Indirect indirect(ByteBuffer indirect) {
-        this.indices = indirect;
-        mask |= F_INDIRECT | indicesType(indirect == null ? T_NULL : T_BYTE_BUFFER);
-        return this;
-    }
-
-    @Override
-    public Indirect indirect() {
-        mask |= F_INDIRECT;
-        return this;
-    }
-
-    @Override
-    public int instanceCount() {
+    public int instancedCount() {
         return instanceCount;
-    }
-
-    @Override
-    public Instanced instanced(int instanceCount) {
-        this.instanceCount = instanceCount;
-        mask |= F_INSTANCED;
-        return this;
     }
 
     @Override
@@ -521,93 +569,53 @@ public class GlDrawing implements
     }
 
     @Override
-    public MultiBaseVertex multiBaseVertex(int[] counts, int drawCount, int[] baseVertexes) {
-        this.counts = counts;
-        this.drawCount = drawCount;
-        this.baseVertexes = baseVertexes;
-        mask |= F_MULTI_BASE_VERTEX | countsType(counts == null ? T_NULL : T_INT_ARRAY) | baseVertexesType(baseVertexes == null ? T_NULL : T_INT_ARRAY);
-        return this;
-    }
-
-    @Override
-    public MultiBaseVertex multiBaseVertex(IntBuffer counts, int drawCount, IntBuffer baseVertexes) {
-        this.counts = counts;
-        this.drawCount = drawCount;
-        this.baseVertexes = baseVertexes;
-        mask |= F_MULTI_BASE_VERTEX | countsType(counts == null ? T_NULL : T_INT_BUFFER) | baseVertexesType(baseVertexes == null ? T_NULL : T_INT_BUFFER);
-        return this;
-    }
-
-    @Override
-    public MultiCounts multiCounts(int[] counts, int drawCount) {
-        this.counts = counts;
-        this.drawCount = drawCount;
-        mask |= F_MULTI_COUNTS | countsType(counts == null ? T_NULL : T_INT_ARRAY);
-        return this;
-    }
-
-    @Override
-    public MultiCounts multiCounts(IntBuffer counts, int drawCount) {
-        this.counts = counts;
-        this.drawCount = drawCount;
-        mask |= F_MULTI_COUNTS | countsType(counts == null ? T_NULL : T_INT_BUFFER);
-        return this;
-    }
-
-    @Override
-    public MultiFirsts multiFirsts(int[] counts, int drawCount, int[] firsts) {
-        this.counts = counts;
-        this.drawCount = drawCount;
-        this.firsts = firsts;
-        mask |= F_MULTI_FIRSTS | countsType(counts == null ? T_NULL : T_INT_ARRAY) | firstsType(firsts == null ? T_NULL : T_INT_ARRAY);
-        return this;
-    }
-
-    @Override
-    public MultiFirsts multiFirsts(IntBuffer counts, int drawCount, IntBuffer firsts) {
-        this.counts = counts;
-        this.drawCount = drawCount;
-        this.firsts = firsts;
-        mask |= F_MULTI_FIRSTS | countsType(counts == null ? T_NULL : T_INT_BUFFER) | firstsType(firsts == null ? T_NULL : T_INT_BUFFER);
-        return this;
-    }
-
-    @Override
-    public MultiStride multiStride(int stride, int drawCount) {
-        this.stride = stride;
-        this.drawCount = drawCount;
-        mask |= F_MULTI_STRIDE;
-        return this;
-    }
-
-    @Override
-    public Range range(int min, int max) {
-        this.min = min;
-        this.max = max;
-        mask |= F_RANGE;
-        return this;
-    }
-
-    @Override
     public int stride() {
         return stride;
     }
 
-    private String typeString(int shift) {
-        int type = (int) ((mask >> shift) & 0xff);
-        return switch (type) {
-            case T_NULL -> "null";
-            case T_BUFFER -> "Buffer";
-            case T_BYTE_BUFFER -> "ByteBuffer";
-            case T_INT_BUFFER -> "IntBuffer";
-            case T_INT_ARRAY -> "int[]";
-            case T_INT_BUFFER_ARRAY -> "IntBuffer[]";
-            default -> "Unknown";
-        };
+    private static long arraysMask(int indicesType, int countsType, int firstsType, int... functions) {
+        long masks = indicesType(indicesType) | countsType(countsType) | firstsOrBaseVertexesType(firstsType);
+        for (var function : functions) {
+            masks |= function;
+        }
+        return masks;
     }
 
-    @Override
-    public VertexArray vertexArray() {
-        return vertexArray;
+    private static long firstsOrBaseVertexesType(long type) {
+        return type << SHIFT_FIRSTS_OR_BASE_VERTEXES;
     }
+
+    private static long countsType(long type) {
+        return type << SHIFT_COUNTS;
+    }
+
+    private static long elementsMask(int indicesType, int countsType, int baseVertexesType, int... functions) {
+        long masks = indicesType(indicesType) | countsType(countsType) | firstsOrBaseVertexesType(baseVertexesType);
+        for (var function : functions) {
+            masks |= function;
+        }
+        return masks;
+    }
+
+    private static void forEachType(IntToLongFunction keyMapper, IntFunction<Consumer<GlVertexArrayDrawing>> drawingFactory) {
+        for (int type = T_START; type <= T_END; type++) {
+            var drawing = drawingFactory.apply(type);
+            if (drawing != null) {
+                MAPPING.put(keyMapper.applyAsLong(type), drawing);
+            }
+        }
+    }
+
+    private static long indicesType(long type) {
+        return type << SHIFT_INDICES;
+    }
+
+    private static PointerBuffer toPointerBuffer(IntBuffer[] buffers) {
+        var pointerBuffer = MemoryUtil.memAllocPointer(buffers.length);
+        for (var buffer : buffers) {
+            pointerBuffer.put(MemoryUtil.memAddress(buffer));
+        }
+        return pointerBuffer;
+    }
+
 }
