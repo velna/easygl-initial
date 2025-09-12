@@ -23,9 +23,9 @@
 | Textures and Samplers  | 100%               |
 | Framebuffer Objects  | 100%               |
 | Vertices  | 100%               |
-| Vertex Arrays  | 80%                |
-| Vertex Attributes  | 0%                 |
-| Vertex Post-Processing  | 0%                 |
+| Vertex Arrays  | 100%               |
+| Vertex Attributes  | 100%               |
+| Vertex Post-Processing  | 30%                |
 | Rasterization  | 100%               |
 | Fragment Shaders  | 0%                 |
 | Compute Shaders  | 0%                 |
