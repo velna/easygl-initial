@@ -7,6 +7,7 @@ import com.vanix.easygl.core.meta.MetaSystem;
 
 class MetaHolder {
     static final BindableMeta<BindTarget.Default<VertexArray>, VertexArray> VertexArray = MetaSystem.Graphics.of(VertexArray.class);
+    static final BindableMeta<BindTarget.Default<TransformFeedback>, TransformFeedback> TransformFeedback = MetaSystem.Graphics.of(TransformFeedback.class);
     static final HandleMeta<Sampler> Sampler = MetaSystem.Graphics.of(Sampler.class);
     static final BindableMeta<Texture.TexTarget<Texture1DArray>, Texture1DArray> Texture1DArray = MetaSystem.Graphics.of(Texture1DArray.class);
     static final BindableMeta<Texture.TexTarget<TextureRectangle>, TextureRectangle> TextureRectangle = MetaSystem.Graphics.of(TextureRectangle.class);

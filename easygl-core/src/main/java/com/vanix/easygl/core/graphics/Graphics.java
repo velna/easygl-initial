@@ -23,7 +23,11 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
 
     PixelStorageMode pixelStorageMode();
 
+    Graphics provokingVertex(boolean first);
+
     //region Features
+    Clipping clipDistances();
+
     DepthTest depthTest();
 
     Blending blending();
@@ -56,9 +60,9 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
 
     float getPointFadeThresholdSize();
 
-    Graphics setPointSpriteCoordOrigin(SpriteCoordOrigin spriteCoordOrigin);
+    Graphics setPointSpriteCoordOrigin(Origin origin);
 
-    SpriteCoordOrigin getPointSpriteCoordOrigin();
+    Origin getPointSpriteCoordOrigin();
 
     Graphics setLineWidth(float width);
 

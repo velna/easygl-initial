@@ -25,7 +25,7 @@
 | Vertices  | 100%               |
 | Vertex Arrays  | 100%               |
 | Vertex Attributes  | 100%               |
-| Vertex Post-Processing  | 30%                |
+| Vertex Post-Processing  | 80%                |
 | Rasterization  | 100%               |
 | Fragment Shaders  | 0%                 |
 | Compute Shaders  | 0%                 |

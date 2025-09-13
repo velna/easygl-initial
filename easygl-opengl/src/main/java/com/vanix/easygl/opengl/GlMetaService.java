@@ -33,6 +33,16 @@ public class GlMetaService extends AbstractMetaService {
             GLX::glGenVertexArrays,
             GLX::glDeleteVertexArrays);
 
+    static final BindableMeta<BindTarget.Default<TransformFeedback>, TransformFeedback> TransformFeedbackMeta = new IntBindableMeta<>(
+            args -> new GlTransformFeedback(GLX.glGenTransformFeedbacks()),
+            GLX::glBindTransformFeedback,
+            GLX::glBindTransformFeedback,
+            0,
+            GLX::glDeleteTransformFeedbacks,
+            (handle, args) -> new GlTransformFeedback(handle),
+            GLX::glGenTransformFeedbacks,
+            GLX::glDeleteTransformFeedbacks);
+
     static final BindableMeta<BaseFrameBuffer.Target<FrameBuffer>, FrameBuffer> FrameBufferMeta = new IntBindableMeta<>(
             args -> new GlFrameBuffer(),
             GLX::glBindFramebuffer,
@@ -168,6 +178,7 @@ public class GlMetaService extends AbstractMetaService {
         register(BaseFrameBuffer.class, FrameBufferMeta);
         register(FrameBuffer.class, FrameBufferMeta);
         register(VertexArray.class, VertexArrayMeta);
+        register(TransformFeedback.class, TransformFeedbackMeta);
         register(RenderBuffer.class, RenderBufferMeta);
         register(Program.class, ProgramMeta);
         register(TextureUnit.class, TextureUnitMeta);
