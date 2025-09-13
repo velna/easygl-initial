@@ -19,6 +19,7 @@ public class GlGraphics implements Graphics {
     private final DefaultFrameBuffer defaultFrameBuffer = new GlDefaultFrameBuffer();
     private final PixelStorageMode pixelStorageMode = new GlPixelStorageMode(this);
     private final PrimitiveRestart primitiveRestart = new GlPrimitiveRestart(this);
+    private final Clipping clipping = new GlClipping(this);
     private final Debug debug;
 
     public GlGraphics() {
@@ -38,6 +39,17 @@ public class GlGraphics implements Graphics {
     @Override
     public PixelStorageMode pixelStorageMode() {
         return pixelStorageMode;
+    }
+
+    @Override
+    public Graphics provokingVertex(boolean first) {
+        GLX.glProvokingVertex(first ? GLX.GL_FIRST_VERTEX_CONVENTION : GLX.GL_LAST_VERTEX_CONVENTION);
+        return this;
+    }
+
+    @Override
+    public Clipping clipDistances() {
+        return clipping;
     }
 
     @Override
@@ -121,8 +133,8 @@ public class GlGraphics implements Graphics {
     }
 
     @Override
-    public Graphics setPointSpriteCoordOrigin(SpriteCoordOrigin spriteCoordOrigin) {
-        GLX.glPointParameteri(GLX.GL_POINT_SPRITE_COORD_ORIGIN, spriteCoordOrigin.value());
+    public Graphics setPointSpriteCoordOrigin(Origin origin) {
+        GLX.glPointParameteri(GLX.GL_POINT_SPRITE_COORD_ORIGIN, origin.value());
         GLX.checkError();
         return this;
     }
@@ -164,10 +176,10 @@ public class GlGraphics implements Graphics {
     }
 
     @Override
-    public SpriteCoordOrigin getPointSpriteCoordOrigin() {
+    public Origin getPointSpriteCoordOrigin() {
         return switch (GLX.glGetInteger(GLX.GL_POINT_SPRITE_COORD_ORIGIN)) {
-            case GLX.GL_LOWER_LEFT -> SpriteCoordOrigin.LowerLeft;
-            case GLX.GL_UPPER_LEFT -> SpriteCoordOrigin.UpperLeft;
+            case GLX.GL_LOWER_LEFT -> Origin.LowerLeft;
+            case GLX.GL_UPPER_LEFT -> Origin.UpperLeft;
             default -> {
                 GLX.checkError();
                 yield null;
