@@ -3,7 +3,9 @@ package com.vanix.easygl.opengl;
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.graphics.Buffer;
+import com.vanix.easygl.core.graphics.DrawMode;
 import com.vanix.easygl.core.graphics.TransformFeedback;
+import com.vanix.easygl.core.graphics.draw.TransformFeedbackDrawing;
 
 import java.util.function.IntConsumer;
 
@@ -11,6 +13,11 @@ public class GlTransformFeedback extends AbstractBindable<BindTarget.Default<Tra
 
     public GlTransformFeedback(int handle) {
         super(handle, Target, (IntConsumer) GLX::glDeleteTransformFeedbacks);
+    }
+
+    @Override
+    public TransformFeedbackDrawing drawing(DrawMode mode) {
+        return new GlTransformFeedbackDrawing(this, mode);
     }
 
     @Override

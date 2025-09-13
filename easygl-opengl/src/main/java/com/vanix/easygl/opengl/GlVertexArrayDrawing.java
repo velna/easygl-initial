@@ -549,7 +549,7 @@ public class GlVertexArrayDrawing implements
     }
 
     @Override
-    public int instancedCount() {
+    public int instanceCount() {
         return instanceCount;
     }
 
