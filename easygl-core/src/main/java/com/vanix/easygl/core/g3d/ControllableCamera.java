@@ -1,6 +1,6 @@
 package com.vanix.easygl.core.g3d;
 
-import com.vanix.easygl.commons.Position;
+import com.vanix.easygl.commons.primitives.Positiondc;
 import com.vanix.easygl.commons.value.FloatValue;
 import com.vanix.easygl.commons.value.Value;
 import com.vanix.easygl.core.Direction;
@@ -73,7 +73,7 @@ public class ControllableCamera extends Camera {
             }
         }
         if (mouse != null) {
-            Position pos = mouse.getPosition();
+            Positiondc pos = mouse.getPosition();
             if (x == 0 && y == 0) {
                 x = pos.getX();
                 y = pos.getY();

@@ -1,10 +1,10 @@
 package com.vanix.easygl.glfw;
 
-import com.vanix.easygl.commons.Dimension;
-import com.vanix.easygl.commons.Position;
 import com.vanix.easygl.commons.event.EventListener;
 import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.commons.event.ListenerSupport;
+import com.vanix.easygl.commons.primitives.Dimensionic;
+import com.vanix.easygl.commons.primitives.Positionic;
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.input.InputController;
@@ -267,43 +267,49 @@ public class GlWindow extends AbstractBindable<BindTarget.Default<Window>, Windo
     }
 
     @Override
-    public void setWidth(int w) {
+    public Window setWidth(int w) {
         GLFW.glfwSetWindowSize(handle, w, height);
+        return this;
     }
 
     @Override
-    public void setHeight(int h) {
+    public Window setHeight(int h) {
         GLFW.glfwSetWindowSize(handle, width, h);
+        return this;
     }
 
     @Override
-    public void setDimension(Dimension dimension) {
+    public Window setDimension(Dimensionic<?> dimension) {
         GLFW.glfwSetWindowSize(handle, dimension.getWidth(), dimension.getHeight());
+        return this;
     }
 
     @Override
-    public int getXAsInt() {
+    public int getX() {
         return x;
     }
 
     @Override
-    public int getYAsInt() {
+    public int getY() {
         return y;
     }
 
     @Override
-    public void setX(int v) {
+    public Window setX(int v) {
         GLFW.glfwSetWindowPos(handle, v, this.y);
+        return this;
     }
 
     @Override
-    public void setY(int v) {
+    public Window setY(int v) {
         GLFW.glfwSetWindowPos(handle, this.x, v);
+        return this;
     }
 
     @Override
-    public void setPosition(Position position) {
-        GLFW.glfwSetWindowPos(handle, (int) position.getX(), (int) position.getY());
+    public Window setPosition(Positionic<?> source) {
+        GLFW.glfwSetWindowPos(handle, source.getX(), source.getY());
+        return this;
     }
 
     @Override

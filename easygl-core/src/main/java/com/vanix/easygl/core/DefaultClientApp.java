@@ -61,7 +61,7 @@ public class DefaultClientApp implements ClientApp {
     protected void initGraphics() throws GraphicsException {
         log.info("Client application startup.");
         graphics = Graphics.of(window);
-        graphics.viewPort(0, 0, window.frameBufferWidth(), window.frameBufferHeight());
+        graphics.viewport(0, 0, window.frameBufferWidth(), window.frameBufferHeight());
     }
 
     public void run() throws GraphicsException {

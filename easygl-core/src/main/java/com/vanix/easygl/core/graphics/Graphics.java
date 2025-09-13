@@ -12,7 +12,23 @@ import java.util.ServiceLoader;
 
 public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, Graphics> {
 
-    Graphics viewPort(int x, int y, int width, int height);
+    // region View Ports
+    Graphics viewport(int x, int y, int width, int height);
+
+    Viewport viewport(int index);
+
+    Graphics setDepthRange(double near, double far);
+
+    @Support(since = Version.GL41)
+    Graphics setDepthRange(float near, float far);
+
+    @Support(since = Version.GL41)
+    float[] getDepthRangeFloat();
+
+    double[] getDepthRangeDouble();
+
+    int[] getDepthRangeIntMapped();
+    // endregion
 
     DefaultFrameBuffer defaultFrameBuffer();
 
@@ -109,7 +125,7 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
 
     static Graphics of(Window window) {
         window.bind();
-        return of().viewPort(0, 0, window.frameBufferWidth(), window.frameBufferHeight());
+        return of().viewport(0, 0, window.frameBufferWidth(), window.frameBufferHeight());
     }
 
 }

@@ -1,5 +1,6 @@
 package com.vanix.easygl.opengl;
 
+import com.vanix.easygl.commons.util.LazyList;
 import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.graphics.feature.*;
 import com.vanix.easygl.opengl.feature.*;
@@ -8,6 +9,8 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
 
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GlGraphics implements Graphics {
     static final GLCapabilities CAPABILITIES = GL.createCapabilities();
@@ -21,6 +24,12 @@ public class GlGraphics implements Graphics {
     private final PrimitiveRestart primitiveRestart = new GlPrimitiveRestart(this);
     private final Clipping clipping = new GlClipping(this);
     private final Debug debug;
+    private final List<Viewport> viewports = LazyList.lazyList(new ArrayList<>(), index -> {
+        if (index > Viewport.MaxViewports) {
+            throw new IllegalArgumentException();
+        }
+        return new GlViewport(index);
+    });
 
     public GlGraphics() {
         if (CAPABILITIES.OpenGL43) {
@@ -31,9 +40,47 @@ public class GlGraphics implements Graphics {
     }
 
     @Override
-    public Graphics viewPort(int x, int y, int width, int height) {
+    public Graphics viewport(int x, int y, int width, int height) {
         GLX.glViewport(x, y, width, height);
         return this;
+    }
+
+    @Override
+    public Viewport viewport(int index) {
+        return viewports.get(index);
+    }
+
+    @Override
+    public Graphics setDepthRange(double near, double far) {
+        GLX.glDepthRange(near, far);
+        return this;
+    }
+
+    @Override
+    public Graphics setDepthRange(float near, float far) {
+        GLX.glDepthRangef(near, far);
+        return this;
+    }
+
+    @Override
+    public float[] getDepthRangeFloat() {
+        var data = new float[2];
+        GLX.glGetFloatv(GLX.GL_DEPTH_RANGE, data);
+        return data;
+    }
+
+    @Override
+    public double[] getDepthRangeDouble() {
+        var data = new double[2];
+        GLX.glGetDoublev(GLX.GL_DEPTH_RANGE, data);
+        return data;
+    }
+
+    @Override
+    public int[] getDepthRangeIntMapped() {
+        var data = new int[2];
+        GLX.glGetIntegerv(GLX.GL_DEPTH_RANGE, data);
+        return data;
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.Color;
 import com.vanix.easygl.commons.IntEnum;
-import com.vanix.easygl.commons.Rectangle;
+import com.vanix.easygl.commons.primitives.Rectanglei;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.MultiTargetBindable;
 import com.vanix.easygl.core.Support;
@@ -104,14 +104,14 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
     }
 
     @Support(since = Version.GL30)
-    default T blit(Rectangle src, Rectangle dst, FrameInnerBuffer.Mask buffers, MagFilter filter) {
+    default T blit(Rectanglei src, Rectanglei dst, FrameInnerBuffer.Mask buffers, MagFilter filter) {
         return blit(src.getX(), src.getY(), src.getX() + src.getWidth(), src.getY() + src.getHeight(),
                 dst.getX(), dst.getY(), dst.getX() + dst.getWidth(), dst.getY() + dst.getHeight(),
                 buffers, filter);
     }
 
     @Support(since = Version.GL30)
-    default T blit(Rectangle rect, FrameInnerBuffer.Mask buffers, MagFilter filter) {
+    default T blit(Rectanglei rect, FrameInnerBuffer.Mask buffers, MagFilter filter) {
         return blit(rect, rect, buffers, filter);
     }
 
@@ -144,31 +144,31 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
 
     T readPixels(int x, int y, int width, int height, PixelFormat format, DataType dataType, FloatBuffer data);
 
-    default T readPixels(Rectangle rect, PixelFormat format, DataType dataType, ByteBuffer data) {
+    default T readPixels(Rectanglei rect, PixelFormat format, DataType dataType, ByteBuffer data) {
         return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
     }
 
-    default T readPixels(Rectangle rect, PixelFormat format, DataType dataType, short[] data) {
+    default T readPixels(Rectanglei rect, PixelFormat format, DataType dataType, short[] data) {
         return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
     }
 
-    default T readPixels(Rectangle rect, PixelFormat format, DataType dataType, ShortBuffer data) {
+    default T readPixels(Rectanglei rect, PixelFormat format, DataType dataType, ShortBuffer data) {
         return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
     }
 
-    default T readPixels(Rectangle rect, PixelFormat format, DataType dataType, int[] data) {
+    default T readPixels(Rectanglei rect, PixelFormat format, DataType dataType, int[] data) {
         return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
     }
 
-    default T readPixels(Rectangle rect, PixelFormat format, DataType dataType, IntBuffer data) {
+    default T readPixels(Rectanglei rect, PixelFormat format, DataType dataType, IntBuffer data) {
         return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
     }
 
-    default T readPixels(Rectangle rect, PixelFormat format, DataType dataType, float[] data) {
+    default T readPixels(Rectanglei rect, PixelFormat format, DataType dataType, float[] data) {
         return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
     }
 
-    default T readPixels(Rectangle rect, PixelFormat format, DataType dataType, FloatBuffer data) {
+    default T readPixels(Rectanglei rect, PixelFormat format, DataType dataType, FloatBuffer data) {
         return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
     }
     //endregion
