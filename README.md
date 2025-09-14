@@ -11,7 +11,7 @@
 ## 进展
 (根据[opengl45-quick-reference-card](https://www.khronos.org/files/opengl45-quick-reference-card.pdf)里的分类)
 
-(部分OpengGL 4.5的API尚未实现）
+详细API实现情况索引请[点击这里](OpengGLFunctionIndex.md)
 
 | 类别  | 完成度                |
 | ------------- |--------------------|
