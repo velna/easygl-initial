@@ -9,7 +9,7 @@ import com.vanix.easygl.core.graphics.Version;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface Clipping extends IndexedFeature<Clipping, Graphics>, GraphicsFeature<Clipping> {
-    int MaxClipDistances = MetaSystem.Graphics.queryInt("MAX_CLIP_DISTANCES");
+    int MaxClipDistances = MetaSystem.Graphics.queryInt("GET.MAX_CLIP_DISTANCES");
 
     @Support(since = Version.GL45)
     Clipping control(Origin origin, DepthMode depthMode);

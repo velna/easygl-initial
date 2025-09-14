@@ -1,6 +1,5 @@
 package com.vanix.easygl.opengl;
 
-import com.vanix.easygl.commons.util.LazyList;
 import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.graphics.feature.*;
 import com.vanix.easygl.opengl.feature.*;
@@ -9,8 +8,6 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
 
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GlGraphics implements Graphics {
     static final GLCapabilities CAPABILITIES = GL.createCapabilities();
@@ -24,12 +21,7 @@ public class GlGraphics implements Graphics {
     private final PrimitiveRestart primitiveRestart = new GlPrimitiveRestart(this);
     private final Clipping clipping = new GlClipping(this);
     private final Debug debug;
-    private final List<Viewport> viewports = LazyList.lazyList(new ArrayList<>(), index -> {
-        if (index > Viewport.MaxViewports) {
-            throw new IllegalArgumentException();
-        }
-        return new GlViewport(index);
-    });
+    private final Viewport[] viewports = new Viewport[Viewport.MaxViewports];
 
     public GlGraphics() {
         if (CAPABILITIES.OpenGL43) {
@@ -47,7 +39,11 @@ public class GlGraphics implements Graphics {
 
     @Override
     public Viewport viewport(int index) {
-        return viewports.get(index);
+        var viewport = viewports[index];
+        if (viewport == null) {
+            viewports[index] = viewport = new GlViewport(index);
+        }
+        return viewport;
     }
 
     @Override
