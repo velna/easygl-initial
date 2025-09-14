@@ -125,6 +125,12 @@ public class GlGraphics implements Graphics {
     }
 
     @Override
+    public Graphics hint(HintTarget target, HintMode mode) {
+        GLX.glHint(target.value(), mode.value());
+        return this;
+    }
+
+    @Override
     public Clipping clipDistances() {
         return clipping;
     }
