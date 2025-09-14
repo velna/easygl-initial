@@ -1,6 +1,7 @@
 package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.IntEnum;
+import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.meta.MetaSystem;
 
@@ -37,6 +38,10 @@ public interface TextureCubeMap extends Texture<TextureCubeMap>,
 
     static TextureCubeMap of() {
         return MetaHolder.TextureCubeMap.create();
+    }
+
+    static HandleArray<TextureCubeMap> of(int n) {
+        return MetaHolder.TextureCubeMap.createArray(n);
     }
 
     interface Face extends

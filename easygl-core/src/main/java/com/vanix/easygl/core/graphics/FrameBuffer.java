@@ -11,7 +11,7 @@ public interface FrameBuffer extends BaseFrameBuffer<FrameBuffer> {
     @Support(since = Version.GL43)
     FrameBuffer invalidate(Target<FrameBuffer> target, int x, int y, int width, int height, FrameInnerBuffer.Attachment attachment);
 
-    default FrameBuffer invalidate(Target<FrameBuffer> target, Rectanglei rectangle, FrameInnerBuffer.Attachment attachment) {
+    default FrameBuffer invalidate(Target<FrameBuffer> target, Rectanglei<?> rectangle, FrameInnerBuffer.Attachment attachment) {
         return invalidate(target, rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight(), attachment);
     }
 

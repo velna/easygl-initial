@@ -30,7 +30,7 @@
 | Fragment Shaders  | 100%               |
 | Compute Shaders  | 100%               |
 | Per-Fragment Operations  | 100%               |
-| Hints  | 0%                 |
+| Hints  | 100%               |
 | Whole Framebuffer  | 100%               |
 | Reading and Copying Pixels  | 100%               |
 | Debug Output  | 100%               |

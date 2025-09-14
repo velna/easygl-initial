@@ -1,5 +1,6 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface TextureCubeMapArray extends Texture<TextureCubeMapArray>,
@@ -22,4 +23,9 @@ public interface TextureCubeMapArray extends Texture<TextureCubeMapArray>,
     static TextureCubeMapArray of() {
         return MetaHolder.TextureCubeMapArray.create();
     }
+
+    static HandleArray<TextureCubeMapArray> of(int n) {
+        return MetaHolder.TextureCubeMapArray.createArray(n);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface TextureRectangle extends Texture<TextureRectangle>,
@@ -18,4 +19,9 @@ public interface TextureRectangle extends Texture<TextureRectangle>,
     static TextureRectangle of() {
         return MetaHolder.TextureRectangle.create();
     }
+
+    static HandleArray<TextureRectangle> of(int n) {
+        return MetaHolder.TextureRectangle.createArray(n);
+    }
+
 }

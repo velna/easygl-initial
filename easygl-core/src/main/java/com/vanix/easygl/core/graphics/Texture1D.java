@@ -1,5 +1,6 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
 
@@ -73,4 +74,7 @@ public interface Texture1D extends Texture<Texture1D>,
         return MetaHolder.Texture1D.create();
     }
 
+    static HandleArray<Texture1D> of(int n) {
+        return MetaHolder.Texture1D.createArray(n);
+    }
 }

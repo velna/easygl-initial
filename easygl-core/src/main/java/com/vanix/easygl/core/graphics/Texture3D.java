@@ -1,5 +1,6 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface Texture3D extends Texture<Texture3D>,
@@ -21,5 +22,9 @@ public interface Texture3D extends Texture<Texture3D>,
 
     static Texture3D of() {
         return MetaHolder.Texture3D.create();
+    }
+
+    static HandleArray<Texture3D> of(int n) {
+        return MetaHolder.Texture3D.createArray(n);
     }
 }
