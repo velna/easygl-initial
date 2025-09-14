@@ -1,8 +1,9 @@
 package com.vanix.easygl.core.window;
 
-import com.vanix.easygl.commons.Dimensional;
-import com.vanix.easygl.commons.Positional;
 import com.vanix.easygl.commons.event.ListenerOperation;
+import com.vanix.easygl.commons.primitives.Dimensioni;
+import com.vanix.easygl.commons.primitives.Positioni;
+import com.vanix.easygl.commons.primitives.Rectanglei;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
 import com.vanix.easygl.core.input.InputController;
@@ -11,7 +12,7 @@ import com.vanix.easygl.core.meta.MetaSystem;
 import com.vanix.easygl.core.window.event.*;
 import org.joml.Vector2f;
 
-public interface Window extends Bindable<BindTarget.Default<Window>, Window>, Dimensional, Positional {
+public interface Window extends Bindable<BindTarget.Default<Window>, Window>, Rectanglei<Window> {
     BindableMeta<BindTarget.Default<Window>, Window> Meta = MetaSystem.Window.of(Window.class);
     BindTarget.Default<Window> Target = new BindTarget.Default<>("Window", Meta);
 
@@ -55,33 +56,9 @@ public interface Window extends Bindable<BindTarget.Default<Window>, Window>, Di
 
     int frameBufferHeight();
 
-    @Override
-    default void setX(double x) {
-        setX((int) x);
-    }
+    Window setX(int x);
 
-    @Override
-    default void setY(double y) {
-        setY((int) y);
-    }
-
-    void setX(int x);
-
-    void setY(int x);
-
-    int getXAsInt();
-
-    int getYAsInt();
-
-    @Override
-    default double getX() {
-        return getXAsInt();
-    }
-
-    @Override
-    default double getY() {
-        return getYAsInt();
-    }
+    Window setY(int x);
 
     default float getAspect() {
         return getWidth() * 1.0f / getHeight();

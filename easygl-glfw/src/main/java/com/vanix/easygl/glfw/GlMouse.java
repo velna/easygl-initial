@@ -1,8 +1,8 @@
 package com.vanix.easygl.glfw;
 
-import com.vanix.easygl.commons.Position;
 import com.vanix.easygl.commons.event.ListenerOperation;
 import com.vanix.easygl.commons.event.ListenerSupport;
+import com.vanix.easygl.commons.primitives.Positiondc;
 import com.vanix.easygl.core.input.Cursor;
 import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.input.event.*;
@@ -114,24 +114,27 @@ public class GlMouse implements Mouse {
     }
 
     @Override
-    public Position getPosition() {
+    public Positiondc<?> getPosition() {
         GLFW.nglfwGetCursorPos(window.handle(), xPosAddress, yPosAddress);
-        return Position.of(xPosBuf.get(0), yPosBuf.get(0));
+        return Positiondc.of(xPosBuf.get(0), yPosBuf.get(0));
     }
 
     @Override
-    public void setPosition(Position position) {
+    public Mouse setPosition(Positiondc<?> position) {
         GLFW.glfwSetCursorPos(window.handle(), position.getX(), position.getY());
+        return this;
     }
 
     @Override
-    public void setX(double x) {
+    public Mouse setX(double x) {
         GLFW.glfwSetCursorPos(window.handle(), x, yPosBuf.get(0));
+        return this;
     }
 
     @Override
-    public void setY(double y) {
+    public Mouse setY(double y) {
         GLFW.glfwSetCursorPos(window.handle(), xPosBuf.get(0), y);
+        return this;
     }
 
     @Override

@@ -1,14 +1,15 @@
 package com.vanix.easygl.core.input;
 
-import com.vanix.easygl.commons.Positional;
 import com.vanix.easygl.commons.event.ListenerOperation;
+import com.vanix.easygl.commons.primitives.Positiond;
+import com.vanix.easygl.commons.primitives.Positiondc;
 import com.vanix.easygl.core.input.event.MouseButtonListener;
 import com.vanix.easygl.core.input.event.MouseEnterListener;
 import com.vanix.easygl.core.input.event.MouseMoveListener;
 import com.vanix.easygl.core.input.event.MouseScrollListener;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public interface Mouse extends Positional, InputDevice<Mouse.Button> {
+public interface Mouse extends Positiond<Mouse>, InputDevice<Mouse.Button> {
 
     Mouse cursor(Cursor cursor);
 
@@ -33,6 +34,8 @@ public interface Mouse extends Positional, InputDevice<Mouse.Button> {
     ListenerOperation<MouseMoveListener> onMove();
 
     ListenerOperation<MouseEnterListener> onEnter();
+
+    Positiondc<?> getPosition();
 
     @Override
     default Type type() {

@@ -1,11 +1,10 @@
 package com.vanix.easygl.opengl.feature;
 
-import com.vanix.easygl.commons.Rectangle;
-import com.vanix.easygl.commons.SimpleRectangle;
+import com.vanix.easygl.commons.primitives.Rectanglei;
+import com.vanix.easygl.commons.primitives.RectangleiImpl;
 import com.vanix.easygl.core.graphics.Graphics;
 import com.vanix.easygl.core.graphics.feature.ScissorTest;
 import com.vanix.easygl.opengl.GLX;
-import com.vanix.easygl.opengl.feature.GlFeature;
 
 import java.nio.IntBuffer;
 
@@ -55,7 +54,7 @@ public class GlScissorTest extends GlFeature<ScissorTest> implements ScissorTest
     }
 
     @Override
-    public ScissorTest setBoxes(int first, Rectangle... boxes) {
+    public ScissorTest setBoxes(int first, Rectanglei... boxes) {
         IntBuffer buffer = IntBuffer.allocate(boxes.length << 2);
         for (var box : boxes) {
             buffer.put(box.getX()).put(box.getY()).put(box.getWidth()).put(box.getHeight());
@@ -78,7 +77,7 @@ public class GlScissorTest extends GlFeature<ScissorTest> implements ScissorTest
     }
 
     @Override
-    public ScissorTest setBoxAt(int index, Rectangle box) {
+    public ScissorTest setBoxAt(int index, Rectanglei box) {
         return setBoxAt(index, box.getX(), box.getY(), box.getWidth(), box.getHeight());
     }
 
@@ -90,18 +89,18 @@ public class GlScissorTest extends GlFeature<ScissorTest> implements ScissorTest
     }
 
     @Override
-    public Rectangle getBoxAt(int index) {
+    public Rectanglei<?> getBoxAt(int index) {
         int[] box = new int[4];
         GLX.glGetIntegeri_v(GLX.GL_SCISSOR_BOX, index, box);
         GLX.checkError();
-        return new SimpleRectangle(box);
+        return new RectangleiImpl().set(box);
     }
 
     @Override
-    public Rectangle getBox() {
+    public Rectanglei<?> getBox() {
         int[] box = new int[4];
         GLX.glGetIntegerv(GLX.GL_SCISSOR_BOX, box);
         GLX.checkError();
-        return new SimpleRectangle(box);
+        return new RectangleiImpl().set(box);
     }
 }

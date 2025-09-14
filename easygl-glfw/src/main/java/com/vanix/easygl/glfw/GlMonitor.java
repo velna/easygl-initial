@@ -1,8 +1,8 @@
 package com.vanix.easygl.glfw;
 
-import com.vanix.easygl.commons.Position;
-import com.vanix.easygl.commons.Rectangle;
 import com.vanix.easygl.commons.event.ListenerSupport;
+import com.vanix.easygl.commons.primitives.Positionic;
+import com.vanix.easygl.commons.primitives.Rectanglei;
 import com.vanix.easygl.core.AbstractHandle;
 import com.vanix.easygl.core.window.GammaRamp;
 import com.vanix.easygl.core.window.Monitor;
@@ -50,25 +50,25 @@ public class GlMonitor extends AbstractHandle implements Monitor {
     }
 
     @Override
-    public double getX() {
+    public int getX() {
         int[] x = new int[1];
         glfwGetMonitorPos(handle, x, null);
         return x[0];
     }
 
     @Override
-    public double getY() {
+    public int getY() {
         int[] y = new int[1];
         glfwGetMonitorPos(handle, null, y);
         return y[0];
     }
 
     @Override
-    public Position getPosition() {
+    public Positionic<?> getPosition() {
         int[] x = new int[1];
         int[] y = new int[1];
         glfwGetMonitorPos(handle, x, y);
-        return Position.of(x[0], y[0]);
+        return Positionic.of(x[0], y[0]);
     }
 
     @Override
@@ -85,13 +85,13 @@ public class GlMonitor extends AbstractHandle implements Monitor {
     }
 
     @Override
-    public Rectangle workArea() {
+    public Rectanglei<?> workArea() {
         int[] x = new int[1];
         int[] y = new int[1];
         int[] w = new int[1];
         int[] h = new int[1];
         glfwGetMonitorWorkarea(handle, x, y, w, h);
-        return Rectangle.of(x[0], y[0], w[0], h[0]);
+        return Rectanglei.of(x[0], y[0], w[0], h[0]);
     }
 
     @Override

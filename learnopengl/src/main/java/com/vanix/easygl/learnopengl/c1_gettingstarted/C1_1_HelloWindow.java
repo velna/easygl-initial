@@ -15,7 +15,7 @@ public class C1_1_HelloWindow {
              var graphics = Graphics.of(window)) {
             window.bind().inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE)
                     .subscribe((event) -> event.source().window().shouldClose(true));
-            graphics.viewPort(0, 0, window.frameBufferWidth(), window.frameBufferHeight());
+            graphics.viewport(0, 0, window.frameBufferWidth(), window.frameBufferHeight());
 
             while (!window.shouldClose()) {
                 window.swapBuffers().pollEvents();
