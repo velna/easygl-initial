@@ -6,6 +6,7 @@ import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.graphics.program.UniformBlock;
 import org.joml.*;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -48,6 +49,19 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
     }
 
     Program detach(Shader shader);
+
+    @Support(since = Version.GL30)
+    Program bindFragData(FrameInnerBuffer.DrawBuffer drawBuffer, String varyingOutVariableName);
+
+    @Support(since = Version.GL30)
+    @Nullable
+    FrameInnerBuffer.DrawBuffer getFragData(String varyingOutVariableName);
+
+    @Support(since = Version.GL32)
+    Program bindFragData(FrameInnerBuffer.DrawBuffer drawBuffer, String varyingOutVariableName, int index);
+
+    @Support(since = Version.GL32)
+    int getFragDataIndex(String varyingOutVariableName);
 
     Program link();
 
