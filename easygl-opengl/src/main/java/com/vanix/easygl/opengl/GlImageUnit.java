@@ -1,9 +1,13 @@
 package com.vanix.easygl.opengl;
 
+import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.graphics.Access;
 import com.vanix.easygl.core.graphics.ImageUnit;
 import com.vanix.easygl.core.graphics.InternalPixelFormat;
 import com.vanix.easygl.core.graphics.Texture;
+import org.lwjgl.system.MemoryStack;
+
+import java.nio.IntBuffer;
 
 public class GlImageUnit extends ImageUnit {
     public GlImageUnit(int index) {
@@ -13,6 +17,23 @@ public class GlImageUnit extends ImageUnit {
     @Override
     public ImageUnit bindTexture(Texture<?> texture, int level, boolean layered, int layer, Access access, InternalPixelFormat.Sized format) {
         GLX.glBindImageTexture(value, texture.intHandle(), level, layered, layer, access.value(), format.value());
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public ImageUnit bindTextures(Iterable<Texture<?>> textures) {
+        if (textures instanceof HandleArray<Texture<?>> handleArray) {
+            GLX.glBindImageTextures(value, handleArray.getHandles());
+        } else {
+            try (MemoryStack stack = MemoryStack.stackGet()) {
+                IntBuffer buffer = stack.mallocInt(MAX_IMAGE_UNITS);
+                for (var texture : textures) {
+                    buffer.put(texture.intHandle());
+                }
+                GLX.glBindImageTextures(value, buffer.flip());
+            }
+        }
         GLX.checkError();
         return this;
     }
