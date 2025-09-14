@@ -25,12 +25,12 @@
 | Vertices  | 100%               |
 | Vertex Arrays  | 100%               |
 | Vertex Attributes  | 100%               |
-| Vertex Post-Processing  | 80%                |
+| Vertex Post-Processing  | 100%               |
 | Rasterization  | 100%               |
-| Fragment Shaders  | 0%                 |
-| Compute Shaders  | 0%                 |
+| Fragment Shaders  | 100%               |
+| Compute Shaders  | 100%               |
 | Per-Fragment Operations  | 100%               |
-| Hints  | 0%                 |
+| Hints  | 100%               |
 | Whole Framebuffer  | 100%               |
 | Reading and Copying Pixels  | 100%               |
 | Debug Output  | 100%               |

@@ -3,10 +3,13 @@ package com.vanix.easygl.opengl;
 import com.vanix.easygl.commons.SimpleIntEnum;
 import com.vanix.easygl.commons.primitives.Rectanglef;
 import com.vanix.easygl.core.graphics.Viewport;
+import org.joml.Vector2d;
+import org.joml.Vector2i;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 public class GlViewport extends SimpleIntEnum implements Viewport {
 
@@ -21,13 +24,31 @@ public class GlViewport extends SimpleIntEnum implements Viewport {
     }
 
     @Override
-    public Viewport setDepthRange(double[] values) {
+    public Vector2d getDepthRange() {
+        try (MemoryStack stack = MemoryStack.stackGet()) {
+            DoubleBuffer buffer = stack.mallocDouble(2);
+            GLX.glGetDoublei_v(GLX.GL_DEPTH_RANGE, value, buffer);
+            return new Vector2d().set(buffer);
+        }
+    }
+
+    @Override
+    public Vector2i getDepthRangeMapped() {
+        try (MemoryStack stack = MemoryStack.stackGet()) {
+            IntBuffer buffer = stack.mallocInt(2);
+            GLX.glGetIntegeri_v(GLX.GL_DEPTH_RANGE, value, buffer);
+            return new Vector2i().set(buffer);
+        }
+    }
+
+    @Override
+    public Viewport setDepthRangeMulti(double[] values) {
         GLX.glDepthRangeArrayv(value, values);
         return this;
     }
 
     @Override
-    public Viewport setDepthRange(DoubleBuffer values) {
+    public Viewport setDepthRangeMulti(DoubleBuffer values) {
         GLX.glDepthRangeArrayv(value, values);
         return this;
     }
@@ -40,14 +61,14 @@ public class GlViewport extends SimpleIntEnum implements Viewport {
     }
 
     @Override
-    public Viewport set(float[] values) {
+    public Viewport setMulti(float[] values) {
         GLX.glViewportArrayv(value, values);
         GLX.checkError();
         return this;
     }
 
     @Override
-    public Viewport set(FloatBuffer values) {
+    public Viewport setMulti(FloatBuffer values) {
         GLX.glViewportArrayv(value, values);
         GLX.checkError();
         return this;
@@ -62,15 +83,4 @@ public class GlViewport extends SimpleIntEnum implements Viewport {
         }
     }
 
-    @Override
-    public float[] get(float[] values) {
-        GLX.glGetFloati_v(GLX.GL_VIEWPORT, value, values);
-        return values;
-    }
-
-    @Override
-    public FloatBuffer get(FloatBuffer values) {
-        GLX.glGetFloati_v(GLX.GL_VIEWPORT, value, values);
-        return values;
-    }
 }

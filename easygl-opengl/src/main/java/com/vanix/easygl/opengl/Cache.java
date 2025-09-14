@@ -31,6 +31,7 @@ public class Cache {
     public static final IntObjectMap<MinFilter> MinFilter = intObjectMapOf(MinFilter.class);
     public static final IntEnumCache<MagFilter> MagFilter = new IntEnumCache<>(MagFilter.class, 0xf);
     public static final IntEnumCache<Texture.Wrap> TextureWrap = new IntEnumCache<>(Texture.Wrap.class, 0xf);
+    public static final IntObjectMap<PixelFormat> PixelFormat = intObjectMapOf(PixelFormat.class);
     public static final IntObjectMap<InternalPixelFormat> InternalPixelFormatCache = internalPixelFormatCache();
     public static final IntEnumCache<Access> Access = new IntEnumCache<>(Access.class, 0xf);
 

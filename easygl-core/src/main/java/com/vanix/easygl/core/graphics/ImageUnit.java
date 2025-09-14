@@ -2,10 +2,12 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.commons.SimpleIntEnum;
 import com.vanix.easygl.commons.util.IndexedEnumCache;
+import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
 
+@Support(since = Version.GL42)
 public abstract class ImageUnit extends SimpleIntEnum {
-    public static final int MAX_IMAGE_UNITS = MetaSystem.Graphics.queryInt("MAX_IMAGE_UNITS");
+    public static final int MAX_IMAGE_UNITS = MetaSystem.Graphics.queryInt("GET.MAX_IMAGE_UNITS");
     private static final IndexedEnumCache<ImageUnit> cache = new IndexedEnumCache<>(MAX_IMAGE_UNITS, MetaHolder.ImageUnit::create);
     public static final ImageUnit U0 = of(0);
     public static final ImageUnit U1 = of(1);
@@ -28,12 +30,14 @@ public abstract class ImageUnit extends SimpleIntEnum {
         super(index);
     }
 
-
     public static ImageUnit of(int i) {
         return cache.valueOf(i);
     }
 
     public abstract ImageUnit bindTexture(Texture<?> texture, int level, boolean layered, int layer, Access access, InternalPixelFormat.Sized format);
+
+    @Support(since = Version.GL44)
+    public abstract ImageUnit bindTextures(Iterable<Texture<?>> textures);
 
     public abstract Texture<?> bindingTexture();
 

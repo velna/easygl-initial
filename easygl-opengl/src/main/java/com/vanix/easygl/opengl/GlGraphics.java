@@ -1,16 +1,15 @@
 package com.vanix.easygl.opengl;
 
-import com.vanix.easygl.commons.util.LazyList;
 import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.graphics.feature.*;
 import com.vanix.easygl.opengl.feature.*;
 import org.joml.Vector2f;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GlGraphics implements Graphics {
     static final GLCapabilities CAPABILITIES = GL.createCapabilities();
@@ -24,12 +23,7 @@ public class GlGraphics implements Graphics {
     private final PrimitiveRestart primitiveRestart = new GlPrimitiveRestart(this);
     private final Clipping clipping = new GlClipping(this);
     private final Debug debug;
-    private final List<Viewport> viewports = LazyList.lazyList(new ArrayList<>(), index -> {
-        if (index > Viewport.MaxViewports) {
-            throw new IllegalArgumentException();
-        }
-        return new GlViewport(index);
-    });
+    private final Viewport[] viewports = new Viewport[Viewport.MaxViewports];
 
     public GlGraphics() {
         if (CAPABILITIES.OpenGL43) {
@@ -47,7 +41,11 @@ public class GlGraphics implements Graphics {
 
     @Override
     public Viewport viewport(int index) {
-        return viewports.get(index);
+        var viewport = viewports[index];
+        if (viewport == null) {
+            viewports[index] = viewport = new GlViewport(index);
+        }
+        return viewport;
     }
 
     @Override
@@ -91,6 +89,44 @@ public class GlGraphics implements Graphics {
     @Override
     public Graphics provokingVertex(boolean first) {
         GLX.glProvokingVertex(first ? GLX.GL_FIRST_VERTEX_CONVENTION : GLX.GL_LAST_VERTEX_CONVENTION);
+        return this;
+    }
+
+    @Override
+    public Graphics dispatchCompute(int numGroupsX, int numGroupsY, int numGroupsZ) {
+        GLX.glDispatchCompute(numGroupsX, numGroupsY, numGroupsZ);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Graphics dispatchComputeIndirect(int numGroupsX, int numGroupsY, int numGroupsZ) {
+        try (MemoryStack stack = MemoryStack.stackGet()) {
+            var buffer = stack.mallocInt(3).put(numGroupsX).put(numGroupsY).put(numGroupsZ).clear();
+            GLX.glDispatchComputeIndirect(MemoryUtil.memAddress(buffer));
+            GLX.checkError();
+            return this;
+        }
+    }
+
+    @Override
+    public int getMaxComputeWorkGroupCountX() {
+        return GLX.glGetIntegeri(GLX.GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0);
+    }
+
+    @Override
+    public int getMaxComputeWorkGroupCountY() {
+        return GLX.glGetIntegeri(GLX.GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1);
+    }
+
+    @Override
+    public int getMaxComputeWorkGroupCountZ() {
+        return GLX.glGetIntegeri(GLX.GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2);
+    }
+
+    @Override
+    public Graphics hint(HintTarget target, HintMode mode) {
+        GLX.glHint(target.value(), mode.value());
         return this;
     }
 
@@ -142,6 +178,12 @@ public class GlGraphics implements Graphics {
     @Override
     public Graphics flush() {
         GLX.glFlush();
+        return this;
+    }
+
+    @Override
+    public Graphics awaitFinish() {
+        GLX.glFinish();
         return this;
     }
 

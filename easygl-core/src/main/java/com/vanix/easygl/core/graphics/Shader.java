@@ -1,6 +1,7 @@
 package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.Handle;
+import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 import java.io.IOException;
@@ -12,7 +13,13 @@ public interface Shader extends Handle {
     enum Type {
         Vertex("VERTEX_SHADER"),
         Geometry("GEOMETRY_SHADER"),
-        Fragment("FRAGMENT_SHADER");
+        Fragment("FRAGMENT_SHADER"),
+        @Support(since = Version.GL40)
+        TessControlShader("TESS_CONTROL_SHADER"),
+        @Support(since = Version.GL40)
+        TessEvaluationShader("TESS_EVALUATION_SHADER"),
+        @Support(since = Version.GL43)
+        ComputeShader("COMPUTE_SHADER");
 
         private final int value;
 

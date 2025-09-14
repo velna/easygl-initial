@@ -1,5 +1,6 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.meta.MetaSystem;
 
 public interface Texture2DMultiSample extends Texture<Texture2DMultiSample>,
@@ -24,4 +25,7 @@ public interface Texture2DMultiSample extends Texture<Texture2DMultiSample>,
         return MetaHolder.Texture2DMultiSample.create();
     }
 
+    static HandleArray<Texture2DMultiSample> of(int n) {
+        return MetaHolder.Texture2DMultiSample.createArray(n);
+    }
 }

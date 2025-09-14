@@ -44,6 +44,31 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
+    public Program bindFragData(FrameInnerBuffer.DrawBuffer drawBuffer, String varyingOutVariableName) {
+        GLX.glBindFragDataLocation(intHandle(), drawBuffer.value(), varyingOutVariableName);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public FrameInnerBuffer.DrawBuffer getFragData(String varyingOutVariableName) {
+        int location = GLX.glGetFragDataLocation(intHandle(), varyingOutVariableName);
+        return location < 0 ? null : FrameInnerBuffer.DrawBuffer.of(location);
+    }
+
+    @Override
+    public Program bindFragData(FrameInnerBuffer.DrawBuffer drawBuffer, String varyingOutVariableName, int index) {
+        GLX.glBindFragDataLocationIndexed(intHandle(), drawBuffer.value(), index, varyingOutVariableName);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public int getFragDataIndex(String varyingOutVariableName) {
+        return GLX.glGetFragDataIndex(intHandle(), varyingOutVariableName);
+    }
+
+    @Override
     public Program link() {
         int program = intHandle();
         GLX.glLinkProgram(program);

@@ -104,6 +104,12 @@ public interface GlQuery<T extends Query<T>> extends Query<T> {
             GLX.glBeginQueryIndexed(target, index, intHandle());
             return this;
         }
+
+        @Override
+        public IndexQuery end(int index) {
+            GLX.glEndQueryIndexed(target, index);
+            return this;
+        }
     }
 
     class GlTimerQuery extends AbstractGlQuery<TimerQuery> implements TimerQuery {
