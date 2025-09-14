@@ -48,6 +48,8 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
         return attach(type, Thread.currentThread().getContextClassLoader().getResourceAsStream(resource));
     }
 
+    ShaderArray getAttachedShaders();
+
     Program detach(Shader shader);
 
     @Support(since = Version.GL30)

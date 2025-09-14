@@ -23,7 +23,7 @@ public class GlBufferArray extends BufferArray {
     @Override
     public BufferArray bindRange(int first, long[] offsets, long[] sizes) {
         Buffer.Target target = getFirst().target();
-        try (MemoryStack stack = MemoryStack.stackGet()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             var offsetsPb = stack.mallocPointer(offsets.length).put(offsets);
             var sizesPb = stack.mallocPointer(sizes.length).put(sizes);
             GLX.glBindBuffersRange(target.value(), first, handles, offsetsPb, sizesPb);

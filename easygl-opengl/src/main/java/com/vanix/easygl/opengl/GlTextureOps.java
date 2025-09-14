@@ -809,7 +809,7 @@ public interface GlTextureOps<T> {
 
         @Override
         default Color borderColor() {
-            try (MemoryStack stack = MemoryStack.stackGet()) {
+            try (MemoryStack stack = MemoryStack.stackPush()) {
                 var buffer = stack.mallocFloat(4);
                 GLX.glGetTexParameterfv(targetValue(), GLX.GL_TEXTURE_BORDER_COLOR, buffer);
                 return new Color(buffer.get(0), buffer.get(1), buffer.get(2), buffer.get(3));

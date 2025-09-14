@@ -2,6 +2,7 @@ package com.vanix.easygl.commons;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,5 +29,15 @@ public interface IntEnum {
                 return values.toArray(ArrayUtils.newInstance(type, values.size()));
             });
         }
+    }
+
+    @Nullable
+    static <T extends IntEnum> T valueOf(Class<T> type, int value) {
+        for (var e : values(type)) {
+            if (e.value() == value) {
+                return e;
+            }
+        }
+        return null;
     }
 }

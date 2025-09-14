@@ -101,7 +101,7 @@ public class GlGraphics implements Graphics {
 
     @Override
     public Graphics dispatchComputeIndirect(int numGroupsX, int numGroupsY, int numGroupsZ) {
-        try (MemoryStack stack = MemoryStack.stackGet()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             var buffer = stack.mallocInt(3).put(numGroupsX).put(numGroupsY).put(numGroupsZ).clear();
             GLX.glDispatchComputeIndirect(MemoryUtil.memAddress(buffer));
             GLX.checkError();

@@ -26,7 +26,7 @@ public class GlImageUnit extends ImageUnit {
         if (textures instanceof HandleArray<Texture<?>> handleArray) {
             GLX.glBindImageTextures(value, handleArray.getHandles());
         } else {
-            try (MemoryStack stack = MemoryStack.stackGet()) {
+            try (MemoryStack stack = MemoryStack.stackPush()) {
                 IntBuffer buffer = stack.mallocInt(MAX_IMAGE_UNITS);
                 for (var texture : textures) {
                     buffer.put(texture.intHandle());

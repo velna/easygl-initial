@@ -124,7 +124,8 @@ public class GlMonitor extends AbstractHandle implements Monitor {
 
     @Override
     public Monitor gamma(GammaRamp gammaRamp) {
-        try (var ramp = GLFWGammaRamp.malloc(MemoryStack.stackGet())) {
+        try (var stack = MemoryStack.stackPush()) {
+            var ramp = GLFWGammaRamp.malloc(stack);
             GLFW.glfwSetGammaRamp(handle,
                     ramp.red(gammaRamp.red()).green(gammaRamp.green()).blue(gammaRamp.blue()).size(gammaRamp.size()));
             return this;

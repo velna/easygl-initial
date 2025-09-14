@@ -65,7 +65,7 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
                 handles[i++] = buffer.intHandle();
             }
         }
-        try (MemoryStack memoryStack = MemoryStack.stackGet()) {
+        try (MemoryStack memoryStack = MemoryStack.stackPush()) {
             var pointerBuffer = memoryStack.mallocPointer(offsets.length);
             pointerBuffer.put(offsets);
             GLX.glBindVertexBuffers(firstBindingIndex, handles, pointerBuffer.clear(), strides);
@@ -81,7 +81,7 @@ public class GlVertexArray extends AbstractBindable<BindTarget.Default<VertexArr
         for (int i = 0; i < buffers.length; i++) {
             handles[i] = buffers[i].intHandle();
         }
-        try (MemoryStack memoryStack = MemoryStack.stackGet()) {
+        try (MemoryStack memoryStack = MemoryStack.stackPush()) {
             var pointerBuffer = memoryStack.mallocPointer(offsets.length);
             pointerBuffer.put(offsets);
             GLX.glBindVertexBuffers(firstBindingIndex, handles, pointerBuffer.clear(), strides);

@@ -17,7 +17,8 @@ public class GlCursor extends AbstractHandle implements Cursor {
     }
 
     private static long createCursor(Image image, int xHotspot, int yHotspot) {
-        try (var glfwImage = GLFWImage.malloc(MemoryStack.stackGet())) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            var glfwImage = GLFWImage.malloc(stack);
             glfwImage.pixels(image.data())
                     .width(image.width())
                     .height(image.height());

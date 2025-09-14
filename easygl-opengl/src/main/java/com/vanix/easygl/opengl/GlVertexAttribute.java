@@ -122,7 +122,7 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
     @Override
     public long getPointer() {
         vao.assertBinding();
-        try (MemoryStack stack = MemoryStack.stackGet()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             var pointerBuffer = stack.mallocPointer(1);
             GLX.glGetVertexAttribPointerv(value, GLX.GL_VERTEX_ATTRIB_ARRAY_POINTER, pointerBuffer);
             return pointerBuffer.get(0);
@@ -806,7 +806,7 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
     @Override
     public Vector4f getFloat() {
         vao.assertBinding();
-        try (MemoryStack stack = MemoryStack.stackGet()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             var buffer = stack.mallocFloat(4);
             GLX.glGetVertexAttribfv(value, GLX.GL_CURRENT_VERTEX_ATTRIB, buffer);
             return new Vector4f(buffer);
@@ -816,7 +816,7 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
     @Override
     public Vector4d getFloatAsDouble() {
         vao.assertBinding();
-        try (MemoryStack stack = MemoryStack.stackGet()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             var buffer = stack.mallocDouble(4);
             GLX.glGetVertexAttribdv(value, GLX.GL_CURRENT_VERTEX_ATTRIB, buffer);
             return new Vector4d(buffer);
@@ -826,7 +826,7 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
     @Override
     public Vector4i getFloatAsInt() {
         vao.assertBinding();
-        try (MemoryStack stack = MemoryStack.stackGet()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             var buffer = stack.mallocInt(4);
             GLX.glGetVertexAttribiv(value, GLX.GL_CURRENT_VERTEX_ATTRIB, buffer);
             return new Vector4i(buffer);
@@ -836,7 +836,7 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
     @Override
     public Vector4i getInt() {
         vao.assertBinding();
-        try (MemoryStack stack = MemoryStack.stackGet()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             var buffer = stack.mallocInt(4);
             GLX.glGetVertexAttribIiv(value, GLX.GL_CURRENT_VERTEX_ATTRIB, buffer);
             return new Vector4i(buffer);
@@ -846,7 +846,7 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
     @Override
     public Vector4i getUnsignedInt() {
         vao.assertBinding();
-        try (MemoryStack stack = MemoryStack.stackGet()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             var buffer = stack.mallocInt(4);
             GLX.glGetVertexAttribIuiv(value, GLX.GL_CURRENT_VERTEX_ATTRIB, buffer);
             return new Vector4i(buffer);
@@ -856,7 +856,7 @@ public class GlVertexAttribute extends SimpleIntEnum implements VertexAttribute 
     @Override
     public Vector4d getDouble() {
         vao.assertBinding();
-        try (MemoryStack stack = MemoryStack.stackGet()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             var buffer = stack.mallocDouble(4);
             GLX.glGetVertexAttribLdv(value, GLX.GL_CURRENT_VERTEX_ATTRIB, buffer);
             return new Vector4d(buffer);

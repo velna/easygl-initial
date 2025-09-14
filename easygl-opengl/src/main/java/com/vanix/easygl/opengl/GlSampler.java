@@ -148,7 +148,7 @@ public class GlSampler extends AbstractHandle implements Sampler {
 
     @Override
     public Color borderColor() {
-        try (MemoryStack stack = MemoryStack.stackGet()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             var buffer = stack.mallocFloat(4);
             GLX.glGetSamplerParameterfv(intHandle(), GLX.GL_TEXTURE_BORDER_COLOR, buffer);
             return new Color(buffer.get(0), buffer.get(1), buffer.get(2), buffer.get(3));

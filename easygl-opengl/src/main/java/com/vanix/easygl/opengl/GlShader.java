@@ -1,5 +1,6 @@
 package com.vanix.easygl.opengl;
 
+import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.AbstractHandle;
 import com.vanix.easygl.core.graphics.GraphicsException;
 import com.vanix.easygl.core.graphics.Shader;
@@ -23,6 +24,9 @@ public class GlShader extends AbstractHandle implements Shader {
 
     public GlShader(int handle, Shader.Type type) {
         super(handle, GLX::glDeleteShader);
+        if (type == null) {
+            type = IntEnum.valueOf(Shader.Type.class, GLX.glGetShaderi(handle, GLX.GL_SHADER_TYPE));
+        }
         this.type = type;
     }
 
@@ -49,6 +53,9 @@ public class GlShader extends AbstractHandle implements Shader {
 
     @Override
     public String source() {
+        if (source == null) {
+            source = GLX.glGetShaderSource(intHandle());
+        }
         return source;
     }
 
@@ -56,13 +63,15 @@ public class GlShader extends AbstractHandle implements Shader {
     public Shader compile() throws GraphicsException {
         int shader = intHandle();
         GLX.glCompileShader(shader);
-        IntBuffer success = MemoryStack.stackMallocInt(1);
-        GLX.glGetShaderiv(shader, GLX.GL_COMPILE_STATUS, success);
-        if (success.get() == 0) {
-            String infoLog = GLX.glGetShaderInfoLog(shader);
-            throw new GraphicsException(String.format("error compile source %s: %s", source, infoLog));
+        try (var stack = MemoryStack.stackPush()) {
+            IntBuffer success = stack.mallocInt(1);
+            GLX.glGetShaderiv(shader, GLX.GL_COMPILE_STATUS, success);
+            if (success.get() == 0) {
+                String infoLog = GLX.glGetShaderInfoLog(shader);
+                throw new GraphicsException(String.format("error compile source %s: %s", source, infoLog));
+            }
+            return this;
         }
-        return this;
     }
 
 }

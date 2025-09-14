@@ -13,28 +13,28 @@
 
 详细API实现情况索引请[点击这里](OpengGLFunctionIndex.md)
 
-| 类别  | 完成度                |
-| ------------- |--------------------|
-| Synchronization  | 100%               |
-| Asynchronous Queries  | 100%               |
-| Timer Queries  | 100%               |
-| Buffer Objects  | 90%，除了一些查询方法       |
-| Shaders and Programs  | 95%                |
-| Textures and Samplers  | 100%               |
-| Framebuffer Objects  | 100%               |
-| Vertices  | 100%               |
-| Vertex Arrays  | 100%               |
-| Vertex Attributes  | 100%               |
-| Vertex Post-Processing  | 100%               |
-| Rasterization  | 100%               |
-| Fragment Shaders  | 100%               |
-| Compute Shaders  | 100%               |
-| Per-Fragment Operations  | 100%               |
-| Hints  | 100%               |
-| Whole Framebuffer  | 100%               |
-| Reading and Copying Pixels  | 100%               |
-| Debug Output  | 100%               |
-| State and State Requests  | 不直接实现，全部分散到相关接口方法中 |
+| 类别                         | 完成度                |
+|----------------------------|--------------------|
+| Synchronization            | 100%               |
+| Asynchronous Queries       | 100%               |
+| Timer Queries              | 100%               |
+| Buffer Objects             | 90%，除了一些查询方法       |
+| Shaders and Programs       | 95%                |
+| Textures and Samplers      | 100%               |
+| Framebuffer Objects        | 100%               |
+| Vertices                   | 100%               |
+| Vertex Arrays              | 100%               |
+| Vertex Attributes          | 100%               |
+| Vertex Post-Processing     | 100%               |
+| Rasterization              | 100%               |
+| Fragment Shaders           | 100%               |
+| Compute Shaders            | 100%               |
+| Per-Fragment Operations    | 100%               |
+| Hints                      | 100%               |
+| Whole Framebuffer          | 100%               |
+| Reading and Copying Pixels | 100%               |
+| Debug Output               | 100%               |
+| State and State Requests   | 不直接实现，全部分散到相关接口方法中 |
 
 
 ## 一个HelloTriangle的示例：
