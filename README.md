@@ -28,7 +28,7 @@
 | Vertex Post-Processing  | 100%               |
 | Rasterization  | 100%               |
 | Fragment Shaders  | 100%               |
-| Compute Shaders  | 0%                 |
+| Compute Shaders  | 100%               |
 | Per-Fragment Operations  | 100%               |
 | Hints  | 0%                 |
 | Whole Framebuffer  | 100%               |

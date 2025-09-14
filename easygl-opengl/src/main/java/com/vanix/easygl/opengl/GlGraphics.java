@@ -6,6 +6,8 @@ import com.vanix.easygl.opengl.feature.*;
 import org.joml.Vector2f;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLCapabilities;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
 
@@ -88,6 +90,38 @@ public class GlGraphics implements Graphics {
     public Graphics provokingVertex(boolean first) {
         GLX.glProvokingVertex(first ? GLX.GL_FIRST_VERTEX_CONVENTION : GLX.GL_LAST_VERTEX_CONVENTION);
         return this;
+    }
+
+    @Override
+    public Graphics dispatchCompute(int numGroupsX, int numGroupsY, int numGroupsZ) {
+        GLX.glDispatchCompute(numGroupsX, numGroupsY, numGroupsZ);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public Graphics dispatchComputeIndirect(int numGroupsX, int numGroupsY, int numGroupsZ) {
+        try (MemoryStack stack = MemoryStack.stackGet()) {
+            var buffer = stack.mallocInt(3).put(numGroupsX).put(numGroupsY).put(numGroupsZ).clear();
+            GLX.glDispatchComputeIndirect(MemoryUtil.memAddress(buffer));
+            GLX.checkError();
+            return this;
+        }
+    }
+
+    @Override
+    public int getMaxComputeWorkGroupCountX() {
+        return GLX.glGetIntegeri(GLX.GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0);
+    }
+
+    @Override
+    public int getMaxComputeWorkGroupCountY() {
+        return GLX.glGetIntegeri(GLX.GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1);
+    }
+
+    @Override
+    public int getMaxComputeWorkGroupCountZ() {
+        return GLX.glGetIntegeri(GLX.GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2);
     }
 
     @Override

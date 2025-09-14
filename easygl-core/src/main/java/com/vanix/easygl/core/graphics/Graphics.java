@@ -41,6 +41,16 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
 
     Graphics provokingVertex(boolean first);
 
+    Graphics dispatchCompute(int numGroupsX, int numGroupsY, int numGroupsZ);
+
+    Graphics dispatchComputeIndirect(int numGroupsX, int numGroupsY, int numGroupsZ);
+
+    int getMaxComputeWorkGroupCountX();
+
+    int getMaxComputeWorkGroupCountY();
+
+    int getMaxComputeWorkGroupCountZ();
+
     //region Features
     Clipping clipDistances();
 
