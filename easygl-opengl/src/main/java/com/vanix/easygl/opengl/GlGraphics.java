@@ -182,6 +182,12 @@ public class GlGraphics implements Graphics {
     }
 
     @Override
+    public Graphics awaitFinish() {
+        GLX.glFinish();
+        return this;
+    }
+
+    @Override
     public Graphics releaseShaderCompiler() {
         GLX.glReleaseShaderCompiler();
         return this;

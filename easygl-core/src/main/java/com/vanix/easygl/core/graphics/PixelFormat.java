@@ -1,9 +1,10 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
 
-public enum PixelFormat {
+public enum PixelFormat implements IntEnum {
     @Support(since = Version.GL44)
     STENCIL_INDEX("STENCIL_INDEX"),
     DEPTH_COMPONENT("DEPTH_COMPONENT", InternalPixelFormat.Base.DEPTH_COMPONENT),
@@ -38,6 +39,7 @@ public enum PixelFormat {
         this.internalPixelFormat = internalPixelFormat;
     }
 
+    @Override
     public int value() {
         return value;
     }

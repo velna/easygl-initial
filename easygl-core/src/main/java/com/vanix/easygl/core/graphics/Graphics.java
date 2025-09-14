@@ -34,6 +34,8 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
 
     Graphics flush();
 
+    Graphics awaitFinish();
+
     @Support(since = Version.GL41)
     Graphics releaseShaderCompiler();
 

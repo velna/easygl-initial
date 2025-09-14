@@ -114,6 +114,8 @@ public interface Query<T extends Query<T>> extends Handle {
 
     interface IndexQuery extends Query<IndexQuery> {
         IndexQuery begin(int index);
+
+        IndexQuery end(int index);
     }
 
     interface TimerQuery extends Query<TimerQuery> {

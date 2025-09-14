@@ -104,14 +104,14 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
     }
 
     @Support(since = Version.GL30)
-    default T blit(Rectanglei src, Rectanglei dst, FrameInnerBuffer.Mask buffers, MagFilter filter) {
+    default T blit(Rectanglei<?> src, Rectanglei<?> dst, FrameInnerBuffer.Mask buffers, MagFilter filter) {
         return blit(src.getX(), src.getY(), src.getX() + src.getWidth(), src.getY() + src.getHeight(),
                 dst.getX(), dst.getY(), dst.getX() + dst.getWidth(), dst.getY() + dst.getHeight(),
                 buffers, filter);
     }
 
     @Support(since = Version.GL30)
-    default T blit(Rectanglei rect, FrameInnerBuffer.Mask buffers, MagFilter filter) {
+    default T blit(Rectanglei<?> rect, FrameInnerBuffer.Mask buffers, MagFilter filter) {
         return blit(rect, rect, buffers, filter);
     }
 
@@ -120,6 +120,26 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
     Status getStatus();
 
     T checkStatus() throws GraphicsException;
+
+    //region Parameters
+    @Support(since = Version.GL43)
+    boolean isDoubleBufferSupported();
+
+    @Support(since = Version.GL43)
+    PixelFormat getPreferredPixelFormat();
+
+    @Support(since = Version.GL43)
+    DataType getPreferredPixelDataType();
+
+    @Support(since = Version.GL43)
+    int getCoverageMaskSize();
+
+    @Support(since = Version.GL43)
+    int numSampleBuffers();
+
+    @Support(since = Version.GL43)
+    boolean isStereoBufferSupported();
+    //endregion
 
     //region Reading and Copying Pixels
     T selectReadBuffer(FrameInnerBuffer.ReadBuffer readBuffer);
@@ -213,6 +233,9 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
 
     //region Fine Control of Buffer Updates
     T setColorMask(boolean read, boolean green, boolean blue, boolean alpha);
+
+    @Support(since = Version.GL30)
+    T setColorMask(FrameInnerBuffer.DrawBuffer drawBuffer, boolean read, boolean green, boolean blue, boolean alpha);
 
     T setDepthMask(boolean flag);
 

@@ -179,6 +179,12 @@ public abstract class GlBaseFrameBuffer<T extends BaseFrameBuffer<T>>
     }
 
     @Override
+    public T setColorMask(FrameInnerBuffer.DrawBuffer drawBuffer, boolean read, boolean green, boolean blue, boolean alpha) {
+        GLX.glColorMaski(drawBuffer.value(), read, green, blue, alpha);
+        return self();
+    }
+
+    @Override
     public T setDepthMask(boolean flag) {
         GLX.glDepthMask(flag);
         return self();
@@ -272,5 +278,41 @@ public abstract class GlBaseFrameBuffer<T extends BaseFrameBuffer<T>>
             throw new GraphicsException(Cache.FrameBufferStatus.get(status).name());
         }
         return self();
+    }
+
+    @Override
+    public boolean isDoubleBufferSupported() {
+        assertBinding();
+        return GLX.glGetFramebufferParameteri(target.value(), GLX.GL_DOUBLEBUFFER) == GLX.GL_TRUE;
+    }
+
+    @Override
+    public PixelFormat getPreferredPixelFormat() {
+        assertBinding();
+        return Cache.PixelFormat.get(GLX.glGetFramebufferParameteri(target.value(), GLX.GL_IMPLEMENTATION_COLOR_READ_FORMAT));
+    }
+
+    @Override
+    public DataType getPreferredPixelDataType() {
+        assertBinding();
+        return Cache.DataType.get(GLX.glGetFramebufferParameteri(target.value(), GLX.GL_IMPLEMENTATION_COLOR_READ_TYPE));
+    }
+
+    @Override
+    public int getCoverageMaskSize() {
+        assertBinding();
+        return GLX.glGetFramebufferParameteri(target.value(), GLX.GL_SAMPLES);
+    }
+
+    @Override
+    public int numSampleBuffers() {
+        assertBinding();
+        return GLX.glGetFramebufferParameteri(target.value(), GLX.GL_SAMPLE_BUFFERS);
+    }
+
+    @Override
+    public boolean isStereoBufferSupported() {
+        assertBinding();
+        return GLX.glGetFramebufferParameteri(target.value(), GLX.GL_STEREO) == GLX.GL_TRUE;
     }
 }
