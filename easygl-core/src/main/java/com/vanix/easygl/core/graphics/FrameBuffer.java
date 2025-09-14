@@ -8,6 +8,21 @@ public interface FrameBuffer extends BaseFrameBuffer<FrameBuffer> {
 
     FrameBuffer selectDrawBuffer(FrameInnerBuffer.ColorBuffer colorBuffer);
 
+    @Support(since = Version.GL30)
+    FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture1DArray texture1DArray, int level, int layer);
+
+    @Support(since = Version.GL30)
+    FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture2DArray texture2DArray, int level, int layer);
+
+    @Support(since = Version.GL30)
+    FrameBuffer attach(FrameInnerBuffer.Attachment attachment, TextureCubeMapArray textureCubeMapArray, int level, int layer);
+
+    @Support(since = Version.GL30)
+    FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture2DMultiSampleArray texture2DMultiSampleArray, int level, int layer);
+
+    @Support(since = Version.GL30)
+    FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture3D texture3D, int level, int layer);
+
     @Support(since = Version.GL43)
     FrameBuffer invalidate(Target<FrameBuffer> target, int x, int y, int width, int height, FrameInnerBuffer.Attachment attachment);
 

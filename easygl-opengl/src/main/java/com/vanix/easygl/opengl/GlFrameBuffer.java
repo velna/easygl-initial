@@ -1,7 +1,6 @@
 package com.vanix.easygl.opengl;
 
-import com.vanix.easygl.core.graphics.FrameBuffer;
-import com.vanix.easygl.core.graphics.FrameInnerBuffer;
+import com.vanix.easygl.core.graphics.*;
 
 public class GlFrameBuffer extends GlBaseFrameBuffer<FrameBuffer> implements FrameBuffer {
 
@@ -17,6 +16,38 @@ public class GlFrameBuffer extends GlBaseFrameBuffer<FrameBuffer> implements Fra
     public FrameBuffer selectDrawBuffer(FrameInnerBuffer.ColorBuffer colorBuffer) {
         GLX.glDrawBuffer(colorBuffer.value());
         return this;
+    }
+
+    private FrameBuffer attach0(FrameInnerBuffer.Attachment attachment, Texture<?> texture, int level, int layer) {
+        assertBinding();
+        GLX.glFramebufferTextureLayer(target.value(), attachment.value(), texture.intHandle(), level, layer);
+        GLX.checkError();
+        return this;
+    }
+
+    @Override
+    public FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture1DArray texture, int level, int layer) {
+        return attach0(attachment, texture, level, layer);
+    }
+
+    @Override
+    public FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture2DArray texture, int level, int layer) {
+        return attach0(attachment, texture, level, layer);
+    }
+
+    @Override
+    public FrameBuffer attach(FrameInnerBuffer.Attachment attachment, TextureCubeMapArray texture, int level, int layer) {
+        return attach0(attachment, texture, level, layer);
+    }
+
+    @Override
+    public FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture2DMultiSampleArray texture, int level, int layer) {
+        return attach0(attachment, texture, level, layer);
+    }
+
+    @Override
+    public FrameBuffer attach(FrameInnerBuffer.Attachment attachment, Texture3D texture, int level, int layer) {
+        return attach0(attachment, texture, level, layer);
     }
 
     @Override
