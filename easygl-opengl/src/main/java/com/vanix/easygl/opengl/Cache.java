@@ -24,6 +24,7 @@ public class Cache {
     public static final IntEnumCache<StencilTest.Op> StencilTestOp = new IntEnumCache<>(StencilTest.Op.class, 1, 0xf);
     public static final IntEnumCache<Debug.Source> DebugSource = new IntEnumCache<>(Debug.Source.class, 0xf);
     public static final IntEnumCache<Debug.Type> DebugType = new IntEnumCache<>(Debug.Type.class, 0xf);
+    public static final IntEnumCache<Buffer.DataUsage> BufferDataUsage = new IntEnumCache<>(Buffer.DataUsage.class, 0xf);
     public static final IntEnumCache<Debug.Severity> DebugSeverity = new IntEnumCache<>(Debug.Severity.class, 0xf);
     public static final IntObjectMap<FrameInnerBuffer.ReadBuffer> FrameReadBuffer = intObjectMapOf(FrameInnerBuffer.ReadBuffer.class);
     public static final IntObjectMap<BaseFrameBuffer.Status> FrameBufferStatus = intObjectMapOf(BaseFrameBuffer.Status.class);

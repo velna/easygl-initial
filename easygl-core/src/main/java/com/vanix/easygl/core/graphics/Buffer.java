@@ -12,97 +12,6 @@ import java.nio.*;
 
 public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffer> {
 
-    enum Target implements BindTarget<Target, Buffer>, IntEnum {
-        Array("ARRAY_BUFFER"),
-        AtomicCounter("ATOMIC_COUNTER_BUFFER"),
-        CopyRead("COPY_READ_BUFFER"),
-        CopyWrite("COPY_WRITE_BUFFER"),
-        DispatchIndirect("DISPATCH_INDIRECT_BUFFER"),
-        DrawIndirect("DRAW_INDIRECT_BUFFER"),
-        ElementArray("ELEMENT_ARRAY_BUFFER"),
-        PixelPack("PIXEL_PACK_BUFFER"),
-        PixelUnpack("PIXEL_UNPACK_BUFFER"),
-        Query("QUERY_BUFFER"),
-        ShaderStorage("SHADER_STORAGE_BUFFER"),
-        Texture("TEXTURE_BUFFER"),
-        TransformFeedback("TRANSFORM_FEEDBACK_BUFFER"),
-        Uniform("UNIFORM_BUFFER");
-
-        final int value;
-
-        private final BindingState<Target, Buffer> state;
-
-        Target(String id) {
-            this.value = MetaSystem.Graphics.queryInt(id);
-            state = MetaHolder.Buffer.newBindingState(name());
-        }
-
-        @Override
-        public int value() {
-            return value;
-        }
-
-        @Override
-        public BindingState<Target, Buffer> state() {
-            return state;
-        }
-
-    }
-
-    enum DataUsage implements IntEnum {
-        StreamDraw("STREAM_DRAW"),
-        StreamRead("STREAM_READ"),
-        StreamCopy("STREAM_COPY"),
-        StaticDraw("STATIC_DRAW"),
-        StaticRead("STATIC_READ"),
-        StaticCopy("STATIC_COPY"),
-        DynamicDraw("DYNAMIC_DRAW"),
-        DynamicRead("DYNAMIC_READ"),
-        DynamicCopy("DYNAMIC_COPY");
-
-        final int value;
-
-        DataUsage(String id) {
-            this.value = MetaSystem.Graphics.queryInt(id);
-        }
-
-        @Override
-        public int value() {
-            return value;
-        }
-    }
-
-    enum StorageBits implements IntEnum {
-        Dynamic("DYNAMIC_STORAGE_BIT"),
-        Client("CLIENT_STORAGE_BIT"),
-        Read("MAP_READ_BIT"),
-        Write("MAP_WRITE_BIT"),
-        @Support(since = Version.GL44)
-        PersistentRead("MAP_PERSISTENT_BIT", Read),
-        @Support(since = Version.GL44)
-        PersistentWrite("MAP_PERSISTENT_BIT", Write),
-        @Support(since = Version.GL44)
-        Coherent("MAP_COHERENT_BIT", "MAP_PERSISTENT_BIT");
-        private final int value;
-
-        StorageBits(String id, StorageBits ma2) {
-            this.value = MetaSystem.Graphics.queryInt(id) | ma2.value;
-        }
-
-        StorageBits(String id1, String id2) {
-            this.value = MetaSystem.Graphics.queryInt(id1) | MetaSystem.Graphics.queryInt(id2);
-        }
-
-        StorageBits(String id) {
-            this.value = MetaSystem.Graphics.queryInt(id);
-        }
-
-        @Override
-        public int value() {
-            return value;
-        }
-    }
-
     DataType dataType();
 
     default int count() {
@@ -111,7 +20,7 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
 
     //region Set buffer data
     //region Set buffer data
-    Buffer realloc(DataUsage usage, int size);
+    Buffer realloc(DataUsage usage, long size);
 
     Buffer realloc(DataUsage usage, DoubleBuffer data);
 
@@ -281,9 +190,7 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
     @Support(since = Version.GL30)
     Buffer flushMappedRange(long offset, long size);
 
-    ByteBuffer map(MapAccessBits access);
-
-    ByteBuffer map(BitSet<MapAccessBits> access);
+    ByteBuffer map(Access access);
 
     boolean unmap();
     //endregion
@@ -340,12 +247,123 @@ public interface Buffer extends Handle, MultiTargetBindable<Buffer.Target, Buffe
 
     <T> Mapping<T> createMapping(TypeReferenceBean<T> typeReferenceBean, long offset);
 
+    //region Parameters
+    Access getMapAccess();
+
+    BitSet<MapAccessBits> getMapAccessBits();
+
+    boolean isImmutable();
+
+    boolean isMapped();
+
+    long getMappedSize();
+
+    long getMappedOffset();
+
+    BitSet<StorageBits> getStorageBits();
+
+    DataUsage getDataUsage();
+
+    ByteBuffer getMappedBuffer();
+
+    //endregion
     static Buffer of(DataType dataType) {
         return MetaHolder.Buffer.create(dataType);
     }
 
     static BufferArray of(int n, DataType dataType) {
         return (BufferArray) MetaHolder.Buffer.createArray(n, dataType);
+    }
+
+    enum Target implements BindTarget<Target, Buffer>, IntEnum {
+        Array("ARRAY_BUFFER"),
+        AtomicCounter("ATOMIC_COUNTER_BUFFER"),
+        CopyRead("COPY_READ_BUFFER"),
+        CopyWrite("COPY_WRITE_BUFFER"),
+        DispatchIndirect("DISPATCH_INDIRECT_BUFFER"),
+        DrawIndirect("DRAW_INDIRECT_BUFFER"),
+        ElementArray("ELEMENT_ARRAY_BUFFER"),
+        PixelPack("PIXEL_PACK_BUFFER"),
+        PixelUnpack("PIXEL_UNPACK_BUFFER"),
+        Query("QUERY_BUFFER"),
+        ShaderStorage("SHADER_STORAGE_BUFFER"),
+        Texture("TEXTURE_BUFFER"),
+        TransformFeedback("TRANSFORM_FEEDBACK_BUFFER"),
+        Uniform("UNIFORM_BUFFER");
+
+        final int value;
+
+        private final BindingState<Target, Buffer> state;
+
+        Target(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
+            state = MetaHolder.Buffer.newBindingState(name());
+        }
+
+        @Override
+        public int value() {
+            return value;
+        }
+
+        @Override
+        public BindingState<Target, Buffer> state() {
+            return state;
+        }
+
+    }
+
+    enum DataUsage implements IntEnum {
+        StreamDraw("STREAM_DRAW"),
+        StreamRead("STREAM_READ"),
+        StreamCopy("STREAM_COPY"),
+        StaticDraw("STATIC_DRAW"),
+        StaticRead("STATIC_READ"),
+        StaticCopy("STATIC_COPY"),
+        DynamicDraw("DYNAMIC_DRAW"),
+        DynamicRead("DYNAMIC_READ"),
+        DynamicCopy("DYNAMIC_COPY");
+
+        final int value;
+
+        DataUsage(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
+        }
+
+        @Override
+        public int value() {
+            return value;
+        }
+    }
+
+    enum StorageBits implements IntEnum {
+        Dynamic("DYNAMIC_STORAGE_BIT"),
+        Client("CLIENT_STORAGE_BIT"),
+        Read("MAP_READ_BIT"),
+        Write("MAP_WRITE_BIT"),
+        @Support(since = Version.GL44)
+        PersistentRead("MAP_PERSISTENT_BIT", Read),
+        @Support(since = Version.GL44)
+        PersistentWrite("MAP_PERSISTENT_BIT", Write),
+        @Support(since = Version.GL44)
+        Coherent("MAP_COHERENT_BIT", "MAP_PERSISTENT_BIT");
+        private final int value;
+
+        StorageBits(String id, StorageBits ma2) {
+            this.value = MetaSystem.Graphics.queryInt(id) | ma2.value;
+        }
+
+        StorageBits(String id1, String id2) {
+            this.value = MetaSystem.Graphics.queryInt(id1) | MetaSystem.Graphics.queryInt(id2);
+        }
+
+        StorageBits(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
+        }
+
+        @Override
+        public int value() {
+            return value;
+        }
     }
 
     interface BindingPoint extends IntEnum {

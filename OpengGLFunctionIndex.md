@@ -206,10 +206,10 @@
 | glGetAttribLocation                            |                                                                                                                                                               |
 | glGetBooleani_v                                |                                                                                                                                                               |
 | glGetBooleanv                                  |                                                                                                                                                               |
-| glGetBufferParameter                           | X                                                                                                                                                             |
-| glGetBufferParameteri64v                       | X                                                                                                                                                             |
-| glGetBufferParameteriv                         | X                                                                                                                                                             |
-| glGetBufferPointerv                            | X                                                                                                                                                             |
+| glGetBufferParameter                           |                                                                                                                                                               |
+| glGetBufferParameteri64v                       |                                                                                                                                                               |
+| glGetBufferParameteriv                         |                                                                                                                                                               |
+| glGetBufferPointerv                            |                                                                                                                                                               |
 | glGetBufferSubData                             |                                                                                                                                                               |
 | glGetCompressedTexImage                        |                                                                                                                                                               |
 | glGetCompressedTextureImage                    |                                                                                                                                                               |
@@ -565,7 +565,7 @@
 | glUniformSubroutines                           | X                                                                                                                                                             |
 | glUniformSubroutinesuiv                        | X                                                                                                                                                             |
 | glUnmapBuffer                                  |                                                                                                                                                               |
-| glUnmapNamedBuffer                             | X                                                                                                                                                             |
+| glUnmapNamedBuffer                             | X DSA                                                                                                                                                         |
 | glUseProgram                                   |                                                                                                                                                               |
 | glUseProgramStages                             |                                                                                                                                                               |
 | glValidateProgram                              |                                                                                                                                                               |
