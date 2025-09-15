@@ -1,5 +1,6 @@
 package com.vanix.easygl.opengl;
 
+import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.graphics.feature.*;
 import com.vanix.easygl.opengl.feature.*;
@@ -128,6 +129,11 @@ public class GlGraphics implements Graphics {
     public Graphics hint(HintTarget target, HintMode mode) {
         GLX.glHint(target.value(), mode.value());
         return this;
+    }
+
+    @Override
+    public ResetStatus getRestStatus() {
+        return IntEnum.valueOf(ResetStatus.class, GLX.glGetGraphicsResetStatus());
     }
 
     @Override

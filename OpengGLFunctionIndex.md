@@ -224,9 +224,9 @@
 | glGetFragDataLocation                          |                                                                                    |
 | glGetFramebufferAttachmentParameter            | X                                                                                  |
 | glGetFramebufferAttachmentParameteriv          | X                                                                                  |
-| glGetFramebufferParameter                      | X                                                                                  |
-| glGetFramebufferParameteriv                    | X                                                                                  |
-| glGetGraphicsResetStatus                       | X                                                                                  |
+| glGetFramebufferParameter                      | FrameBuffer.getXXX()                                                               |
+| glGetFramebufferParameteriv                    | FrameBuffer.getXXX()                                                               |
+| glGetGraphicsResetStatus                       | Graphics.getRestStatus()                                                           |
 | glGetInteger64i_v                              |                                                                                    |
 | glGetInteger64v                                |                                                                                    |
 | glGetIntegeri_v                                |                                                                                    |
