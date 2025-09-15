@@ -13,6 +13,7 @@ import com.vanix.easygl.core.graphics.program.UniformBlock;
 import lombok.EqualsAndHashCode;
 import org.eclipse.collections.api.factory.primitive.IntObjectMaps;
 import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.*;
@@ -21,7 +22,7 @@ import java.util.function.IntConsumer;
 public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer> implements Buffer {
     private static final MutableIntObjectMap<Buffer> BUFFERS = IntObjectMaps.mutable.of();
     private final DataType dataType;
-    private long sizeInBytes;
+    private Long sizeInBytes;
 
     protected GlBuffer(int handle, DataType dataType) {
         super(handle, (IntConsumer) GLX::glDeleteBuffers);
@@ -52,7 +53,7 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
         void accept(int target, T data, int usage);
     }
 
-    private <T> Buffer realloc(ReallocFunction<T> reallocFn, DataUsage usage, T data, int dataBytes) {
+    private <T> Buffer realloc(ReallocFunction<T> reallocFn, DataUsage usage, T data, long dataBytes) {
         assertBinding();
         reallocFn.accept(target.value(), data, usage.value());
         GLX.checkError();
@@ -61,7 +62,7 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
     }
 
     @Override
-    public Buffer realloc(DataUsage usage, int size) {
+    public Buffer realloc(DataUsage usage, long size) {
         GLX.glBufferData(target.value(), size, usage.value());
         sizeInBytes = size;
         return this;
@@ -188,7 +189,7 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
         void accept(int target, T data, int flags);
     }
 
-    private <T> Buffer storage(StorageFunction<T> storageFn, T data, int dataBytes, int flags) {
+    private <T> Buffer storage(StorageFunction<T> storageFn, T data, long dataBytes, int flags) {
         assertBinding();
         storageFn.accept(target.value(), data, flags);
         GLX.checkError();
@@ -405,15 +406,7 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
     }
 
     @Override
-    public ByteBuffer map(MapAccessBits access) {
-        assertBinding();
-        var ret = GLX.glMapBuffer(target.value(), access.value());
-        GLX.checkError();
-        return ret;
-    }
-
-    @Override
-    public ByteBuffer map(BitSet<MapAccessBits> access) {
+    public ByteBuffer map(Access access) {
         assertBinding();
         var ret = GLX.glMapBuffer(target.value(), access.value());
         GLX.checkError();
@@ -533,7 +526,64 @@ public class GlBuffer extends AbstractMultiTargetBindable<Buffer.Target, Buffer>
 
     @Override
     public long size() {
+        if (sizeInBytes == null) {
+            assertBinding();
+            sizeInBytes = GLX.glGetBufferParameteri64(target.value(), GLX.GL_BUFFER_SIZE);
+        }
         return sizeInBytes;
+    }
+
+    @Override
+    public Access getMapAccess() {
+        assertBinding();
+        return Cache.Access.valueOf(GLX.glGetBufferParameteri(target.value(), GLX.GL_BUFFER_ACCESS));
+    }
+
+    @Override
+    public BitSet<MapAccessBits> getMapAccessBits() {
+        assertBinding();
+        return BitSet.<MapAccessBits>of(MapAccessBits::value).set(GLX.glGetBufferParameteri(target.value(), GLX.GL_BUFFER_ACCESS_FLAGS));
+    }
+
+    @Override
+    public boolean isImmutable() {
+        return GLX.glGetBufferParameteri(target.value(), GLX.GL_BUFFER_IMMUTABLE_STORAGE) == GLX.GL_TRUE;
+    }
+
+    @Override
+    public boolean isMapped() {
+        return GLX.glGetBufferParameteri(target.value(), GLX.GL_BUFFER_MAPPED) == GLX.GL_TRUE;
+    }
+
+    @Override
+    public long getMappedSize() {
+        return GLX.glGetBufferParameteri64(target.value(), GLX.GL_BUFFER_MAP_LENGTH);
+    }
+
+    @Override
+    public long getMappedOffset() {
+        return GLX.glGetBufferParameteri64(target.value(), GLX.GL_BUFFER_MAP_OFFSET);
+    }
+
+    @Override
+    public BitSet<StorageBits> getStorageBits() {
+        return BitSet.<StorageBits>of(StorageBits::value).set(GLX.glGetBufferParameteri(target.value(), GLX.GL_BUFFER_STORAGE_FLAGS));
+    }
+
+    @Override
+    public DataUsage getDataUsage() {
+        return Cache.BufferDataUsage.valueOf(GLX.glGetBufferParameteri(target.value(), GLX.GL_BUFFER_USAGE));
+    }
+
+    @Override
+    public ByteBuffer getMappedBuffer() {
+        assertBinding();
+        try (var stack = MemoryStack.stackPush()) {
+            var pointerBuffer = stack.mallocPointer(1);
+            GLX.glGetBufferPointerv(target.value(), GLX.GL_BUFFER_MAP_POINTER, pointerBuffer);
+            long address = pointerBuffer.get(0);
+            return address == MemoryUtil.NULL ? null : MemoryUtil.memByteBuffer(address, (int) size());
+        }
     }
 
     @Override

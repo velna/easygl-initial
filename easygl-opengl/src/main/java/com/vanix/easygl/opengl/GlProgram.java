@@ -14,6 +14,8 @@ import org.lwjgl.system.MemoryUtil;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -34,6 +36,20 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
         GLX.glAttachShader(intHandle(), shader.intHandle());
         GLX.checkError();
         return self();
+    }
+
+    @Override
+    public ShaderArray getAttachedShaders() {
+        int size = GLX.glGetProgrami(intHandle(), GLX.GL_ATTACHED_SHADERS);
+        try (var stack = MemoryStack.stackPush()) {
+            var buffer = stack.mallocInt(size);
+            GLX.glGetAttachedShaders(intHandle(), null, buffer);
+            List<Shader> shaders = new ArrayList<>(size);
+            while (buffer.hasRemaining()) {
+                shaders.add(new GlShader(buffer.get(), null));
+            }
+            return new GlShaderArray(shaders);
+        }
     }
 
     @Override
@@ -72,13 +88,15 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     public Program link() {
         int program = intHandle();
         GLX.glLinkProgram(program);
-        IntBuffer success = MemoryStack.stackMallocInt(1);
-        GL20.glGetProgramiv(program, GL20.GL_LINK_STATUS, success);
-        if (success.get() == 0) {
-            String infoLog = GL20.glGetProgramInfoLog(program);
-            throw new GraphicsException("error link program: " + infoLog);
+        try (var stack = MemoryStack.stackPush()) {
+            IntBuffer success = stack.mallocInt(1);
+            GL20.glGetProgramiv(program, GL20.GL_LINK_STATUS, success);
+            if (success.get() == 0) {
+                String infoLog = GL20.glGetProgramInfoLog(program);
+                throw new GraphicsException("error link program: " + infoLog);
+            }
+            return self();
         }
-        return self();
     }
 
     @Override
@@ -634,7 +652,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
 
     @Override
     public Variable getActiveVertexAttribute(VertexAttribute vertexAttribute) {
-        try (MemoryStack stack = MemoryStack.stackGet()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer lengthBuffer = stack.mallocInt(1);
             IntBuffer sizeBuffer = stack.mallocInt(1);
             IntBuffer typeBuffer = stack.mallocInt(1);
@@ -659,7 +677,7 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
 
     @Override
     public Variable getTransformFeedbackVarying(int varyingsIndex) {
-        try (MemoryStack stack = MemoryStack.stackGet()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer lengthBuffer = stack.mallocInt(1);
             IntBuffer sizeBuffer = stack.mallocInt(1);
             IntBuffer typeBuffer = stack.mallocInt(1);

@@ -809,7 +809,7 @@ public interface GlTextureOps<T> {
 
         @Override
         default Color borderColor() {
-            try (MemoryStack stack = MemoryStack.stackGet()) {
+            try (MemoryStack stack = MemoryStack.stackPush()) {
                 var buffer = stack.mallocFloat(4);
                 GLX.glGetTexParameterfv(targetValue(), GLX.GL_TEXTURE_BORDER_COLOR, buffer);
                 return new Color(buffer.get(0), buffer.get(1), buffer.get(2), buffer.get(3));
@@ -1048,6 +1048,17 @@ public interface GlTextureOps<T> {
         default T setStorage(int levels, InternalPixelFormat.Sized format, int width, int height) {
             assertBinding();
             GLX.glTexStorage2D(targetValue(true), levels, format.value(), width, height);
+            GLX.checkError();
+            return (T) this;
+        }
+    }
+
+    interface SetStorage2DMultisample<T> extends TextureOps.SetStorage2DMultisample<T>, GlTextureOps<T> {
+        @SuppressWarnings("unchecked")
+        @Override
+        default T setStorage(int samples, InternalPixelFormat.Sized format, int width, int height, boolean fixedSampleLocations) {
+            assertBinding();
+            GLX.glTexStorage2DMultisample(targetValue(true), samples, format.value(), width, height, fixedSampleLocations);
             GLX.checkError();
             return (T) this;
         }

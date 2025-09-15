@@ -7,7 +7,8 @@ import com.vanix.easygl.core.graphics.Texture2DMultiSample;
 public class GlTexture2DMultiSample extends AbstractTexture<Texture2DMultiSample> implements Texture2DMultiSample,
         GlTextureOps.Parameters<Texture2DMultiSample>,
         GlTextureOps.CopyImageSubData<Texture2DMultiSample>,
-        GlTextureOps.MakeView<Texture2DMultiSample> {
+        GlTextureOps.MakeView<Texture2DMultiSample>,
+        GlTextureOps.SetStorage2DMultisample<Texture2DMultiSample> {
     public GlTexture2DMultiSample(int handle) {
         super(handle, Target);
     }

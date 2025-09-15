@@ -54,7 +54,7 @@ public class GlScissorTest extends GlFeature<ScissorTest> implements ScissorTest
     }
 
     @Override
-    public ScissorTest setBoxes(int first, Rectanglei... boxes) {
+    public ScissorTest setBoxes(int first, Rectanglei<?>... boxes) {
         IntBuffer buffer = IntBuffer.allocate(boxes.length << 2);
         for (var box : boxes) {
             buffer.put(box.getX()).put(box.getY()).put(box.getWidth()).put(box.getHeight());
@@ -77,7 +77,7 @@ public class GlScissorTest extends GlFeature<ScissorTest> implements ScissorTest
     }
 
     @Override
-    public ScissorTest setBoxAt(int index, Rectanglei box) {
+    public ScissorTest setBoxAt(int index, Rectanglei<?> box) {
         return setBoxAt(index, box.getX(), box.getY(), box.getWidth(), box.getHeight());
     }
 

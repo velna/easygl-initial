@@ -1,5 +1,6 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.commons.IntEnum;
 import com.vanix.easygl.core.Handle;
 import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public interface Shader extends Handle {
 
-    enum Type {
+    enum Type implements IntEnum {
         Vertex("VERTEX_SHADER"),
         Geometry("GEOMETRY_SHADER"),
         Fragment("FRAGMENT_SHADER"),
@@ -23,10 +24,11 @@ public interface Shader extends Handle {
 
         private final int value;
 
-        private Type(String id) {
+        Type(String id) {
             this.value = MetaSystem.Graphics.queryInt(id);
         }
 
+        @Override
         public int value() {
             return value;
         }

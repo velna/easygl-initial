@@ -164,31 +164,31 @@ public interface BaseFrameBuffer<T extends BaseFrameBuffer<T>> extends MultiTarg
 
     T readPixels(int x, int y, int width, int height, PixelFormat format, DataType dataType, FloatBuffer data);
 
-    default T readPixels(Rectanglei rect, PixelFormat format, DataType dataType, ByteBuffer data) {
+    default T readPixels(Rectanglei<?> rect, PixelFormat format, DataType dataType, ByteBuffer data) {
         return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
     }
 
-    default T readPixels(Rectanglei rect, PixelFormat format, DataType dataType, short[] data) {
+    default T readPixels(Rectanglei<?> rect, PixelFormat format, DataType dataType, short[] data) {
         return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
     }
 
-    default T readPixels(Rectanglei rect, PixelFormat format, DataType dataType, ShortBuffer data) {
+    default T readPixels(Rectanglei<?> rect, PixelFormat format, DataType dataType, ShortBuffer data) {
         return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
     }
 
-    default T readPixels(Rectanglei rect, PixelFormat format, DataType dataType, int[] data) {
+    default T readPixels(Rectanglei<?> rect, PixelFormat format, DataType dataType, int[] data) {
         return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
     }
 
-    default T readPixels(Rectanglei rect, PixelFormat format, DataType dataType, IntBuffer data) {
+    default T readPixels(Rectanglei<?> rect, PixelFormat format, DataType dataType, IntBuffer data) {
         return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
     }
 
-    default T readPixels(Rectanglei rect, PixelFormat format, DataType dataType, float[] data) {
+    default T readPixels(Rectanglei<?> rect, PixelFormat format, DataType dataType, float[] data) {
         return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
     }
 
-    default T readPixels(Rectanglei rect, PixelFormat format, DataType dataType, FloatBuffer data) {
+    default T readPixels(Rectanglei<?> rect, PixelFormat format, DataType dataType, FloatBuffer data) {
         return readPixels(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight(), format, dataType, data);
     }
     //endregion

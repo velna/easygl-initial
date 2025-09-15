@@ -60,6 +60,9 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
 
     Graphics hint(HintTarget target, HintMode mode);
 
+    @Support(since = Version.GL45)
+    ResetStatus getRestStatus();
+
     //region Features
     Clipping clipDistances();
 

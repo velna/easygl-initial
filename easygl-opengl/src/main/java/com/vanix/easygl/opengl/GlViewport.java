@@ -25,7 +25,7 @@ public class GlViewport extends SimpleIntEnum implements Viewport {
 
     @Override
     public Vector2d getDepthRange() {
-        try (MemoryStack stack = MemoryStack.stackGet()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             DoubleBuffer buffer = stack.mallocDouble(2);
             GLX.glGetDoublei_v(GLX.GL_DEPTH_RANGE, value, buffer);
             return new Vector2d().set(buffer);
@@ -34,7 +34,7 @@ public class GlViewport extends SimpleIntEnum implements Viewport {
 
     @Override
     public Vector2i getDepthRangeMapped() {
-        try (MemoryStack stack = MemoryStack.stackGet()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             IntBuffer buffer = stack.mallocInt(2);
             GLX.glGetIntegeri_v(GLX.GL_DEPTH_RANGE, value, buffer);
             return new Vector2i().set(buffer);
@@ -76,7 +76,7 @@ public class GlViewport extends SimpleIntEnum implements Viewport {
 
     @Override
     public Rectanglef<?> get() {
-        try (MemoryStack stack = MemoryStack.stackGet()) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
             FloatBuffer buffer = stack.mallocFloat(4);
             GLX.glGetFloati_v(GLX.GL_VIEWPORT, value, buffer);
             return Rectanglef.of().set(buffer);

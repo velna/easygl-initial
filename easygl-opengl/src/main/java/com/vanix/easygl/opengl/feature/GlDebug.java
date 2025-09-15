@@ -86,7 +86,7 @@ public class GlDebug extends GlFeature<Debug> implements Debug {
 
     @Override
     public List<MessageLog> getMessageLog(int count) {
-        try (var stack = MemoryStack.stackGet()) {
+        try (var stack = MemoryStack.stackPush()) {
             int[] sources = new int[count];
             int[] types = new int[count];
             int[] ids = new int[count];

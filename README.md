@@ -13,28 +13,28 @@
 
 详细API实现情况索引请[点击这里](OpengGLFunctionIndex.md)
 
-| 类别  | 完成度                |
-| ------------- |--------------------|
-| Synchronization  | 100%               |
-| Asynchronous Queries  | 100%               |
-| Timer Queries  | 100%               |
-| Buffer Objects  | 90%，除了一些查询方法       |
-| Shaders and Programs  | 95%                |
-| Textures and Samplers  | 100%               |
-| Framebuffer Objects  | 100%               |
-| Vertices  | 100%               |
-| Vertex Arrays  | 100%               |
-| Vertex Attributes  | 100%               |
-| Vertex Post-Processing  | 100%               |
-| Rasterization  | 100%               |
-| Fragment Shaders  | 100%               |
-| Compute Shaders  | 100%               |
-| Per-Fragment Operations  | 100%               |
-| Hints  | 100%               |
-| Whole Framebuffer  | 100%               |
-| Reading and Copying Pixels  | 100%               |
-| Debug Output  | 100%               |
-| State and State Requests  | 不直接实现，全部分散到相关接口方法中 |
+| 类别                         | API完成度 | 功能完成度 |
+|----------------------------|--------|-------|
+| Synchronization            | 100%   | 100%  |
+| Asynchronous Queries       | 60%    | 60%   |
+| Timer Queries              | 100%   | 100%  |
+| Buffer Objects             | 100%   | 100%  |
+| Shaders and Programs       | 60%    | 95%   |
+| Textures and Samplers      | 60%    | 85%   |
+| Framebuffer Objects        | 70%    | 90%   |
+| Vertices                   | 80%    | 100%  |
+| Vertex Arrays              | 90%    | 100%  |
+| Vertex Attributes          | 70%    | 95%   |
+| Vertex Post-Processing     | 100%   | 100%  |
+| Rasterization              | 100%   | 100%  |
+| Fragment Shaders           | 100%   | 100%  |
+| Compute Shaders            | 100%   | 100%  |
+| Per-Fragment Operations    | 100%   | 100%  |
+| Hints                      | 100%   | 100%  |
+| Whole Framebuffer          | 100%   | 100%  |
+| Reading and Copying Pixels | 100%   | 100%  |
+| Debug Output               | 100%   | 100%  |
+| State and State Requests   | 0%     | 0%    |
 
 
 ## 一个HelloTriangle的示例：
