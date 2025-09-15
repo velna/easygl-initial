@@ -18,7 +18,7 @@ public interface ScissorTest extends IndexedFeature<ScissorTest, Graphics>, Grap
         return setBox(box.get(), box.get(), box.get(), box.get());
     }
 
-    default ScissorTest setBox(Rectanglei box) {
+    default ScissorTest setBox(Rectanglei<?> box) {
         return setBox(box.getX(), box.getY(), box.getWidth(), box.getHeight());
     }
 
@@ -31,7 +31,7 @@ public interface ScissorTest extends IndexedFeature<ScissorTest, Graphics>, Grap
     ScissorTest setBoxes(int first, IntBuffer boxes);
 
     @Support(since = Version.GL41)
-    ScissorTest setBoxes(int first, Rectanglei... boxes);
+    ScissorTest setBoxes(int first, Rectanglei<?>... boxes);
 
     @Support(since = Version.GL41)
     ScissorTest setBoxAt(int index, int[] box);
@@ -40,13 +40,13 @@ public interface ScissorTest extends IndexedFeature<ScissorTest, Graphics>, Grap
     ScissorTest setBoxAt(int index, IntBuffer box);
 
     @Support(since = Version.GL41)
-    ScissorTest setBoxAt(int index, Rectanglei box);
+    ScissorTest setBoxAt(int index, Rectanglei<?> box);
 
     @Support(since = Version.GL41)
     ScissorTest setBoxAt(int index, int x, int y, int width, int height);
 
     @Support(since = Version.GL41)
-    Rectanglei getBoxAt(int index);
+    Rectanglei<?> getBoxAt(int index);
 
-    Rectanglei getBox();
+    Rectanglei<?> getBox();
 }
