@@ -256,7 +256,7 @@
 | glGetProgramBinary                             |                                                                                    |
 | glGetProgramInfoLog                            |                                                                                    |
 | glGetProgramInterface                          |                                                                                    |
-| glGetProgramInterfaceiv                        | X                                                                                  |
+| glGetProgramInterfaceiv                        |                                                                                    |
 | glGetProgramiv                                 |                                                                                    |
 | glGetProgramPipeline                           | X                                                                                  |
 | glGetProgramPipelineInfoLog                    | X                                                                                  |
@@ -406,9 +406,9 @@
 | glPixelStorei                                  |                                                                                    |
 | glPointParameter                               |                                                                                    |
 | glPointParameterf                              |                                                                                    |
-| glPointParameterfv                             | X                                                                                  |
+| glPointParameterfv                             |                                                                                    |
 | glPointParameteri                              |                                                                                    |
-| glPointParameteriv                             | X                                                                                  |
+| glPointParameteriv                             |                                                                                    |
 | glPointSize                                    |                                                                                    |
 | glPolygonMode                                  |                                                                                    |
 | glPolygonOffset                                |                                                                                    |
@@ -500,7 +500,7 @@
 | glTexParameteriv                               |                                                                                    |
 | glTexStorage1D                                 |                                                                                    |
 | glTexStorage2D                                 |                                                                                    |
-| glTexStorage2DMultisample                      | X                                                                                  |
+| glTexStorage2DMultisample                      |                                                                                    |
 | glTexStorage3D                                 |                                                                                    |
 | glTexStorage3DMultisample                      |                                                                                    |
 | glTexSubImage1D                                |                                                                                    |

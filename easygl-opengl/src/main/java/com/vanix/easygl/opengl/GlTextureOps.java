@@ -1053,6 +1053,17 @@ public interface GlTextureOps<T> {
         }
     }
 
+    interface SetStorage2DMultisample<T> extends TextureOps.SetStorage2DMultisample<T>, GlTextureOps<T> {
+        @SuppressWarnings("unchecked")
+        @Override
+        default T setStorage(int samples, InternalPixelFormat.Sized format, int width, int height, boolean fixedSampleLocations) {
+            assertBinding();
+            GLX.glTexStorage2DMultisample(targetValue(true), samples, format.value(), width, height, fixedSampleLocations);
+            GLX.checkError();
+            return (T) this;
+        }
+    }
+
     interface SetStorage3D<T> extends TextureOps.SetStorage3D<T>, GlTextureOps<T> {
         @SuppressWarnings("unchecked")
         @Override

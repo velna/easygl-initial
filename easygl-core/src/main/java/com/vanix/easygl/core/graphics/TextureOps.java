@@ -448,13 +448,16 @@ public interface TextureOps {
     }
 
     interface SetStorage2D<T> {
-
         @Support(since = Version.GL42)
         T setStorage(int levels, InternalPixelFormat.Sized format, int width, int height);
     }
 
-    interface SetStorage3D<T> {
+    interface SetStorage2DMultisample<T> {
+        @Support(since = Version.GL43)
+        T setStorage(int samples, InternalPixelFormat.Sized format, int width, int height, boolean fixedSampleLocations);
+    }
 
+    interface SetStorage3D<T> {
         @Support(since = Version.GL42)
         T setStorage(int levels, InternalPixelFormat.Sized format, int width, int height, int depth);
     }
