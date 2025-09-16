@@ -2,6 +2,7 @@ package com.vanix.easygl.core.graphics;
 
 import com.vanix.easygl.core.Support;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 @Support(since = Version.GL43)
@@ -11,8 +12,12 @@ public interface ProgramInterface<T extends ProgramResource<T>> {
 
     List<T> getResources();
 
+    @Nullable
+    T getResource(int index);
+
     //region Base interfaces
     interface Named<T extends ProgramResource<T>> extends ProgramInterface<T> {
+        @Nullable
         T getResource(String name);
     }
 

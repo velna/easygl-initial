@@ -9,7 +9,6 @@ import com.vanix.easygl.opengl.program.G20Uniform;
 import com.vanix.easygl.opengl.program.Gl31UniformBlock;
 import org.eclipse.collections.api.factory.primitive.ObjectIntMaps;
 import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
-import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
@@ -92,9 +91,9 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
         GLX.glLinkProgram(program);
         try (var stack = MemoryStack.stackPush()) {
             IntBuffer success = stack.mallocInt(1);
-            GL20.glGetProgramiv(program, GL20.GL_LINK_STATUS, success);
+            GLX.glGetProgramiv(program, GLX.GL_LINK_STATUS, success);
             if (success.get() == 0) {
-                String infoLog = GL20.glGetProgramInfoLog(program);
+                String infoLog = GLX.glGetProgramInfoLog(program);
                 throw new GraphicsException("error link program: " + infoLog);
             }
             return self();
