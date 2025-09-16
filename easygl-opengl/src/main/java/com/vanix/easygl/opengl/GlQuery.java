@@ -123,7 +123,36 @@ public interface GlQuery<T extends Query<T>> extends Query<T> {
 
         @Override
         public void count() {
-            GLX.glQueryCounter(intHandle(), target);
+            GLX.glQueryCounter(intHandle(), GLX.GL_TIMESTAMP);
+        }
+    }
+
+    class GlState implements State {
+        @SuppressWarnings("unchecked")
+        @Override
+        public <T extends Query<T>> T getCurrentQuery(Target<T> target) {
+            int query = GLX.glGetQueryi(target.value(), GLX.GL_CURRENT_QUERY);
+            return query == 0 ? null : (T) switch (target) {
+                case SampleType sampleType -> new GlSampleQuery(query, sampleType);
+                case IndexType indexType -> new GlIndexQuery(query, indexType);
+                case TimerType timerType -> new GlTimerQuery(query);
+            };
+        }
+
+        @Override
+        public IndexQuery getCurrentQuery(IndexType target, int index) {
+            int query = GLX.glGetQueryIndexedi(target.value(), index, GLX.GL_CURRENT_QUERY);
+            return query == 0 ? null : new GlIndexQuery(query, target);
+        }
+
+        @Override
+        public int getCounterBits(Target<?> target) {
+            return GLX.glGetQueryi(target.value(), GLX.GL_QUERY_COUNTER_BITS);
+        }
+
+        @Override
+        public int getCounterBits(IndexType target, int index) {
+            return GLX.glGetQueryIndexedi(target.value(), index, GLX.GL_QUERY_COUNTER_BITS);
         }
     }
 }

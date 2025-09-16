@@ -1,15 +1,15 @@
 package com.vanix.easygl.core.graphics;
 
+import com.vanix.easygl.commons.primitives.Dimensionic;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
-import com.vanix.easygl.core.Handle;
 import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
 import org.joml.Vector3i;
 import org.joml.primitives.AABBi;
 
 @Support(since = Version.GL30)
-public interface RenderBuffer extends Bindable<BindTarget.Default<RenderBuffer>, RenderBuffer>, Handle {
+public interface RenderBuffer extends Bindable<BindTarget.Default<RenderBuffer>, RenderBuffer>, Dimensionic<RenderBuffer> {
     BindTarget.Default<RenderBuffer> Target = new BindTarget.Default<>(
             MetaSystem.Graphics.queryInt("RENDERBUFFER"), "RenderBuffer", MetaHolder.RenderBuffer);
 
@@ -50,6 +50,30 @@ public interface RenderBuffer extends Bindable<BindTarget.Default<RenderBuffer>,
         return copyImageSubData(src.minX, src.minY, src.minZ, src.lengthX(), src.lengthY(), src.lengthZ(),
                 dst, dstMipmapLevel, dstXyz.x, dstXyz.y, dstXyz.z);
     }
+
+    @Support(since = Version.GL30)
+    InternalPixelFormat getInternalFormat();
+
+    @Support(since = Version.GL30)
+    int getNumSamples();
+
+    @Support(since = Version.GL30)
+    int getRedBits();
+
+    @Support(since = Version.GL30)
+    int getGreenBits();
+
+    @Support(since = Version.GL30)
+    int getBlueBits();
+
+    @Support(since = Version.GL30)
+    int getAlphaBits();
+
+    @Support(since = Version.GL30)
+    int getDepthBits();
+
+    @Support(since = Version.GL30)
+    int getStencilBits();
 
     static RenderBuffer of() {
         return MetaHolder.RenderBuffer.create();

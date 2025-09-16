@@ -6,7 +6,10 @@ import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
 
+import javax.annotation.Nullable;
+
 public interface Query<T extends Query<T>> extends Handle {
+    State STATE = MetaSystem.Graphics.of(State.class);
 
     T begin();
 
@@ -32,6 +35,15 @@ public interface Query<T extends Query<T>> extends Handle {
         return MetaHolder.SampleQuery.createArray(n, type);
     }
 
+    @SuppressWarnings("unchecked")
+    static <T extends Query<T>> T of(Target<T> target) {
+        return (T) switch (target) {
+            case SampleType sampleType -> ofSample(sampleType);
+            case IndexType indexType -> ofIndex(indexType);
+            case TimerType timerType -> ofTimer(timerType);
+        };
+    }
+
     static IndexQuery ofIndex(IndexType type) {
         return MetaHolder.IndexQuery.create(type);
     }
@@ -40,8 +52,8 @@ public interface Query<T extends Query<T>> extends Handle {
         return MetaHolder.IndexQuery.createArray(n, type);
     }
 
-    static TimerQuery ofTimer() {
-        return MetaHolder.TimerQuery.create();
+    static TimerQuery ofTimer(TimerType type) {
+        return MetaHolder.TimerQuery.create(type);
     }
 
     static HandleArray<TimerQuery> ofTimer(int n) {
@@ -73,7 +85,23 @@ public interface Query<T extends Query<T>> extends Handle {
         }
     }
 
-    enum SampleType implements IntEnum {
+    interface State {
+        @Nullable
+        <T extends Query<T>> T getCurrentQuery(Target<T> target);
+
+        @Nullable
+        IndexQuery getCurrentQuery(IndexType target, int index);
+
+        int getCounterBits(Target<?> target);
+
+        int getCounterBits(IndexType target, int index);
+    }
+
+    sealed interface Target<T extends Query<T>> extends IntEnum permits SampleType, IndexType, TimerType {
+
+    }
+
+    enum SampleType implements Target<SampleQuery> {
         SamplesPassed("SAMPLES_PASSED"),
         AnySamplesPassed("ANY_SAMPLES_PASSED"),
         @Support(since = Version.GL43)
@@ -97,7 +125,7 @@ public interface Query<T extends Query<T>> extends Handle {
         SampleQuery endConditionalRender();
     }
 
-    enum IndexType implements IntEnum {
+    enum IndexType implements Target<IndexQuery> {
         PrimitivesGenerated("PRIMITIVES_GENERATED"),
         TransformFeedbackPrimitivesWritten("TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN");
         private final int value;
@@ -116,6 +144,20 @@ public interface Query<T extends Query<T>> extends Handle {
         IndexQuery begin(int index);
 
         IndexQuery end(int index);
+    }
+
+    enum TimerType implements Target<TimerQuery> {
+        TimeElapsed("TIME_ELAPSED");
+        private final int value;
+
+        TimerType(String id) {
+            this.value = MetaSystem.Graphics.queryInt(id);
+        }
+
+        @Override
+        public int value() {
+            return value;
+        }
     }
 
     interface TimerQuery extends Query<TimerQuery> {

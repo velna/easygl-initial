@@ -63,7 +63,7 @@ public interface ProgramResource<T extends ProgramResource<T>> {
     }
 
     interface Type<T extends ProgramResource<T>> extends ProgramResource<T> {
-        int getType();
+        DataType getType();
     }
 
     interface ArraySize<T extends ProgramResource<T>> extends ProgramResource<T> {

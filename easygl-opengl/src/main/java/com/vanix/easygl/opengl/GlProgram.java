@@ -3,11 +3,12 @@ package com.vanix.easygl.opengl;
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.program.Uniform;
 import com.vanix.easygl.core.graphics.program.UniformBlock;
+import com.vanix.easygl.opengl.program.G20Uniform;
 import com.vanix.easygl.opengl.program.Gl31UniformBlock;
 import org.eclipse.collections.api.factory.primitive.ObjectIntMaps;
 import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
-import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
@@ -15,9 +16,9 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Program> implements Program {
     private final MutableObjectIntMap<String> uniforms = ObjectIntMaps.mutable.of();
@@ -90,9 +91,9 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
         GLX.glLinkProgram(program);
         try (var stack = MemoryStack.stackPush()) {
             IntBuffer success = stack.mallocInt(1);
-            GL20.glGetProgramiv(program, GL20.GL_LINK_STATUS, success);
+            GLX.glGetProgramiv(program, GLX.GL_LINK_STATUS, success);
             if (success.get() == 0) {
-                String infoLog = GL20.glGetProgramInfoLog(program);
+                String infoLog = GLX.glGetProgramInfoLog(program);
                 throw new GraphicsException("error link program: " + infoLog);
             }
             return self();
@@ -613,19 +614,47 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Set<String> uniformNames() {
+    public List<String> uniformNames() {
         int uniformCount = getAttribute(ProgramAttribute.ActiveUniforms);
+        List<String> names;
         if (uniforms.size() < uniformCount) {
+            names = new ArrayList<>(uniformCount);
             for (int i = 0; i < uniformCount; i++) {
                 var name = GLX.glGetActiveUniformName(intHandle(), i);
                 uniforms.put(name, i);
+                names.add(name);
             }
+        } else {
+            String[] array = new String[uniformCount];
+            for (var entry : uniforms.keyValuesView()) {
+                array[entry.getTwo()] = entry.getOne();
+            }
+            names = Arrays.asList(array);
         }
-        return uniforms.keySet();
+        return names;
+    }
+
+    @Override
+    public Uniform getUniform(int index) {
+        if (GlGraphics.CAPABILITIES.OpenGL43) {
+            return interfaces.uniform().getResource(index);
+        }
+        try (var stack = MemoryStack.stackPush()) {
+            var length = stack.mallocInt(1);
+            var size = stack.mallocInt(1);
+            var type = stack.mallocInt(1);
+            var name = stack.malloc(getAttribute(ProgramAttribute.ActiveUniformMaxLength));
+            GLX.glGetActiveUniform(intHandle(), index, length, size, type, name);
+            GLX.checkError();
+            return new G20Uniform(this, index, Cache.DataType.get(type.get()), size.get(), MemoryUtil.memUTF8(name, length.get()));
+        }
     }
 
     @Override
     public UniformBlock getUniformBlock(String name) {
+        if (GlGraphics.CAPABILITIES.OpenGL43) {
+            return interfaces.uniformBlock().getResource(name);
+        }
         int index = GLX.glGetUniformBlockIndex(intHandle(), name);
         if (index == GLX.GL_INVALID_INDEX) {
             throw new NoSuchElementException("No uniform block of name find: " + name);

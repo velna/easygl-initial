@@ -13,7 +13,7 @@ import org.lwjgl.system.MemoryUtil;
 import java.nio.FloatBuffer;
 
 public class GlGraphics implements Graphics {
-    static final GLCapabilities CAPABILITIES = GL.createCapabilities();
+    public static final GLCapabilities CAPABILITIES = GL.createCapabilities();
     private final DepthTest depthTest = new GlDepthTest(this);
     private final Blending blending = new GlBlending(this);
     private final StencilTest stencilTest = new GlStencilTest(this);
@@ -134,6 +134,25 @@ public class GlGraphics implements Graphics {
     @Override
     public ResetStatus getRestStatus() {
         return IntEnum.valueOf(ResetStatus.class, GLX.glGetGraphicsResetStatus());
+    }
+
+    private PrecisionFormat getPrecisionFormat(PrecisionFormat.Type type, int shaderType) {
+        try (var stack = MemoryStack.stackPush()) {
+            var range = stack.mallocInt(1);
+            var precision = stack.mallocInt(1);
+            GLX.glGetShaderPrecisionFormat(shaderType, type.value(), range, precision);
+            return new PrecisionFormat(type, range.get(), precision.get());
+        }
+    }
+
+    @Override
+    public PrecisionFormat getVertexShaderPrecisionFormat(PrecisionFormat.Type type) {
+        return getPrecisionFormat(type, GLX.GL_VERTEX_SHADER);
+    }
+
+    @Override
+    public PrecisionFormat getFragmentShaderPrecisionFormat(PrecisionFormat.Type type) {
+        return getPrecisionFormat(type, GLX.GL_FRAGMENT_SHADER);
     }
 
     @Override

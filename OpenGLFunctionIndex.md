@@ -170,58 +170,58 @@
 | glFlush                                        | Graphics.flush()                                                                   |
 | glFlushMappedBufferRange                       | Buffer.flushMappedRange()                                                          |
 | glFlushMappedNamedBufferRange                  | X DSA                                                                              |
-| glFramebufferParameteri                        |                                                                                    |
-| glFramebufferRenderbuffer                      |                                                                                    |
-| glFramebufferTexture                           |                                                                                    |
-| glFramebufferTexture1D                         |                                                                                    |
-| glFramebufferTexture2D                         |                                                                                    |
-| glFramebufferTexture3D                         |                                                                                    |
-| glFramebufferTextureLayer                      |                                                                                    |
-| glFrontFace                                    |                                                                                    |
-| glGenBuffers                                   |                                                                                    |
-| glGenerateMipmap                               |                                                                                    |
+| glFramebufferParameteri                        | FrameBuffer.setXXX()                                                               |
+| glFramebufferRenderbuffer                      | BaseFrameBuffer.attach()                                                           |
+| glFramebufferTexture                           | * Won't implement, use overrides of BaseFrameBuffer.attach()                       |
+| glFramebufferTexture1D                         | BaseFrameBuffer.attach()                                                           |
+| glFramebufferTexture2D                         | BaseFrameBuffer.attach()                                                           |
+| glFramebufferTexture3D                         | BaseFrameBuffer.attach()                                                           |
+| glFramebufferTextureLayer                      | BaseFrameBuffer.attach()                                                           |
+| glFrontFace                                    | Graphics setFrontFaceDirection()                                                   |
+| glGenBuffers                                   | Buffer.of()                                                                        |
+| glGenerateMipmap                               | TextureOps.GenerateMipmap.generateMipmap()                                         |
 | glGenerateTextureMipmap                        | X DSA                                                                              |
-| glGenFramebuffers                              |                                                                                    |
-| glGenProgramPipelines                          |                                                                                    |
-| glGenQueries                                   |                                                                                    |
-| glGenRenderbuffers                             |                                                                                    |
-| glGenSamplers                                  |                                                                                    |
-| glGenTextures                                  |                                                                                    |
-| glGenTransformFeedbacks                        |                                                                                    |
-| glGenVertexArrays                              |                                                                                    |
+| glGenFramebuffers                              | FrameBuffer.of()                                                                   |
+| glGenProgramPipelines                          | Pipeline.of()                                                                      |
+| glGenQueries                                   | Query.of()                                                                         |
+| glGenRenderbuffers                             | Renderbuffer.of()                                                                  |
+| glGenSamplers                                  | Sampler.of()                                                                       |
+| glGenTextures                                  | TexturesXXX.of()                                                                   |
+| glGenTransformFeedbacks                        | TransformFeedback.of()                                                             |
+| glGenVertexArrays                              | VertexArray.of()                                                                   |
 | glGet                                          |                                                                                    |
 | glGetActiveAtomicCounterBufferiv               | X 建议使用OpenGL43的ProgramInterfaces                                                   |
-| glGetActiveAttrib                              |                                                                                    |
+| glGetActiveAttrib                              | Program.getActiveVertexAttribute()                                                 |
 | glGetActiveSubroutineName                      | X 建议使用OpenGL43的ProgramInterfaces                                                   |
 | glGetActiveSubroutineUniform                   | X 建议使用OpenGL43的ProgramInterfaces                                                   |
 | glGetActiveSubroutineUniformiv                 | X 建议使用OpenGL43的ProgramInterfaces                                                   |
 | glGetActiveSubroutineUniformName               | X 建议使用OpenGL43的ProgramInterfaces                                                   |
-| glGetActiveUniform                             |                                                                                    |
-| glGetActiveUniformBlock                        |                                                                                    |
-| glGetActiveUniformBlockiv                      |                                                                                    |
+| glGetActiveUniform                             | Program.getUniform()                                                               |
+| glGetActiveUniformBlock                        | * See sub interfaces of ProgramResource                                            |
+| glGetActiveUniformBlockiv                      | * See sub interfaces of ProgramResource                                            |
 | glGetActiveUniformBlockName                    | X 建议使用OpenGL43的ProgramInterfaces                                                   |
-| glGetActiveUniformName                         |                                                                                    |
-| glGetActiveUniformsiv                          |                                                                                    |
-| glGetAttachedShaders                           |                                                                                    |
-| glGetAttribLocation                            |                                                                                    |
+| glGetActiveUniformName                         | Program.uniformNames()                                                             |
+| glGetActiveUniformsiv                          | Program.getUniform()                                                               |
+| glGetAttachedShaders                           | Program.getAttachedShaders()                                                       |
+| glGetAttribLocation                            | Program.getVertexAttributeLocation()                                               |
 | glGetBooleani_v                                |                                                                                    |
 | glGetBooleanv                                  |                                                                                    |
-| glGetBufferParameter                           |                                                                                    |
-| glGetBufferParameteri64v                       |                                                                                    |
-| glGetBufferParameteriv                         |                                                                                    |
-| glGetBufferPointerv                            |                                                                                    |
-| glGetBufferSubData                             |                                                                                    |
-| glGetCompressedTexImage                        |                                                                                    |
-| glGetCompressedTextureImage                    |                                                                                    |
-| glGetCompressedTextureSubImage                 |                                                                                    |
-| glGetDebugMessageLog                           |                                                                                    |
+| glGetBufferParameter                           | Buffer.getXXX()                                                                    |
+| glGetBufferParameteri64v                       | Buffer.getXXX()                                                                    |
+| glGetBufferParameteriv                         | Buffer.getXXX()                                                                    |
+| glGetBufferPointerv                            | Buffer.getMappedBuffer()                                                           |
+| glGetBufferSubData                             | Buffer.getSubData()                                                                |
+| glGetCompressedTexImage                        | TextureOps.GetCompressedImage.getCompressedImage()                                 |
+| glGetCompressedTextureImage                    | X DSA                                                                              |
+| glGetCompressedTextureSubImage                 | TextureOps.GetCompressedSubImage.getCompressedSubImage()                           |
+| glGetDebugMessageLog                           | Debug.getMessageLog()                                                              |
 | glGetDoublei_v                                 |                                                                                    |
 | glGetDoublev                                   |                                                                                    |
 | glGetError                                     |                                                                                    |
 | glGetFloati_v                                  |                                                                                    |
 | glGetFloatv                                    |                                                                                    |
-| glGetFragDataIndex                             |                                                                                    |
-| glGetFragDataLocation                          |                                                                                    |
+| glGetFragDataIndex                             | Program.getFragDataIndex()                                                         |
+| glGetFragDataLocation                          | Program.getFragData()                                                              |
 | glGetFramebufferAttachmentParameter            | X                                                                                  |
 | glGetFramebufferAttachmentParameteriv          | X                                                                                  |
 | glGetFramebufferParameter                      | FrameBuffer.getXXX()                                                               |
@@ -234,8 +234,8 @@
 | glGetInternalformat                            | X                                                                                  |
 | glGetInternalformati64v                        | X                                                                                  |
 | glGetInternalformativ                          | X                                                                                  |
-| glGetMultisample                               |                                                                                    |
-| glGetMultisamplefv                             |                                                                                    |
+| glGetMultisample                               | Graphics.getMultiSample()                                                          |
+| glGetMultisamplefv                             | Graphics.getMultiSample()                                                          |
 | glGetNamedBufferParameteri64v                  | X DSA                                                                              |
 | glGetNamedBufferParameteriv                    | X DSA                                                                              |
 | glGetNamedBufferPointerv                       | X DSA                                                                              |
@@ -251,63 +251,63 @@
 | glGetnUniformuiv                               | X                                                                                  |
 | glGetObjectLabel                               | X                                                                                  |
 | glGetObjectPtrLabel                            | X                                                                                  |
-| glGetPointerv                                  |                                                                                    |
-| glGetProgram                                   |                                                                                    |
-| glGetProgramBinary                             |                                                                                    |
-| glGetProgramInfoLog                            |                                                                                    |
-| glGetProgramInterface                          |                                                                                    |
-| glGetProgramInterfaceiv                        |                                                                                    |
-| glGetProgramiv                                 |                                                                                    |
-| glGetProgramPipeline                           | X                                                                                  |
+| glGetPointerv                                  | X                                                                                  |
+| glGetProgram                                   | Program.getXXX()                                                                   |
+| glGetProgramBinary                             | Program.getBinary()                                                                |
+| glGetProgramInfoLog                            | Program.link()                                                                     |
+| glGetProgramInterface                          | ProgramInterface.getXXX()                                                          |
+| glGetProgramInterfaceiv                        | ProgramInterface.getXXX()                                                          |
+| glGetProgramiv                                 | Program.getXXX()                                                                   |
+| glGetProgramPipeline                           | Pipeline.getActiveProgram()<br/>Pipeline.getShaderProgram()                        |
 | glGetProgramPipelineInfoLog                    | X                                                                                  |
-| glGetProgramPipelineiv                         | X                                                                                  |
-| glGetProgramResource                           |                                                                                    |
-| glGetProgramResourceIndex                      | X                                                                                  |
-| glGetProgramResourceiv                         |                                                                                    |
-| glGetProgramResourceLocation                   | X                                                                                  |
-| glGetProgramResourceLocationIndex              | X                                                                                  |
-| glGetProgramResourceName                       |                                                                                    |
+| glGetProgramPipelineiv                         | Pipeline.getActiveProgram()<br/>Pipeline.getShaderProgram()                        |
+| glGetProgramResource                           | ProgramResource.XXX.getXXX()                                                       |
+| glGetProgramResourceIndex                      | ProgramInterface.Named.getResource()                                               |
+| glGetProgramResourceiv                         | ProgramResource.XXX.getXXX()                                                       |
+| glGetProgramResourceLocation                   | X Use ProgramResource.Location.getLocation()                                       |
+| glGetProgramResourceLocationIndex              | X Use ProgramResource.LocationIndex.getLocationIndex()                             |
+| glGetProgramResourceName                       | ProgramResource.Named.getName()                                                    |
 | glGetProgramStage                              | X                                                                                  |
 | glGetProgramStageiv                            | X                                                                                  |
-| glGetQueryBufferObjecti64v                     | X                                                                                  |
-| glGetQueryBufferObjectiv                       | X                                                                                  |
-| glGetQueryBufferObjectui64v                    | X                                                                                  |
-| glGetQueryBufferObjectuiv                      | X                                                                                  |
-| glGetQueryIndexed                              | X                                                                                  |
-| glGetQueryIndexediv                            | X                                                                                  |
-| glGetQueryiv                                   | X                                                                                  |
-| glGetQueryObject                               |                                                                                    |
-| glGetQueryObjecti64v                           | X                                                                                  |
-| glGetQueryObjectiv                             | X                                                                                  |
-| glGetQueryObjectui64v                          | X                                                                                  |
-| glGetQueryObjectuiv                            | X                                                                                  |
-| glGetRenderbufferParameter                     | X                                                                                  |
-| glGetRenderbufferParameteriv                   | X                                                                                  |
+| glGetQueryBufferObjecti64v                     | X DSA                                                                              |
+| glGetQueryBufferObjectiv                       | X DSA                                                                              |
+| glGetQueryBufferObjectui64v                    | X DSA                                                                              |
+| glGetQueryBufferObjectuiv                      | X DSA                                                                              |
+| glGetQueryIndexed                              | Query.State.getXXX()                                                               |
+| glGetQueryIndexediv                            | Query.State.getXXX()                                                               |
+| glGetQueryiv                                   | Query.State.getXXX()                                                               |
+| glGetQueryObject                               | Query.getXXX()                                                                     |
+| glGetQueryObjecti64v                           | Query.getXXX()                                                                     |
+| glGetQueryObjectiv                             | Query.getXXX()                                                                     |
+| glGetQueryObjectui64v                          | Query.getXXX()                                                                     |
+| glGetQueryObjectuiv                            | Query.getXXX()                                                                     |
+| glGetRenderbufferParameter                     | RenderBuffer.getXXX()                                                              |
+| glGetRenderbufferParameteriv                   | RenderBuffer.getXXX()                                                              |
 | glGetSamplerParameter                          |                                                                                    |
 | glGetSamplerParameterfv                        |                                                                                    |
-| glGetSamplerParameterIiv                       | X                                                                                  |
-| glGetSamplerParameterIuiv                      | X                                                                                  |
-| glGetSamplerParameteriv                        | X                                                                                  |
+| glGetSamplerParameterIiv                       |                                                                                    |
+| glGetSamplerParameterIuiv                      |                                                                                    |
+| glGetSamplerParameteriv                        |                                                                                    |
 | glGetShader                                    |                                                                                    |
 | glGetShaderInfoLog                             |                                                                                    |
 | glGetShaderiv                                  |                                                                                    |
-| glGetShaderPrecisionFormat                     | X                                                                                  |
-| glGetShaderSource                              | X                                                                                  |
+| glGetShaderPrecisionFormat                     | Graphics.getXXXPrecisionFormat()                                                   |
+| glGetShaderSource                              | Shader.source()                                                                    |
 | glGetString                                    | X                                                                                  |
 | glGetStringi                                   | X                                                                                  |
 | glGetSubroutineIndex                           | X                                                                                  |
 | glGetSubroutineUniformLocation                 | X                                                                                  |
 | glGetSync                                      |                                                                                    |
-| glGetSynciv                                    | X                                                                                  |
+| glGetSynciv                                    |                                                                                    |
 | glGetTexImage                                  |                                                                                    |
 | glGetTexLevelParameter                         |                                                                                    |
-| glGetTexLevelParameterfv                       | X                                                                                  |
-| glGetTexLevelParameteriv                       | X                                                                                  |
+| glGetTexLevelParameterfv                       |                                                                                    |
+| glGetTexLevelParameteriv                       |                                                                                    |
 | glGetTexParameter                              |                                                                                    |
-| glGetTexParameterfv                            | X                                                                                  |
-| glGetTexParameterIiv                           | X                                                                                  |
-| glGetTexParameterIuiv                          | X                                                                                  |
-| glGetTexParameteriv                            | X                                                                                  |
+| glGetTexParameterfv                            |                                                                                    |
+| glGetTexParameterIiv                           |                                                                                    |
+| glGetTexParameterIuiv                          |                                                                                    |
+| glGetTexParameteriv                            |                                                                                    |
 | glGetTextureImage                              | X DSA                                                                              |
 | glGetTextureLevelParameterfv                   | X DSA                                                                              |
 | glGetTextureLevelParameteriv                   | X DSA                                                                              |
@@ -317,9 +317,9 @@
 | glGetTextureParameteriv                        | X DSA                                                                              |
 | glGetTextureSubImage                           |                                                                                    |
 | glGetTransformFeedback                         |                                                                                    |
-| glGetTransformFeedbacki64_v                    | X                                                                                  |
-| glGetTransformFeedbacki_v                      | X                                                                                  |
-| glGetTransformFeedbackiv                       | X                                                                                  |
+| glGetTransformFeedbacki64_v                    |                                                                                    |
+| glGetTransformFeedbacki_v                      |                                                                                    |
+| glGetTransformFeedbackiv                       |                                                                                    |
 | glGetTransformFeedbackVarying                  |                                                                                    |
 | glGetUniform                                   |                                                                                    |
 | glGetUniformBlockIndex                         |                                                                                    |
@@ -343,7 +343,7 @@
 | glGetVertexAttribiv                            |                                                                                    |
 | glGetVertexAttribLdv                           |                                                                                    |
 | glGetVertexAttribPointerv                      |                                                                                    |
-| glFramebufferParameteri                        | X                                                                                  |
+| glFramebufferParameteri                        | FrameBuffer.setXXX()                                                               |
 | glNamedFramebufferParameteri                   | X DSA                                                                              |
 | glHint                                         |                                                                                    |
 | glInvalidateBufferData                         |                                                                                    |
@@ -467,9 +467,9 @@
 | glSamplerParameterf                            |                                                                                    |
 | glSamplerParameterfv                           |                                                                                    |
 | glSamplerParameteri                            |                                                                                    |
-| glSamplerParameterIiv                          | X                                                                                  |
-| glSamplerParameterIuiv                         | X                                                                                  |
-| glSamplerParameteriv                           | X                                                                                  |
+| glSamplerParameterIiv                          |                                                                                    |
+| glSamplerParameterIuiv                         |                                                                                    |
+| glSamplerParameteriv                           |                                                                                    |
 | glScissor                                      |                                                                                    |
 | glScissorArray                                 |                                                                                    |
 | glScissorArrayv                                |                                                                                    |
@@ -495,8 +495,8 @@
 | glTexParameterf                                |                                                                                    |
 | glTexParameterfv                               |                                                                                    |
 | glTexParameteri                                |                                                                                    |
-| glTexParameterIiv                              | X                                                                                  |
-| glTexParameterIuiv                             | X                                                                                  |
+| glTexParameterIiv                              |                                                                                    |
+| glTexParameterIuiv                             |                                                                                    |
 | glTexParameteriv                               |                                                                                    |
 | glTexStorage1D                                 |                                                                                    |
 | glTexStorage2D                                 |                                                                                    |
@@ -639,7 +639,7 @@
 | glVertexAttribI4uiv                            |                                                                                    |
 | glVertexAttribI4usv                            |                                                                                    |
 | glVertexAttribIFormat                          |                                                                                    |
-| glVertexAttribIPointer                         | X                                                                                  |
+| glVertexAttribIPointer                         |                                                                                    |
 | glVertexAttribL1d                              |                                                                                    |
 | glVertexAttribL1dv                             |                                                                                    |
 | glVertexAttribL2d                              |                                                                                    |
@@ -661,5 +661,5 @@
 | glViewportArrayv                               |                                                                                    |
 | glViewportIndexed                              |                                                                                    |
 | glViewportIndexedf                             |                                                                                    |
-| glViewportIndexedfv                            | X                                                                                  |
+| glViewportIndexedfv                            |                                                                                    |
 | glWaitSync                                     |                                                                                    |

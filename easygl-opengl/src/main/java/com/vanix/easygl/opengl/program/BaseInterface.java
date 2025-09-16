@@ -6,7 +6,9 @@ import com.vanix.easygl.core.graphics.ProgramResource;
 import com.vanix.easygl.opengl.GLX;
 import com.vanix.easygl.opengl.GlProgramInterfaceType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class BaseInterface<T extends ProgramResource<T>> implements
         ProgramInterface.Named<T>,
@@ -14,8 +16,6 @@ public abstract class BaseInterface<T extends ProgramResource<T>> implements
         ProgramInterface.SubroutineUniform<T> {
     private final Program program;
     private final GlProgramInterfaceType type;
-    private List<T> resources;
-    private Map<String, T> resourceMap;
 
     public BaseInterface(Program program, GlProgramInterfaceType type) {
         this.program = program;
@@ -25,34 +25,28 @@ public abstract class BaseInterface<T extends ProgramResource<T>> implements
     protected abstract T newResource(Program program, int index);
 
     @Override
+    public T getResource(int index) {
+        return index >= getActiveResources() ? null : newResource(program, index);
+    }
+
+    @Override
     public List<T> getResources() {
-        if (resources != null) {
-            return resources;
-        }
         int n = getActiveResources();
         if (n <= 0) {
-            resources = Collections.emptyList();
+            return Collections.emptyList();
         } else {
             List<T> list = new ArrayList<>(n);
             for (int i = 0; i < n; i++) {
                 list.add(newResource(program, i));
             }
-            resources = Collections.unmodifiableList(list);
+            return list;
         }
-        return resources;
     }
 
     @Override
     public T getResource(String name) {
-        if (resourceMap == null) {
-            resourceMap = new HashMap<>();
-            for (var resource : getResources()) {
-                if (resource instanceof ProgramResource.Named<?> named) {
-                    resourceMap.put(named.getName(), resource);
-                }
-            }
-        }
-        return resourceMap.get(name);
+        int index = GLX.glGetProgramResourceIndex(program.intHandle(), type.value(), name);
+        return index == GLX.GL_INVALID_INDEX ? null : newResource(program, index);
     }
 
     @Override

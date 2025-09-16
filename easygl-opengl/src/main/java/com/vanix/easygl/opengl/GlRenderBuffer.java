@@ -53,4 +53,64 @@ public class GlRenderBuffer extends AbstractBindable<BindTarget.Default<RenderBu
         GLX.checkError();
         return this;
     }
+
+    @Override
+    public int getWidth() {
+        assertBinding();
+        return GLX.glGetRenderbufferParameteri(GLX.GL_RENDERBUFFER, GLX.GL_RENDERBUFFER_WIDTH);
+    }
+
+    @Override
+    public int getHeight() {
+        assertBinding();
+        return GLX.glGetRenderbufferParameteri(GLX.GL_RENDERBUFFER, GLX.GL_RENDERBUFFER_HEIGHT);
+    }
+
+    @Override
+    public InternalPixelFormat getInternalFormat() {
+        assertBinding();
+        return Cache.InternalPixelFormatCache.get(GLX.glGetRenderbufferParameteri(GLX.GL_RENDERBUFFER, GLX.GL_RENDERBUFFER_INTERNAL_FORMAT));
+    }
+
+    @Override
+    public int getNumSamples() {
+        assertBinding();
+        return GLX.glGetRenderbufferParameteri(GLX.GL_RENDERBUFFER, GLX.GL_RENDERBUFFER_SAMPLES);
+    }
+
+    @Override
+    public int getRedBits() {
+        assertBinding();
+        return GLX.glGetRenderbufferParameteri(GLX.GL_RENDERBUFFER, GLX.GL_RENDERBUFFER_RED_SIZE);
+    }
+
+    @Override
+    public int getGreenBits() {
+        assertBinding();
+        return GLX.glGetRenderbufferParameteri(GLX.GL_RENDERBUFFER, GLX.GL_RENDERBUFFER_GREEN_SIZE);
+    }
+
+    @Override
+    public int getBlueBits() {
+        assertBinding();
+        return GLX.glGetRenderbufferParameteri(GLX.GL_RENDERBUFFER, GLX.GL_RENDERBUFFER_BLUE_SIZE);
+    }
+
+    @Override
+    public int getAlphaBits() {
+        assertBinding();
+        return GLX.glGetRenderbufferParameteri(GLX.GL_RENDERBUFFER, GLX.GL_RENDERBUFFER_ALPHA_SIZE);
+    }
+
+    @Override
+    public int getDepthBits() {
+        assertBinding();
+        return GLX.glGetRenderbufferParameteri(GLX.GL_RENDERBUFFER, GLX.GL_RENDERBUFFER_DEPTH_SIZE);
+    }
+
+    @Override
+    public int getStencilBits() {
+        assertBinding();
+        return GLX.glGetRenderbufferParameteri(GLX.GL_RENDERBUFFER, GLX.GL_RENDERBUFFER_STENCIL_SIZE);
+    }
 }
