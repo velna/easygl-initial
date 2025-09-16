@@ -8,10 +8,34 @@ import com.vanix.easygl.core.HandleArray;
 import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.meta.MetaSystem;
 
+import javax.annotation.Nullable;
+
 @Support(since = Version.GL41)
 public interface Pipeline extends Bindable<BindTarget.Default<Pipeline>, Pipeline> {
 
     BindTarget.Default<Pipeline> Target = new BindTarget.Default<>("Pipeline", MetaHolder.Pipeline);
+
+    Pipeline useProgramStages(Program program, Stage stage);
+
+    Pipeline useProgramStages(Program program, BitSet<Stage> stages);
+
+    Pipeline activeShaderProgram(Program program);
+
+    Pipeline validate();
+
+    @Nullable
+    Program getActiveProgram();
+
+    @Nullable
+    Program getShaderProgram(Shader.Type shaderType);
+
+    static Pipeline of() {
+        return MetaHolder.Pipeline.create();
+    }
+
+    static HandleArray<Pipeline> of(int n) {
+        return MetaHolder.Pipeline.createArray(n);
+    }
 
     enum Stage implements IntEnum {
         VertexShader("VERTEX_SHADER_BIT"),
@@ -33,19 +57,4 @@ public interface Pipeline extends Bindable<BindTarget.Default<Pipeline>, Pipelin
         }
     }
 
-    Pipeline useProgramStages(Program program, Stage stage);
-
-    Pipeline useProgramStages(Program program, BitSet<Stage> stages);
-
-    Pipeline activeShaderProgram(Program program);
-
-    Pipeline validate();
-
-    static Pipeline of() {
-        return MetaHolder.Pipeline.create();
-    }
-
-    static HandleArray<Pipeline> of(int n) {
-        return MetaHolder.Pipeline.createArray(n);
-    }
 }

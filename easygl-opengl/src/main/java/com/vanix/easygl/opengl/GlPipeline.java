@@ -5,6 +5,7 @@ import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.graphics.Pipeline;
 import com.vanix.easygl.core.graphics.Program;
+import com.vanix.easygl.core.graphics.Shader;
 
 import java.util.function.IntConsumer;
 
@@ -46,5 +47,17 @@ public class GlPipeline extends AbstractBindable<BindTarget.Default<Pipeline>, P
         GLX.glValidateProgramPipeline(intHandle());
         GLX.checkError();
         return this;
+    }
+
+    @Override
+    public Program getActiveProgram() {
+        int handle = GLX.glGetProgramPipelinei(intHandle(), GLX.GL_ACTIVE_PROGRAM);
+        return handle > 0 ? new GlProgram(handle) : null;
+    }
+
+    @Override
+    public Program getShaderProgram(Shader.Type shaderType) {
+        int handle = GLX.glGetProgramPipelinei(intHandle(), shaderType.value());
+        return handle > 0 ? new GlProgram(handle) : null;
     }
 }
