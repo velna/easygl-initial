@@ -3,7 +3,9 @@ package com.vanix.easygl.opengl;
 import com.vanix.easygl.core.AbstractBindable;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.program.Uniform;
 import com.vanix.easygl.core.graphics.program.UniformBlock;
+import com.vanix.easygl.opengl.program.G20Uniform;
 import com.vanix.easygl.opengl.program.Gl31UniformBlock;
 import org.eclipse.collections.api.factory.primitive.ObjectIntMaps;
 import org.eclipse.collections.api.map.primitive.MutableObjectIntMap;
@@ -15,9 +17,9 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Program> implements Program {
     private final MutableObjectIntMap<String> uniforms = ObjectIntMaps.mutable.of();
@@ -613,15 +615,37 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
     }
 
     @Override
-    public Set<String> uniformNames() {
+    public List<String> uniformNames() {
         int uniformCount = getAttribute(ProgramAttribute.ActiveUniforms);
+        List<String> names;
         if (uniforms.size() < uniformCount) {
+            names = new ArrayList<>(uniformCount);
             for (int i = 0; i < uniformCount; i++) {
                 var name = GLX.glGetActiveUniformName(intHandle(), i);
                 uniforms.put(name, i);
+                names.add(name);
             }
+        } else {
+            String[] array = new String[uniformCount];
+            for (var entry : uniforms.keyValuesView()) {
+                array[entry.getTwo()] = entry.getOne();
+            }
+            names = Arrays.asList(array);
         }
-        return uniforms.keySet();
+        return names;
+    }
+
+    @Override
+    public Uniform getUniform(int index) {
+        try (var stack = MemoryStack.stackPush()) {
+            var length = stack.mallocInt(1);
+            var size = stack.mallocInt(1);
+            var type = stack.mallocInt(1);
+            var name = stack.malloc(getAttribute(ProgramAttribute.ActiveUniformMaxLength));
+            GLX.glGetActiveUniform(intHandle(), index, length, size, type, name);
+            GLX.checkError();
+            return new G20Uniform(this, index, Cache.DataType.get(type.get()), size.get(), MemoryUtil.memUTF8(name, length.get()));
+        }
     }
 
     @Override

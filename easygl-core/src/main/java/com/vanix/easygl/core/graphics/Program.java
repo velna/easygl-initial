@@ -3,6 +3,7 @@ package com.vanix.easygl.core.graphics;
 import com.vanix.easygl.core.BindTarget;
 import com.vanix.easygl.core.Bindable;
 import com.vanix.easygl.core.Support;
+import com.vanix.easygl.core.graphics.program.Uniform;
 import com.vanix.easygl.core.graphics.program.UniformBlock;
 import org.joml.*;
 
@@ -12,6 +13,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.List;
 import java.util.Set;
 
 public interface Program extends Bindable<BindTarget.Default<Program>, Program> {
@@ -238,7 +240,9 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     boolean containsUniform(String name);
 
-    Set<String> uniformNames();
+    List<String> uniformNames();
+
+    Uniform getUniform(int index);
 
     @Support(since = Version.GL43)
     ProgramInterfaces interfaces();

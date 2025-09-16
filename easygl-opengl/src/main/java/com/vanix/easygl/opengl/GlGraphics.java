@@ -13,7 +13,7 @@ import org.lwjgl.system.MemoryUtil;
 import java.nio.FloatBuffer;
 
 public class GlGraphics implements Graphics {
-    static final GLCapabilities CAPABILITIES = GL.createCapabilities();
+    public static final GLCapabilities CAPABILITIES = GL.createCapabilities();
     private final DepthTest depthTest = new GlDepthTest(this);
     private final Blending blending = new GlBlending(this);
     private final StencilTest stencilTest = new GlStencilTest(this);

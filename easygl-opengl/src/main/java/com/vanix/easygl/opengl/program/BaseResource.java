@@ -1,8 +1,10 @@
 package com.vanix.easygl.opengl.program;
 
 import com.vanix.easygl.commons.BitSet;
+import com.vanix.easygl.core.graphics.DataType;
 import com.vanix.easygl.core.graphics.Program;
 import com.vanix.easygl.core.graphics.ProgramResource;
+import com.vanix.easygl.opengl.Cache;
 import com.vanix.easygl.opengl.GLX;
 import com.vanix.easygl.opengl.GlProgramInterfaceType;
 
@@ -138,8 +140,8 @@ public abstract class BaseResource<T extends ProgramResource<T>> implements
     }
 
     @Override
-    public int getType() {
-        return queryInt(ProgramResource.PropertyKey.Type);
+    public DataType getType() {
+        return Cache.DataType.get(queryInt(ProgramResource.PropertyKey.Type));
     }
 
     @Override
