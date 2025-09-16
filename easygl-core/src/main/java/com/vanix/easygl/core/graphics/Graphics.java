@@ -63,6 +63,10 @@ public interface Graphics extends Closeable, MultiFeature<Capability, Graphics, 
     @Support(since = Version.GL45)
     ResetStatus getRestStatus();
 
+    PrecisionFormat getVertexShaderPrecisionFormat(PrecisionFormat.Type type);
+
+    PrecisionFormat getFragmentShaderPrecisionFormat(PrecisionFormat.Type type);
+
     //region Features
     Clipping clipDistances();
 
