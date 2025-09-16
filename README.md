@@ -11,7 +11,7 @@
 ## 进展
 (根据[opengl45-quick-reference-card](https://www.khronos.org/files/opengl45-quick-reference-card.pdf)里的分类)
 
-详细API实现情况索引请[点击这里](OpenGLFunctionIndex)
+详细API实现情况索引请[点击这里](OpenGLFunctionIndex.md)
 
 | 类别                         | API完成度 | 功能完成度 |
 |----------------------------|--------|-------|
