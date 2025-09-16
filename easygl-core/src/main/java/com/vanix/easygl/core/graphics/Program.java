@@ -240,6 +240,7 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
 
     boolean containsUniform(String name);
 
+    @Support(since = Version.GL31)
     List<String> uniformNames();
 
     Uniform getUniform(int index);

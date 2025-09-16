@@ -636,6 +636,9 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
 
     @Override
     public Uniform getUniform(int index) {
+        if (GlGraphics.CAPABILITIES.OpenGL43) {
+            return interfaces.uniform().getResource(index);
+        }
         try (var stack = MemoryStack.stackPush()) {
             var length = stack.mallocInt(1);
             var size = stack.mallocInt(1);
@@ -649,6 +652,9 @@ public class GlProgram extends AbstractBindable<BindTarget.Default<Program>, Pro
 
     @Override
     public UniformBlock getUniformBlock(String name) {
+        if (GlGraphics.CAPABILITIES.OpenGL43) {
+            return interfaces.uniformBlock().getResource(name);
+        }
         int index = GLX.glGetUniformBlockIndex(intHandle(), name);
         if (index == GLX.GL_INVALID_INDEX) {
             throw new NoSuchElementException("No uniform block of name find: " + name);
