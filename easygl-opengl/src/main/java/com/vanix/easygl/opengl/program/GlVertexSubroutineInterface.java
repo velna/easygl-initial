@@ -11,7 +11,7 @@ public class GlVertexSubroutineInterface extends BaseInterface<VertexSubroutine>
     }
 
     @Override
-    protected VertexSubroutine newResource(Program program, int index) {
+    protected VertexSubroutine newResource(int index) {
         return new GlVertexSubroutine(program, index);
     }
 }

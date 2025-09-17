@@ -35,11 +35,11 @@ public enum GlProgramInterfaceType implements IntEnum {
     TransformFeedbackBuffer(GLX.GL_TRANSFORM_FEEDBACK_BUFFER, GlTransformFeedbackBufferInterface.class, GlTransformFeedbackBufferInterface::new);
 
     final int value;
-    final BitSet<ProgramResource.PropertyKey> properties = BitSet.of((ToIntFunction<ProgramResource.PropertyKey>) ProgramResource.PropertyKey::ordinal);
-    final Class<? extends ProgramInterface<?>> interfaceType;
-    final Function<Program, ? extends ProgramInterface<?>> factory;
+    final BitSet<ProgramResource.PropertyKey> properties = BitSet.of((ToIntFunction<ProgramResource.PropertyKey>) ProgramResource.PropertyKey::mask);
+    final Class<? extends BaseInterface<?>> interfaceType;
+    final Function<Program, ? extends BaseInterface<?>> factory;
 
-    GlProgramInterfaceType(int value, Class<? extends ProgramInterface<?>> interfaceType, Function<Program, ? extends ProgramInterface<?>> factory) {
+    GlProgramInterfaceType(int value, Class<? extends BaseInterface<?>> interfaceType, Function<Program, ? extends BaseInterface<?>> factory) {
         this.value = value;
         this.interfaceType = interfaceType;
         this.factory = factory;

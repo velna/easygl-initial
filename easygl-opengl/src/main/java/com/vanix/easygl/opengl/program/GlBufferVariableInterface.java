@@ -11,7 +11,7 @@ public class GlBufferVariableInterface extends BaseInterface<BufferVariable> imp
     }
 
     @Override
-    protected BufferVariable newResource(Program program, int index) {
+    protected BufferVariable newResource(int index) {
         return new GlBufferVariable(program, index);
     }
 }

@@ -11,7 +11,7 @@ public class GlComputeSubroutineInterface extends BaseInterface<ComputeSubroutin
     }
 
     @Override
-    protected ComputeSubroutine newResource(Program program, int index) {
+    protected ComputeSubroutine newResource(int index) {
         return new GlComputeSubroutine(program, index);
     }
 }

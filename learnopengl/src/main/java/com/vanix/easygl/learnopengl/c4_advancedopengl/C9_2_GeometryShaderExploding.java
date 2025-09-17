@@ -55,8 +55,8 @@ public class C9_2_GeometryShaderExploding {
                         .setMatrix4("model", new Matrix4f()
                                 .translate(0.0f, 0.0f, 0.0f)
                                 .scale(1.0f, 1.0f, 1.0f)
-                                .get(mat4f))
-                        .setFloat("time", (System.currentTimeMillis() - start) / 1000.0f);
+                                .get(mat4f));
+                program.getUniform("time").setFloat((System.currentTimeMillis() - start) / 1000.0f);
 
                 for (com.vanix.easygl.core.media.Mesh mesh : meshes) {
                     var textures = mesh.getTextures(Model.TextureType.Diffuse);

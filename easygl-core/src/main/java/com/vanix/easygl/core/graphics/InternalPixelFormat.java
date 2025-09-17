@@ -110,20 +110,20 @@ public sealed interface InternalPixelFormat permits
     }
 
     enum Compressed implements InternalPixelFormat {
-        RED("RED", Base.RED),
-        RG("RG", Base.RG),
-        RGB("RGB", Base.RGB),
-        RGBA("RGBA", Base.RGBA),
-        SRGB("SRGB", Base.RGB),
-        SRGB_ALPHA("SRGB_ALPHA", Base.RGBA),
-        RED_RGTC1("RED_RGTC1", Base.RED),
-        SIGNED_RED_RGTC1("SIGNED_RED_RGTC1", Base.RED),
-        RG_RGTC2("RG_RGTC2", Base.RG),
-        SIGNED_RG_RGTC2("SIGNED_RG_RGTC2", Base.RG),
-        RGBA_BPTC_UNORM("RGBA_BPTC_UNORM", Base.RGBA),
-        SRGB_ALPHA_BPTC_UNORM("SRGB_ALPHA_BPTC_UNORM", Base.RGBA),
-        RGB_BPTC_SIGNED_FLOAT("RGB_BPTC_SIGNED_FLOAT", Base.RGB),
-        RGB_BPTC_UNSIGNED_FLOAT("RGB_BPTC_UNSIGNED_FLOAT", Base.RGB);
+        RED("COMPRESSED_RED", Base.RED),
+        RG("COMPRESSED_RG", Base.RG),
+        RGB("COMPRESSED_RGB", Base.RGB),
+        RGBA("COMPRESSED_RGBA", Base.RGBA),
+        SRGB("COMPRESSED_SRGB", Base.RGB),
+        SRGB_ALPHA("COMPRESSED_SRGB_ALPHA", Base.RGBA),
+        RED_RGTC1("COMPRESSED_RED_RGTC1", Base.RED),
+        SIGNED_RED_RGTC1("COMPRESSED_SIGNED_RED_RGTC1", Base.RED),
+        RG_RGTC2("COMPRESSED_RG_RGTC2", Base.RG),
+        SIGNED_RG_RGTC2("COMPRESSED_SIGNED_RG_RGTC2", Base.RG),
+        RGBA_BPTC_UNORM("COMPRESSED_RGBA_BPTC_UNORM", Base.RGBA),
+        SRGB_ALPHA_BPTC_UNORM("COMPRESSED_SRGB_ALPHA_BPTC_UNORM", Base.RGBA),
+        RGB_BPTC_SIGNED_FLOAT("COMPRESSED_RGB_BPTC_SIGNED_FLOAT", Base.RGB),
+        RGB_BPTC_UNSIGNED_FLOAT("COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT", Base.RGB);
 
         private final int value;
         private final Base baseFormat;

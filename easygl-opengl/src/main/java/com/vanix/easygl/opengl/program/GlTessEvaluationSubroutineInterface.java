@@ -11,7 +11,7 @@ public class GlTessEvaluationSubroutineInterface extends BaseInterface<TessEvalu
     }
 
     @Override
-    protected TessEvaluationSubroutine newResource(Program program, int index) {
+    protected TessEvaluationSubroutine newResource(int index) {
         return new GlTessEvaluationSubroutine(program, index);
     }
 }

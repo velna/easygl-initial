@@ -133,9 +133,11 @@ public class C4_4_LightingMapsExercise4 {
                         .setVec3("light.position", lightPos)
                         .setVec3("light.ambient", 0.2f, 0.2f, 0.2f)
                         .setVec3("light.diffuse", 0.5f, 0.5f, 0.5f)
-                        .setVec3("light.specular", 1.0f, 1.0f, 1.0f)
-                        // material properties
-                        .setFloat("material.shininess", 64.0f)
+                        .setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+                lightingProgram.getUniform("material.shininess").setFloat(64.0f);
+                // light properties
+                // material properties
+                lightingProgram
                         .setVec3("viewPos", camera.position())
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))

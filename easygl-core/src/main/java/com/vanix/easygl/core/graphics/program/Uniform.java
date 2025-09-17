@@ -3,6 +3,7 @@ package com.vanix.easygl.core.graphics.program;
 import com.vanix.easygl.core.graphics.ProgramResource;
 
 public interface Uniform extends
+        UniformOps<Uniform>,
         ProgramResource.Named<Uniform>,
         ProgramResource.Type<Uniform>,
         ProgramResource.ArraySize<Uniform>,
@@ -19,4 +20,5 @@ public interface Uniform extends
         ProgramResource.ReferencedByFragmentShader<Uniform>,
         ProgramResource.ReferencedByTessControlShader<Uniform>,
         ProgramResource.Location<Uniform> {
+
 }

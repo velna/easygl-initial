@@ -11,7 +11,7 @@ public class GlTransformFeedbackBufferInterface extends BaseInterface<TransformF
     }
 
     @Override
-    protected TransformFeedbackBuffer newResource(Program program, int index) {
+    protected TransformFeedbackBuffer newResource(int index) {
         return new GlTransformFeedbackBuffer(program, index);
     }
 }

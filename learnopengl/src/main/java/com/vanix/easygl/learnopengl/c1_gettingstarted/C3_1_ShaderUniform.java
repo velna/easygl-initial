@@ -54,7 +54,7 @@ public class C3_1_ShaderUniform {
 
                 program.bind();
                 float greenValue = (float) (Math.sin(System.currentTimeMillis() / 1000.0) / 2.0 + 0.5);
-                program.setVec4("ourColor", 0.0f, greenValue, 0.0f, 1.0f);
+                program.getUniform("ourColor").setVec4(0.0f, greenValue, 0.0f, 1.0f);
                 drawable.draw();
 
                 window.swapBuffers().pollEvents();

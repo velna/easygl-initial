@@ -65,9 +65,12 @@ public class C6_1_CoordinateSystems {
                 texture2.load(0, InternalPixelFormat.Base.RGB, image).generateMipmap();
             }
 
-            program.bind()
-                    .setInt("texture1", 0)
-                    .setInt("texture2", 1);
+            program.bind();
+            program.getUniform("texture1").setTexture(TextureUnit.U0);
+            program.getUniform("texture2").setTexture(TextureUnit.U1);
+            var model = program.getUniform("model");
+            var view = program.getUniform("view");
+            var projection = program.getUniform("projection");
 
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
             var drawable = vao.drawingElements(DrawMode.Triangles, ebo).build();
@@ -80,16 +83,16 @@ public class C6_1_CoordinateSystems {
                 TextureUnit.U1.bind();
                 texture2.bind();
 
-                program.bind()
-                        .setMatrix4("model", new Matrix4f()
-                                .rotate(Math.toRadians(-55.0f), new Vector3f(1.0f, 0.0f, 0.0f))
-                                .get(mat4f))
-                        .setMatrix4("view", new Matrix4f()
-                                .translate(new Vector3f(0.0f, 0.0f, -3.0f))
-                                .get(mat4f))
-                        .setMatrix4("projection", new Matrix4f()
-                                .perspective(Math.toRadians(45.0f), window.getAspect(), 0.1f, 100.0f)
-                                .get(mat4f));
+                program.bind();
+                model.setMatrix4(new Matrix4f()
+                        .rotate(Math.toRadians(-55.0f), new Vector3f(1.0f, 0.0f, 0.0f))
+                        .get(mat4f));
+                view.setMatrix4(new Matrix4f()
+                        .translate(new Vector3f(0.0f, 0.0f, -3.0f))
+                        .get(mat4f));
+                projection.setMatrix4(new Matrix4f()
+                        .perspective(Math.toRadians(45.0f), window.getAspect(), 0.1f, 100.0f)
+                        .get(mat4f));
                 drawable.draw();
 
                 window.swapBuffers().pollEvents();

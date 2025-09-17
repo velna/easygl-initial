@@ -125,8 +125,12 @@ public class C4_1_LightingMapsDiffuse {
                         .setVec3("light.diffuse", 0.5f, 0.5f, 0.5f)
                         .setVec3("light.specular", 1.0f, 1.0f, 1.0f)
                         // material properties
-                        .setVec3("material.specular", 0.5f, 0.5f, 0.5f)// specular lighting doesn't have full effect on this object's material
-                        .setFloat("material.shininess", 64.0f)
+                        .setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+                lightingProgram.getUniform("material.shininess").setFloat(64.0f);
+                // light properties
+                // material properties
+                // specular lighting doesn't have full effect on this object's material
+                lightingProgram
                         .setVec3("viewPos", camera.position())
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))

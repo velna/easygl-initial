@@ -11,7 +11,7 @@ public class GlGeometrySubroutineInterface extends BaseInterface<GeometrySubrout
     }
 
     @Override
-    protected GeometrySubroutine newResource(Program program, int index) {
+    protected GeometrySubroutine newResource(int index) {
         return new GlGeometrySubroutine(program, index);
     }
 }

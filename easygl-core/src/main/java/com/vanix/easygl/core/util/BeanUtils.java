@@ -1,0 +1,122 @@
+package com.vanix.easygl.core.util;
+
+import com.vanix.easygl.commons.Chain;
+import com.vanix.easygl.commons.Chained;
+import com.vanix.easygl.commons.ThrowableBiConsumer;
+import com.vanix.easygl.commons.ThrowableSupplier;
+import com.vanix.easygl.core.graphics.GraphicsException;
+import org.apache.commons.beanutils2.PropertyUtils;
+import org.apache.commons.lang3.reflect.TypeUtils;
+
+import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+
+public class BeanUtils {
+    public static <P> Map<String, Consumer<P>> findSettersOfType(Object bean, Class<P> propertyType) {
+        Map<String, Consumer<P>> map = new HashMap<>();
+        forEachSettersOfType(bean, propertyType, map::put);
+        return map;
+    }
+
+    public static <P> void forEachSettersOfType(Object bean, Class<P> propertyType, BiConsumer<String, Consumer<P>> consumer) {
+        try {
+            findSettersOfType("", bean.getClass(), () -> bean, propertyType, consumer::accept);
+        } catch (Exception e) {
+            throw new GraphicsException("Error bind resource of: " + bean.getClass(), e);
+        }
+    }
+
+    private static <P> void findSettersOfType(String parentName,
+                                              Class<?> beanType,
+                                              ThrowableSupplier<Object, Exception> beanSupplier,
+                                              Class<P> propertyType,
+                                              ThrowableBiConsumer<String, Consumer<P>, Exception> consumer) throws Exception {
+        var cacheSupplier = new CacheSupplier<>(beanSupplier);
+        var descriptors = PropertyUtils.getPropertyDescriptors(beanType);
+        for (var desc : descriptors) {
+            if (desc.getPropertyType().equals(propertyType)) {
+                consumer.accept(parentName + desc.getName(), param -> {
+                    try {
+                        desc.getWriteMethod().invoke(cacheSupplier.get(), param);
+                    } catch (Exception e) {
+                        throw new GraphicsException("Error bind resource of: " + desc.getName(), e);
+                    }
+                });
+            } else {
+                findSettersOfType(parentName + desc.getName() + ".",
+                        desc.getPropertyType(),
+                        () -> desc.getReadMethod().invoke(cacheSupplier.get()),
+                        propertyType,
+                        consumer);
+            }
+        }
+        var fields = beanType.getFields();
+        for (var field : fields) {
+            if (isChainType(field.getGenericType(), propertyType)) {
+                if (!Modifier.isFinal(field.getModifiers()) && !Modifier.isStatic(field.getModifiers())) {
+                    consumer.accept(parentName + field.getName(), param -> {
+                        try {
+                            var bean = cacheSupplier.get();
+                            if (Chain.class.isAssignableFrom(field.getType())) {
+                                Chain<Object, P> chain = (Chain<Object, P>) field.get(bean);
+                                if (chain == null) {
+                                    chain = (Chain) field.getType().getConstructor(Object.class).newInstance(bean);
+                                    field.set(bean, chain);
+                                }
+                                chain.initChain(param);
+                            } else {
+                                field.set(bean, param);
+                            }
+                        } catch (Exception e) {
+                            throw new GraphicsException("Error bind resource of: " + field.getName(), e);
+                        }
+                    });
+                }
+            } else {
+                findSettersOfType(parentName + field.getName() + ".", field.getType(), () -> {
+                    var bean = cacheSupplier.get();
+                    var value = field.get(bean);
+                    if (value == null && Chained.class.isAssignableFrom(field.getType())) {
+                        var ownerType = TypeUtils.getTypeArguments(field.getGenericType(), Chained.class).get(Chained.class.getTypeParameters()[0]);
+                        value = field.getType().getConstructor(TypeUtils.getRawType(ownerType, null)).newInstance(bean);
+                        field.set(bean, value);
+                    }
+                    return value;
+                }, propertyType, consumer);
+            }
+        }
+    }
+
+    private static boolean isChainType(Type type, Class<?> dataType) {
+        if (type instanceof Class<?> classType) {
+            return classType.equals(dataType);
+        } else if (type instanceof ParameterizedType parameterizedType && parameterizedType.getRawType() instanceof Class<?> rawType) {
+            return rawType.equals(dataType)
+                    || (Chain.class.isAssignableFrom(rawType) && TypeUtils.getTypeArguments(type, Chain.class).get(Chain.class.getTypeParameters()[1]).equals(dataType));
+        } else {
+            return false;
+        }
+    }
+
+    private static class CacheSupplier<T, E extends Exception> implements ThrowableSupplier<T, E> {
+        private final ThrowableSupplier<T, E> supplier;
+        private T bean;
+
+        public CacheSupplier(ThrowableSupplier<T, E> supplier) {
+            this.supplier = supplier;
+        }
+
+        @Override
+        public T get() throws E {
+            if (bean == null) {
+                bean = supplier.get();
+            }
+            return bean;
+        }
+    }
+}

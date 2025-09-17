@@ -120,8 +120,12 @@ public class C3_1_Materials {
                         // material properties
                         .setVec3("material.ambient", 1.0f, 0.5f, 0.31f)
                         .setVec3("material.diffuse", 1.0f, 0.5f, 0.31f)
-                        .setVec3("material.specular", 0.5f, 0.5f, 0.5f)// specular lighting doesn't have full effect on this object's material
-                        .setFloat("material.shininess", 32.0f)
+                        .setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+                lightingProgram.getUniform("material.shininess").setFloat(32.0f);
+                // light properties
+                // material properties
+                // specular lighting doesn't have full effect on this object's material
+                lightingProgram
                         .setVec3("viewPos", camera.position())
                         .setMatrix4("projection", projection.get(mat4f))
                         .setMatrix4("view", view.get(mat4f))
