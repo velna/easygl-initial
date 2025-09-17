@@ -323,10 +323,10 @@
 | glGetTransformFeedbackVarying                  |                                                                                    |
 | glGetUniform                                   |                                                                                    |
 | glGetUniformBlockIndex                         |                                                                                    |
-| glGetUniformdv                                 | X                                                                                  |
-| glGetUniformfv                                 | X                                                                                  |
+| glGetUniformdv                                 | Program.getXXX()                                                                   |
+| glGetUniformfv                                 | Program.getXXX()                                                                   |
 | glGetUniformIndices                            | X                                                                                  |
-| glGetUniformiv                                 | X                                                                                  |
+| glGetUniformiv                                 | Program.getXXX()                                                                   |
 | glGetUniformLocation                           |                                                                                    |
 | glGetUniformSubroutine                         | X                                                                                  |
 | glGetUniformSubroutineuiv                      | X                                                                                  |

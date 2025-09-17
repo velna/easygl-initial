@@ -11,7 +11,8 @@ public class BitSet<T> {
         value = e == null ? 0 : maskMapper.applyAsInt(e);
     }
 
-    public BitSet<T> add(T... array) {
+    @SafeVarargs
+    public final BitSet<T> add(T... array) {
         for (var e : array) {
             add(e);
         }
