@@ -39,18 +39,39 @@ public class BeanUtils {
         var cacheSupplier = new CacheSupplier<>(beanSupplier);
         var descriptors = PropertyUtils.getPropertyDescriptors(beanType);
         for (var desc : descriptors) {
-            if (desc.getPropertyType().equals(propertyType)) {
+            if (isChainType(desc.getWriteMethod().getGenericReturnType(), propertyType)) {
                 consumer.accept(parentName + desc.getName(), param -> {
                     try {
-                        desc.getWriteMethod().invoke(cacheSupplier.get(), param);
+                        var bean = cacheSupplier.get();
+                        if (bean == null) {
+                            return;
+                        }
+                        if (Chain.class.isAssignableFrom(desc.getPropertyType())) {
+                            Chain<Object, P> chain = (Chain<Object, P>) desc.getReadMethod().invoke(bean);
+                            if (chain == null) {
+                                chain = (Chain) desc.getPropertyType().getConstructor(Object.class).newInstance(bean);
+                                desc.getWriteMethod().invoke(bean, chain);
+                            }
+                            chain.initChain(param);
+                        } else {
+                            desc.getWriteMethod().invoke(bean, param);
+                        }
                     } catch (Exception e) {
                         throw new GraphicsException("Error bind resource of: " + desc.getName(), e);
                     }
                 });
             } else {
-                findSettersOfType(parentName + desc.getName() + ".",
-                        desc.getPropertyType(),
-                        () -> desc.getReadMethod().invoke(cacheSupplier.get()),
+                findSettersOfType(parentName + desc.getName() + ".", desc.getPropertyType(), () -> {
+                            var bean = cacheSupplier.get();
+                            if (bean == null) {
+                                return null;
+                            }
+                            var value = desc.getReadMethod().invoke(bean);
+                            if (value == null) {
+                                value = checkChainedType(desc.getPropertyType(), desc.getWriteMethod().getGenericReturnType(), bean, desc.getWriteMethod()::invoke);
+                            }
+                            return value;
+                        },
                         propertyType,
                         consumer);
             }
@@ -62,6 +83,9 @@ public class BeanUtils {
                     consumer.accept(parentName + field.getName(), param -> {
                         try {
                             var bean = cacheSupplier.get();
+                            if (bean == null) {
+                                return;
+                            }
                             if (Chain.class.isAssignableFrom(field.getType())) {
                                 Chain<Object, P> chain = (Chain<Object, P>) field.get(bean);
                                 if (chain == null) {
@@ -80,16 +104,27 @@ public class BeanUtils {
             } else {
                 findSettersOfType(parentName + field.getName() + ".", field.getType(), () -> {
                     var bean = cacheSupplier.get();
+                    if (bean == null) {
+                        return null;
+                    }
                     var value = field.get(bean);
-                    if (value == null && Chained.class.isAssignableFrom(field.getType())) {
-                        var ownerType = TypeUtils.getTypeArguments(field.getGenericType(), Chained.class).get(Chained.class.getTypeParameters()[0]);
-                        value = field.getType().getConstructor(TypeUtils.getRawType(ownerType, null)).newInstance(bean);
-                        field.set(bean, value);
+                    if (value == null) {
+                        value = checkChainedType(field.getType(), field.getGenericType(), bean, field::set);
                     }
                     return value;
                 }, propertyType, consumer);
             }
         }
+    }
+
+    private static Object checkChainedType(Class<?> type, Type genericType, Object bean, ThrowingBiConsumer<Object, Object, Exception> consumer) throws Exception {
+        Object value = null;
+        if (Chained.class.isAssignableFrom(type)) {
+            var ownerType = TypeUtils.getTypeArguments(genericType, Chained.class).get(Chained.class.getTypeParameters()[0]);
+            value = type.getConstructor(TypeUtils.getRawType(ownerType, null)).newInstance(bean);
+            consumer.accept(bean, value);
+        }
+        return value;
     }
 
     private static boolean isChainType(Type type, Class<?> dataType) {
