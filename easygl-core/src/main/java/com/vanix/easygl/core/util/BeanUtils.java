@@ -2,8 +2,8 @@ package com.vanix.easygl.core.util;
 
 import com.vanix.easygl.commons.Chain;
 import com.vanix.easygl.commons.Chained;
-import com.vanix.easygl.commons.ThrowableBiConsumer;
-import com.vanix.easygl.commons.ThrowableSupplier;
+import com.vanix.easygl.commons.ThrowingBiConsumer;
+import com.vanix.easygl.commons.ThrowingSupplier;
 import com.vanix.easygl.core.graphics.GraphicsException;
 import org.apache.commons.beanutils2.PropertyUtils;
 import org.apache.commons.lang3.reflect.TypeUtils;
@@ -33,9 +33,9 @@ public class BeanUtils {
 
     private static <P> void findSettersOfType(String parentName,
                                               Class<?> beanType,
-                                              ThrowableSupplier<Object, Exception> beanSupplier,
+                                              ThrowingSupplier<Object, Exception> beanSupplier,
                                               Class<P> propertyType,
-                                              ThrowableBiConsumer<String, Consumer<P>, Exception> consumer) throws Exception {
+                                              ThrowingBiConsumer<String, Consumer<P>, Exception> consumer) throws Exception {
         var cacheSupplier = new CacheSupplier<>(beanSupplier);
         var descriptors = PropertyUtils.getPropertyDescriptors(beanType);
         for (var desc : descriptors) {
@@ -103,11 +103,11 @@ public class BeanUtils {
         }
     }
 
-    private static class CacheSupplier<T, E extends Exception> implements ThrowableSupplier<T, E> {
-        private final ThrowableSupplier<T, E> supplier;
+    private static class CacheSupplier<T, E extends Exception> implements ThrowingSupplier<T, E> {
+        private final ThrowingSupplier<T, E> supplier;
         private T bean;
 
-        public CacheSupplier(ThrowableSupplier<T, E> supplier) {
+        public CacheSupplier(ThrowingSupplier<T, E> supplier) {
             this.supplier = supplier;
         }
 

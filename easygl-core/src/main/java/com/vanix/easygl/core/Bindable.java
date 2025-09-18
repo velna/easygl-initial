@@ -1,6 +1,6 @@
 package com.vanix.easygl.core;
 
-import com.vanix.easygl.commons.ThrowableConsumer;
+import com.vanix.easygl.commons.ThrowingConsumer;
 
 import java.util.function.Consumer;
 
@@ -37,7 +37,7 @@ public interface Bindable<E extends BindTarget<E, T>, T extends Bindable<E, T>> 
         }
     }
 
-    default <R extends Throwable> void useOrThrow(ThrowableConsumer<T, R> callback) throws R {
+    default <R extends Throwable> void useOrThrow(ThrowingConsumer<T, R> callback) throws R {
         try {
             callback.accept(bind());
         } finally {
