@@ -1,9 +1,7 @@
 package com.vanix.easygl.learnopengl.c2_lighting;
 
-import com.vanix.easygl.commons.Chained;
 import com.vanix.easygl.core.g3d.ControllableCamera;
 import com.vanix.easygl.core.graphics.*;
-import com.vanix.easygl.core.graphics.program.UniformChain;
 import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
@@ -36,7 +34,7 @@ public class C3_2_MaterialsExercise1 {
             lightingProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/3.2.materials.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/2_lighting/3.2.materials.fs")
                     .link();
-            var lightingUniforms = lightingProgram.bindResources(new MyUniforms());
+            var lightingUniforms = lightingProgram.bindResources(new Uniforms<>());
 
             lightCubeProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/3.2.light_cube.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/2_lighting/3.2.light_cube.fs")
@@ -116,7 +114,8 @@ public class C3_2_MaterialsExercise1 {
                         .ambient.setVec3(1.0f, 1.0f, 1.0f)
                         .diffuse.setVec3(1.0f, 1.0f, 1.0f)
                         .specular.setVec3(1.0f, 1.0f, 1.0f)
-                        .then().material
+                        .then()
+                        .material
                         .ambient.setVec3(0.0f, 0.1f, 0.06f)
                         .diffuse.setVec3(0.0f, 0.50980392f, 0.50980392f)
                         .specular.setVec3(0.50196078f, 0.50196078f, 0.50196078f)
@@ -129,29 +128,12 @@ public class C3_2_MaterialsExercise1 {
                 cubeDrawable.draw();
 
                 lightCubeProgram.bind();
-                lightCubeUniforms.projection.setMatrix4(projection.get(mat4f));
-                lightCubeUniforms.view.setMatrix4(view.get(mat4f));
-                lightCubeUniforms.model.setMatrix4(new Matrix4f().translate(lightPos).scale(0.2f));
+                lightCubeUniforms.projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(view.get(mat4f))
+                        .model.setMatrix4(new Matrix4f().translate(lightPos).scale(0.2f));
                 lightCubeDrawable.draw();
             }
         }
     }
 
-    public static class MyUniforms extends Uniforms<MyUniforms> {
-        public Material light;
-        public Material material;
-    }
-
-    public static class Material extends Chained.Simple<MyUniforms> {
-        public UniformChain<Material> ambient;
-        public UniformChain<Material> diffuse;
-        public UniformChain<Material> specular;
-        public UniformChain<Material> shininess;
-        public UniformChain<Material> position;
-
-        public Material(MyUniforms owner) {
-            super(owner);
-        }
-
-    }
 }

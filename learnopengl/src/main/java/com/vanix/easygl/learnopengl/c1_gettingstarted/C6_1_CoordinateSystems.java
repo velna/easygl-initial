@@ -66,8 +66,8 @@ public class C6_1_CoordinateSystems {
             }
 
             program.bind();
-            program.getUniform("texture1").setTexture(TextureUnit.U0);
-            program.getUniform("texture2").setTexture(TextureUnit.U1);
+            program.getUniform("texture1").setTextureUnit(TextureUnit.U0);
+            program.getUniform("texture2").setTextureUnit(TextureUnit.U1);
             var model = program.getUniform("model");
             var view = program.getUniform("view");
             var projection = program.getUniform("projection");

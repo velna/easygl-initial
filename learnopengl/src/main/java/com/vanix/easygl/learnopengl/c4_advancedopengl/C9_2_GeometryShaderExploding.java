@@ -7,6 +7,7 @@ import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.media.Model;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.learnopengl.Uniforms;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -34,6 +35,7 @@ public class C9_2_GeometryShaderExploding {
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/9.2.geometry_shader.fs")
                     .attachResource(Shader.Type.Geometry, "shaders/4_advanced_opengl/9.2.geometry_shader.gs")
                     .link();
+            var uniforms = program.bindResources(new Uniforms<>());
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             camera.position().add(10, 15, 15);
@@ -49,10 +51,10 @@ public class C9_2_GeometryShaderExploding {
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 100.0f);
                 var view = camera.update().view();
 
-                program.bind()
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f))
-                        .setMatrix4("model", new Matrix4f()
+                program.bind();
+                uniforms.projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(view.get(mat4f))
+                        .model.setMatrix4(new Matrix4f()
                                 .translate(0.0f, 0.0f, 0.0f)
                                 .scale(1.0f, 1.0f, 1.0f)
                                 .get(mat4f));
@@ -62,7 +64,7 @@ public class C9_2_GeometryShaderExploding {
                     var textures = mesh.getTextures(Model.TextureType.Diffuse);
                     if (!textures.isEmpty()) {
                         mesh.getTextures(Model.TextureType.Diffuse).getFirst().getTexture().bind(TextureUnit.U0);
-                        program.setInt("texture_diffuse1", 0);
+                        program.getUniform("texture_diffuse1").setTextureUnit(TextureUnit.U0);
                     }
                     mesh.draw();
                 }

@@ -6,6 +6,7 @@ import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.learnopengl.Uniforms;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -112,9 +113,10 @@ public class C7_4_CameraClass {
             }
 
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
-            program.bind()
-                    .setInt("texture1", 0)
-                    .setInt("texture2", 1);
+            program.bind();
+            program.getUniform("texture1").setTextureUnit(TextureUnit.U0);
+            program.getUniform("texture2").setTextureUnit(TextureUnit.U1);
+            var uniforms = program.bindResources(new Uniforms<>());
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             camera.setZoomOnMouseScroll(true);
@@ -129,13 +131,13 @@ public class C7_4_CameraClass {
                 TextureUnit.U1.bind();
                 texture2.bind();
 
-                program.bind()
-                        .setMatrix4("projection", new Matrix4f()
+                program.bind();
+                uniforms.projection.setMatrix4(new Matrix4f()
                                 .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 100.0f)
                                 .get(mat4f))
-                        .setMatrix4("view", camera.update().view().get(mat4f));
+                        .view.setMatrix4(camera.update().view().get(mat4f));
                 for (var i = 0; i < cubePositions.length; i++) {
-                    program.setMatrix4("model", new Matrix4f()
+                    uniforms.model.setMatrix4(new Matrix4f()
                             .translate(cubePositions[i])
                             .rotate(Math.toRadians(20.0f * i), new Vector3f(1.0f, 0.3f, 0.5f))
                             .get(mat4f));

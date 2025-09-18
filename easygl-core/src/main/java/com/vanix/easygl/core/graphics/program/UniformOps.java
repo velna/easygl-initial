@@ -221,7 +221,7 @@ public interface UniformOps<T> {
     @Support(since = Version.GL40)
     Matrix4x3d getMatrix4X3(Matrix4x3d matrix);
 
-    default T setTexture(TextureUnit unit) {
+    default T setTextureUnit(TextureUnit unit) {
         return setInt(unit.index());
     }
 

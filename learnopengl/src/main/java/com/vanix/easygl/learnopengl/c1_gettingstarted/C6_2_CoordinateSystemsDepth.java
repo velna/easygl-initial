@@ -5,6 +5,7 @@ import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.learnopengl.Uniforms;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -98,9 +99,10 @@ public class C6_2_CoordinateSystemsDepth {
                 texture2.load(0, InternalPixelFormat.Base.RGB, image).generateMipmap();
             }
 
-            program.bind()
-                    .setInt("texture1", 0)
-                    .setInt("texture2", 1);
+            program.bind();
+            program.getUniform("texture1").setTextureUnit(TextureUnit.U0);
+            program.getUniform("texture2").setTextureUnit(TextureUnit.U1);
+            var uniforms = program.bindResources(new Uniforms<>());
 
             long start = System.currentTimeMillis();
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
@@ -116,14 +118,14 @@ public class C6_2_CoordinateSystemsDepth {
 
                 float time = (System.currentTimeMillis() - start) / 1000.0f;
 
-                program.bind()
-                        .setMatrix4("model", new Matrix4f()
+                program.bind();
+                uniforms.model.setMatrix4(new Matrix4f()
                                 .rotate(time, new Vector3f(0.5f, 1.0f, 0.0f))
                                 .get(mat4f))
-                        .setMatrix4("view", new Matrix4f()
+                        .view.setMatrix4(new Matrix4f()
                                 .translate(new Vector3f(0.0f, 0.0f, -3.0f))
                                 .get(mat4f))
-                        .setMatrix4("projection", new Matrix4f()
+                        .projection.setMatrix4(new Matrix4f()
                                 .perspective(Math.toRadians(45.0f), window.getAspect(), 0.1f, 100.0f)
                                 .get(mat4f));
                 drawable.draw();

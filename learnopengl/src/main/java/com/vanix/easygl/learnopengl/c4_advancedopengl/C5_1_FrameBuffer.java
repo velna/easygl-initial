@@ -7,6 +7,7 @@ import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.media.Image;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.learnopengl.Uniforms;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -46,6 +47,7 @@ public class C5_1_FrameBuffer {
             program.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/5.1.framebuffers.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/5.1.framebuffers.fs")
                     .link();
+            var uniforms = program.bindResources(new Uniforms<>());
             screenProgram.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/5.1.framebuffers_screen.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/5.1.framebuffers_screen.fs")
                     .link();
@@ -131,8 +133,10 @@ public class C5_1_FrameBuffer {
                     .load("textures/metal.png")
                     .generateMipmap();
 
-            program.bind().setInt("texture1", 0);
-            screenProgram.bind().setInt("screenTexture", 0);
+            program.bind()
+                    .getUniform("texture1").setTextureUnit(TextureUnit.U0);
+            screenProgram.bind()
+                    .getUniform("screenTexture").setTextureUnit(TextureUnit.U0);
 
             frameBuffer.bindDraw()
                     .attach(FrameInnerBuffer.Attachment.ofColor(0),
@@ -159,18 +163,18 @@ public class C5_1_FrameBuffer {
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 100.0f);
                 var view = camera.update().view();
 
-                program.bind()
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f));
+                program.bind();
+                uniforms.projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(view.get(mat4f));
 
                 cubeTexture.bind(TextureUnit.U0);
-                program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
+                uniforms.model.setMatrix4(new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
                 cubeDrawable.draw();
-                program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
+                uniforms.model.setMatrix4(new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
                 cubeDrawable.draw();
 
                 floorTexture.bind();
-                program.setMatrix4("model", new Matrix4f().get(mat4f));
+                uniforms.model.setMatrix4(new Matrix4f().get(mat4f));
                 planeDrawable.draw();
 
                 graphics.depthTest().disable().then()

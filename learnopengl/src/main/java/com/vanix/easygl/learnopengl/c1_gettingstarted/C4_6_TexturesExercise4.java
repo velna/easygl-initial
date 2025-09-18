@@ -65,8 +65,8 @@ public class C4_6_TexturesExercise4 {
             }
 
             program.bind();
-            program.getUniform("texture1").setTexture(TextureUnit.U0);
-            program.getUniform("texture2").setTexture(TextureUnit.U1);
+            program.getUniform("texture1").setTextureUnit(TextureUnit.U0);
+            program.getUniform("texture2").setTextureUnit(TextureUnit.U1);
 
             var drawable = vao.drawingElements(DrawMode.Triangles, ebo).build();
             while (!window.shouldClose()) {

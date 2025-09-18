@@ -5,6 +5,7 @@ import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.learnopengl.Uniforms;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -37,10 +38,12 @@ public class C5_1_LightCastersDirectional {
             lightingProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/5.1.light_casters.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/2_lighting/5.1.light_casters.fs")
                     .link();
+            var lightingUniforms = lightingProgram.bindResources(new Uniforms<>());
 
             lightCubeProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/5.1.light_cube.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/2_lighting/5.1.light_cube.fs")
                     .link();
+            var lightingCubeUniforms = lightCubeProgram.bindResources(new Uniforms<>());
 
             vbo.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // normals           // texture coords
@@ -112,9 +115,10 @@ public class C5_1_LightCastersDirectional {
                     .load("textures/container2_specular.png")
                     .generateMipmap();
 
-            lightingProgram.bind()
-                    .setInt("material.diffuse", 0)
-                    .setInt("material.specular", 1);
+            lightingProgram.bind();
+            lightingUniforms.material
+                    .diffuse.setTextureUnit(TextureUnit.U0)
+                    .specular.setTextureUnit(TextureUnit.U1);
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             var lightPos = new Vector3f(1.2f, 1.0f, 2.0f);
@@ -136,19 +140,18 @@ public class C5_1_LightCastersDirectional {
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 100.0f);
                 var view = camera.update().view();
 
-                lightingProgram.bind()
-                        // light properties
-                        .setVec3("light.ambient", 0.2f, 0.2f, 0.2f)
-                        .setVec3("light.diffuse", 0.5f, 0.5f, 0.5f)
-                        .setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-                lightingProgram.getUniform("material.shininess").setFloat(32.0f);
-                // light properties
-                // material properties
-                lightingProgram
-                        .setVec3("viewPos", camera.position())
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f))
-                        .setMatrix4("model", new Matrix4f());
+                lightingProgram.bind();
+                lightingUniforms.light
+                        .ambient.setVec3(0.2f, 0.2f, 0.2f)
+                        .diffuse.setVec3(0.5f, 0.5f, 0.5f)
+                        .specular.setVec3(1.0f, 1.0f, 1.0f)
+                        // material properties
+                        .then().material
+                        .shininess.setFloat(32.0f)
+                        .then()
+                        .viewPos.setVec3(camera.position())
+                        .projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(view.get(mat4f));
 
                 diffuseMap.bind(TextureUnit.U0);
                 specularMap.bind(TextureUnit.U1);
@@ -156,18 +159,19 @@ public class C5_1_LightCastersDirectional {
 //                cubeVAO.bind().drawArray(DrawMode.Triangles, vbo);
 
                 for (var i = 0; i < cubePositions.length; i++) {
-                    lightingProgram.setMatrix4("model", new Matrix4f()
+                    lightingUniforms.model.setMatrix4(new Matrix4f()
                                     .translate(cubePositions[i])
                                     .rotate(Math.toRadians(20.0f * i), new Vector3f(1.0f, 0.3f, 0.5f))
                                     .get(mat4f))
-                            .setVec3("light.direction", lightPos);
+                            .light.direction.setVec3(lightPos);
                     cubeDrawable.draw();
                 }
 
-                lightCubeProgram.bind()
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f))
-                        .setMatrix4("model", new Matrix4f().translate(lightPos).scale(0.2f));
+                lightCubeProgram.bind();
+                lightingCubeUniforms
+                        .projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(view.get(mat4f))
+                        .model.setMatrix4(new Matrix4f().translate(lightPos).scale(0.2f));
                 lightCubeDrawable.draw();
 
                 window.swapBuffers().pollEvents();

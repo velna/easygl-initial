@@ -7,6 +7,7 @@ import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.learnopengl.Uniforms;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -36,6 +37,7 @@ public class C1_AdvancedLighting {
             program.attachResource(Shader.Type.Vertex, "shaders/5_advanced_lighting/1.advanced_lighting.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/5_advanced_lighting/1.advanced_lighting.fs")
                     .link();
+            var uniforms = program.bindResources(new Uniforms<>());
 
             planeVbo.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions            // normals         // texcoords
@@ -79,12 +81,11 @@ public class C1_AdvancedLighting {
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 100.0f);
                 var view = camera.update().view();
 
-                program.bind()
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f))
-                        .setVec3("viewPos", camera.position())
-                        .setVec3("lightPos", lightPos)
-                        .setBoolean("blinn", false);
+                program.bind().getUniform("blinn").setBoolean(false);
+                uniforms.projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(view.get(mat4f))
+                        .viewPos.setVec3(camera.position())
+                        .lightPos.setVec3(lightPos);
 
                 floorTexture.bind();
 

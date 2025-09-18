@@ -8,6 +8,7 @@ import com.vanix.easygl.core.graphics.GraphicsException;
 import org.apache.commons.beanutils2.PropertyUtils;
 import org.apache.commons.lang3.reflect.TypeUtils;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -121,10 +122,19 @@ public class BeanUtils {
         Object value = null;
         if (Chained.class.isAssignableFrom(type)) {
             var ownerType = TypeUtils.getTypeArguments(genericType, Chained.class).get(Chained.class.getTypeParameters()[0]);
-            value = type.getConstructor(TypeUtils.getRawType(ownerType, null)).newInstance(bean);
+            value = findConstructorOfParamType(type, TypeUtils.getRawType(ownerType, null)).newInstance(bean);
             consumer.accept(bean, value);
         }
         return value;
+    }
+
+    private static Constructor<?> findConstructorOfParamType(Class<?> type, Class<?> paramType) throws NoSuchMethodException {
+        for (var constructor : type.getConstructors()) {
+            if (constructor.getParameterCount() == 1 && constructor.getParameterTypes()[0].isAssignableFrom(paramType)) {
+                return constructor;
+            }
+        }
+        throw new NoSuchMethodException("Can not find method of param type " + paramType + " in class " + type);
     }
 
     private static boolean isChainType(Type type, Class<?> dataType) {

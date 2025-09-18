@@ -6,6 +6,7 @@ import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.learnopengl.Uniforms;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -41,6 +42,7 @@ public class C11_2_AntiAliasingMsaaOffscreen {
             program.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/11.2.anti_aliasing.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/11.2.anti_aliasing.fs")
                     .link();
+            var uniforms = program.bindResources(new Uniforms<>());
             screenProgram.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/11.2.aa_post.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/11.2.aa_post.fs")
                     .link();
@@ -126,7 +128,8 @@ public class C11_2_AntiAliasingMsaaOffscreen {
                     .checkStatus()
                     .unbind();
 
-            screenProgram.bind().setInt("screenTexture", 0);
+            screenProgram.bind()
+                    .getUniform("screenTexture").setTextureUnit(TextureUnit.U0);
 
             var cubeDrawable = cubeVao.drawingArrays(DrawMode.Triangles, cubeTriangleCount).build();
             var quadDrawable = quadVao.drawingArrays(DrawMode.Triangles, quadTriangleCount).build();
@@ -144,10 +147,11 @@ public class C11_2_AntiAliasingMsaaOffscreen {
                 var projection = new Matrix4f()
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 100.0f);
 
-                program.bind()
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", camera.update().view().get(mat4f))
-                        .setMatrix4("model", new Matrix4f().get(mat4f));
+                program.bind();
+                uniforms
+                        .projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(camera.update().view().get(mat4f))
+                        .model.setMatrix4(new Matrix4f().get(mat4f));
                 cubeDrawable.draw();
 
                 frameBuffer.bindRead();

@@ -5,14 +5,11 @@ import com.vanix.easygl.core.Bindable;
 import com.vanix.easygl.core.Support;
 import com.vanix.easygl.core.graphics.program.Uniform;
 import com.vanix.easygl.core.graphics.program.UniformBlock;
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.util.List;
 
 public interface Program extends Bindable<BindTarget.Default<Program>, Program> {
@@ -88,36 +85,6 @@ public interface Program extends Bindable<BindTarget.Default<Program>, Program> 
     Program setSeparable(boolean separable);
 
     <B> B bindResources(B bean);
-
-    //region Set Uniforms
-    default Program setBoolean(String key, boolean value) {
-        return setInt(key, value ? 1 : 0);
-    }
-
-    default Program setInt(String key, int value) {
-        getUniform(key).setInt(value);
-        return this;
-    }
-
-    default Program setVec3(String key, float v1, float v2, float v3) {
-        getUniform(key).setVec3(v1, v2, v3);
-        return this;
-    }
-
-    default Program setMatrix4(String key, FloatBuffer buffer) {
-        getUniform(key).setMatrix4(buffer);
-        return this;
-    }
-
-    default Program setVec3(String key, Vector3f value) {
-        return setVec3(key, value.x, value.y, value.z);
-    }
-
-    default Program setMatrix4(String key, Matrix4f value) {
-        getUniform(key).setMatrix4(value);
-        return this;
-    }
-    //endregion
 
     boolean getAttribute(ProgramAttribute.Bool attribute);
 

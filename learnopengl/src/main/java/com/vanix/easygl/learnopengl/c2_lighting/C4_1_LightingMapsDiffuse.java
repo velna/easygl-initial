@@ -5,6 +5,7 @@ import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.learnopengl.Uniforms;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -34,10 +35,12 @@ public class C4_1_LightingMapsDiffuse {
             lightingProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/4.1.lighting_maps.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/2_lighting/4.1.lighting_maps.fs")
                     .link();
+            var lightingUniforms = lightingProgram.bindResources(new Uniforms<>());
 
             lightCubeProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/4.1.light_cube.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/2_lighting/4.1.light_cube.fs")
                     .link();
+            var lightingCubeUniforms = lightCubeProgram.bindResources(new Uniforms<>());
 
             vbo.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // normals           // texture coords
@@ -95,7 +98,8 @@ public class C4_1_LightingMapsDiffuse {
                     .load("textures/container2.png")
                     .generateMipmap();
 
-            lightingProgram.bind().setInt("material.diffuse", 0);
+            lightingProgram.bind();
+            lightingUniforms.material.diffuse.setTextureUnit(TextureUnit.U0);
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             var lightPos = new Vector3f(1.2f, 1.0f, 2.0f);
@@ -118,32 +122,32 @@ public class C4_1_LightingMapsDiffuse {
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 100.0f);
                 var view = camera.update().view();
 
-                lightingProgram.bind()
-                        // light properties
-                        .setVec3("light.position", lightPos)
-                        .setVec3("light.ambient", 0.2f, 0.2f, 0.2f)
-                        .setVec3("light.diffuse", 0.5f, 0.5f, 0.5f)
-                        .setVec3("light.specular", 1.0f, 1.0f, 1.0f)
-                        // material properties
-                        .setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-                lightingProgram.getUniform("material.shininess").setFloat(64.0f);
+                lightingProgram.bind();
                 // light properties
-                // material properties
-                // specular lighting doesn't have full effect on this object's material
-                lightingProgram
-                        .setVec3("viewPos", camera.position())
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f))
-                        .setMatrix4("model", new Matrix4f());
+                lightingUniforms.light
+                        .position.setVec3(lightPos)
+                        .ambient.setVec3(0.2f, 0.2f, 0.2f)
+                        .diffuse.setVec3(0.5f, 0.5f, 0.5f)
+                        .specular.setVec3(1.0f, 1.0f, 1.0f)
+                        // material properties
+                        .then().material
+                        .specular.setVec3(0.5f, 0.5f, 0.5f)
+                        .shininess.setFloat(64.0f)
+                        .then()
+                        .viewPos.setVec3(camera.position())
+                        .projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(view.get(mat4f))
+                        .model.setMatrix4(new Matrix4f());
 
                 TextureUnit.U0.bind();
                 diffuseMap.bind();
                 cubeDrawable.draw();
 
-                lightCubeProgram.bind()
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f))
-                        .setMatrix4("model", new Matrix4f().translate(lightPos).scale(0.2f));
+                lightCubeProgram.bind();
+                lightingCubeUniforms
+                        .projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(view.get(mat4f))
+                        .model.setMatrix4(new Matrix4f().translate(lightPos).scale(0.2f));
                 lightCubeDrawable.draw();
 
                 window.swapBuffers().pollEvents();

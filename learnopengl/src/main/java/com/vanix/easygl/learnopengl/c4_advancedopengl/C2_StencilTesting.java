@@ -7,6 +7,7 @@ import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.learnopengl.Uniforms;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -45,9 +46,11 @@ public class C2_StencilTesting {
             program.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/2.stencil_testing.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/2.stencil_testing.fs")
                     .link();
+            var uniforms = program.bindResources(new Uniforms<>());
             singleColorProgram.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/2.stencil_testing.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/2.stencil_single_color.fs")
                     .link();
+            var singleColorUniforms = singleColorProgram.bindResources(new Uniforms<>());
 
             cubeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // texture Coords
@@ -119,7 +122,8 @@ public class C2_StencilTesting {
                     .load("textures/metal.png")
                     .generateMipmap();
 
-            program.bind().setInt("texture1", 0);
+            program.bind()
+                    .getUniform("texture1").setTextureUnit(TextureUnit.U0);
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
@@ -134,13 +138,13 @@ public class C2_StencilTesting {
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 100.0f);
                 var view = camera.update().view();
 
-                singleColorProgram.bind()
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f));
+                singleColorProgram.bind();
+                singleColorUniforms.projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(view.get(mat4f));
 
-                program.bind()
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f));
+                program.bind();
+                uniforms.projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(view.get(mat4f));
 
                 // draw floor as normal, but don't write the floor to the stencil buffer,
                 // we only care about the containers.
@@ -150,7 +154,7 @@ public class C2_StencilTesting {
                 //floor
                 planeVAO.bind();
                 floorTexture.bind();
-                program.setMatrix4("model", new Matrix4f().get(mat4f));
+                uniforms.model.setMatrix4(new Matrix4f().get(mat4f));
                 planeDrawable.draw();
 
                 // 1st. render pass, draw objects as normal, writing to the stencil buffer
@@ -161,9 +165,9 @@ public class C2_StencilTesting {
                 // cubes
                 cubeVAO.bind();
                 cubeTexture.bind(TextureUnit.U0);
-                program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
+                uniforms.model.setMatrix4(new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
                 cubeDrawable.draw();
-                program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
+                uniforms.model.setMatrix4(new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
                 cubeDrawable.draw();
 
                 // 2nd. render pass: now draw slightly scaled versions of the objects, this time disabling stencil writing.
@@ -178,12 +182,12 @@ public class C2_StencilTesting {
                 // cubes
                 cubeVAO.bind();
                 cubeTexture.bind();
-                singleColorProgram.setMatrix4("model", new Matrix4f()
+                singleColorUniforms.model.setMatrix4(new Matrix4f()
                         .translate(-1.0f, 0.0f, -1.0f)
                         .scale(scale)
                         .get(mat4f));
                 cubeDrawable.draw();
-                singleColorProgram.setMatrix4("model", new Matrix4f()
+                singleColorUniforms.model.setMatrix4(new Matrix4f()
                         .translate(2.0f, 0.0f, 0.0f)
                         .scale(scale)
                         .get(mat4f));
