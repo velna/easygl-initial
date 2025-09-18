@@ -60,9 +60,9 @@ public class C4_4_TexturesExercise2 {
                 texture2.load(0, InternalPixelFormat.Base.RGB, image).generateMipmap();
             }
 
-            program.bind()
-                    .setInt("texture1", 0)
-                    .setInt("texture2", 1);
+            program.bind();
+            program.getUniform("texture1").setTextureUnit(TextureUnit.U0);
+            program.getUniform("texture2").setTextureUnit(TextureUnit.U1);
 
             var drawable = vao.drawingElements(DrawMode.Triangles, ebo).build();
             while (!window.shouldClose()) {

@@ -10,6 +10,7 @@ import com.vanix.easygl.core.media.Mesh;
 import com.vanix.easygl.core.media.Model;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.learnopengl.Uniforms;
 import lombok.extern.slf4j.Slf4j;
 import org.joml.Math;
 import org.joml.Matrix4f;
@@ -44,9 +45,11 @@ public class C10_3_AsteroidsInstanced {
             asteroidProgram.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/10.3.asteroids.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/10.3.asteroids.fs")
                     .link();
+            var asteroidUniforms = asteroidProgram.bindResources(new Uniforms<>());
             planetProgram.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/10.3.planet.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/10.3.planet.fs")
                     .link();
+            var planetUniforms = planetProgram.bindResources(new Uniforms<>());
 
 
             // generate a large list of semi-random model transformation matrices
@@ -105,18 +108,20 @@ public class C10_3_AsteroidsInstanced {
                 var projection = new Matrix4f()
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 1000.0f);
 
-                planetProgram.bind()
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", camera.update().view().get(mat4f))
-                        .setMatrix4("model", new Matrix4f()
+                planetProgram.bind();
+                planetUniforms
+                        .projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(camera.update().view().get(mat4f))
+                        .model.setMatrix4(new Matrix4f()
                                 .translate(0.0f, -3.0f, 0.0f)
                                 .scale(4.0f, 4.0f, 4.0f).get(mat4f));
                 drawModel(planetProgram, planetMeshes);
 
                 asteroidProgram.bind()
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", camera.update().view().get(mat4f))
-                        .setInt("texture_diffuse1", 0);
+                        .getUniform("texture_diffuse1").setTextureUnit(TextureUnit.U0);
+                asteroidUniforms
+                        .projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(camera.update().view().get(mat4f));
                 TextureUnit.U0.bind();
                 rock.getTextures(Model.TextureType.Height).getFirst().getTexture().bind();
                 drawables.forEach(Drawing::draw);
@@ -128,11 +133,12 @@ public class C10_3_AsteroidsInstanced {
 
     private static void drawModel(Program program, List<Mesh> meshes) {
         for (Mesh mesh : meshes) {
-            if (program.containsUniform("texture_diffuse1")) {
+            var uniform = program.getUniform("texture_diffuse1");
+            if (uniform != null) {
                 var textures = mesh.getTextures(Model.TextureType.Diffuse);
                 if (!textures.isEmpty()) {
                     textures.getFirst().getTexture().bind(TextureUnit.U0);
-                    program.setInt("texture_diffuse1", 0);
+                    uniform.setTextureUnit(TextureUnit.U0);
                 }
             }
             mesh.draw();

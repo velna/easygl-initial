@@ -64,9 +64,9 @@ public class C4_6_TexturesExercise4 {
                 texture2.load(0, InternalPixelFormat.Base.RGB, image).generateMipmap();
             }
 
-            program.bind()
-                    .setInt("texture1", 0)
-                    .setInt("texture2", 1);
+            program.bind();
+            program.getUniform("texture1").setTextureUnit(TextureUnit.U0);
+            program.getUniform("texture2").setTextureUnit(TextureUnit.U1);
 
             var drawable = vao.drawingElements(DrawMode.Triangles, ebo).build();
             while (!window.shouldClose()) {
@@ -78,7 +78,7 @@ public class C4_6_TexturesExercise4 {
                 TextureUnit.U1.bind();
                 texture2.bind();
 
-                program.bind().setFloat("mixValue", mixValue);
+                program.bind().getUniform("mixValue").setFloat(mixValue);
                 drawable.draw();
 
                 window.swapBuffers().pollEvents();

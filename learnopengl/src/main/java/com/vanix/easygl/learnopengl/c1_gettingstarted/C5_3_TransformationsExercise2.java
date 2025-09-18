@@ -64,9 +64,9 @@ public class C5_3_TransformationsExercise2 {
                 texture2.load(0, InternalPixelFormat.Base.RGB, image).generateMipmap();
             }
 
-            program.bind()
-                    .setInt("texture1", 0)
-                    .setInt("texture2", 1);
+            program.bind();
+            program.getUniform("texture1").setTextureUnit(TextureUnit.U0);
+            program.getUniform("texture2").setTextureUnit(TextureUnit.U1);
 
             long start = System.currentTimeMillis();
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
@@ -82,12 +82,12 @@ public class C5_3_TransformationsExercise2 {
 
                 float time = (System.currentTimeMillis() - start) / 1000.0f;
 
-                program.bind().setMatrix4("transform", new Matrix4f()
+                program.bind().getUniform("transform").setMatrix4(new Matrix4f()
                         .translate(new Vector3f(0.5f, -0.5f, 0.0f))
                         .rotate(time, new Vector3f(0.0f, 0.0f, 1.0f)).get(mat4f));
                 drawable.draw();
 
-                program.bind().setMatrix4("transform", new Matrix4f()
+                program.bind().getUniform("transform").setMatrix4(new Matrix4f()
                         .translate(new Vector3f(-0.5f, 0.5f, 0.0f))
                         .scale((float) Math.sin(time)).get(mat4f));
                 drawable.draw();

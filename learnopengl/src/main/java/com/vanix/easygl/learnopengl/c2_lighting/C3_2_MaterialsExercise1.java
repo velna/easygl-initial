@@ -1,10 +1,11 @@
 package com.vanix.easygl.learnopengl.c2_lighting;
 
+import com.vanix.easygl.core.g3d.ControllableCamera;
 import com.vanix.easygl.core.graphics.*;
 import com.vanix.easygl.core.input.Keyboard;
-import com.vanix.easygl.core.g3d.ControllableCamera;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.learnopengl.Uniforms;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -33,10 +34,12 @@ public class C3_2_MaterialsExercise1 {
             lightingProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/3.2.materials.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/2_lighting/3.2.materials.fs")
                     .link();
+            var lightingUniforms = lightingProgram.bindResources(new Uniforms<>());
 
             lightCubeProgram.attachResource(Shader.Type.Vertex, "shaders/2_lighting/3.2.light_cube.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/2_lighting/3.2.light_cube.fs")
                     .link();
+            var lightCubeUniforms = lightCubeProgram.bindResources(new Uniforms<>());
 
             vbo.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
@@ -92,7 +95,7 @@ public class C3_2_MaterialsExercise1 {
             var cubeDrawable = cubeVAO.drawingArrays(DrawMode.Triangles, cubeTriangleCount).build();
             var lightCubeDrawable = lightCubeVAO.drawingArrays(DrawMode.Triangles, lightTriangleCount).build();
             long start = System.currentTimeMillis();
-            while (!window.shouldClose()) {
+            while (!window.swapBuffers().pollEvents().shouldClose()) {
                 graphics.defaultFrameBuffer().setClearColor(0.2f, 0.3f, 0.3f, 1.0f)
                         .clear(FrameInnerBuffer.Mask.ColorAndDepth);
 
@@ -105,30 +108,30 @@ public class C3_2_MaterialsExercise1 {
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 100.0f);
                 var view = camera.update().view();
 
-                lightingProgram.bind()
-                        // light properties
-                        .setVec3("light.position", lightPos)
-                        .setVec3("light.ambient", 1.0f, 1.0f, 1.0f) // note that all light colors are set at full intensity
-                        .setVec3("light.diffuse", 1.0f, 1.0f, 1.0f)
-                        .setVec3("light.specular", 1.0f, 1.0f, 1.0f)
-                        // material properties
-                        .setVec3("material.ambient", 0.0f, 0.1f, 0.06f)
-                        .setVec3("material.diffuse", 0.0f, 0.50980392f, 0.50980392f)
-                        .setVec3("material.specular", 0.50196078f, 0.50196078f, 0.50196078f)
-                        .setFloat("material.shininess", 32.0f)
-                        .setVec3("viewPos", camera.position())
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f))
-                        .setMatrix4("model", new Matrix4f());
+                lightingProgram.bind();
+                lightingUniforms.light
+                        .position.setVec3(lightPos)
+                        .ambient.setVec3(1.0f, 1.0f, 1.0f)
+                        .diffuse.setVec3(1.0f, 1.0f, 1.0f)
+                        .specular.setVec3(1.0f, 1.0f, 1.0f)
+                        .then()
+                        .material
+                        .ambient.setVec3(0.0f, 0.1f, 0.06f)
+                        .diffuse.setVec3(0.0f, 0.50980392f, 0.50980392f)
+                        .specular.setVec3(0.50196078f, 0.50196078f, 0.50196078f)
+                        .shininess.setFloat(32.0f)
+                        .then()
+                        .viewPos.setVec3(camera.position())
+                        .projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(view.get(mat4f))
+                        .model.setMatrix4(new Matrix4f());
                 cubeDrawable.draw();
 
-                lightCubeProgram.bind()
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f))
-                        .setMatrix4("model", new Matrix4f().translate(lightPos).scale(0.2f));
+                lightCubeProgram.bind();
+                lightCubeUniforms.projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(view.get(mat4f))
+                        .model.setMatrix4(new Matrix4f().translate(lightPos).scale(0.2f));
                 lightCubeDrawable.draw();
-
-                window.swapBuffers().pollEvents();
             }
         }
     }

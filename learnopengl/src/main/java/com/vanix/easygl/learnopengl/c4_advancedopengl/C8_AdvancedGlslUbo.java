@@ -109,7 +109,7 @@ public class C8_AdvancedGlslUbo {
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
 
-            var cubeDrawable = cubeVAO.drawingArrays(DrawMode.Triangles, cubeVBO.count()/3).build();
+            var cubeDrawable = cubeVAO.drawingArrays(DrawMode.Triangles, cubeVBO.count() / 3).build();
             while (!window.shouldClose()) {
                 graphics.depthTest().enable().then()
                         .defaultFrameBuffer().setClearColor(0.1f, 0.1f, 0.1f, 1.0f)
@@ -123,19 +123,19 @@ public class C8_AdvancedGlslUbo {
                 matricesMapping.flush();
 
                 programRed.bind()
-                        .setMatrix4("model", new Matrix4f().translate(-0.75f, 0.75f, 0.0f).get(mat4f));
+                        .getUniform("model").setMatrix4(new Matrix4f().translate(-0.75f, 0.75f, 0.0f).get(mat4f));
                 cubeDrawable.draw();
 
                 programGreen.bind()
-                        .setMatrix4("model", new Matrix4f().translate(0.75f, 0.75f, 0.0f).get(mat4f));
+                        .getUniform("model").setMatrix4(new Matrix4f().translate(0.75f, 0.75f, 0.0f).get(mat4f));
                 cubeDrawable.draw();
 
                 programBlue.bind()
-                        .setMatrix4("model", new Matrix4f().translate(-0.75f, -0.75f, 0.0f).get(mat4f));
+                        .getUniform("model").setMatrix4(new Matrix4f().translate(-0.75f, -0.75f, 0.0f).get(mat4f));
                 cubeDrawable.draw();
 
                 programYellow.bind()
-                        .setMatrix4("model", new Matrix4f().translate(0.75f, -0.75f, 0.0f).get(mat4f));
+                        .getUniform("model").setMatrix4(new Matrix4f().translate(0.75f, -0.75f, 0.0f).get(mat4f));
                 cubeDrawable.draw();
 
                 window.swapBuffers().pollEvents();

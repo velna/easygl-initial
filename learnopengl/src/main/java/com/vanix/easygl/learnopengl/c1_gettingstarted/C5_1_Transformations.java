@@ -62,9 +62,9 @@ public class C5_1_Transformations {
                 texture2.load(0, InternalPixelFormat.Base.RGB, image).generateMipmap();
             }
 
-            program.bind()
-                    .setInt("texture1", 0)
-                    .setInt("texture2", 1);
+            program.bind();
+            program.getUniform("texture1").setTextureUnit(TextureUnit.U0);
+            program.getUniform("texture2").setTextureUnit(TextureUnit.U1);
 
             long start = System.currentTimeMillis();
             var drawable = vao.drawingElements(DrawMode.Triangles, ebo).build();
@@ -81,7 +81,7 @@ public class C5_1_Transformations {
                 var transform = new Matrix4f()
                         .translate(new Vector3f(0.5f, -0.5f, 0.0f))
                         .rotate((System.currentTimeMillis() - start) / 1000.0f, new Vector3f(0.0f, 0.0f, 1.0f));
-                program.bind().setMatrix4("transform", transform);
+                program.bind().getUniform("transform").setMatrix4(transform);
                 drawable.draw();
 
                 window.swapBuffers().pollEvents();

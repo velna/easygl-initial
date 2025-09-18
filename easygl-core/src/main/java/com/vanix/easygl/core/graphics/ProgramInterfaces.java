@@ -3,6 +3,9 @@ package com.vanix.easygl.core.graphics;
 import com.vanix.easygl.core.graphics.program.*;
 
 public interface ProgramInterfaces {
+
+    <B> B bindResources(B bean);
+
     UniformInterface uniform();
 
     UniformBlockInterface uniformBlock();

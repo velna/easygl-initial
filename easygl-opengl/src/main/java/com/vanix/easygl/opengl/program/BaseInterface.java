@@ -1,32 +1,41 @@
 package com.vanix.easygl.opengl.program;
 
+import com.vanix.easygl.commons.util.LazyList;
 import com.vanix.easygl.core.graphics.Program;
 import com.vanix.easygl.core.graphics.ProgramInterface;
 import com.vanix.easygl.core.graphics.ProgramResource;
 import com.vanix.easygl.opengl.GLX;
 import com.vanix.easygl.opengl.GlProgramInterfaceType;
+import com.vanix.easygl.opengl.Invalidatable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class BaseInterface<T extends ProgramResource<T>> implements
+public abstract class BaseInterface<T extends ProgramResource<T>> implements Invalidatable,
         ProgramInterface.Named<T>,
         ProgramInterface.Variable<T>,
         ProgramInterface.SubroutineUniform<T> {
-    private final Program program;
+    protected final Program program;
     private final GlProgramInterfaceType type;
+    private final List<T> resources = new ArrayList<>();
+    private final List<T> resourcesLazy = LazyList.lazyList(resources, this::newResource);
 
     public BaseInterface(Program program, GlProgramInterfaceType type) {
         this.program = program;
         this.type = type;
     }
 
-    protected abstract T newResource(Program program, int index);
+    protected abstract T newResource(int index);
+
+    @Override
+    public void invalidate() {
+        resources.clear();
+    }
 
     @Override
     public T getResource(int index) {
-        return index >= getActiveResources() ? null : newResource(program, index);
+        return index >= getActiveResources() ? null : resourcesLazy.get(index);
     }
 
     @Override
@@ -37,7 +46,7 @@ public abstract class BaseInterface<T extends ProgramResource<T>> implements
         } else {
             List<T> list = new ArrayList<>(n);
             for (int i = 0; i < n; i++) {
-                list.add(newResource(program, i));
+                list.add(resourcesLazy.get(i));
             }
             return list;
         }
@@ -46,7 +55,7 @@ public abstract class BaseInterface<T extends ProgramResource<T>> implements
     @Override
     public T getResource(String name) {
         int index = GLX.glGetProgramResourceIndex(program.intHandle(), type.value(), name);
-        return index == GLX.GL_INVALID_INDEX ? null : newResource(program, index);
+        return index == GLX.GL_INVALID_INDEX ? null : resourcesLazy.get(index);
     }
 
     @Override

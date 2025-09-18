@@ -56,17 +56,17 @@ public class C9_3_NormalVisualization {
                         .scale(1.0f, 1.0f, 1.0f);
 
                 for (var pg : programs) {
-                    pg.bind()
-                            .setMatrix4("projection", projection.get(mat4f))
-                            .setMatrix4("view", view.get(mat4f))
-                            .setMatrix4("model", model.get(mat4f));
+                    pg.bind();
+                    pg.getUniform("projection").setMatrix4(projection.get(mat4f));
+                    pg.getUniform("view").setMatrix4(view.get(mat4f));
+                    pg.getUniform("model").setMatrix4(model.get(mat4f));
 
                     for (com.vanix.easygl.core.media.Mesh mesh : meshes) {
                         if (pg.containsUniform("texture_diffuse1")) {
                             var textures = mesh.getTextures(Model.TextureType.Diffuse);
                             if (!textures.isEmpty()) {
                                 textures.getFirst().getTexture().bind(TextureUnit.U0);
-                                pg.setInt("texture_diffuse1", 0);
+                                pg.getUniform("texture_diffuse1").setTextureUnit(TextureUnit.U0);
                             }
                         }
                         mesh.draw();

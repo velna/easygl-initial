@@ -6,6 +6,7 @@ import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.learnopengl.Uniforms;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
@@ -32,13 +33,14 @@ public class C1_2_DepthTestingView {
             window
                     .attributes().Resizable.disable().then()
                     .inputs().keyboard().onKey(Keyboard.FunctionKey.ESCAPE).subscribe(event -> window.shouldClose(true));
-            window.inputs().mouse().cursorMode(Mouse.CursorMode.CURSOR_CAPTURED);
+            window.inputs().mouse().cursorMode(Mouse.CursorMode.CURSOR_DISABLED);
 
             graphics.depthTest().enable().setFunction(CompareFunction.LessThan);
 
             program.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/1.2.depth_testing.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/1.2.depth_testing.fs")
                     .link();
+            var uniforms = program.bind().bindResources(new Uniforms<>());
 
             cubeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // texture Coords
@@ -125,18 +127,18 @@ public class C1_2_DepthTestingView {
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 100.0f);
                 var view = camera.update().view();
 
-                program.bind()
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f));
+                program.bind();
+                uniforms.projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(view.get(mat4f));
 
                 cubeTexture.bind(TextureUnit.U0);
-                program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
+                uniforms.model.setMatrix4(new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
                 cubeDrawable.draw();
-                program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
+                uniforms.model.setMatrix4(new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
                 cubeDrawable.draw();
 
                 floorTexture.bind(TextureUnit.U0);
-                program.setMatrix4("model", new Matrix4f().get(mat4f));
+                uniforms.model.setMatrix4(new Matrix4f().get(mat4f));
                 planeDrawable.draw();
 
                 window.swapBuffers().pollEvents();

@@ -1,8 +1,12 @@
 package com.vanix.easygl.opengl;
 
 import com.vanix.easygl.core.Support;
-import com.vanix.easygl.core.graphics.*;
+import com.vanix.easygl.core.graphics.Program;
+import com.vanix.easygl.core.graphics.ProgramInterfaces;
+import com.vanix.easygl.core.graphics.ProgramResource;
+import com.vanix.easygl.core.graphics.Version;
 import com.vanix.easygl.core.graphics.program.*;
+import com.vanix.easygl.opengl.program.BaseInterface;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -10,15 +14,27 @@ import java.util.Map;
 @Support(since = Version.GL43)
 public class GlProgramInterfaces implements ProgramInterfaces {
     protected final Program program;
-    private final Map<GlProgramInterfaceType, ProgramInterface<?>> interfaces = new EnumMap<>(GlProgramInterfaceType.class);
+    private final Map<GlProgramInterfaceType, BaseInterface<?>> interfaces = new EnumMap<>(GlProgramInterfaceType.class);
 
     protected GlProgramInterfaces(Program program) {
         this.program = program;
     }
 
+    void invalidate() {
+        interfaces.values().forEach(BaseInterface::invalidate);
+    }
+
     @SuppressWarnings("unchecked")
-    private <R extends ProgramResource<R>, T extends ProgramInterface<R>> T getInterface(GlProgramInterfaceType type) {
+    private <R extends ProgramResource<R>, T extends BaseInterface<R>> T getInterface(GlProgramInterfaceType type) {
         return (T) interfaces.computeIfAbsent(type, t -> t.factory.apply(program));
+    }
+
+    @Override
+    public <B> B bindResources(B bean) {
+        for (var interfaceType : GlProgramInterfaceType.values()) {
+            getInterface(interfaceType).bindResources(bean);
+        }
+        return bean;
     }
 
     @Override

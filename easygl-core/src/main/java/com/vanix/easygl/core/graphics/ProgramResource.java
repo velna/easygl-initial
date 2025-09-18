@@ -45,14 +45,20 @@ public interface ProgramResource<T extends ProgramResource<T>> {
         TransformFeedbackBufferIndex("TRANSFORM_FEEDBACK_BUFFER_INDEX"),
         TransformFeedbackBufferStride("TRANSFORM_FEEDBACK_BUFFER_STRIDE");
         private final int value;
+        private final int mask;
 
         PropertyKey(String id) {
             this.value = MetaSystem.Graphics.queryInt(id);
+            this.mask = 1 << ordinal();
         }
 
         @Override
         public int value() {
             return value;
+        }
+
+        public int mask() {
+            return mask;
         }
     }
 

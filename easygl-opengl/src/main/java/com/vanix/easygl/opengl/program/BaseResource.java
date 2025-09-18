@@ -63,11 +63,11 @@ public abstract class BaseResource<T extends ProgramResource<T>> implements
             preloadValues = new int[ProgramResource.PropertyKey.values().length];
         }
         if (this.properties == null) {
-            this.properties = BitSet.of((ToIntFunction<PropertyKey>) ProgramResource.PropertyKey::ordinal);
+            this.properties = BitSet.of((ToIntFunction<PropertyKey>) ProgramResource.PropertyKey::mask);
         } else {
             this.properties.clear();
         }
-        List<PropertyKey> propertyKeys = new ArrayList<>();
+        List<PropertyKey> propertyKeys = new ArrayList<>(keys.length);
         for (var key : keys) {
             if (interfaceType.properties().contains(key)) {
                 properties.add(key);

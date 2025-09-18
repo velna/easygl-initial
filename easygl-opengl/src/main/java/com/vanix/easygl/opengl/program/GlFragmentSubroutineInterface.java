@@ -11,7 +11,7 @@ public class GlFragmentSubroutineInterface extends BaseInterface<FragmentSubrout
     }
 
     @Override
-    protected FragmentSubroutine newResource(Program program, int index) {
+    protected FragmentSubroutine newResource(int index) {
         return new GlFragmentSubroutine(program, index);
     }
 }

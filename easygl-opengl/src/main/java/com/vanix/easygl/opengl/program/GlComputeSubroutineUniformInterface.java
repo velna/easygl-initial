@@ -11,7 +11,7 @@ public class GlComputeSubroutineUniformInterface extends BaseInterface<ComputeSu
     }
 
     @Override
-    protected ComputeSubroutineUniform newResource(Program program, int index) {
+    protected ComputeSubroutineUniform newResource(int index) {
         return new GlComputeSubroutineUniform(program, index);
     }
 }

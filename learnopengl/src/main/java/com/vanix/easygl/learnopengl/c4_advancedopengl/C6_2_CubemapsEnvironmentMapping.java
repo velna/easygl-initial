@@ -6,6 +6,7 @@ import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.learnopengl.Uniforms;
 import org.joml.Math;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -40,9 +41,11 @@ public class C6_2_CubemapsEnvironmentMapping {
             program.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/6.2.cubemaps.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/6.2.cubemaps.fs")
                     .link();
+            var uniforms = program.bindResources(new Uniforms<>());
             skyboxProgram.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/6.2.skybox.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/6.2.skybox.fs")
                     .link();
+            var skyboxUniforms = skyboxProgram.bindResources(new Uniforms<>());
 
             cubeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // normals
@@ -150,8 +153,10 @@ public class C6_2_CubemapsEnvironmentMapping {
                             "textures/skybox/front.jpg",
                             "textures/skybox/back.jpg");
 
-            program.bind().setInt("skybox", 0);
-            skyboxProgram.bind().setInt("skybox", 0);
+            program.bind()
+                    .getUniform("skybox").setTextureUnit(TextureUnit.U0);
+            skyboxProgram.bind()
+                    .getUniform("skybox").setTextureUnit(TextureUnit.U0);
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
@@ -168,17 +173,17 @@ public class C6_2_CubemapsEnvironmentMapping {
                 var view = camera.update().view();
                 cubemapTexture.bind();
 
-                program.bind()
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f))
-                        .setMatrix4("model", new Matrix4f().get(mat4f))
-                        .setVec3("cameraPos", camera.position());
+                program.bind();
+                uniforms.projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(view.get(mat4f))
+                        .model.setMatrix4(new Matrix4f().get(mat4f))
+                        .cameraPos.setVec3(camera.position());
                 cubeDrawable.draw();
 
                 graphics.depthTest().setFunction(CompareFunction.LessEqual);
-                skyboxProgram.bind()
-                        .setMatrix4("view", new Matrix4f(view.get3x3(new Matrix3f())).get(mat4f))
-                        .setMatrix4("projection", projection.get(mat4f));
+                skyboxProgram.bind();
+                skyboxUniforms.view.setMatrix4(new Matrix4f(view.get3x3(new Matrix3f())).get(mat4f))
+                        .projection.setMatrix4(projection.get(mat4f));
                 skyboxDrawable.draw();
                 graphics.depthTest().setFunction(CompareFunction.LessThan);
 

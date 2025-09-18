@@ -15,6 +15,10 @@ public interface ProgramInterface<T extends ProgramResource<T>> {
     @Nullable
     T getResource(int index);
 
+    default <B> B bindResources(B bean) {
+        return bean;
+    }
+
     //region Base interfaces
     interface Named<T extends ProgramResource<T>> extends ProgramInterface<T> {
         @Nullable

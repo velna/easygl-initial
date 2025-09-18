@@ -7,6 +7,7 @@ import com.vanix.easygl.core.input.Keyboard;
 import com.vanix.easygl.core.input.Mouse;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.learnopengl.Uniforms;
 import org.eclipse.collections.api.factory.Lists;
 import org.joml.Math;
 import org.joml.Matrix4f;
@@ -46,6 +47,7 @@ public class C3_2_BlendingSorted {
             program.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/3.2.blending.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/3.2.blending.fs")
                     .link();
+            var uniforms = program.bindResources(new Uniforms<>());
 
             cubeVBO.bind(Buffer.Target.Array).realloc(Buffer.DataUsage.StaticDraw, new float[]{
                     // positions          // texture Coords
@@ -141,7 +143,8 @@ public class C3_2_BlendingSorted {
                     new Vector3f(-0.3f, 0.0f, -2.3f),
                     new Vector3f(0.5f, 0.0f, -0.6f));
 
-            program.bind().setInt("texture1", 0);
+            program.bind()
+                    .getUniform("texture1").setTextureUnit(TextureUnit.U0);
 
             var camera = new ControllableCamera(window.inputs().keyboard(), window.inputs().mouse());
             FloatBuffer mat4f = BufferUtils.createFloatBuffer(4 * 4);
@@ -159,27 +162,27 @@ public class C3_2_BlendingSorted {
 
                 vegetation.sort((a, b) -> Float.compare(b.distance(camera.position()), a.distance(camera.position())));
 
-                program.bind()
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f));
+                program.bind();
+                uniforms.projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(view.get(mat4f));
 
                 // cubes
                 cubeVAO.bind();
                 cubeTexture.bind();
-                program.setMatrix4("model", new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
+                uniforms.model.setMatrix4(new Matrix4f().translate(-1.0f, 0.0f, -1.0f).get(mat4f));
                 cubeDrawable.draw();
-                program.setMatrix4("model", new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
+                uniforms.model.setMatrix4(new Matrix4f().translate(2.0f, 0.0f, 0.0f).get(mat4f));
                 cubeDrawable.draw();
 
                 //floor
                 floorTexture.bind();
-                program.setMatrix4("model", new Matrix4f().get(mat4f));
+                uniforms.model.setMatrix4(new Matrix4f().get(mat4f));
                 planeDrawable.draw();
 
                 //
                 transparentTexture.bind();
                 for (var vec : vegetation) {
-                    program.setMatrix4("model", new Matrix4f().translate(vec).get(mat4f));
+                    uniforms.model.setMatrix4(new Matrix4f().translate(vec).get(mat4f));
                     transparentDrawable.draw();
                 }
 

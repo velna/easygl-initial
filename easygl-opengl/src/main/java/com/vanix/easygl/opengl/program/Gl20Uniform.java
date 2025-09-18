@@ -7,20 +7,22 @@ import com.vanix.easygl.opengl.GLX;
 import com.vanix.easygl.opengl.GlGraphics;
 import org.lwjgl.system.MemoryStack;
 
-public class G20Uniform implements Uniform {
+public class Gl20Uniform implements GlUniform {
 
     private final Program program;
+    private final String name;
     private final int index;
     private final DataType dataType;
     private final int size;
-    private final String name;
+    private final int location;
 
-    public G20Uniform(Program program, int index, DataType dataType, int size, String name) {
+    public Gl20Uniform(Program program, String name, int index, DataType dataType, int size) {
         this.program = program;
+        this.name = name;
         this.index = index;
         this.dataType = dataType;
         this.size = size;
-        this.name = name;
+        this.location = GLX.glGetUniformLocation(program.intHandle(), name);
     }
 
     @Override
@@ -116,7 +118,7 @@ public class G20Uniform implements Uniform {
 
     @Override
     public int getLocation() {
-        return GLX.glGetUniformLocation(program.intHandle(), name);
+        return location;
     }
 
     private int getParamGl31(int param) {

@@ -9,6 +9,7 @@ import com.vanix.easygl.core.media.Mesh;
 import com.vanix.easygl.core.media.Model;
 import com.vanix.easygl.core.window.Window;
 import com.vanix.easygl.core.window.WindowHints;
+import com.vanix.easygl.learnopengl.Uniforms;
 import lombok.extern.slf4j.Slf4j;
 import org.joml.Math;
 import org.joml.Matrix4f;
@@ -40,6 +41,7 @@ public class C10_2_Asteroids {
             program.attachResource(Shader.Type.Vertex, "shaders/4_advanced_opengl/10.2.instancing.vs")
                     .attachResource(Shader.Type.Fragment, "shaders/4_advanced_opengl/10.2.instancing.fs")
                     .link();
+            var uniforms = program.bind().bindResources(new Uniforms<>());
 
 
             // generate a large list of semi-random model transformation matrices
@@ -84,16 +86,16 @@ public class C10_2_Asteroids {
                 var projection = new Matrix4f()
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 1000.0f);
 
-                program.bind()
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", camera.update().view().get(mat4f))
-                        .setMatrix4("model", new Matrix4f()
+                program.bind();
+                uniforms.projection.setMatrix4(projection.get(mat4f))
+                        .view.setMatrix4(camera.update().view().get(mat4f))
+                        .model.setMatrix4(new Matrix4f()
                                 .translate(0.0f, -3.0f, 0.0f)
                                 .scale(4.0f, 4.0f, 4.0f).get(mat4f));
                 drawModel(program, planetMeshes);
 
                 for (var matrix : modelMatrices) {
-                    program.setMatrix4("model", matrix.get(mat4f));
+                    uniforms.model.setMatrix4(matrix.get(mat4f));
                     drawModel(program, rockMeshes);
                 }
 
@@ -108,7 +110,7 @@ public class C10_2_Asteroids {
                 var textures = mesh.getTextures(Model.TextureType.Diffuse);
                 if (!textures.isEmpty()) {
                     textures.getFirst().getTexture().bind(TextureUnit.U0);
-                    program.setInt("texture_diffuse1", 0);
+                    program.getUniform("texture_diffuse1").setTextureUnit(TextureUnit.U0);
                 }
             }
             mesh.draw();

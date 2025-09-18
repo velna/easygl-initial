@@ -100,19 +100,19 @@ public class C1_Colors {
                         .perspective(Math.toRadians(camera.fov().get()), window.getAspect(), 0.1f, 100.0f);
                 var view = camera.update().view();
 
-                lightingProgram.bind()
-                        .setVec3("objectColor", 1.0f, 0.5f, 0.31f)
-                        .setVec3("lightColor", 1.0f, 1.0f, 1.0f)
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f))
-                        .setMatrix4("model", new Matrix4f());
+                lightingProgram.bind();
+                lightingProgram.getUniform("objectColor").setVec3(1.0f, 0.5f, 0.31f);
+                lightingProgram.getUniform("lightColor").setVec3(1.0f, 1.0f, 1.0f);
+                lightingProgram.getUniform("projection").setMatrix4(projection.get(mat4f));
+                lightingProgram.getUniform("view").setMatrix4(view.get(mat4f));
+                lightingProgram.getUniform("model").setMatrix4(new Matrix4f());
 
                 cubeDrawable.draw();
 
-                lightCubeProgram.bind()
-                        .setMatrix4("projection", projection.get(mat4f))
-                        .setMatrix4("view", view.get(mat4f))
-                        .setMatrix4("model", new Matrix4f().translate(lightPos).scale(0.2f));
+                lightCubeProgram.bind();
+                lightCubeProgram.getUniform("projection").setMatrix4(projection.get(mat4f));
+                lightCubeProgram.getUniform("view").setMatrix4(view.get(mat4f));
+                lightCubeProgram.getUniform("model").setMatrix4(new Matrix4f().translate(lightPos).scale(0.2f));
                 lightCubeDrawable.draw();
 
                 window.swapBuffers().pollEvents();

@@ -11,7 +11,7 @@ public class GlAtomicCounterBufferInterface extends BaseInterface<AtomicCounterB
     }
 
     @Override
-    protected AtomicCounterBuffer newResource(Program program, int index) {
+    protected AtomicCounterBuffer newResource(int index) {
         return new GlAtomicCounterBuffer(program, index);
     }
 }
