@@ -1,3 +1,5 @@
+# 本项目已重构，见[EasyGL](https://github.com/velna/easygl)
+
 # easy-gl
 
 这是一个面向对象的OpenGL API库，基于lwjgl。
